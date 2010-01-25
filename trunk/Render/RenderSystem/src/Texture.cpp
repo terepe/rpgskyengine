@@ -2,7 +2,6 @@
 #include "IORead.h"
 #include "Color.h"
 #include "ddslib.h"
-#include "FileSystem.h"
 #include "RenderSystem.h"
 
 void DecompressDXTC(int formatDXT, int w, int h, size_t size, unsigned char *src, unsigned char *dest)
@@ -277,6 +276,7 @@ void CTexture::load()
 	}
 }
 
+#include "FileSystem.h"
 bool CTexture::createTextureFromFile(const std::string& strFilename, int nLevels)
 {
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);

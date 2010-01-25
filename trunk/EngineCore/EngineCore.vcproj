@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Math\Include;..\Common\Include;..\IO\FileIO\Include;..\Render\RenderSystem\Include;..\Model\Include;..\Protection\src;..\Media\Sound\Include;Include"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\Render\RenderSystem\Include;..\Model\Include;..\Protection\src;..\Media\Sound\Include;Include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -105,7 +105,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\Math\Include;..\Common\Include;..\IO\FileIO\Include;..\Render\RenderSystem\Include;..\Model\Include;..\Protection\src;..\Media\Sound\Include;Include"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\Render\RenderSystem\Include;..\Model\Include;..\Protection\src;..\Media\Sound\Include;Include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 			/>
