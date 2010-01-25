@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="Include;..\..\Common\Include;..\..\Math\Include;..\..\IO\FileIO\Include;..\Freetype\Include"
+				AdditionalIncludeDirectories="Include;..\..\..\Shared\Common\Include;..\..\..\Shared\Math\Include;..\..\..\Shared\IO\FileIO\Include;..\Freetype\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Include;..\..\Common\Include;..\..\Math\Include;..\..\IO\FileIO\Include;..\Freetype\Include"
+				AdditionalIncludeDirectories="Include;..\..\..\Shared\Common\Include;..\..\..\Shared\Math\Include;..\..\..\Shared\IO\FileIO\Include;..\Freetype\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

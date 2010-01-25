@@ -9,7 +9,7 @@
 #include <freetype/ftoutln.h>
 #include <freetype/fttrigon.h>
 
-#include "FileSystem.h"
+//#include "FileSystem.h"
 #include "IORead.h"
 // 最接近的2的倍数
 inline int next_p2 (int a)
