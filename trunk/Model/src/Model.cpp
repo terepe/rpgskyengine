@@ -142,11 +142,39 @@ bool CMaterial::Begin(float fOpacity)
 					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
 				}
 			}
+			else if (uBump)
+			{
+				CShader* pShader = R.GetShaderMgr().getSharedShader();
+				if (pShader)
+				{
+					static size_t s_uShaderID = GetRenderSystem().GetShaderMgr().registerItem("Data\\fx\\SpaceBump.fx");
+					pShader->setTexture("g_texNormal",uBump);
+					R.SetShader(s_uShaderID);
+				}
+				//R.SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+				//R.SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				//R.SetTextureAlphaOP(0, TBOP_DISABLE);
+				//R.SetTexture(0, uLightMap);
+			}
 			else
 			{
 				return false;
 			}
 		}
+	}
+	else
+	{
+		CShader* pShader = R.GetShaderMgr().getSharedShader();
+		if (pShader)
+		{
+			pShader->setTexture("g_texDiffuse",uDiffuse);
+			pShader->setTexture("g_texLight",uLightMap);
+			pShader->setTexture("g_texNormal",uBump);
+			//pShader->setTexture("g_texEnvironment",uEmissive);
+			//pShader->setTexture("g_texEmissive",uEmissive);
+			pShader->setTexture("g_texSpecular",uSpecular);
+		}
+		R.SetShader(uEffect);
 	}
 	return true;
 }

@@ -200,8 +200,19 @@ bool CBmdModel::LoadFile(const std::string& strFilename)
 
 	m_bbox = m_Mesh.m_bbox;
 	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
-	loadMaterial(strMyPath+ChangeExtension(GetFilename(strFilename),".mat.csv"),GetParentPath(strFilename));
-	loadParticleEmitters(strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv"),GetParentPath(strFilename));
+	std::string strMatFilename = ChangeExtension(strFilename,".mat.csv");
+	std::string strParFilename = ChangeExtension(strFilename,".par.csv");
+	if (!IOReadBase::Exists(strMatFilename))
+	{
+		strMatFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".mat.csv");
+	}
+	if (!IOReadBase::Exists(strParFilename))
+	{
+		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
+	}
+
+	loadMaterial(strMatFilename,GetParentPath(strFilename));
+	loadParticleEmitters(strParFilename,GetParentPath(strFilename));
 
 	bLoaded=true;
 	return true;
