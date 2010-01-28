@@ -17,10 +17,21 @@ CModelMgr& GetModelMgr()
 }
 #include "Timer.h"
 
-
-bool CMaterial::isGlow()
+E_MODEL_RENDER_TYPE CMaterial::getModelRenderType()
 {
-	return 0==uDiffuse;
+	if (uDiffuse)
+	{
+		return MODEL_RENDER_MESH_GEOMETRY;
+	}
+	else if (uBump)
+	{
+		return MODEL_RENDER_MESH_BUMP;
+	}
+	else
+	{
+		return MODEL_RENDER_MESH_GLOW;
+	}
+	return MODEL_RENDER_MESH_GLOW;
 }
 
 bool CMaterial::Begin(float fOpacity)

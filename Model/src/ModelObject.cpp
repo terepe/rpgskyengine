@@ -507,30 +507,22 @@ void CModelObject::render(E_MODEL_RENDER_TYPE eModelRenderType)const
 	//GetRenderSystem().SetMaterial(m_vAmbient,m_vDiffuse);
 	//GetRenderSystem().GetSharedShader()->setVec3D("g_vAmbient",m_vAmbient);
 	//GetRenderSystem().GetSharedShader()->setVec3D("g_vDiffuse",m_vDiffuse);
-	if (eModelRenderType&(MODEL_RENDER_MESH_GEOMETRY|MODEL_RENDER_MESH_GLOW)&&Prepare())
+	if (eModelRenderType&MODEL_RENDER_MESH&&Prepare())
 	{
 		for (std::vector<ModelRenderPass>::iterator it = m_pPasses->begin(); it != m_pPasses->end(); ++it)
 		{
 			if (m_setShowSubset[it->nSubID])
 			{
-				if (it->material.isGlow())
+				if (it->material.getModelRenderType()&eModelRenderType)
 				{
-					if (!(eModelRenderType&MODEL_RENDER_MESH_GLOW))
+					if (PassBegin((*it)))
 					{
-						continue;
+						m_pMesh->DrawSub(m_uLodID, (*it).nSubID);
 					}
+					PassEnd();
+					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
+					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
 				}
-				else if (!(eModelRenderType&MODEL_RENDER_MESH_GEOMETRY))
-				{
-					continue;
-				}
-				if (PassBegin((*it)))
-				{
-					m_pMesh->DrawSub(m_uLodID, (*it).nSubID);
-				}
-				PassEnd();
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
 			}
 		}
 	}

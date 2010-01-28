@@ -15,6 +15,7 @@ m_pSceneTexture(NULL),
 m_pExposureTexture(NULL),
 m_pExposureTexture2(NULL),
 m_pBackTexture(NULL),
+m_pSceneCopyTexture(NULL),
 m_nWidth(0),
 m_nHeight(0)
 {
@@ -28,6 +29,8 @@ CSceneEffect::~CSceneEffect()
 	S_DEL(m_pExposureTexture);
 	S_DEL(m_pExposureTexture2);
 	S_DEL(m_pBackTexture);
+	// new 
+	S_DEL(m_pSceneCopyTexture);
 }
 
 void CSceneEffect::Reset(const RECT& rc)
@@ -38,6 +41,8 @@ void CSceneEffect::Reset(const RECT& rc)
 	S_DEL(m_pExposureTexture);
 	S_DEL(m_pExposureTexture2);
 	S_DEL(m_pBackTexture);
+	// new 
+	S_DEL(m_pSceneCopyTexture);
 
 	int nWidth = rc.right-rc.left;
 	int nHeight = rc.bottom-rc.top;
@@ -51,6 +56,9 @@ void CSceneEffect::Reset(const RECT& rc)
 	m_pGlowRenderTarget = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
 
 	m_pSceneTexture = R.GetTextureMgr().CreateRenderTarget(nWidth*2,nHeight*2);
+
+	m_pSceneCopyTexture = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
+
 	//m_pExposureTexture = R.GetTextureMgr().CreateRenderTarget(1,1);
 	//m_pBackTexture = R.GetTextureMgr().CreateRenderTarget(512, 512);//.CreateDynamicTexture(512,512);
 
@@ -289,6 +297,15 @@ void CSceneEffect::Reset(const RECT& rc)
 	m_FloodLumVB[2].t = Vec2D(fU1, fV1);
 	m_FloodLumVB[3].t = Vec2D(fU1, fV0);
 	m_bInitialized = true;
+}
+
+CTexture* CSceneEffect::getSceneTexture()
+{
+	CRenderSystem& R = GetRenderSystem();
+	CTexture* m_pRenderSystemTarget = R.GetRenderTarget();
+	R.StretchRect(m_pRenderSystemTarget,NULL,m_pSceneCopyTexture,NULL, TEXF_LINEAR);
+	S_DEL(m_pRenderSystemTarget);
+	return m_pSceneCopyTexture;
 }
 
 void CSceneEffect::RenderTemporalBloom()
