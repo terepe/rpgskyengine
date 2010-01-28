@@ -40,6 +40,9 @@ public:
 	void renderTargetBloom();
 	void renderTargetEnd();
 	void compose();
+
+	// new
+	CTexture* getSceneTexture();
 protected:
 	int	m_nWidth;
 	int m_nHeight;
@@ -50,6 +53,9 @@ protected:
 	CTexture*	m_pSceneTexture;
 	CTexture*	m_pExposureTexture;
 	CTexture*	m_pExposureTexture2;
+
+	//new
+	CTexture*	m_pSceneCopyTexture;
 
 	// »­Ãæ±¸·ÝÌùÍ¼
 	CTexture*	m_pBackTexture;
