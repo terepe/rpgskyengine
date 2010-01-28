@@ -500,11 +500,12 @@ int CUIComboBox::FindItem(const std::wstring& wstrText, UINT iStart)
 
 void* CUIComboBox::GetSelectedData()
 {
-	if(m_iSelected < 0)
-		return NULL;
-
-	UIComboBoxItem* pItem = m_Items[m_iSelected];
-	return pItem->pData;
+	UIComboBoxItem* pItem = GetSelectedItem();
+	if(pItem)
+	{
+		return pItem->pData;
+	}
+	return NULL;
 }
 
 UIComboBoxItem* CUIComboBox::GetSelectedItem()
@@ -513,6 +514,16 @@ UIComboBoxItem* CUIComboBox::GetSelectedItem()
 		return NULL;
 
 	return m_Items[m_iSelected];
+}
+
+const std::wstring&	CUIComboBox::GetText()
+{
+	UIComboBoxItem* pItem = GetSelectedItem();
+	if(pItem)
+	{
+		m_wstrText = pItem->wstrText;
+	}
+	return m_wstrText;
 }
 
 void* CUIComboBox::GetItemData(const std::wstring& wstrText)
