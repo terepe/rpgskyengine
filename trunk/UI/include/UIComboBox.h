@@ -55,6 +55,7 @@ public:
 
 	void*   GetSelectedData();
 	UIComboBoxItem* GetSelectedItem();
+	virtual const std::wstring&	GetText();
 	int		GetSelectedItemIndex() const {return m_iSelected; }
 
 	size_t	GetItemCount() { return m_Items.size(); }
