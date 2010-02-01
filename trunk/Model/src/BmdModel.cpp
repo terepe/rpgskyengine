@@ -37,8 +37,6 @@ bool CBmdModel::LoadFile(const std::string& strFilename)
 		}
 	}
 
-
-
 	//////////////////////////////////////////////////////////////////////////
 	m_Mesh.m_Lods.resize(1);
 	if (bmd.nFrameCount>1)// if there one frame only, free the animlist

@@ -1,6 +1,6 @@
 #include "MUBmd.h"
 
-void decryptMuBuffer(char* buffer, size_t size)
+void decryptMuBuffer(unsigned char* buffer, size_t size)
 {
 	static const uint8 xorKeys[16] = {
 		0xd1, 0x73, 0x52, 0xf6,
@@ -19,38 +19,37 @@ void decryptMuBuffer(char* buffer, size_t size)
 	}
 }
 
-void CMUBmd::BmdSkeleton::BmdAnim::load(char*& p)
+void CMUBmd::BmdSkeleton::BmdAnim::load(CMemoryStream& s)
 {
-	STRUCT_MEMCPY(p,uFrameCount);
-	STRUCT_MEMCPY(p,bOffset);
+	s.getBuffer(uFrameCount);
+	s.getBuffer(bOffset);
 	if (bOffset)
 	{
-		VECTOR_MEMCPY(p,vOffset,uFrameCount);
+		s.getVector(vOffset,uFrameCount);
 	}
 }
 
-void CMUBmd::BmdSkeleton::BmdBone::load(char*& p, const std::vector<BmdAnim>& setBmdAnim)
+void CMUBmd::BmdSkeleton::BmdBone::load(CMemoryStream& s, const std::vector<BmdAnim>& setBmdAnim)
 {
-	STRUCT_MEMCPY(p,bEmpty);
+	s.getBuffer(bEmpty);
 	if (bEmpty)
 	{
 		return;
 	}
-
-	POINT_MEMCPY(p,szName,32);
-	STRUCT_MEMCPY(p,nParent);
+	s.getBuffer((unsigned char*)szName,32);
+	s.getBuffer(nParent);
 	for (size_t i=0; i<setBmdAnim.size();++i)
 	{
 		for (size_t j=0; j<setBmdAnim[i].uFrameCount;++j)
 		{
 			Vec3D vTrans;
-			STRUCT_MEMCPY(p,vTrans);
+			s.getBuffer(vTrans);
 			setTrans.push_back(vTrans);
 		}
 		for (size_t j=0; j<setBmdAnim[i].uFrameCount;++j)
 		{
 			Vec3D vRotate;
-			STRUCT_MEMCPY(p,vRotate);
+			s.getBuffer(vRotate);
 			setRotate.push_back(vRotate);
 		}
 
@@ -78,7 +77,7 @@ Matrix CMUBmd::BmdSkeleton::getRotateMatrix(uint8 uBoneID)
 	return mRotate;
 }
 
-void CMUBmd::BmdSkeleton::calcLocalMatrix(uint8 uBoneID)
+void CMUBmd::BmdSkeleton::calcLocalMatrix(uint32 uBoneID)
 {
 	//m_bCalc
 	if (setBmdBone.size()<=uBoneID)
@@ -106,30 +105,30 @@ void CMUBmd::BmdSkeleton::calcLocalMatrix(uint8 uBoneID)
 	}
 }
 
-void CMUBmd::BmdSkeleton:: load(char*& p, uint16 uBoneCount, uint16 uAnimCount)
-	{
-		setBmdAnim.resize(uAnimCount);
-		setBmdBone.resize(uBoneCount);
-		for (size_t i=0; i<setBmdAnim.size();++i)
-		{
-			setBmdAnim[i].load(p);
-		}
-		for (size_t i=0; i<setBmdBone.size();++i)
-		{
-			setBmdBone[i].load(p,setBmdAnim);
-		}
-	}
-
-void CMUBmd::BmdSub::load(char*& p)
+void CMUBmd::BmdSkeleton:: load(CMemoryStream& s, uint16 uBoneCount, uint16 uAnimCount)
 {
-	STRUCT_MEMCPY(p,head);
+	setBmdAnim.resize(uAnimCount);
+	setBmdBone.resize(uBoneCount);
+	for (size_t i=0; i<setBmdAnim.size();++i)
+	{
+		setBmdAnim[i].load(s);
+	}
+	for (size_t i=0; i<setBmdBone.size();++i)
+	{
+		setBmdBone[i].load(s,setBmdAnim);
+	}
+}
 
-	VECTOR_MEMCPY(p,setVertex,head.uVertexCount);
-	VECTOR_MEMCPY(p,setNormal,head.uNormal);
-	VECTOR_MEMCPY(p,setUV,head.uUVCount);
-	VECTOR_MEMCPY(p,setTriangle,head.uTriangleCount);
+void CMUBmd::BmdSub::load(CMemoryStream& s)
+{
+	s.getBuffer(head);
 
-	POINT_MEMCPY(p,szTexture,32);
+	s.getVector(setVertex,head.uVertexCount);
+	s.getVector(setNormal,head.uNormal);
+	s.getVector(setUV,head.uUVCount);
+	s.getVector(setTriangle,head.uTriangleCount);
+
+	s.getBuffer((unsigned char*)szTexture,32);
 }
 
 bool CMUBmd::LoadFile(const std::string& strFilename)
@@ -140,40 +139,40 @@ bool CMUBmd::LoadFile(const std::string& strFilename)
 		return false;
 	}
 	size_t uFileSize = pRead->GetSize();
-	std::vector<char> buffer;
-	buffer.resize(uFileSize);
-	char* p = &buffer[0];
-	pRead->Read(p,uFileSize);
+	CMemoryStream s;
+	s.resize(uFileSize);
+
+	pRead->Read(s.getBuffer(),uFileSize);
 	IOReadBase::autoClose(pRead);
 
 	uint32 uTag;
-	STRUCT_MEMCPY(p,uTag);
+	s.getBuffer(uTag);
 	if (0x0a444d42==uTag)//BMD.
 	{
 	}
 	else if (0x0c444d42==uTag)//BMD.
 	{
 		uint32 uEncodeSize;
-		STRUCT_MEMCPY(p,uEncodeSize);
+		s.getBuffer(uEncodeSize);
 		if (uEncodeSize!=uFileSize-8)
 		{
 			return false;
 		}
-		decryptMuBuffer(p, uFileSize-8);
+		decryptMuBuffer(s.getBuffer(), uFileSize-8);
 	}
 	else 
 	{
 		return false;
 	}
 
-	STRUCT_MEMCPY(p,head);
+	s.getBuffer(head);
 	assert(head.uSubCount<50);
 	setBmdSub.resize(head.uSubCount);
 	for (size_t i=0; i<setBmdSub.size(); ++i)
 	{
-		setBmdSub[i].load(p);
+		setBmdSub[i].load(s);
 	}
-	bmdSkeleton.load(p, head.uBoneCount,head.uAnimCount);
+	bmdSkeleton.load(s, head.uBoneCount,head.uAnimCount);
 
 	for (size_t i=0;i<bmdSkeleton.setBmdBone.size();++i)
 	{
