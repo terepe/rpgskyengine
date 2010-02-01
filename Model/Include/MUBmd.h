@@ -4,6 +4,7 @@
 #include "Vec3D.h"
 #include "Vec4D.h"
 #include "Matrix.h"
+#include "MemoryStream.h"
 
 //左右手转换就是 z轴负一下
 //Vec3D(v.x, v.y, -v.z)
@@ -36,15 +37,20 @@ inline Quaternion fixCoordSystemRotate(Vec3D v)
 	q.rotate(Vec3D(v.x,v.y,-v.z));
 	return Quaternion(q.x, -q.z, q.y, q.w);
 }
-#define POINT_MEMCPY(p,pDest,size) memcpy(pDest,p,size);p+=size;
-#define STRUCT_MEMCPY(p,dest) memcpy(&dest,p,sizeof(dest));p+=sizeof(dest);
-#define VECTOR_MEMCPY(p,dest,_size) dest.resize(_size);memcpy(&dest[0],p,dest.size()*sizeof(dest[0]));p+=dest.size()*sizeof(dest[0]);
 
 class CMUBmd
 {
 public:
+	CMUBmd()
+	{
+		nFrameCount=0;
+	}
 	struct BmdHead
 	{
+		BmdHead()
+		{
+			memset(this,0,sizeof(*this));
+		}
 		char strFile[32];
 		uint16 uSubCount;
 		uint16 uBoneCount;
@@ -55,13 +61,24 @@ public:
 	{
 		struct BmdAnim
 		{
+			BmdAnim()
+			{
+				uFrameCount=0;
+				bOffset=false;
+			}
 			uint16 uFrameCount;
 			bool bOffset;
 			std::vector<Vec3D> vOffset;
-			void load(char*& p);
+			void load(CMemoryStream& s);
 		};
 		struct BmdBone
 		{
+			BmdBone()
+			{
+				bEmpty=0;
+				szName[0]=0;
+				nParent=-1;
+			}
 			bool bEmpty;
 			char szName[32];
 			int16 nParent;
@@ -70,16 +87,16 @@ public:
 
 			Matrix	mLocal;
 
-			void load(char*& p, const std::vector<BmdAnim>& setBmdAnim);
+			void load(CMemoryStream& s, const std::vector<BmdAnim>& setBmdAnim);
 		};
 		std::vector<BmdAnim> setBmdAnim;
 		std::vector<BmdBone> setBmdBone;
 
 		Matrix getLocalMatrix(uint8 uBoneID);
 		Matrix getRotateMatrix(uint8 uBoneID);
-		void calcLocalMatrix(uint8 uBoneID);
+		void calcLocalMatrix(uint32 uBoneID);
 
-		void load(char*& p, uint16 uBoneCount, uint16 uAnimCount);
+		void load(CMemoryStream& s, uint16 uBoneCount, uint16 uAnimCount);
 	};
 
 	struct BmdSub
@@ -121,7 +138,7 @@ public:
 		std::vector<BmdTriangle> setTriangle;
 
 		char szTexture[32];// 纹理
-		void load(char*& p);
+		void load(CMemoryStream& s);
 	};
 
 	bool LoadFile(const std::string& strFilename);
