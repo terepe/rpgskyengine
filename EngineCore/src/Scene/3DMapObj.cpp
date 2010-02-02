@@ -35,9 +35,9 @@ Matrix C3DMapObj::getWorldMatrix()const
 BBox C3DMapObj::getBBox()const
 {
 	BBox bbox;
-	if (m_pModelObject&&m_pModelObject->m_pModel)
+	if (m_pModelObject&&m_pModelObject->m_pModelData)
 	{
-		bbox=m_pModelObject->m_pModel->m_bbox;
+		bbox=m_pModelObject->m_pModelData->m_bbox;
 	}
 	Matrix mRotate;
 	mRotate.rotate(getRotate());
@@ -76,7 +76,7 @@ void C3DMapObj::render(int flag)const
 	if (m_pModelObject)
 	{
 		GetRenderSystem().setWorldMatrix(getWorldMatrix());
-		m_pModelObject->render((E_MODEL_RENDER_TYPE)flag);
+		m_pModelObject->render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
 	}
 }
 

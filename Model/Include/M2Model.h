@@ -1,6 +1,5 @@
 #pragma once
-
-#include "Model.h"
+#include "ModelData.h"
 #include "mpq/mpq_libmpq.h"
 
 struct Lump //addressing
@@ -397,7 +396,7 @@ struct TextureGroup {
 	}
 };
 
-class CM2Model: public CModel
+class CM2Model: public CModelData
 {
 public:
 	CM2Model();

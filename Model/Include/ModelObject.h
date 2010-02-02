@@ -1,5 +1,5 @@
 #pragma once
-#include "Model.h"
+#include "ModelData.h"
 #include "AnimMgr.h"
 
 class DLL_EXPORT CModelObject
@@ -27,7 +27,9 @@ public:
 	bool PrepareEdge()const;
 	void FinishEdge()const;
 	virtual void DrawModelEdge()const;
-	virtual void render(E_MODEL_RENDER_TYPE eModelRenderType=MODEL_RENDER_NORMAL)const;
+	virtual void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void render(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
 
 	virtual void draw()const;
 
@@ -48,7 +50,7 @@ public:
 	void create();
 public: // 模型数据源
 	int m_nModelID;		// 模型ID
-	CModel*			m_pModel;				// 模型源数据
+	CModelData*		m_pModelData;				// 模型源数据
 	CSkeleton*		m_pSkeleton;			// 骨架
 	CLodMesh*		m_pMesh;
 public: // 模型动画计算数据
@@ -62,7 +64,6 @@ public: // 模型动画计算数据
 	float m_fTrans;			// 自身透明度
 	float m_fAlpha;			// 过度透明
 public:// 属性
-	virtual void renderParticles()const;	// 画粒子
 	// 设置显示部件
 	void ShowGeoset(uint32 uID, bool bShow = true){ if (uID<m_setShowSubset.size()) m_setShowSubset[uID] = bShow;}
 	// 设置显示粒子
