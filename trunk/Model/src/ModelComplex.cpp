@@ -53,16 +53,22 @@ void CModelComplex::DrawModelEdge()const
 	}
 }
 
-void CModelComplex::render(E_MODEL_RENDER_TYPE eModelRenderType)const
+
+void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
-	CModelObject::render(eModelRenderType);
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
-	{
-		it->second->render(eModelRenderType);
-	}
+	CModelObject::renderMesh(eModelRenderType);
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
-		it->second->render(eModelRenderType);
+		it->second->renderMesh(eModelRenderType);
+	}
+}
+
+void CModelComplex::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
+{
+	CModelObject::renderParticles(eParticleRenderType);
+	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
+	{
+		it->second->renderParticles(eParticleRenderType);
 	}
 }
 

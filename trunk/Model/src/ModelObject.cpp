@@ -9,7 +9,7 @@
 CModelObject::CModelObject() :
 m_idLightMapTex(0),
 m_bLightmap(false),
-m_pModel(NULL),
+m_pModelData(NULL),
 m_pMesh(NULL),
 m_bCreated(false),
 m_vAmbient(0.4f,0.4f,0.4f,1.0f),
@@ -35,7 +35,7 @@ m_vDiffuse(0.6f,0.6f,0.6f,1.0f)
 CModelObject::~CModelObject()
 {
 	GetModelMgr().del(m_nModelID);
-	m_pModel = NULL;
+	m_pModelData = NULL;
 
 	S_DEL(m_pVB);
 }
@@ -48,47 +48,47 @@ bool CModelObject::isCreated()
 void CModelObject::create()
 {
 	S_DEL(m_AnimMgr);
-	if (NULL==m_pModel)
+	if (NULL==m_pModelData)
 	{
 		return;
 	}
-	if (!m_pModel->isLoaded())
+	if (!m_pModelData->isLoaded())
 	{
-		if (m_pModel->LoadFile(m_strModelFilename))
+		if (m_pModelData->LoadFile(m_strModelFilename))
 		{
-			m_pModel->Init();
+			m_pModelData->Init();
 		}
 		else
 		{
-			//S_DEL(m_pModel);
+			//S_DEL(m_pModelData);
 		}
 	}
 
 	{
-		m_pMesh = &m_pModel->m_Mesh;
-		m_pPasses = &m_pModel->m_Passes;
+		m_pMesh = &m_pModelData->m_Mesh;
+		m_pPasses = &m_pModelData->m_Passes;
 		//
-		if (m_pModel->m_Skeleton.m_BoneAnims.size()>0)
+		if (m_pModelData->m_Skeleton.m_BoneAnims.size()>0)
 		{
-			m_pSkeleton = &m_pModel->m_Skeleton;
+			m_pSkeleton = &m_pModelData->m_Skeleton;
 			m_pSkeleton->CreateBones(m_Bones);
 			m_pSkeleton->CalcBonesMatrix(0,m_Bones);
 		}
 
 		// Particles
-		m_setParticleGroup.resize(m_pModel->m_setParticleEmitter.size());
+		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());
 		for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
 		{
-			m_setParticleGroup[i].Init(&m_pModel->m_setParticleEmitter[i], NULL);
+			m_setParticleGroup[i].Init(&m_pModelData->m_setParticleEmitter[i], NULL);
 		}
 		m_setShowParticle.resize(m_setParticleGroup.size());
 
 		// 
 		SetSkin(m_uSkinID);
 
-		if(m_pModel->m_AnimList.size()>0)
+		if(m_pModelData->m_AnimList.size()>0)
 		{
-			m_AnimMgr = new AnimManager(&m_pModel->m_AnimList[0]);
+			m_AnimMgr = new AnimManager(&m_pModelData->m_AnimList[0]);
 		}
 		// 设置默认LOD
 		SetLOD(0);
@@ -100,7 +100,7 @@ void CModelObject::create()
 			if (m_pMesh->m_bSkinMesh)
 			{
 				m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(m_pMesh->GetSkinVertexCount(), m_pMesh->GetSkinVertexSize(), CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-				//hr = GetRenderSystem().GetDevice()->CreateVertexBuffer(m_pModel->GetSkinVertexBufferSize(), D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_NORMAL, D3DPOOL_DEFAULT, &m_pVB, NULL);
+				//hr = GetRenderSystem().GetDevice()->CreateVertexBuffer(m_pModelData->GetSkinVertexBufferSize(), D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_NORMAL, D3DPOOL_DEFAULT, &m_pVB, NULL);
 			}
 		}
 	}
@@ -110,7 +110,7 @@ void CModelObject::create()
 void CModelObject::Register(const std::string& strFilename)
 {
 	m_nModelID = GetModelMgr().RegisterModel(strFilename);
-	m_pModel = GetModelMgr().GetModel(m_nModelID);
+	m_pModelData = GetModelMgr().GetModel(m_nModelID);
 	m_strModelFilename = strFilename;
 }
 
@@ -137,7 +137,7 @@ void CModelObject::CalcBones(int time)
 
 	//	// Find the close hands animation id
 	//	int closeFistID = 0;
-	//	for (unsigned int i=0; i<m_pModel->m_Info.nAnimationCount; i++) {
+	//	for (unsigned int i=0; i<m_pModelData->m_Info.nAnimationCount; i++) {
 	//		if (anims[i].animID==15) {  // closed fist
 	//			closeFistID = i;
 	//			break;
@@ -223,7 +223,7 @@ void CModelObject::CalcBones(int time)
 void CModelObject::Animate(int anim)
 {
 	int t=0;
-	ModelAnimation &a = m_pModel->m_AnimList[anim];
+	ModelAnimation &a = m_pModelData->m_AnimList[anim];
 	int tmax = (a.timeEnd-a.timeStart);
 	if (tmax==0) 
 		tmax = 1;
@@ -250,7 +250,7 @@ void CModelObject::Animate(int anim)
 	}
 
 	// 灯动画？
-	//for (size_t i=0; i<m_pModel->m_LightAnims.size();; i++) {
+	//for (size_t i=0; i<m_pModelData->m_LightAnims.size();; i++) {
 	//	if (m_LightAnims[i].parent>=0) {
 	//		m_LightAnims[i].tpos = m_Bones[lights[i].parent].m_mat * lights[i].pos;
 	//		m_LightAnims[i].tdir = m_Bones[lights[i].parent].m_mRot * lights[i].dir;
@@ -261,13 +261,13 @@ void CModelObject::Animate(int anim)
 	for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
 	{
 		// random time distribution for teh win ..?
-		int pt = a.timeStart + (t + (int)(tmax*m_pModel->m_setParticleEmitter[i].tofs)) % tmax;
+		int pt = a.timeStart + (t + (int)(tmax*m_pModelData->m_setParticleEmitter[i].tofs)) % tmax;
 
 		m_setParticleGroup[i].Setup(pt);
 	}
 
 	// 条带动画
-	//for (size_t i=0; i<m_pModel->m_Info.nRibbonEmitterCount; i++) {
+	//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
 	//	ribbons[i].setup(t);
 	//}
 }
@@ -279,12 +279,12 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 
 		float fOpacity = m_fTrans;
 		// emissive colors
-		if (m_pModel->m_TransAnims.size() > 0)
+		if (m_pModelData->m_TransAnims.size() > 0)
 		{
 			// opacity
 			if (pass.nTransID!=-1)
 			{
-				fOpacity *= m_pModel->m_TransAnims[pass.nTransID].trans.getValue(m_nAnimTime)/32767.0f;
+				fOpacity *= m_pModelData->m_TransAnims[pass.nTransID].trans.getValue(m_nAnimTime)/32767.0f;
 			}
 		}
 		if (fOpacity<=0.0f)
@@ -293,7 +293,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		}
 		if (-1 != pass.nColorID)
 		{
-			Vec4D ecol = m_pModel->m_ColorAnims[pass.nColorID].GetColor(m_nAnimTime);
+			Vec4D ecol = m_pModelData->m_ColorAnims[pass.nColorID].GetColor(m_nAnimTime);
 			ecol.w = 1;
 			pass.material.SetEmissiveColor(ocol.getColor());
 
@@ -301,7 +301,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 			/*			D3DMATERIAL9 mtrl;
 			mtrl.Ambient	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.2,0.2,0.2,0.2);
 			mtrl.Diffuse	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.8,0.8,0.8,0.8);
-			Vec4D Specular	= Vec4D(m_pModel->m_ColorAnims[pass.nColorID].color.getValue(m_nAnimTime), 1);
+			Vec4D Specular	= Vec4D(m_pModelData->m_ColorAnims[pass.nColorID].color.getValue(m_nAnimTime), 1);
 			mtrl.Specular	= *(D3DXCOLOR*)&Specular;
 			mtrl.Emissive	= D3DXCOLOR(0,0,0,0);//*(D3DXCOLOR*)&ecol;
 			mtrl.Power		= 71;
@@ -327,11 +327,11 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 
 		// 纹理动画实现
-		if (m_pModel->m_TexAnims.size() && pass.nTexanimID !=-1)
+		if (m_pModelData->m_TexAnims.size() && pass.nTexanimID !=-1)
 		{
 			// 纹理动画
 			Matrix matTex;
-			m_pModel->m_TexAnims[pass.nTexanimID].Calc(m_nAnimTime, matTex);
+			m_pModelData->m_TexAnims[pass.nTexanimID].Calc(m_nAnimTime, matTex);
 			// 在里面设置纹理矩阵
 			GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
 		}
@@ -342,7 +342,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		//if (!pass.bUnlit&&0) 
 		//{
 		//	//R.SetLightingEnabled(false);
-		//	R.SetShader(m_pModel->m_nCartoonShaderID);
+		//	R.SetShader(m_pModelData->m_nCartoonShaderID);
 		//	static int nCartoonTex = GetRenderSystem().GetTextureMgr().RegisterTexture("toonshade.tga");
 		//	R.SetTexture(1 , nCartoonTex, 1);
 		//	COLOROP = D3DTOP_SELECTARG1;
@@ -396,7 +396,7 @@ void CModelObject::SetSkin(uint32 uSkinID)
 
 void CModelObject::SetAnim(uint32 uAnimID)
 {
-	if (m_pModel&&m_pModel->m_AnimList.size() > uAnimID)
+	if (m_pModelData&&m_pModelData->m_AnimList.size() > uAnimID)
 	{
 		if(m_AnimMgr)
 		{
@@ -427,14 +427,14 @@ void CModelObject::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse)
 //void CObject::lightsOn(int lbase)
 //{
 //	// setup lights
-//	for (unsigned int i=0, l=lbase; i<m_pModel->m_Info.nLightCount; i++) 
+//	for (unsigned int i=0, l=lbase; i<m_pModelData->m_Info.nLightCount; i++) 
 //		m_LightAnims[i].setup(m_nAnimTime, l++);
 //}
 //
 //// These aren't really needed in the model viewer.. only wowmapviewer
 //void CObject::lightsOff(int lbase)
 //{
-////	for (unsigned int i=0, l=lbase; i<m_pModel->m_Info.nLightCount; i++) 
+////	for (unsigned int i=0, l=lbase; i<m_pModelData->m_Info.nLightCount; i++) 
 ////		glDisable(l++);
 //}
 
@@ -443,8 +443,8 @@ void CModelObject::updateEmitters(const Matrix& mWorld, float fElapsedTime)
 {
 	for (size_t i=0; i<m_setParticleGroup.size(); i++)
 	{
-		CBone* pBone = &m_Bones[m_pModel->m_setParticleEmitter[i].m_nBoneID];
-		m_pModel->m_setParticleEmitter[i].update(mWorld*pBone->m_mat,m_setParticleGroup[i],fElapsedTime);
+		CBone* pBone = &m_Bones[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
+		m_pModelData->m_setParticleEmitter[i].update(mWorld*pBone->m_mat,m_setParticleGroup[i],fElapsedTime);
 	}
 }
 
@@ -481,7 +481,7 @@ bool CModelObject::PrepareEdge()const
 	R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_TFACTOR);
 	R.SetTextureAlphaOP(0,TBOP_DISABLE);
 
-	//R.SetShader(m_pModel->m_nEdgeShaderID);
+	//R.SetShader(m_pModelData->m_nEdgeShaderID);
 	return true;
 }
 
@@ -494,7 +494,7 @@ void CModelObject::DrawModelEdge()const
 {
 	if (PrepareEdge())
 	{
-		if (m_pModel->m_bHasAlphaTex)
+		if (m_pModelData->m_bHasAlphaTex)
 		{
 			DrawSubsHasNoAlphaTex();
 		}
@@ -502,18 +502,18 @@ void CModelObject::DrawModelEdge()const
 	FinishEdge();
 }
 
-void CModelObject::render(E_MODEL_RENDER_TYPE eModelRenderType)const
+void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	//GetRenderSystem().SetMaterial(m_vAmbient,m_vDiffuse);
 	//GetRenderSystem().GetSharedShader()->setVec3D("g_vAmbient",m_vAmbient);
 	//GetRenderSystem().GetSharedShader()->setVec3D("g_vDiffuse",m_vDiffuse);
-	if (eModelRenderType&MODEL_RENDER_MESH&&Prepare())
+	if (eModelRenderType!=MATERIAL_RENDER_NOTHING&&Prepare())
 	{
 		for (std::vector<ModelRenderPass>::iterator it = m_pPasses->begin(); it != m_pPasses->end(); ++it)
 		{
 			if (m_setShowSubset[it->nSubID])
 			{
-				if (it->material.getModelRenderType()&eModelRenderType)
+				if (it->material.getRenderType()&eModelRenderType)
 				{
 					if (PassBegin((*it)))
 					{
@@ -526,11 +526,27 @@ void CModelObject::render(E_MODEL_RENDER_TYPE eModelRenderType)const
 			}
 		}
 	}
+}
 
-	if (eModelRenderType&MODEL_RENDER_PARTICLES_ALPHA||eModelRenderType&MODEL_RENDER_PARTICLES_GLOW)
+void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
+{
+	if (eParticleRenderType!=MATERIAL_RENDER_NOTHING)
 	{
-		renderParticles();
+		for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
+		{
+			m_setParticleGroup[i].draw();
+		}
+		// draw ribbons
+		//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
+		//	ribbons[i].draw();
+		//}
 	}
+}
+
+void CModelObject::render(E_MATERIAL_RENDER_TYPE eModelRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
+{
+	renderMesh(eModelRenderType);
+	renderParticles(eParticleRenderType);
 }
 
 void CModelObject::draw()const
@@ -544,18 +560,6 @@ void CModelObject::draw()const
 	}
 }
 
-void CModelObject::renderParticles()const
-{
-	for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
-	{
-		m_setParticleGroup[i].draw();
-	}
-	// draw ribbons
-	//for (size_t i=0; i<m_pModel->m_Info.nRibbonEmitterCount; i++) {
-	//	ribbons[i].draw();
-	//}
-}
-
 void CModelObject::DrawBones()const
 {
 	if (m_pSkeleton)
@@ -563,4 +567,3 @@ void CModelObject::DrawBones()const
 		m_pSkeleton->Render(m_Bones);
 	}
 }
-

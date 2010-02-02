@@ -225,7 +225,7 @@ void CLightMap::RenderDepthToTex(const Matrix& mLight)
 					if(pShader->begin("RenderObjDepth"))
 					{
 						p3DMapSceneObj->OnFrameMove(0.0f);
-						p3DMapSceneObj->render(MODEL_RENDER_MESH_GEOMETRY);
+						p3DMapSceneObj->render(MATERIAL_RENDER_GEOMETRY);
 						pShader->end();
 					}
 				}

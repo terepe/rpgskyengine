@@ -166,11 +166,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\Model.h"
+				RelativePath=".\Include\ModelComplex.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Include\ModelComplex.h"
+				RelativePath=".\Include\ModelData.h"
 				>
 			</File>
 			<File
@@ -210,11 +210,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Model.cpp"
+				RelativePath=".\src\ModelComplex.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ModelComplex.cpp"
+				RelativePath=".\src\ModelData.cpp"
 				>
 			</File>
 			<File

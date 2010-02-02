@@ -162,7 +162,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 					{
 						GetRenderSystem().SetMaterial(Vec4D(0.3f,0.3f,0.3f,1.0f),Vec4D(0.6f,0.6f,0.6f,1.0f));
 					}
-					(*it)->render(MODEL_RENDER_MESH_GEOMETRY);
+					(*it)->render(MATERIAL_RENDER_GEOMETRY);
 				}
 			}catch(...)
 			{
@@ -183,13 +183,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MODEL_RENDER_MESH_GLOW);
+			(*it)->render(MATERIAL_RENDER_ALPHA);
 		}
 		GetRenderSystem().setWorldMatrix(Matrix::UNIT);
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MODEL_RENDER_PARTICLES_GLOW);
+			(*it)->render(MATERIAL_RENDER_GLOW);
 		}
 	}
 }

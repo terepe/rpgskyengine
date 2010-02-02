@@ -1,7 +1,7 @@
 #pragma once
-#include "Model.h"
+#include "ModelData.h"
 
-class CBmdModel: public CModel
+class CBmdModel: public CModelData
 {
 public:
 	CBmdModel();
