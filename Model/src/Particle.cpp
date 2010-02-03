@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "ModelData.h"
 #include "Particle.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
@@ -44,35 +44,42 @@ void CParticleGroup::Setup(int nTime)
 	}
 	*/
 }
-
-void CParticleGroup::draw()const
+bool CParticleGroup::passBegin(E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	Vec3D bv0,bv1,bv2,bv3;
-	CRenderSystem& R = GetRenderSystem();
-	// 设置混合模式
-	switch (m_pEmitter->m_nBlend)
+	if(m_pEmitter)
 	{
-	case 0:	// 透明 镂空
-		R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-		R.SetAlphaTestFunc(true);
-		break;
-	case 1:	//MODULATE 加亮
-		R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_COLOUR, SBF_ONE);
-		R.SetAlphaTestFunc(false);
-		break;
-	case 2: // 透明
-		R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-		R.SetAlphaTestFunc(false);
-		break;
-	case 3:	// 镂空
-		R.SetBlendFunc(false);
-		R.SetAlphaTestFunc(true);
-		break;
-	case 4: // 加亮
-		R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE);
-		R.SetAlphaTestFunc(false);
-		break;
+		return false;
 	}
+	if (!(m_pEmitter->m_Material.getRenderType()&eRenderType))
+	{
+		return false;
+	}
+
+	CRenderSystem& R = GetRenderSystem();
+	//// 设置混合模式
+	//switch (m_pEmitter->m_nBlend)
+	//{
+	//case 0:	// 透明 镂空
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+	//	R.SetAlphaTestFunc(true);
+	//	break;
+	//case 1:	//MODULATE 加亮
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_COLOUR, SBF_ONE);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//case 2: // 透明
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//case 3:	// 镂空
+	//	R.SetBlendFunc(false);
+	//	R.SetAlphaTestFunc(true);
+	//	break;
+	//case 4: // 加亮
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//}
 	R.SetCullingMode(CULL_NONE);
 	R.SetLightingEnabled(false);
 	R.SetDepthBufferFunc(true, false);
@@ -81,7 +88,16 @@ void CParticleGroup::draw()const
 	R.SetTextureAlphaOP(0,TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
 
 	R.SetTexture(0 , m_uTexID);
+}
 
+void CParticleGroup::passEnd()const
+{
+
+}
+
+void CParticleGroup::draw()const
+{
+	Vec3D bv0,bv1,bv2,bv3;
 	//if (/*supportPointSprites &&*/ m_pEmitter->m_nRows==1 && m_pEmitter->m_nCols==1&&false) {
 	/*	//// This is how will our point sprite's size will be modified by 
 		//// distance from the viewer
@@ -153,7 +169,7 @@ void CParticleGroup::draw()const
 		{
 			// 获取公告板矩阵
 			Matrix mTrans;
-			R.getViewMatrix(mTrans);
+			GetRenderSystem().getViewMatrix(mTrans);
 			mTrans.Invert();
 
 			if (m_pEmitter->flags == 569) // Faith shoulders, do cylindrical billboarding
@@ -259,4 +275,13 @@ void CParticleGroup::draw()const
 			bg->End();
 		}
 	}
+}
+
+void CParticleGroup::render(E_MATERIAL_RENDER_TYPE eRenderType)const
+{
+	if (passBegin(eRenderType))
+	{
+		draw();
+	}
+	passEnd();
 }

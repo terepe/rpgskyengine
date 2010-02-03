@@ -1,7 +1,7 @@
 #pragma once
 #include "Manager.h"
 #include "matrix.h"
-#include "Color.h"
+#include "Material.h"
 
 class CParticleEmitter;
 
@@ -32,7 +32,10 @@ public:
 	void SetTex(int nTexID);
 	void Setup(int nTime);
 	//void SetTex(float dt);
+	bool passBegin(E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_RENDER_NORMAL)const;
+	void passEnd()const;
 	void draw()const;
+	virtual void render(E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_RENDER_NORMAL)const;
 	CParticleGroup(): m_pEmitter(NULL), m_pBone(NULL), m_uTexID(0)
 	{
 		m_nTime = 0;
