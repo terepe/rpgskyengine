@@ -6,6 +6,7 @@ class RibbonEmitter;
 #include "Animated.h"
 #include "Vec2D.h"
 #include "Matrix.h"
+#include "Material.h"
 
 float frand();
 float randfloat(float lower, float upper);
@@ -53,7 +54,8 @@ public:
 	Vec3D m_vPos;			// 坐标
 	int m_nTexChannel;		// 纹理通道
 	// 混合模式，没啥用的m_nOrder，
-	int m_nBlend, m_nOrder, type;
+	//int m_nBlend;
+	int m_nOrder, type;
 	// 纹理动画的Tile信息
 	int m_nRows, m_nCols;
 	std::vector<TexCoordSet> m_Tiles;
@@ -72,10 +74,12 @@ public:
 	float tofs;
 
 	uint32	uTexID;
+
+	CMaterial m_Material;
 public:
 	CParticleEmitter(): m_nBoneID(0), m_nTexChannel(0), m_fLifeMid(0)
 	{
-		m_nBlend = 0;
+//		m_nBlend = 0;
 		m_nOrder = 0;
 		type = 0;
 

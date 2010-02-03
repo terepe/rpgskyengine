@@ -148,6 +148,22 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	return true;
 }
 
+inline void readMaterial(CMaterial& material,CCsvFile& csv)
+{
+	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
+	material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
+	material.uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
+	material.uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
+	material.uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Bump")));
+	material.uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
+	material.uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
+	material.m_fOpacity	=csv.GetFloat("Opacity");
+	material.bAlphaTest	=csv.GetBool("IsAlphaTest");
+	material.bBlend		=csv.GetBool("IsBlend");
+	material.vTexAnim.x	=csv.GetFloat("TexAnimX");
+	material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+}
+
 bool CModelData::loadMaterial(const std::string& strFilename,const std::string& strPath)
 {
 	CCsvFile csv;
@@ -161,33 +177,13 @@ bool CModelData::loadMaterial(const std::string& strFilename,const std::string& 
 			{
 				if (uSubID == it->nSubID)
 				{
-					it->material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
-					it->material.uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
-					it->material.uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
-					it->material.uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Bump")));
-					it->material.uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
-					it->material.uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
-					it->material.m_fOpacity	=csv.GetFloat("Opacity");
-					it->material.bAlphaTest	=csv.GetBool("IsAlphaTest");
-					it->material.bBlend		=csv.GetBool("IsBlend");
-					it->material.vTexAnim.x	=csv.GetFloat("TexAnimX");
-					it->material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+					readMaterial(it->material,csv);
 					continue;
 				}
 			}
 			ModelRenderPass pass;
 			pass.nSubID = uSubID;
-			pass.material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
-			pass.material.uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
-			pass.material.uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
-			pass.material.uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Bump")));
-			pass.material.uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
-			pass.material.uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
-			pass.material.m_fOpacity	=csv.GetFloat("Opacity");
-			pass.material.bAlphaTest	=csv.GetBool("IsAlphaTest");
-			pass.material.bBlend		=csv.GetBool("IsBlend");
-			pass.material.vTexAnim.x	=csv.GetFloat("TexAnimX");
-			pass.material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+			readMaterial(pass.material,csv);
 			m_Passes.push_back(pass);	
 		}
 		csv.Close();
