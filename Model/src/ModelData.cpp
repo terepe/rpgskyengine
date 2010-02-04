@@ -148,7 +148,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	return true;
 }
 
-inline void readMaterial(CMaterial& material,CCsvFile& csv)
+inline void readMaterial(CMaterial& material,CCsvFile& csv,const std::string& strPath)
 {
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 	material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
@@ -162,6 +162,7 @@ inline void readMaterial(CMaterial& material,CCsvFile& csv)
 	material.bBlend		=csv.GetBool("IsBlend");
 	material.vTexAnim.x	=csv.GetFloat("TexAnimX");
 	material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+	material.uEffect	=GetRenderSystem().GetShaderMgr().registerItem(getRealFilename(strPath,csv.GetStr("effect")));
 }
 
 bool CModelData::loadMaterial(const std::string& strFilename,const std::string& strPath)
@@ -177,13 +178,13 @@ bool CModelData::loadMaterial(const std::string& strFilename,const std::string& 
 			{
 				if (uSubID == it->nSubID)
 				{
-					readMaterial(it->material,csv);
+					readMaterial(it->material,csv,strPath);
 					continue;
 				}
 			}
 			ModelRenderPass pass;
 			pass.nSubID = uSubID;
-			readMaterial(pass.material,csv);
+			readMaterial(pass.material,csv,strPath);
 			m_Passes.push_back(pass);	
 		}
 		csv.Close();
@@ -210,6 +211,26 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 			(it->material.vTexAnim.x)<<","<<(it->material.vTexAnim.y)<<std::endl;
 	}
 	ofs.close();
+	return true;
+}
+
+bool CModelData::loadParticleMaterial(const std::string& strFilename,const std::string& strPath)
+{
+	CCsvFile csv;
+	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
+	if (csv.Open(strFilename))
+	{
+		while (csv.SeekNextLine())
+		{
+			const size_t uSubID			= csv.GetInt("SubID");
+			if (m_setParticleEmitter.size()>uSubID)
+			{
+				m_setParticleEmitter[uSubID].m_Material.bCull=false;
+				readMaterial(m_setParticleEmitter[uSubID].m_Material,csv,strPath);
+			}
+		}
+		csv.Close();
+	}
 	return true;
 }
 
@@ -275,7 +296,7 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename,const std::
 			particleEmitter.m_vPos.y=csv.GetFloat("PosY");
 			particleEmitter.m_vPos.z=csv.GetFloat("PosZ");
 
-			particleEmitter.m_nBlend=csv.GetInt("Blend");
+			//particleEmitter.m_nBlend=csv.GetInt("Blend");
 			particleEmitter.m_nOrder=csv.GetInt("Order");
 			particleEmitter.type=csv.GetInt("Type");
 
@@ -284,12 +305,13 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename,const std::
 
 			particleEmitter.m_bBillboard=csv.GetBool("IsBillboard");
 
-			particleEmitter.uTexID=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Tex")));
+			//particleEmitter.uTexID=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Tex")));
 
 			m_setParticleEmitter.push_back(particleEmitter);
 		}
 		csv.Close();
 	}
+	loadParticleMaterial(ChangeExtension(strFilename,".mat.csv"),strPath);
 	return true;
 }
 

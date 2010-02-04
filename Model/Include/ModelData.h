@@ -130,6 +130,7 @@ public:
 	virtual bool LoadFile(const std::string& strFilename);
 	virtual	bool loadMaterial(const std::string& strFilename,const std::string& strPath);
 	virtual bool saveMaterial(const std::string& strFilename);
+	virtual bool loadParticleMaterial(const std::string& strFilename,const std::string& strPath);
 	virtual	bool loadParticleEmitters(const std::string& strFilename,const std::string& strPath);
 	bool SaveFile(const std::string& strFilename);
 	void InitSkins();

@@ -350,11 +350,12 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		//	R.SetTextureFactor(Color32(176,176,176,176));
 		//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
 		//}
-		return pass.material.Begin(fOpacity);
+		return pass.material.prepare(fOpacity);
 }
 
 void CModelObject::PassEnd()const
 {
+	//pass.material.finish();
 	CRenderSystem& R = GetRenderSystem();
 	R.setTextureMatrix(0, TTF_DISABLE);
 	R.SetTexCoordIndex(0,0);
@@ -532,9 +533,9 @@ void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)co
 {
 	if (eParticleRenderType!=MATERIAL_RENDER_NOTHING)
 	{
-		for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
+		for (size_t i = 0;i < m_setParticleGroup.size();++i)
 		{
-			m_setParticleGroup[i].draw();
+			m_setParticleGroup[i].render(eParticleRenderType);
 		}
 		// draw ribbons
 		//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
