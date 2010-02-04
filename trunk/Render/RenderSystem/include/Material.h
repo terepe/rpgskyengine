@@ -42,5 +42,6 @@ struct CMaterial
 	CMaterial();
 	void SetEmissiveColor(const Color32& color);
 	E_MATERIAL_RENDER_TYPE getRenderType();
-	bool Begin(float fOpacity);
+	bool prepare(float fOpacity)const;
+	void finish()const;
 };

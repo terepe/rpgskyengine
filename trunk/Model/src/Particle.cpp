@@ -8,7 +8,6 @@ void CParticleGroup::Init(CParticleEmitter* pEmitter, CBone* pBone)
 {
 	m_pEmitter = pEmitter;
 	m_pBone = pBone;
-	m_uTexID = m_pEmitter->uTexID;
 }
 
 void CParticleGroup::update(float fElapsedTime)
@@ -19,11 +18,6 @@ void CParticleGroup::update(float fElapsedTime)
 	}
 	//m_pEmitter->update(this, fElapsedTime);
 
-}
-
-void CParticleGroup::SetTex(int nTexID)
-{
-	m_uTexID = nTexID;
 }
 
 void CParticleGroup::Setup(int nTime)
@@ -46,7 +40,7 @@ void CParticleGroup::Setup(int nTime)
 }
 bool CParticleGroup::passBegin(E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	if(m_pEmitter)
+	if(!m_pEmitter)
 	{
 		return false;
 	}
@@ -54,45 +48,16 @@ bool CParticleGroup::passBegin(E_MATERIAL_RENDER_TYPE eRenderType)const
 	{
 		return false;
 	}
-
-	CRenderSystem& R = GetRenderSystem();
-	//// 设置混合模式
-	//switch (m_pEmitter->m_nBlend)
-	//{
-	//case 0:	// 透明 镂空
-	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	//	R.SetAlphaTestFunc(true);
-	//	break;
-	//case 1:	//MODULATE 加亮
-	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_COLOUR, SBF_ONE);
-	//	R.SetAlphaTestFunc(false);
-	//	break;
-	//case 2: // 透明
-	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	//	R.SetAlphaTestFunc(false);
-	//	break;
-	//case 3:	// 镂空
-	//	R.SetBlendFunc(false);
-	//	R.SetAlphaTestFunc(true);
-	//	break;
-	//case 4: // 加亮
-	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE);
-	//	R.SetAlphaTestFunc(false);
-	//	break;
-	//}
-	R.SetCullingMode(CULL_NONE);
-	R.SetLightingEnabled(false);
-	R.SetDepthBufferFunc(true, false);
-
-	R.SetTextureColorOP(0,TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
-	R.SetTextureAlphaOP(0,TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
-
-	R.SetTexture(0 , m_uTexID);
+	return m_pEmitter->m_Material.prepare(1.0f);
 }
 
 void CParticleGroup::passEnd()const
 {
-
+	if(!m_pEmitter)
+	{
+		return;
+	}
+	return m_pEmitter->m_Material.finish();
 }
 
 void CParticleGroup::draw()const

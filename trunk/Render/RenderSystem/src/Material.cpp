@@ -42,7 +42,7 @@ E_MATERIAL_RENDER_TYPE CMaterial::getRenderType()
 	return MATERIAL_RENDER_GLOW;
 }
 
-bool CMaterial::Begin(float fOpacity)
+bool CMaterial::prepare(float fOpacity)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	if (0==uEffect)
@@ -115,6 +115,7 @@ bool CMaterial::Begin(float fOpacity)
 		}
 		else
 		{
+			R.SetLightingEnabled(false);
 			R.SetTextureFactor(cFactor);
 			R.SetDepthBufferFunc(true, false);
 			if(uReflection)
@@ -196,4 +197,9 @@ bool CMaterial::Begin(float fOpacity)
 		R.SetShader(uEffect);
 	}
 	return true;
+}
+
+void CMaterial::finish()const
+{
+	GetRenderSystem().SetShader((CShader*)NULL);
 }

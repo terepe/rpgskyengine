@@ -953,7 +953,31 @@ void ModelParticleEmitterDef::Init(MPQFile &f, CParticleEmitter &particleEmitter
 	particleEmitter.m_fRotation = p.rotation;
 	particleEmitter.m_vPos = fixCoordSystem(pos);
 	particleEmitter.m_nTexChannel = texture;
-	particleEmitter.m_nBlend = blend;
+	//particleEmitter.m_nBlend = blend;
+	//// 设置混合模式
+	//switch (m_pEmitter->m_nBlend)
+	//{
+	//case 0:	// 透明 镂空
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+	//	R.SetAlphaTestFunc(true);
+	//	break;
+	//case 1:	//MODULATE 加亮
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_COLOUR, SBF_ONE);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//case 2: // 透明
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//case 3:	// 镂空
+	//	R.SetBlendFunc(false);
+	//	R.SetAlphaTestFunc(true);
+	//	break;
+	//case 4: // 加亮
+	//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE);
+	//	R.SetAlphaTestFunc(false);
+	//	break;
+	//}
 	particleEmitter.m_nRows = rows;
 	particleEmitter.m_nCols = cols;
 	particleEmitter.type = s1;

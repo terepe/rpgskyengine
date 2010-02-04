@@ -72,9 +72,6 @@ public:
 	int	m_nBoneID;
 
 	float tofs;
-
-	uint32	uTexID;
-
 	CMaterial m_Material;
 public:
 	CParticleEmitter(): m_nBoneID(0), m_nTexChannel(0), m_fLifeMid(0)
