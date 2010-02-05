@@ -158,7 +158,7 @@ bool CMUBmd::LoadFile(const std::string& strFilename)
 		{
 			return false;
 		}
-		decryptMuBuffer(s.getBuffer(), uFileSize-8);
+		decryptMuBuffer(s.getPt(), uFileSize-8);
 	}
 	else 
 	{

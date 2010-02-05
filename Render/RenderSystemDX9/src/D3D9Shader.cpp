@@ -46,12 +46,13 @@ protected:
 		IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 		if (pRead)
 		{
-			char* pBuf = new char[pRead->GetSize()];
+			size_t uFilesize = pRead->GetSize();
+			char* pBuf = new char[uFilesize];
 			if (pBuf)
 			{
-				pRead->Read(pBuf, pRead->GetSize());
+				pRead->Read(pBuf, uFilesize);
 				*ppData = pBuf;
-				*pBytes = pRead->GetSize();
+				*pBytes = uFilesize;
 			}
 			IOReadBase::autoClose(pRead);
 		}
@@ -74,13 +75,14 @@ bool CD3D9Shader::create(IDirect3DDevice9* pD3D9Device, const std::string& strFi
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 	if (pRead)
 	{
-		char* pBuf = new char[pRead->GetSize()];
+		size_t uFilesize = pRead->GetSize();
+		char* pBuf = new char[uFilesize];
 		if (pBuf)
 		{
-			pRead->Read(pBuf, pRead->GetSize());
+			pRead->Read(pBuf, uFilesize);
 			CShaderIncludeManager shaderIncludeManager;
 			shaderIncludeManager.setParentFilename(strFilename);
-			bRet = createFromMemory(pD3D9Device,pBuf,pRead->GetSize(),&shaderIncludeManager);
+			bRet = createFromMemory(pD3D9Device,pBuf,uFilesize,&shaderIncludeManager);
 			delete[] pBuf;
 		}
 		IOReadBase::autoClose(pRead);
