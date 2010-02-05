@@ -392,28 +392,33 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 {
 	m_strFilename = strFilename;
 	m_CyclostyleList.clear();
-	TiXmlDocument *myDocument = new TiXmlDocument();
+	TiXmlDocument myDocument;
 	{
 		IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 		if (pRead)
 		{
-			char* pBuf = new char[pRead->GetSize()+1];
+			size_t uFilesize = pRead->GetSize();
+			char* pBuf = new char[uFilesize+1];
 			if (pBuf)
 			{
-				pBuf[pRead->GetSize()] = 0;
-				pRead->Read(pBuf, pRead->GetSize());
-				myDocument->LoadFormMemory(pBuf, pRead->GetSize(), TIXML_ENCODING_UTF8);
+				pBuf[uFilesize] = 0;
+				pRead->Read(pBuf, uFilesize);
+				myDocument.LoadFormMemory(pBuf, uFilesize, TIXML_ENCODING_UTF8);
 				delete[] pBuf;
 			}
 			IOReadBase::autoClose(pRead);
 		}
 	}
-	if (myDocument->Error())
+	if (myDocument.Error())
 	{
 		return false;
 	}
 	//获得根元素，即root。
-	TiXmlElement *pRootElement = myDocument->RootElement();
+	TiXmlElement *pRootElement = myDocument.RootElement();
+	if (pRootElement==NULL)
+	{
+		return false;
+	}
 	//获得第一个Style节点。
 	TiXmlElement *pStyleElement = pRootElement->FirstChildElement("element");
 	while (pStyleElement)
@@ -482,7 +487,6 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 		// 查找下一个
 		pStyleElement = pStyleElement->NextSiblingElement("element");
 	}
-	delete myDocument;
 	return true;
 }
 
