@@ -131,11 +131,23 @@ public:
 	bool bLoaded;
 };
 
+typedef struct{
+	CModelPlugBase * pObj;
+	HINSTANCE hIns;
+}MODEL_PLUG_ST, * LPMODEL_PLUG_ST;
+
 class CModelMgr: public CManager<CModelData>
 {
 public:
+	CModelMgr();
 	uint32 RegisterModel(const std::string& strFilename);
 	CModelData* GetModel(uint32 uModelID);
+	bool loadModel(CModelData& modelData,const std::string& strFilename);
+private:
+	bool loadPlugFromPath(const std::string& strPath);
+	bool createPlug(const std::string& strFilename);
+
+	std::vector<MODEL_PLUG_ST> m_arrPlugObj;
 };
 
 CModelMgr& GetModelMgr();

@@ -204,6 +204,8 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 			//pShader->setTexture("g_texEnvironment",uEmissive);
 			//pShader->setTexture("g_texEmissive",uEmissive);
 			pShader->setTexture("g_texSpecular",material.uSpecular);
+			// for Terrain
+			pShader->setVec2D("g_fScaleUV",material.vUVScale);
 		}
 		SetShader(material.uEffect);
 	}
