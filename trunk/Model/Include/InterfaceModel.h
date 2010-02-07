@@ -129,7 +129,7 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-typedef BOOL (WINAPI * PFN_Plug_CreateObject)(void ** pobj);
+typedef BOOL (WINAPI * PFN_Model_Plug_CreateObject)(void ** pobj);
 class CModelPlugBase
 {
 public:
