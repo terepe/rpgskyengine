@@ -9,6 +9,7 @@
 #include "ShaderMgr.h"
 #include "VertexDeclaration.h"
 #include "Pos2D.h"
+#include "Material.h"
 
 #if defined(_DEBUG)
 #pragma comment(lib, "commond.lib")
@@ -130,6 +131,10 @@ public:
 	//
 	void world2Screen(const Vec3D& vWorldPos, Pos2D& posScreen);
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);
+
+	// set material
+	bool prepareMaterial(const CMaterial& material, float fOpacity=1.0f);
+	void finishMaterial();
 };
 
 DLL_EXPORT void SetRenderSystem(CRenderSystem* pRenderSystem);

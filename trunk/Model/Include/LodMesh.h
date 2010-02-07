@@ -1,8 +1,5 @@
 #pragma once
-#include "Vec4D.h"
-#include "Matrix.h"
-#include "Frustum.h"
-#include "LumpFile.h"
+
 #include "Skeleton.h"
 
 class CHardwareVertexBuffer;
@@ -95,28 +92,29 @@ struct VertexIndex
 	}
 };
 
-struct FaceIndex
-{
-	FaceIndex()
-	{
-		memset(this,0,sizeof(*this));
-	}
-	uint16 uSubID;
-	uint16 v[3];
-	uint16 n[3];
-	uint16 c[3];
-	uint16 uv1[3];
-	uint16 uv2[3];
-	uint16 w[3];
-	uint16 b[3];
-};
-
-class DLL_EXPORT CLodMesh
+class DLL_EXPORT CLodMesh:public iLodMesh
 {
 public:
 	CLodMesh();
 	~CLodMesh();
 public:
+	virtual void addFaceIndex(const FaceIndex& faceIndex){m_setFaceIndex.push_back(faceIndex);}
+
+	virtual const BBox& getBBox(){return m_bbox;}
+	virtual size_t getPosCount(){return pos.size();}
+	virtual size_t getBoneCount(){return bone.size();}
+	virtual size_t getWeightCount(){return weight.size();}
+	virtual size_t getNormalCount(){return normal.size();}
+	virtual size_t getTexcoordCount(){return texcoord.size();}
+
+	virtual void addPos(const Vec3D& vPos){pos.push_back(vPos);}
+	virtual void addBone(uint32 uBone){bone.push_back(uBone);}
+	virtual void addWeight(uint32 uWeight){weight.push_back(uWeight);}
+	virtual void addNormal(const Vec3D& vNormal){normal.push_back(vNormal);}
+	virtual void addTexcoord(const Vec2D& vUV){texcoord.push_back(vUV);}
+
+	void update();
+
 	void Init();
 	uint32 GetSkinVertexSize();
 	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL);
@@ -126,7 +124,7 @@ public:
 	void InitBBox();
 	void Clear();
 	size_t GetSkinVertexCount(){return m_setSkinVertex.size();}
-	void Update();
+
 	void load(CLumpNode& lump);
 	void save(CLumpNode& lump);
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir);

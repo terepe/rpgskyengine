@@ -1,6 +1,7 @@
 #include "LodMesh.h"
 #include "RenderSystem.h"
 #include "Intersect.h"
+#include "LumpFile.h"
 
 void CBoundMesh::Draw()
 {
@@ -395,7 +396,7 @@ void CLodMesh::Clear()
 	bone.clear();
 }
 
-void CLodMesh::Update()
+void CLodMesh::update()
 {
 	InitBBox();
 }
@@ -461,7 +462,7 @@ void CLodMesh::load(CLumpNode& lump)
 	lump.getVector("weight",	weight);
 	lump.getVector("bone",		bone);
 	lump.getVector("face",		m_setFaceIndex);
-	Update();
+	update();
 	//m_Lods.resize(1);
 }
 

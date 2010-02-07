@@ -76,7 +76,6 @@ protected:
 	uint32	m_uSkinID;			// 皮肤I
 	OBJID	m_idLightMapTex;	//
 	bool	m_bLightmap;
-	std::vector<ModelRenderPass>* m_pPasses;	// 渲染过程集
 	std::vector<bool> m_setShowParticle;			// 显示粒子
 
 	bool	m_bCreated;

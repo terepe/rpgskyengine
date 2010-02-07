@@ -54,6 +54,12 @@ public:
 		return m_KeyData.size()!=0;
 	}
 
+	void addValue(unsigned int time,T data)
+	{
+		m_KeyTimes.push_back(time);
+		m_KeyData.push_back(data);
+	}
+
 	T getValue(unsigned int time)
 	{
 		if (/*type != INTERPOLATION_NONE || */m_KeyData.size()>1)

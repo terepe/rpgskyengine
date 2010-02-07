@@ -1,27 +1,6 @@
 #pragma once
 #include "modelheaders.h"
-#include "Vec4D.h"
-#include "Matrix.h"
-#include "Animated.h"
-
-struct BoneAnim
-{
-public:
-	BoneAnim():
-	parent(0xFF),
-	billboard(false)
-	{
-		mSkin.unit();
-	}
-	std::string				strName;
-	Animated<Vec3D>			trans;
-	Animated<Quaternion>	rot;
-	Animated<Vec3D>			scale;
-	Matrix					mSkin;
-	Vec3D pivot;
-	uint8 parent;
-	bool billboard;
-};
+#include "InterfaceModel.h"
 
 // 骨骼类：骨骼动画的最终信息的运算及保存
 class CBone
@@ -42,11 +21,9 @@ public:
 	void CalcMatrix(int time, bool bRotate=true);
 };
 
-class CSkeleton
+class CSkeleton:public iSkeleton
 {
 public:
-	std::vector<BoneAnim>			m_BoneAnims;	// 骨骼动画源
-	std::vector<ModelAnimation>		m_AnimList;		// 动画配表源
 	uint8 getIDByName(const std::string& strName);
 	bool CreateBones(std::vector<CBone>& bones);
 	//void GetBoneMatrix(int nBoneID, int time, bool bRotate=true);

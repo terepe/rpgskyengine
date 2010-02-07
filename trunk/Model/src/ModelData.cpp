@@ -3,7 +3,6 @@
 #include "RenderSystem.h"
 
 #include "M2Model.h"
-#include "BmdModel.h"
 
 #include "CSVFile.h"
 #include "IORead.h"
@@ -41,8 +40,62 @@ CModelData::~CModelData()
 	S_DELS(globalSequences);
 }
 
+void CModelData::addAnimation(long timeStart, long timeEnd)
+{
+	ModelAnimation animation;
+	animation.timeStart = timeStart;
+	animation.timeEnd = timeEnd;
+	m_AnimList.push_back(animation);
+}
+void CModelData::setRenderPass(int nID, const std::string& strName,
+				   const std::string& strDiffuse, const std::string& strEmissive,
+				   const std::string& strSpecular, const std::string& strNormal,
+				   const std::string& strEnvironment, const std::string& strShader,
+				   int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV)
+{
+	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
+	ModelRenderPass& pass = m_mapPasses[nID];
+	pass.nSubID = nID;
+	// 纹理寻址
+	pass.bSwrap = true;
+	pass.bTwrap = true;
+
+	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
+	pass.bUseEnvMap = false;
+	pass.bCull = true;
+	pass.material.bAlphaTest = bAlphaTest;
+	pass.material.uAlphaTestValue = 0x80;
+	pass.material.vUVScale.x		= fTexScaleU;
+	pass.material.vUVScale.y		= fTexScaleV;
+
+	pass.material.uDiffuse	= TM.RegisterTexture(strDiffuse);
+	pass.material.uEmissive	= TM.RegisterTexture(strEmissive);
+	pass.material.uSpecular	= TM.RegisterTexture(strSpecular);
+	pass.material.uBump		= TM.RegisterTexture(strNormal);
+	pass.material.uReflection= TM.RegisterTexture(strEnvironment);
+	pass.material.uEffect	= GetRenderSystem().GetShaderMgr().registerItem(strShader);
+
+	pass.material.bCull = false;
+}
+
 bool CModelData::LoadFile(const std::string& strFilename)
 {
+	// 判断格式--根据文件后缀名
+	std::string strExt = GetExtension(strFilename);
+	if (strExt==".sm")
+	{
+		//pModel = new CModelData();
+	}
+	else if (strExt==".m2")
+	{
+		//pModel = new CM2Model();
+	}
+	else if (strExt==".bmd")
+	{
+		//CBmdModel::LoadFile(strFilename,*this);
+	}
+		bLoaded=true;
+	return true;
 	CLumpFile lumpFile;
 	if (!lumpFile.LoadFile(strFilename))
 	{
@@ -79,7 +132,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
 				int nTexID = GetRenderSystem().GetTextureMgr().RegisterTexture(strTexFileName);
 				
-				ModelRenderPass pass;
+				ModelRenderPass& pass = m_mapPasses[subID];
 				pass.nSubID = subID++;
 				pass.material.uDiffuse	=nTexID;
 				pass.material.m_fOpacity	=1;
@@ -87,7 +140,6 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				pass.material.bBlend		=false;
 				pass.material.vTexAnim.x	=0;
 				pass.material.vTexAnim.y	=0;
-				m_Passes.push_back(pass);
 			}
 			pChannelNode = pChannelNode->nextSibling("Channel");
 		}
@@ -174,18 +226,10 @@ bool CModelData::loadMaterial(const std::string& strFilename,const std::string& 
 		while (csv.SeekNextLine())
 		{
 			const size_t uSubID			= csv.GetInt("SubID");
-			for (std::vector<ModelRenderPass>::iterator it=m_Passes.begin();it!=m_Passes.end();it++)
-			{
-				if (uSubID == it->nSubID)
-				{
-					readMaterial(it->material,csv,strPath);
-					continue;
-				}
-			}
-			ModelRenderPass pass;
+			ModelRenderPass& pass = m_mapPasses[uSubID];
 			pass.nSubID = uSubID;
 			readMaterial(pass.material,csv,strPath);
-			m_Passes.push_back(pass);	
+
 		}
 		csv.Close();
 	}
@@ -202,13 +246,14 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 	assert(ofs);
 	ofs<<"SubID"<<",Diffuse"<<",Emissive"<<",Specular"<<",Bump"<<",Reflection"<<",LightMap"<<
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
-	for (std::vector<ModelRenderPass>::iterator it=m_Passes.begin();it!=m_Passes.end();it++)
+	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		ofs<<(it->nSubID)<<","<<
-			(it->material.strDiffuse.c_str())<<","<<(it->material.strEmissive.c_str())<<","<<(it->material.strSpecular.c_str())<<","<<
-			(it->material.strBump.c_str())<<","<<(it->material.strReflection.c_str())<<","<<(it->material.strLightMap.c_str())<<","<<
-			(it->material.m_fOpacity)<<","<<(it->material.bAlphaTest)<<","<<(it->material.bBlend)<<","<<
-			(it->material.vTexAnim.x)<<","<<(it->material.vTexAnim.y)<<std::endl;
+		CMaterial& material = it->second.material;
+		ofs<<(it->second.nSubID)<<","<<
+			(material.strDiffuse.c_str())<<","<<(material.strEmissive.c_str())<<","<<(material.strSpecular.c_str())<<","<<
+			(material.strBump.c_str())<<","<<(material.strReflection.c_str())<<","<<(material.strLightMap.c_str())<<","<<
+			(material.m_fOpacity)<<","<<(material.bAlphaTest)<<","<<(material.bBlend)<<","<<
+			(material.vTexAnim.x)<<","<<(material.vTexAnim.y)<<std::endl;
 	}
 	ofs.close();
 	return true;
@@ -377,13 +422,13 @@ bool CModelData::SaveFile(const std::string& strFilename)
 void CModelData::Init()
 {
 	m_Mesh.Init();
-	if (m_Passes.size()==0)
+	if (m_mapPasses.size()==0)
 	{
 		if (m_Mesh.m_Lods.size()>0)
 		{
 			for (int i=0; i<m_Mesh.m_Lods[0].setSubset.size();++i)
 			{
-				ModelRenderPass pass;
+				ModelRenderPass& pass = m_mapPasses[i];
 				pass.nSubID = i;
 				pass.material.uDiffuse		=1;
 				pass.material.m_fOpacity	=1;
@@ -391,27 +436,27 @@ void CModelData::Init()
 				pass.material.bBlend		=false;
 				pass.material.vTexAnim.x	=0;
 				pass.material.vTexAnim.y	=0;
-				m_Passes.push_back(pass);
 			}
 		}
 	}
 	m_nOrder=0;
-	for (std::vector<ModelRenderPass>::iterator it=m_Passes.begin();it!=m_Passes.end();it++)
+	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		if (it->material.m_fOpacity<1.0f)
+		CMaterial& material = it->second.material;
+		if (material.m_fOpacity<1.0f)
 		{
 			m_nOrder--;
 		}
-		if (it->material.uDiffuse==0)
+		if (material.uDiffuse==0)
 		{
 			m_nOrder--;
-			if (it->material.uEmissive!=0)
+			if (material.uEmissive!=0)
 			{
 				m_nOrder--;
 			}
 		}
 		// alpha test
-		if (it->material.bAlphaTest)
+		if (material.bAlphaTest)
 		{
 			m_bHasAlphaTex = true;
 		}
@@ -547,21 +592,20 @@ uint32 CModelMgr::RegisterModel(const std::string& strFilename)
 	{
 		return addRef(strFilename);
 	}
-	// 判断格式--根据文件后缀名
-	std::string strExt = GetExtension(strFilename);
-	CModelData* pModel;
-	if (strExt==".sm")
-	{
-		pModel = new CModelData();
-	}
-	else if (strExt==".m2")
-	{
-		pModel = new CM2Model();
-	}
-	else if (strExt==".bmd")
-	{
-		pModel = new CBmdModel();
-	}
+
+	CModelData* pModel = new CModelData();
+	//if (strExt==".sm")
+	//{
+	//	pModel = new CModelData();
+	//}
+	//else if (strExt==".m2")
+	//{
+	//	pModel = new CM2Model();
+	//}
+	//else if (strExt==".bmd")
+	//{
+	//	pModel = new CBmdModel();
+	//}
 	return add(strFilename, pModel);
 }
 

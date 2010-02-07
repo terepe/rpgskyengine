@@ -53,3 +53,163 @@ void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 	vRayDir.normalize();
 	//vRayPos = m_vEye;
 }
+#include "Timer.h"
+bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
+{
+	if (0==material.uEffect)
+	{
+		SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
+		SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
+		SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
+		Color32 cFactor = material.cEmissive;
+		if (material.m_fOpacity<0.0f)
+		{
+			fOpacity = rand()%255;
+		}
+		else
+		{
+			fOpacity *= material.m_fOpacity;
+		}
+
+		if (material.uDiffuse)
+		{
+			cFactor.a *= fOpacity;
+			SetTextureFactor(cFactor);
+			SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+			if(material.bBlend||material.m_fOpacity<1.0f)
+			{
+				SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+				SetTextureAlphaOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				SetDepthBufferFunc(true, false);
+			}
+			else
+			{
+				SetBlendFunc(false);
+				if (material.bAlphaTest)
+				{
+					SetTextureAlphaOP(0, TBOP_SOURCE1, TBS_TEXTURE);
+				}
+				else
+				{
+					SetTextureAlphaOP(0, TBOP_DISABLE);
+				}
+
+				SetDepthBufferFunc(true, true);
+			}
+			SetTexture(0, material.uDiffuse);
+			//////////////////////////////////////////////////////////////////////////
+			if (material.uReflection)
+			{
+				SetTextureColorOP(1, TBOP_MODULATE_X2, TBS_CURRENT, TBS_TEXTURE);
+				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
+				SetTexCoordIndex(1,TCI_CAMERASPACE_NORMAL|TCI_CAMERASPACE_POSITION);
+				SetTexture(1, material.uReflection);
+			}
+			else if (material.uLightMap)
+			{
+				SetTextureColorOP(1, TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
+				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
+				SetTexCoordIndex(1,1);
+				SetTexture(1, material.uLightMap);
+			}
+			else if (material.uEmissive)
+			{
+				SetTextureColorOP(1, TBOP_ADD, TBS_CURRENT, TBS_TEXTURE);
+				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
+				SetTexture(1, material.uEmissive);
+			}
+			else if(!material.bBlend&&material.m_fOpacity>=1.0f)
+			{
+				SetLightingEnabled(true);
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
+			}
+		}
+		else
+		{
+			SetLightingEnabled(false);
+			SetTextureFactor(cFactor);
+			SetDepthBufferFunc(true, false);
+			if(material.uReflection)
+			{
+				cFactor.r*=fOpacity;
+				cFactor.g*=fOpacity;
+				cFactor.b*=fOpacity;
+				SetTextureFactor(cFactor);
+				SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ONE);
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				SetTextureAlphaOP(0, TBOP_DISABLE);
+				SetTexCoordIndex(0,TCI_CAMERASPACE_NORMAL|TCI_CAMERASPACE_POSITION);
+				SetTexture(0, material.uReflection);
+				if (material.vTexAnim.lengthSquared()>0.0f)
+				{
+					Matrix matTex=Matrix::UNIT;
+					matTex._14=GetGlobalTimer().GetTime()*material.vTexAnim.x;
+					matTex._24=GetGlobalTimer().GetTime()*material.vTexAnim.y;
+					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
+				}
+			}
+			else if (material.uLightMap)
+			{
+				SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				SetTextureAlphaOP(0, TBOP_DISABLE);
+				SetTexture(0, material.uLightMap);
+			}
+			else if (material.uEmissive)
+			{
+				cFactor.r*=fOpacity;
+				cFactor.g*=fOpacity;
+				cFactor.b*=fOpacity;
+				SetTextureFactor(cFactor);
+				SetBlendFunc(true, BLENDOP_ADD, SBF_ONE, SBF_ONE);
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				SetTextureAlphaOP(0, TBOP_DISABLE);
+				SetTexture(0, material.uEmissive);
+				if (material.vTexAnim.lengthSquared()>0.0f)
+				{
+					Matrix matTex=Matrix::UNIT;
+					matTex._13=GetGlobalTimer().GetTime()*material.vTexAnim.x;
+					matTex._23=GetGlobalTimer().GetTime()*material.vTexAnim.y;
+					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
+				}
+			}
+			else if (material.uBump)
+			{
+				CShader* pShader = GetShaderMgr().getSharedShader();
+				if (pShader)
+				{
+					static size_t s_uShaderID = GetRenderSystem().GetShaderMgr().registerItem("Data\\fx\\SpaceBump.fx");
+					pShader->setTexture("g_texNormal",material.uBump);
+					SetShader(s_uShaderID);
+				}
+				//SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+				//SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+				//SetTextureAlphaOP(0, TBOP_DISABLE);
+				//SetTexture(0, uLightMap);
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		CShader* pShader = GetShaderMgr().getSharedShader();
+		if (pShader)
+		{
+			pShader->setTexture("g_texDiffuse",material.uDiffuse);
+			pShader->setTexture("g_texLight",material.uLightMap);
+			pShader->setTexture("g_texNormal",material.uBump);
+			//pShader->setTexture("g_texEnvironment",uEmissive);
+			//pShader->setTexture("g_texEmissive",uEmissive);
+			pShader->setTexture("g_texSpecular",material.uSpecular);
+		}
+		SetShader(material.uEffect);
+	}
+	return true;
+}
+void CRenderSystem::finishMaterial()
+{
+	SetShader((CShader*)NULL);
+}

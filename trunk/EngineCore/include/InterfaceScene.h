@@ -4,7 +4,7 @@
 #include "Vec2D.h"
 #include "Color.h"
 #include "Pos2D.h"
-
+#include "Material.h"
 //////////////////////////////////////////////////////////////////////////
 // TerrainData
 //////////////////////////////////////////////////////////////////////////
@@ -209,36 +209,36 @@ struct Cube
 	}
 };
 
-struct TileMaterial
-{
-	TileMaterial():nTexDiffuse(0),nTexEmissive(false),nTexSpecular(0),nTexNormal(0),nTexEnvironment(0),
-		bAlphaBlend(false),bAlphaTest(false),uShaderID(0){}
-	~TileMaterial(){}
-	uint32			nTexDiffuse;
-	uint32			nTexEmissive;
-	uint32			nTexSpecular;
-	uint32			nTexNormal;
-	uint32			nTexEnvironment;
-	uint32			uShaderID;
-
-	std::string		strTexDiffuse;
-	std::string		strTexEmissive;
-	std::string		strTexSpecular;
-	std::string		strTexNormal;
-	std::string		strTexEnvironment;
-	std::string		strShader;
-
-	int				nTexChannel;
-	bool			bAlphaBlend;
-	bool			bAlphaTest;
-	Vec2D			vUVScale;
-};
+//struct TileMaterial
+//{
+//	TileMaterial():nTexDiffuse(0),nTexEmissive(false),nTexSpecular(0),nTexNormal(0),nTexEnvironment(0),
+//		bAlphaBlend(false),bAlphaTest(false),uShaderID(0){}
+//	~TileMaterial(){}
+//	uint32			nTexDiffuse;
+//	uint32			nTexEmissive;
+//	uint32			nTexSpecular;
+//	uint32			nTexNormal;
+//	uint32			nTexEnvironment;
+//	uint32			uShaderID;
+//
+//	std::string		strTexDiffuse;
+//	std::string		strTexEmissive;
+//	std::string		strTexSpecular;
+//	std::string		strTexNormal;
+//	std::string		strTexEnvironment;
+//	std::string		strShader;
+//
+//	int				nTexChannel;
+//	bool			bAlphaBlend;
+//	bool			bAlphaTest;
+//
+//};
 
 struct Tile
 {
 	Tile():nIBStart(0),nIBCount(0){}
 	std::string		strName;
-	TileMaterial	tileMaterial;
+	CMaterial		tileMaterial;
 	int				nIBStart;
 	int				nIBCount;
 };

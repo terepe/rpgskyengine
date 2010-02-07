@@ -66,7 +66,6 @@ void CModelObject::create()
 
 	{
 		m_pMesh = &m_pModelData->m_Mesh;
-		m_pPasses = &m_pModelData->m_Passes;
 		//
 		if (m_pModelData->m_Skeleton.m_BoneAnims.size()>0)
 		{
@@ -350,13 +349,13 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		//	R.SetTextureFactor(Color32(176,176,176,176));
 		//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
 		//}
-		return pass.material.prepare(fOpacity);
+		return GetRenderSystem().prepareMaterial(pass.material,fOpacity);
 }
 
 void CModelObject::PassEnd()const
 {
-	//pass.material.finish();
 	CRenderSystem& R = GetRenderSystem();
+	R.finishMaterial();
 	R.setTextureMatrix(0, TTF_DISABLE);
 	R.SetTexCoordIndex(0,0);
 	R.SetTexCoordIndex(1,0);
@@ -458,11 +457,11 @@ bool CModelObject::Prepare()const
 
 void CModelObject::DrawSubsHasNoAlphaTex()const
 {
-	for (std::vector<ModelRenderPass>::iterator it = m_pPasses->begin(); it != m_pPasses->end(); ++it)
+	for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
 	{
-		if (!(*it).bHasAlphaTex)
+		if (!it->second.bHasAlphaTex)
 		{
-			m_pMesh->DrawSub(m_uLodID, (*it).nSubID);
+			m_pMesh->DrawSub(m_uLodID, it->second.nSubID);
 		}
 	}
 }
@@ -510,15 +509,15 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	//GetRenderSystem().GetSharedShader()->setVec3D("g_vDiffuse",m_vDiffuse);
 	if (eModelRenderType!=MATERIAL_RENDER_NOTHING&&Prepare())
 	{
-		for (std::vector<ModelRenderPass>::iterator it = m_pPasses->begin(); it != m_pPasses->end(); ++it)
+		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
 		{
-			if (m_setShowSubset[it->nSubID])
+			if (m_setShowSubset[it->second.nSubID])
 			{
-				if (it->material.getRenderType()&eModelRenderType)
+				if (it->second.material.getRenderType()&eModelRenderType)
 				{
-					if (PassBegin((*it)))
+					if (PassBegin(it->second))
 					{
-						m_pMesh->DrawSub(m_uLodID, (*it).nSubID);
+						m_pMesh->DrawSub(m_uLodID, it->second.nSubID);
 					}
 					PassEnd();
 					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
