@@ -154,7 +154,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\BmdModel.h"
+				RelativePath=".\Include\InterfaceModel.h"
 				>
 			</File>
 			<File
@@ -178,10 +178,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\MUBmd.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Particle.h"
 				>
 			</File>
@@ -202,10 +198,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\BmdModel.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\LodMesh.cpp"
 				>
 			</File>
@@ -219,10 +211,6 @@
 			</File>
 			<File
 				RelativePath=".\src\ModelObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\MUBmd.cpp"
 				>
 			</File>
 			<File

@@ -28,9 +28,9 @@ struct CMaterial
 	uint32	uEmissive;
 	uint32	uSpecular;
 	uint32	uBump;
-	uint32	uReflection;
+	uint32	uReflection;//nTexEnvironment
 	uint32	uLightMap;
-	uint32	uEffect;
+	uint32	uEffect;//uShaderID
 	bool	bAlphaTest;
 	uint8	uAlphaTestValue;
 	bool	bBlend;
@@ -38,10 +38,8 @@ struct CMaterial
 	Vec2D	vTexAnim;
 	float	m_fOpacity;
 	Color32 cEmissive;
-
+	Vec2D	vUVScale; // for terrain's tile, temp
 	CMaterial();
 	void SetEmissiveColor(const Color32& color);
 	E_MATERIAL_RENDER_TYPE getRenderType();
-	bool prepare(float fOpacity)const;
-	void finish()const;
 };

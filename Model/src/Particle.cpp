@@ -38,27 +38,6 @@ void CParticleGroup::Setup(int nTime)
 	}
 	*/
 }
-bool CParticleGroup::passBegin(E_MATERIAL_RENDER_TYPE eRenderType)const
-{
-	if(!m_pEmitter)
-	{
-		return false;
-	}
-	if (!(m_pEmitter->m_Material.getRenderType()&eRenderType))
-	{
-		return false;
-	}
-	return m_pEmitter->m_Material.prepare(1.0f);
-}
-
-void CParticleGroup::passEnd()const
-{
-	if(!m_pEmitter)
-	{
-		return;
-	}
-	return m_pEmitter->m_Material.finish();
-}
 
 void CParticleGroup::draw()const
 {
@@ -244,9 +223,17 @@ void CParticleGroup::draw()const
 
 void CParticleGroup::render(E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	if (passBegin(eRenderType))
+	if(!m_pEmitter)
+	{
+		return;
+	}
+	if (!(m_pEmitter->m_Material.getRenderType()&eRenderType))
+	{
+		return;
+	}
+	if (GetRenderSystem().prepareMaterial(m_pEmitter->m_Material))
 	{
 		draw();
 	}
-	passEnd();
+	GetRenderSystem().finishMaterial();
 }

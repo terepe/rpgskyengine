@@ -107,7 +107,7 @@ void CM2Model::LoadVertices(MPQFile &f, const Lump& lump)
 			m_Mesh.weight[i] = origVertices[i].weights;
 			m_Mesh.bone[i] = origVertices[i].bones;
 		}
-		m_Mesh.Update();
+		m_Mesh.update();
 	}
 }
 
@@ -625,11 +625,11 @@ void CM2Model::InitCommon(MPQFile &f)
 		NEW_POINTER_AT_BUFFER(texanimLookup, uint16, m_M2Header.lumps[M2_LUMP_TEX_ANIM_LOOKUP])
 		NEW_POINTER_AT_BUFFER(texunitLookup, uint16, m_M2Header.lumps[M2_LUMP_TEX_UNIT_LOOKUP])
 
-		m_Passes.clear();
+		m_mapPasses.clear();
 		m_bHasAlphaTex = false;
 		for (uint32 j = 0; j < lodLookup->aPasses.count; j++)
 		{
-			ModelRenderPass pass;
+			ModelRenderPass& pass = m_mapPasses[j];
 			//pass.flags = passes[j].flags;
 			pass.nOrder = passes[j].nOrder;
 			pass.nSubID = passes[j].nGeosetID;
@@ -725,9 +725,8 @@ void CM2Model::InitCommon(MPQFile &f)
 			//pass.nTransID = transLookup[pass.nTransID];
 			//pass.nTexanimID = texanimLookup[pass.nTexanimID];
 			//pass.nTransID = 0
-			m_Passes.push_back(pass);
 		}
-		sort(m_Passes.begin(), m_Passes.end());
+		//sort(m_Passes.begin(), m_Passes.end());
 	}
 }
 

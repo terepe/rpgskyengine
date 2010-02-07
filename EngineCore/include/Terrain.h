@@ -49,8 +49,6 @@ public:
 
 	virtual void UpdateRender(const CFrustum& frustum);
 
-	virtual bool PrepareTileMaterial(const TileMaterial& tileMaterial);
-	virtual void FinishTileMaterial(const TileMaterial& tileMaterial);
 	virtual bool LightMapPrepare();
 	virtual void LightMapFinish();
 	virtual bool Prepare();

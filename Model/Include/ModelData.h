@@ -5,15 +5,11 @@
 #include "enums.h"
 #include "ParticleEmitter.h"
 
-
 #include "Vec4D.h"
 #include "Matrix.h"
 
-
 #include "Skeleton.h"
 #include "LodMesh.h"
-
-#include "Material.h"
 
 class CModelData;
 class CBone;
@@ -65,50 +61,7 @@ struct LightAnim
 	void setup(int time, int l);
 };
 
-#pragma pack(push) // 将当前pack设置压栈保存 
-#pragma pack(1) // 必须在结构体定义之前使用 
 
-struct ModelRenderPass
-{
-	ModelRenderPass():
-nRenderFlag(0),
-nBlendMode(0),
-nTransID(-1),
-nTexanimID(-1),
-nColorID(-1),
-nOrder(0),
-p(0)
-{
-}
-	// RenderFlag;
-	uint16 nRenderFlag;	//
-	uint16 nBlendMode;	//
-	int nTransID,nTexanimID,nColorID;
-	int nOrder;
-	float p;
-
-	// Geoset ID
-	int nSubID;
-	//
-	bool bUseTex2, bUseEnvMap, bCull, bTrans, bUnlit, bNoZWrite;
-	bool bHasAlphaTex;
-	// texture wrapping
-	bool bSwrap, bTwrap;
-
-	// colours
-	Vec4D ocol, ecol;
-
-	CMaterial material;
-	bool operator< (const ModelRenderPass &m) const
-	{
-		// sort order method
-		if (nOrder!=m.nOrder)
-			return nOrder<m.nOrder;
-		else
-			return nBlendMode == m.nBlendMode ? (p<m.p) : (nBlendMode<m.nBlendMode);
-	}
-};
-#pragma pack(pop) // 恢复先前的pack设置 
 
 struct ModelAttachment
 {
@@ -121,12 +74,22 @@ struct ModelAttachment
 	void setupParticle();
 };
 
-class DLL_EXPORT CModelData
+
+class DLL_EXPORT CModelData:public iModelData
 {
 public:
 	CModelData();
 	~CModelData();
 public:
+	virtual void addAnimation(long timeStart, long timeEnd);
+	virtual void setRenderPass(int nID, const std::string& strName,
+		const std::string& strDiffuse, const std::string& strEmissive,
+		const std::string& strSpecular, const std::string& strNormal,
+		const std::string& strEnvironment, const std::string& strShader,
+		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV);
+	virtual	iLodMesh& getMesh(){return m_Mesh;}
+	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
+
 	virtual bool LoadFile(const std::string& strFilename);
 	virtual	bool loadMaterial(const std::string& strFilename,const std::string& strPath);
 	virtual bool saveMaterial(const std::string& strFilename);
@@ -151,7 +114,7 @@ public: // 动画源
 	std::vector<TransAnim>		m_TransAnims;			// 透明动画源
 	std::vector<LightAnim>		m_LightAnims;			// 灯光动画源
 
-	std::vector<ModelRenderPass>m_Passes;				// 渲染过程集
+	std::map<int,ModelRenderPass>m_mapPasses;				// 渲染过程集
 	std::vector<CParticleEmitter>	m_setParticleEmitter;	// Particle Emitters
 	//std::vector<CRibbonEmitter>	ribbons;			// 条带源
 public:
