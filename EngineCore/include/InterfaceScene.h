@@ -311,13 +311,13 @@ enum E_SCENE_PLUGIN_TYPE
 	E_SCENE_PLUGIN_TOOL		= 3,
 };
 
-typedef BOOL (WINAPI * PFN_Plug_CreateObject)(void ** pobj);
+typedef BOOL (WINAPI * PFN_Scene_Plug_CreateObject)(void ** pobj);
 
-class CPlugBase
+class CScenePlugBase
 {
 public:
-	CPlugBase(){};
-	virtual ~CPlugBase(){};
+	CScenePlugBase(){};
+	virtual ~CScenePlugBase(){};
 
 	virtual E_SCENE_PLUGIN_TYPE GetType()	= 0;
 	virtual const char * GetTitle()		= 0;
