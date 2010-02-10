@@ -98,12 +98,12 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	lumpFile.getVector("BoundI",	m_BoundMesh.indices);
 
 	// Box
-	lumpFile.GetVal("BoxMin",		m_bbox.vMin);
-	lumpFile.GetVal("BoxMax",		m_bbox.vMax);
-	if (m_bbox.vMin==m_bbox.vMax)
-	{
-		m_bbox = m_Mesh.m_bbox;
-	}
+// 	lumpFile.GetVal("BoxMin",		m_bbox.vMin);
+// 	lumpFile.GetVal("BoxMax",		m_bbox.vMax);
+// 	if (m_bbox.vMin==m_bbox.vMax)
+// 	{
+// 		m_bbox = m_Mesh.m_bbox;
+// 	}
 
 	// Œ∆¿ÌÕ®µ¿
 	CLumpNode* pTexChannelsNode = lumpFile.firstChild("Texs");
@@ -368,8 +368,8 @@ bool CModelData::SaveFile(const std::string& strFilename)
 	lumpFile.SetVector("BoundI", m_BoundMesh.indices);
 
 	// Box
-	lumpFile.SetVal("BoxMin", m_bbox.vMin);
-	lumpFile.SetVal("BoxMax", m_bbox.vMax);
+// 	lumpFile.SetVal("BoxMin", m_bbox.vMin);
+// 	lumpFile.SetVal("BoxMax", m_bbox.vMax);
 
 	//for (int i = 0; i < m_Lods.size(); i++)
 	{

@@ -66,6 +66,7 @@ void CModelObject::create()
 
 	{
 		m_pMesh = &m_pModelData->m_Mesh;
+		m_BBox	= m_pModelData->m_Mesh.getBBox();
 		//
 		if (m_pModelData->m_Skeleton.m_BoneAnims.size()>0)
 		{
@@ -104,6 +105,11 @@ void CModelObject::create()
 		}
 	}
 	m_bCreated=true;
+}
+
+const BBox& CModelObject::getBBox()const
+{
+	return m_BBox;
 }
 
 void CModelObject::Register(const std::string& strFilename)

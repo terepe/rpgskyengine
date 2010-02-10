@@ -48,6 +48,8 @@ public:
 
 	bool isCreated();
 	void create();
+
+	const BBox& getBBox()const;
 public: // 模型数据源
 	int m_nModelID;		// 模型ID
 	CModelData*		m_pModelData;				// 模型源数据
@@ -92,6 +94,7 @@ protected:
 
 	//void lightsOn(int lbase);
 	//void lightsOff(int lbase);
+	BBox m_BBox;
 public:
 	const std::string& getModelFilename(){return m_strModelFilename;}
 protected:
