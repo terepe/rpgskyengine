@@ -37,7 +37,7 @@ BBox C3DMapObj::getBBox()const
 	BBox bbox;
 	if (m_pModelObject&&m_pModelObject->m_pModelData)
 	{
-		bbox=m_pModelObject->m_pModelData->m_bbox;
+		bbox=m_pModelObject->getBBox();
 	}
 	Matrix mRotate;
 	mRotate.rotate(getRotate());

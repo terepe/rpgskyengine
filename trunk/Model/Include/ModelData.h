@@ -121,7 +121,6 @@ public:
 	bool m_bHasAlphaTex;	// 是否有ALPHA透明纹理
 public:
 	ModelType	m_ModelType;	// 模型类别
- 	BBox		m_bbox;				//
 public:
 	std::vector<ModelAttachment> atts;
 	int attLookup[40];
