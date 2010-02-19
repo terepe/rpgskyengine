@@ -113,3 +113,40 @@ bool CUIMainDialog::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	//ClearState();
 	return false;
 }
+
+void CUIMainDialog::OnMouseMove(POINT point)
+{
+	if(s_pControlPressed)
+	{
+		s_pControlPressed->OnMouseMove(point);
+		return;
+	}
+	CUIDialog::OnMouseMove(point);
+}
+
+void CUIMainDialog::OnLButtonUp(POINT point)
+{
+	// 按住的控件
+	if(s_pControlPressed)
+	{
+		s_pControlPressed->OnLButtonUp(point);
+		s_pControlPressed->SetPressed(false);
+		s_pControlPressed = NULL;
+		return;
+	}
+	CUIDialog::OnLButtonUp(point);
+}
+
+void CUIMainDialog::OnMouseWheel(POINT point,short wheelDelta)
+{
+	CUIDialog::OnMouseWheel(point,wheelDelta);
+	if(false)
+	{
+		// 焦点控件 for what? I can't remanber.
+		if(s_pControlFocus)
+		{
+			s_pControlFocus->OnMouseWheel(point,wheelDelta);
+			//return true;
+		}
+	}
+}

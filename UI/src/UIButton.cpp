@@ -84,33 +84,6 @@ bool CUIButton::ContainsPoint(POINT pt)
 	return PtInRect(&m_rcBoundingBox, pt)==TRUE;
 }
 
-CONTROL_STATE CUIButton::GetState()
-{
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bVisible == false)
-	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(IsPressed())
-	{
-		iState = CONTROL_STATE_PRESSED;
-	}
-	else if(m_bMouseOver)
-	{
-		iState = CONTROL_STATE_MOUSEOVER;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
-	}
-	return iState;
-}
-
 void CUIButton::OnFrameRender(double fTime, float fElapsedTime)
 {
 	CONTROL_STATE iState = GetState();

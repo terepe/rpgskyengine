@@ -45,33 +45,16 @@ void CUIProgress::OnFrameRender(double fTime, float fElapsedTime)
 	int nOffsetX = 0;
 	int nOffsetY = 0;
 
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bVisible == false)
+	CONTROL_STATE iState = GetState();
+	if(iState == CONTROL_STATE_PRESSED)
 	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(IsPressed())
-	{
-		iState = CONTROL_STATE_PRESSED;
-
 		nOffsetX = 1;
 		nOffsetY = 2;
 	}
-	else if(m_bMouseOver)
+	else if(iState == CONTROL_STATE_MOUSEOVER)
 	{
-		iState = CONTROL_STATE_MOUSEOVER;
-
 		nOffsetX = -1;
 		nOffsetY = -2;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
 	}
 
 	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;

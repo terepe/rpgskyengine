@@ -16,13 +16,12 @@ struct UIListBoxItem
 	bool  bSelected;
 };
 
-class DLL_EXPORT CUIListBox : public CUIControl
+class DLL_EXPORT CUIListBox : public CUICombo
 {
 public:
 	CUIListBox();
 	virtual ~CUIListBox();
-	virtual void	SetParent(CUICombo *pControl);
-	virtual void	XMLParse(TiXmlElement* pControlElement);
+	virtual void	OnControlRegister();
 	virtual void	SetStyle(const std::string& strStyleName);
 	virtual bool    CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	virtual bool    HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -35,11 +34,10 @@ public:
 
 	virtual void    OnFrameRender(double fTime, float fElapsedTime);
 
-	virtual void	OnSize(const RECT& rc);
 	virtual void    UpdateRects();
 
 	DWORD	GetListBoxStyle() const { return m_dwStyle; }
-	size_t	GetSize() const { return m_Items.size(); }
+	size_t	GetItemCount() const { return m_Items.size(); }
 	void	SetListBoxStyle(DWORD dwStyle) { m_dwStyle = dwStyle; }
 	int		GetScrollBarWidth() const { return m_nSBWidth; }
 	void	SetScrollBarWidth(int nWidth) { m_nSBWidth = nWidth; UpdateRects(); }
@@ -59,7 +57,16 @@ public:
 	int				GetSelectedIndex(int nPreviousSelected = -1);
 	void*			GetSelectedData(int nPreviousSelected = -1);
 	UIListBoxItem*	GetSelectedItem(int nPreviousSelected = -1);
-	void			SelectItem(int nNewIndex);
+
+	bool    ContainsItem(const std::wstring& wstrText, UINT iStart=0);
+	int     FindItem(const std::wstring& wstrText, UINT iStart=0);
+	bool	SelectItem(int nNewIndex);
+
+	void*   getItemDataByText(const std::wstring& wstrText);
+	void*   getItemDataByIndex(size_t index);
+
+	bool	selectByText(const std::wstring& wstrText);
+	bool	selectByData(void* pData);  
 
 	CUIScrollBar&	GetScrollBar(){return m_ScrollBar;}
 	enum STYLE { MULTISELECTION = 1 };

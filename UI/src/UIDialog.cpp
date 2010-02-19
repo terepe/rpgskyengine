@@ -153,46 +153,17 @@ void CUIDialog::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 {
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bVisible == false)
-	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(IsPressed())
-	{
-		iState = CONTROL_STATE_PRESSED;
-	}
-	else if(m_bMouseOver)
-	{
-		iState = CONTROL_STATE_MOUSEOVER;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
-	}
-
-	// If this assert triggers, you need to call CUIDialogResMgr::On*Device() from inside
-	// the application's device callbacks.  See the SDK samples for an example of how to do this.
-
-	// See if the dialog needs to be refreshed
-
-	////////if(m_fTimeLastRefresh < s_fTimeRefresh)
-	////////{
-	////////	m_fTimeLastRefresh = DXUTGetTime();
-	////////	Refresh();
-	////////}
-
 	// For invisible dialog, out now.
 	if((m_bMinimized && !m_bCaption))
 		return;
 
+	// If the dialog is minimized, skip rendering
+	// its controls.
+	if(!m_bMinimized)
+	{
+		CUICombo::OnFrameRender(fTime, fElapsedTime);
+	}
 
-	m_Style.draw(m_rcBoundingBox, L"",iState, fElapsedTime);
 	if(m_bCaption)
 	{
 		std::wstring wstrOutput;
@@ -201,26 +172,7 @@ void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			wstrOutput += L"Minimized";
 		}
-		m_StyleCaption.draw(m_rcCaption, wstrOutput,iState, fElapsedTime);
-	}
-
-	// If the dialog is minimized, skip rendering
-	// its controls.
-	if(!m_bMinimized&&m_bVisible)
-	{
-		for(uint32 i=0; i < m_Controls.size(); i++)
-		{
-			CUIControl* pControl = m_Controls[i];   
-
-			//焦点控件最后绘制
-			if(pControl == s_pControlFocus)
-				continue;
-
-			pControl->OnFrameRender(fTime, fElapsedTime);
-		}
-
-		if(s_pControlFocus != NULL && s_pControlFocus->GetParentDialog() == this)
-			s_pControlFocus->OnFrameRender(fTime, fElapsedTime);
+		m_StyleCaption.draw(m_rcCaption, wstrOutput,GetState(), fElapsedTime);
 	}
 
 	//

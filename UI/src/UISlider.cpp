@@ -2,18 +2,17 @@
 #include "UIDialog.h"
 
 
+// Minimum scroll bar thumb size
+#define SCROLLBAR_MINTHUMBSIZE 17
+
 CUISlider::CUISlider()
 {
 	m_Type = UI_CONTROL_SLIDER;
 	m_nMin = 0;
 	m_nMax = 100;
 	m_nValue = 50;
-}
-
-void CUISlider::XMLParse(TiXmlElement* pControlElement)
-{
-	CUIControl::XMLParse(pControlElement);
-	//
+	m_bH = true;
+	m_nPageSize = 1;
 }
 
 void CUISlider::SetStyle(const std::string& strStyleName)
@@ -22,30 +21,51 @@ void CUISlider::SetStyle(const std::string& strStyleName)
 	m_StyleButton.SetStyle(strStyleName+".button");
 }
 
-bool CUISlider::ContainsPoint(POINT pt) 
-{ 
-	return (PtInRect(&m_rcBoundingBox, pt) || 
-		PtInRect(&m_rcButton, pt)); 
-}
-
 void CUISlider::UpdateRects()
 {
 	CUIControl::UpdateRects();
-
+	m_bH = RectWidth(m_rcBoundingBox)>RectHeight(m_rcBoundingBox);
 	m_rcButton = m_rcBoundingBox;
-	m_rcButton.right = m_rcButton.left + RectHeight(m_rcButton);
-	OffsetRect(&m_rcButton, -RectWidth(m_rcButton)/2, 0);
-
-	m_nButtonX = (int) ((m_nValue - m_nMin) * (float)RectWidth(m_rcBoundingBox) / (m_nMax - m_nMin));
-	OffsetRect(&m_rcButton, m_nButtonX, 0);
+	if(m_bH)
+	{
+		int nRangeLength = m_nMax-m_nMin;
+		int nButtonSize = __max(RectWidth(m_rcBoundingBox)*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
+		m_rcButton.right = m_rcButton.left + nButtonSize;
+		if(nRangeLength>0)
+		{
+			int nButtonX = (int) ((m_nValue - m_nMin) * (float)(RectWidth(m_rcBoundingBox)-nButtonSize)/nRangeLength);
+			OffsetRect(&m_rcButton, nButtonX, 0);
+		}
+	}
+	else
+	{
+		int nRangeLength = m_nMax-m_nMin;
+		int nButtonSize = __max(RectHeight(m_rcBoundingBox)*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
+		m_rcButton.bottom = m_rcButton.top + nButtonSize;
+		if(nRangeLength>0)
+		{
+			int nButtonY = (int) ((m_nValue - m_nMin) * (float)(RectHeight(m_rcBoundingBox)-nButtonSize)/nRangeLength);
+			OffsetRect(&m_rcButton, 0, nButtonY);
+		}
+	}
 }
 
-int CUISlider::ValueFromPos(int x)
-{ 
-	float fValuePerPixel = (float)(m_nMax - m_nMin) / RectWidth(m_rcBoundingBox);
-	return (int) (0.5f + m_nMin + fValuePerPixel * (x - m_rcBoundingBox.left)) ; 
+int CUISlider::ValueFromPos(POINT pt)
+{
+	if(m_bH)
+	{
+		int nButtonSize = RectWidth(m_rcButton);
+		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(RectWidth(m_rcBoundingBox)-nButtonSize);
+		return (int) (0.5f + m_nMin + fValuePerPixel * (pt.x - m_rcBoundingBox.left-nButtonSize));
+	}
+	else
+	{
+		int nButtonSize = RectHeight(m_rcButton);
+		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(RectHeight(m_rcBoundingBox)-nButtonSize);
+		return (int) (0.5f + m_nMin + fValuePerPixel * (pt.y - m_rcBoundingBox.top-nButtonSize));
+	}
+	return 0;
 }
-
 
 bool CUISlider::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -67,12 +87,12 @@ bool CUISlider::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				return true;
 
 			case VK_LEFT:
-			case VK_DOWN:
+			case VK_UP:
 				SetValueInternal(m_nValue - 1);
 				return true;
 
 			case VK_RIGHT:
-			case VK_UP:
+			case VK_DOWN:
 				SetValueInternal(m_nValue + 1);
 				return true;
 
@@ -87,8 +107,6 @@ bool CUISlider::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}
-
-
 	return false;
 }
 
@@ -96,7 +114,9 @@ void CUISlider::OnMouseMove(POINT pt)
 {
 	if(IsPressed())
 	{
-		SetValueInternal(ValueFromPos(m_rcBoundingBox.left+pt.x+m_nDragOffset));
+		pt.x+=m_ptDragOffset.x;
+		pt.y+=m_ptDragOffset.y;
+		SetValueInternal(ValueFromPos(pt));
 	}
 }
 
@@ -115,25 +135,42 @@ void CUISlider::OnLButtonDown(POINT point)
 		SetCapture(UIGetHWND());
 
 		//m_nDragX = pt.x;
-		m_nDragOffset = m_nButtonX - point.x;
+		m_ptDragOffset.x = m_rcButton.right - point.x;
+		m_ptDragOffset.y = m_rcButton.bottom - point.y;
 		SetFocus();
 		return;
 	}
 	if(PtInRect(&m_rcBoundingBox, point))
 	{
-		//m_nDragX = point.x;
-		m_nDragOffset = 0;
+		m_ptDragOffset.x=0;
+		m_ptDragOffset.y=0;
 		//SetPressed(true);
 		SetFocus();
-		if(point.x > m_nButtonX + m_rcBoundingBox.left)
+		if(m_bH)
 		{
-			SetValueInternal(m_nValue + 1);
-			return;
+			if(point.x > m_rcButton.left)
+			{
+				SetValueInternal(m_nValue + __max(m_nPageSize-1,1));
+				return;
+			}
+			if(point.x < m_rcButton.right)
+			{
+				SetValueInternal(m_nValue - __max(m_nPageSize-1,1));
+				return;
+			}
 		}
-		if(point.x < m_nButtonX + m_rcBoundingBox.left)
+		else
 		{
-			SetValueInternal(m_nValue - 1);
-			return;
+			if(point.y > m_rcButton.top)
+			{
+				SetValueInternal(m_nValue + m_nPageSize - 1);
+				return;
+			}
+			if(point.y < m_rcButton.bottom)
+			{
+				SetValueInternal(m_nValue - m_nPageSize + 1);
+				return;
+			}
 		}
 	}
 }
@@ -164,6 +201,7 @@ void CUISlider::SetRange(int nMin, int nMax)
 	m_nMin = nMin;
 	m_nMax = nMax;
 	SetValue(m_nValue);
+	UpdateRects();
 }
 
 void CUISlider::SetValueInternal(int nValue)
@@ -176,29 +214,7 @@ void CUISlider::SetValueInternal(int nValue)
 
 void CUISlider::OnFrameRender(double fTime, float fElapsedTime)
 {
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bVisible == false)
-	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(IsPressed())
-	{
-		iState = CONTROL_STATE_PRESSED;
-	}
-	else if(m_bMouseOver)
-	{
-		iState = CONTROL_STATE_MOUSEOVER;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
-	}
-
+	CONTROL_STATE iState = GetState();
 	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
 
 	m_Style.Blend(iState, fElapsedTime, fBlendRate);

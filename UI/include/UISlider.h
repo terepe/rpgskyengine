@@ -9,9 +9,7 @@ class DLL_EXPORT CUISlider : public CUIControl
 {
 public:
 	CUISlider();
-	virtual void	XMLParse(TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
-	virtual bool	ContainsPoint(POINT pt); 
 	virtual bool	CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	virtual bool	HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	//
@@ -28,16 +26,20 @@ public:
 	int				getMax() const { return m_nMax; };
 	void			GetRange(int &nMin, int &nMax) const { nMin = m_nMin; nMax = m_nMax; }
 	void			SetRange(int nMin, int nMax);
+	int				GetPageSize() { return m_nPageSize; }
+	void			SetPageSize(int nPageSize){m_nPageSize = nPageSize;}
 protected:
 	void			SetValueInternal(int nValue);
-	int				ValueFromPos(int x); 
+	int				ValueFromPos(POINT pt); 
 protected:
 	CUIStyle m_StyleButton;
 	int		m_nValue;
 	int		m_nMin;
 	int		m_nMax;
 	int		m_nDragX;      // Mouse position at start of drag
-	int		m_nDragOffset; // Drag offset from the center of the button
-	int		m_nButtonX;
+	POINT	m_ptDragOffset; // Drag offset from the center of the button
 	RECT	m_rcButton;
+	bool	m_bH;
+	int		m_nPageSize;  // How many items are displayable in one page
+
 };

@@ -20,43 +20,6 @@ void UISetHWND(HWND hWnd)
 	g_hWndUI = hWnd;
 }
 
-static const char* gs_szUIControlType[] =
-{
-	"dialog",
-	"combo",
-	"button",
-	"static",
-	"image",
-	"checkbox",
-	"radiobutton",
-	"combobox",
-	"slider",
-	"progress",
-	"editbox",
-	"imeeditbox",
-	"listbox",
-	"grid",
-	"scrollbar",
-	"display",
-};
-
-const char* GetUIControlTypeName(UI_CONTROL_TYPE eControlType)
-{
-	return gs_szUIControlType[eControlType];
-}
-
-UI_CONTROL_TYPE GetUIControlType(const std::string& strControlTypeName)
-{
-	for (int i=0; i<UI_CONTROL_MAX; i++)
-	{
-		if (strControlTypeName == gs_szUIControlType[i])
-		{
-			return (UI_CONTROL_TYPE)i;
-		}
-	}
-	return UI_CONTROL_MAX;
-}
-
 uint32 StrToAlign(std::string& strAlign)
 {
 	uint32 uAlign = 0;
@@ -122,13 +85,14 @@ void CUIControl::SetParent(CUICombo* pControl)
 	m_pParentDialog=NULL;
 	if (pControl)
 	{
-		if(UI_CONTROL_COMBO==pControl->m_Type||UI_CONTROL_DIALOG==pControl->m_Type)
+		if(pControl->isCombo())
 		{
 			m_pParentDialog = pControl;
 		}
 		else
 		{
-			MessageBoxW(NULL,L"The parent of this control is unknow ",L"Error",0);
+			std::wstring wstrInfo = FormatW(L"void CUIControl::SetParent(CUICombo* pControl)\nThe parent of this control is unknown.\nControl:%s; Parent Control:%s;",s2ws(GetID()).c_str(),s2ws(pControl->GetID()).c_str());
+			MessageBoxW(NULL,wstrInfo.c_str(),L"Error",0);
 		}
 	}
 }
@@ -199,7 +163,6 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 				SetAlign(uAlign);
 			}
 		}
-
 	}
 	// Tip
 	if(pControlElement->Attribute("tip"))
@@ -226,9 +189,15 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 	{
 		SetStyle(pControlElement->Attribute("style"));
 	}
+	else if (pControlElement->Attribute("type"))
+	{
+		SetStyle(pControlElement->Attribute("type"));
+	}
 	else
 	{
-		SetStyle(GetUIControlTypeName(m_Type));
+		SetStyle("dialog");
+	//	std::wstring wstrInfo = FormatW(L"Can not find the style of this control.\nControl:%s;",s2ws(GetID()).c_str());
+	//	MessageBoxW(NULL,wstrInfo.c_str(),L"Register Control Warn!",0);
 	}
 	// text
 	if (pControlElement->Attribute("text"))
@@ -399,7 +368,7 @@ bool CUIControl::ContainsPoint(POINT pt)
 
 void CUIControl::SendEvent(uint32 uEvent, CUIControl* pControl)
 {
-	GetParentDialog()->SendEvent(uEvent, pControl);
+	GetParentDialog()->progressEvent(uEvent, pControl);
 }
 
 void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
@@ -491,4 +460,36 @@ void CUIControl::ScreenToClient(RECT& rc)
 
 void CUIControl::UpdateRects()
 {
+}
+
+CONTROL_STATE CUIControl::GetState()
+{
+	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
+
+	CUICombo* pParent=GetParentDialog(); 
+	if(pParent&&pParent->GetState()==CONTROL_STATE_HIDDEN)
+	{
+		iState = CONTROL_STATE_HIDDEN;
+	}
+	else if(m_bVisible == false)
+	{
+		iState = CONTROL_STATE_HIDDEN;
+	}
+	else if(m_bEnabled == false)
+	{
+		iState = CONTROL_STATE_DISABLED;
+	}
+	else if(IsPressed())
+	{
+		iState = CONTROL_STATE_PRESSED;
+	}
+	else if(m_bMouseOver)
+	{
+		iState = CONTROL_STATE_MOUSEOVER;
+	}
+	else if(IsFocus())
+	{
+		iState = CONTROL_STATE_FOCUS;
+	}
+	return iState;
 }

@@ -3,7 +3,6 @@
 
 CUIListBox::CUIListBox()
 {
-	m_Type = UI_CONTROL_LISTBOX;
 	m_dwStyle = 0;
 	m_nSBWidth = 17;
 	m_nSelected = -1;
@@ -11,11 +10,6 @@ CUIListBox::CUIListBox()
 	m_nBorder = 6;
 	m_nMargin = 5;
 	m_nTextHeight = 0;
-
-	//
-	m_ScrollBar.m_width=m_nSBWidth;
-	m_ScrollBar.m_nPercentHeight=100;
-	m_ScrollBar.m_uAlign=ALIGN_RIGHT;
 }
 
 CUIListBox::~CUIListBox()
@@ -23,24 +17,10 @@ CUIListBox::~CUIListBox()
 	RemoveAllItems();
 }
 
-void CUIListBox::SetParent(CUICombo *pControl)
+void CUIListBox::OnControlRegister()
 {
-	CUIControl::SetParent(pControl);
-	m_ScrollBar.SetParent(pControl);
-}
-
-void CUIListBox::XMLParse(TiXmlElement* pControlElement)
-{
-	CUIControl::XMLParse(pControlElement);
-	// scrollbar style
-	if (pControlElement->Attribute("scrollbarstyle"))
-	{
-		m_ScrollBar.SetStyle(pControlElement->Attribute("scrollbarstyle"));
-	}
-	else
-	{
-		m_ScrollBar.SetStyle(GetUIControlTypeName(m_ScrollBar.GetType()));
-	}
+	CUICombo::OnControlRegister();
+	RegisterControl("IDC_SCROLLBAR_LEFT",m_ScrollBar);
 }
 
 void CUIListBox::SetStyle(const std::string& strStyleName)
@@ -50,17 +30,9 @@ void CUIListBox::SetStyle(const std::string& strStyleName)
 	m_StyleSelected.SetStyle(strStyleName+".selected");
 }
 
-void CUIListBox::OnSize(const RECT& rc)
-{
-	CUIControl::OnSize(rc);
-	RECT rcTemp = m_rcBoundingBox;
-	InflateRect(&rcTemp, -m_nBorder, -m_nBorder);
-	m_ScrollBar.OnSize(rcTemp);
-}
-
 void CUIListBox::UpdateRects()
 {
-	CUIControl::UpdateRects();
+	CUICombo::UpdateRects();
 
 	m_rcSelection = m_rcBoundingBox;
 	InflateRect(&m_rcSelection, -m_nBorder, -m_nBorder);
@@ -69,8 +41,6 @@ void CUIListBox::UpdateRects()
 	InflateRect(&m_rcText, -m_nMargin, 0);
 
 	// Update the scrollbar's rects
-	//m_ScrollBar.SetLocation(m_x+m_width-m_nSBWidth-m_nBorder, m_y+m_nBorder);
-	//m_ScrollBar.SetSize(m_nSBWidth, m_height-m_nBorder*2);
 	//if(pFontNode && pFontNode->nHeight)
 	{
 		m_ScrollBar.SetPageSize(RectHeight(m_rcText) / UIGraph::GetFontSize());
@@ -155,7 +125,8 @@ const std::wstring& CUIListBox::GetItemText(int nInde)
 	{
 		return pItem->wstrText;
 	}
-	return std::wstring(L"");
+	static const std::wstring wstrNULL=L"";
+	return wstrNULL;
 }
 
 // For single-selection listbox, returns the index of the selected item.
@@ -204,11 +175,29 @@ UIListBoxItem* CUIListBox::GetSelectedItem(int nPreviousSelected)
 	return GetItem(GetSelectedIndex(nPreviousSelected));
 }
 
-void CUIListBox::SelectItem(int nNewIndex)
+bool CUIListBox::ContainsItem(const std::wstring& wstrText, UINT iStart)
+{
+	return (-1 != FindItem(wstrText, iStart));
+}
+
+int CUIListBox::FindItem(const std::wstring& wstrText, size_t iStart)
+{
+	for(size_t i = iStart; i < m_Items.size(); i++)
+	{
+		UIListBoxItem* pItem = m_Items[i];
+		if(wstrText == pItem->wstrText)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool CUIListBox::SelectItem(int nNewIndex)
 {
 	// If no item exists, do nothing.
 	if(m_Items.size() == 0)
-		return;
+		return false;
 
 	int nOldSelected = m_nSelected;
 
@@ -234,11 +223,46 @@ void CUIListBox::SelectItem(int nNewIndex)
 		// Adjust scroll bar
 		m_ScrollBar.ShowItem(m_nSelected);
 	}
-
 	SendEvent(EVENT_LISTBOX_SELECTION, this);
+	return true;
 }
 
+void* CUIListBox::getItemDataByText(const std::wstring& wstrText)
+{
+	int index = FindItem(wstrText);
+	return getItemDataByIndex(index);
+}
 
+void* CUIListBox::getItemDataByIndex(size_t index)
+{
+	UIListBoxItem* pItem=GetItem(index);
+	if(pItem)
+	{
+		return pItem->pData;
+	}
+	return NULL;
+}
+
+bool CUIListBox::selectByText(const std::wstring& wstrText)
+{
+	int index = FindItem(wstrText);
+	if(index == -1)
+		return false;
+	return SelectItem(index);
+}
+
+bool CUIListBox::selectByData(void* pData)
+{
+	for(size_t i=0; i < m_Items.size(); ++i)
+	{
+		UIListBoxItem* pItem = m_Items[i];
+		if(pItem->pData == pData)
+		{
+			return SelectItem(i);
+		}
+	}
+	return false;
+}
 
 bool CUIListBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -341,9 +365,9 @@ bool CUIListBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CUIListBox::OnMouseMove(POINT point)
 {
+	CUICombo::OnMouseMove(point);
 	if (m_ScrollBar.ContainsPoint(point))
 	{
-		m_ScrollBar.OnMouseMove(point);
 		return;
 	}
 	if(IsPressed())
@@ -364,21 +388,20 @@ void CUIListBox::OnMouseMove(POINT point)
 		{
 			m_nSelected = nItem;
 			SendEvent(EVENT_LISTBOX_SELECTION, this);
-		} else
-			if(nItem < (int)m_ScrollBar.GetTrackPos())
-			{
-				// User drags the mouse above window top
-				m_ScrollBar.Scroll(-1);
-				m_nSelected = m_ScrollBar.GetTrackPos();
-				SendEvent(EVENT_LISTBOX_SELECTION, this);
-			} else
-				if(nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
-				{
-					// User drags the mouse below window bottom
-					m_ScrollBar.Scroll(1);
-					m_nSelected = __min((int)m_Items.size(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize()) - 1;
-					SendEvent(EVENT_LISTBOX_SELECTION, this);
-				}
+		}
+		else if(nItem < (int)m_ScrollBar.GetTrackPos())
+		{
+			// User drags the mouse above window top
+			m_ScrollBar.Scroll(-1);
+			m_nSelected = m_ScrollBar.GetTrackPos();
+			SendEvent(EVENT_LISTBOX_SELECTION, this);
+		}
+		else if(nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
+		{
+			// User drags the mouse below window bottom
+			m_ScrollBar.Scroll(1);
+			m_nSelected = __min((int)m_Items.size(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize()) - 1;					SendEvent(EVENT_LISTBOX_SELECTION, this);
+		}
 	}
 }
 
@@ -542,7 +565,7 @@ void CUIListBox::OnLButtonUp(POINT point)
 {
 	if (m_ScrollBar.ContainsPoint(point))
 	{
-		m_ScrollBar.OnLButtonDown(point);
+		m_ScrollBar.OnLButtonUp(point);
 		return;
 	}
 	ReleaseCapture();
@@ -553,8 +576,9 @@ void CUIListBox::OnLButtonUp(POINT point)
 		// Set all items between m_nSelStart and m_nSelected to
 		// the same state as m_nSelStart
 		int nEnd = __max(m_nSelStart, m_nSelected);
+		int nBegin = __min(m_nSelStart, m_nSelected);
 
-		for(int n = __min(m_nSelStart, m_nSelected) + 1; n < nEnd; ++n)
+		for(int n = nBegin + 1; n < nEnd; ++n)
 			m_Items[n]->bSelected = m_Items[m_nSelStart]->bSelected;
 		m_Items[m_nSelected]->bSelected = m_Items[m_nSelStart]->bSelected;
 
@@ -570,10 +594,9 @@ void CUIListBox::OnLButtonUp(POINT point)
 
 void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 {
-	if(m_bVisible == false)
-		return;
+	CUICombo::OnFrameRender(fTime, fElapsedTime);
 
-	m_Style.draw(m_rcBoundingBox, L"",CONTROL_STATE_NORMAL, fElapsedTime);
+	CONTROL_STATE iState = GetState();
 
 	// Render the text
 	if(m_Items.size() > 0)
@@ -624,16 +647,13 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 
 				if(bSelectedStyle)
 				{
-					m_StyleSelected.draw(rc, pItem->wstrText,CONTROL_STATE_NORMAL, fElapsedTime);
+					m_StyleSelected.draw(rc, pItem->wstrText,iState, fElapsedTime);
 				}
 				else
 				{
-					m_StyleItem.draw(rc, pItem->wstrText,CONTROL_STATE_NORMAL, fElapsedTime);
+					m_StyleItem.draw(rc, pItem->wstrText,iState, fElapsedTime);
 				}
 				OffsetRect(&rc, 0, m_nTextHeight);
 		}
 	}
-
-	// Render the scroll bar
-	m_ScrollBar.OnFrameRender(fTime, fElapsedTime);
 }
