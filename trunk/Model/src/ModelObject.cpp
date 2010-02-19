@@ -23,7 +23,7 @@ m_vDiffuse(0.6f,0.6f,0.6f,1.0f)
 	m_fTrans = 1;
 	m_fAlpha = 1;
 
-	m_ModelType = MT_NORMAL;
+//	m_ModelType = MT_NORMAL;
 	m_fRad = 0;
 	m_nLodLevel = 0;
 	m_uSkinID = 0;

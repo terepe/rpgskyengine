@@ -70,7 +70,7 @@ inline uint32 StrToAlign(std::string& strAlign);
 enum UI_CONTROL_TYPE 
 {
 	UI_CONTROL_DIALOG,
-	UI_CONTROL_COMBO,
+	UI_CONTROL_COMBO,		
 	UI_CONTROL_BUTTON,
 	UI_CONTROL_STATIC,
 	UI_CONTROL_IMAGE,
@@ -88,10 +88,6 @@ enum UI_CONTROL_TYPE
 	UI_CONTROL_MAX,
 };
 
-const char* GetUIControlTypeName(UI_CONTROL_TYPE eControlType);
-UI_CONTROL_TYPE GetUIControlType(const std::string& strControlTypeName);
-
-
 #define MAX_CONTROL_STATES 6
 
 class TiXmlElement;
@@ -104,6 +100,8 @@ public:
 
 	virtual void SetParent(CUICombo *pControl);
 	virtual CUICombo* GetParentDialog() { return m_pParentDialog; }
+
+	virtual bool isCombo(){return false;}
 
 	virtual void XMLParse(TiXmlElement* pControlElement);
 	virtual void SetText(const std::wstring& wstrText){}
@@ -206,6 +204,8 @@ public:
 	virtual void ClientToScreen(RECT& rc);
 	virtual void ScreenToClient(RECT& rc);
 	virtual void UpdateRects();
+protected:
+	virtual CONTROL_STATE GetState();
 protected:
 	CUICombo*			m_pParentDialog;    // Parent container
 

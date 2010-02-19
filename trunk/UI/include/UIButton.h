@@ -25,7 +25,4 @@ public:
 
 	// ‰÷»æ
 	virtual void OnFrameRender(double fTime, float fElapsedTime);
-
-protected:
-	virtual CONTROL_STATE GetState();
 };

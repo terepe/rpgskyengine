@@ -116,53 +116,65 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 		}
 		if (pControl==NULL)
 		{
-			switch(GetUIControlType(strElement))
+			if(strElement=="button")
 			{
-			case UI_CONTROL_BUTTON:
 				pControl =  new CUIButton();
-				break;
-			case UI_CONTROL_STATIC:
+			}
+			else if(strElement=="static")
+			{
 				pControl =  new CUIStatic();
-				break;
-			case UI_CONTROL_IMAGE:
+			}
+			else if(strElement=="image")
+			{
 				pControl =  new CUIImage();
-				break;
-			case UI_CONTROL_CHECKBOX:
+			}
+			else if(strElement=="checkbox")
+			{
 				pControl =  new CUICheckBox();
-				break;
-			case UI_CONTROL_RADIOBUTTON:
+			}
+			else if(strElement=="radiobutton")
+			{
 				pControl =  new CUIRadioButton();
-				break;
-			case UI_CONTROL_COMBOBOX:
+			}
+			else if(strElement=="combobox")
+			{
 				pControl =  new CUIComboBox();
-				break;
-			case UI_CONTROL_SLIDER:
+			}
+			else if(strElement=="slider")
+			{
 				pControl =  new CUISlider();
-				break;
-			case UI_CONTROL_PROGRESS:
+			}
+			else if(strElement=="progress")
+			{
 				pControl =  new CUIProgress();
-				break;
-			case UI_CONTROL_EDITBOX:
+			}
+			else if(strElement=="editbox")
+			{
 				pControl =  new CUIEditBox();
-				break;
-			case UI_CONTROL_IMEEDITBOX:
+			}
+			else if(strElement=="imeeditbox")
+			{
 				pControl =  new CUIIMEEditBox();
-				break;
-			case UI_CONTROL_LISTBOX:
+			}
+			else if(strElement=="imeeditbox")
+			{
 				pControl =  new CUIListBox();
-				break;
-			case UI_CONTROL_GRID:
+			}
+			else if(strElement=="grid")
+			{
 				pControl =  new CUIGrid();
-				break;
-			case UI_CONTROL_SCROLLBAR:
+			}
+			else if(strElement=="scrollbar")
+			{
 				pControl =  new CUIScrollBar();
-				break;
-			case  UI_CONTROL_COMBO:
+			}
+			else if(strElement=="combo")
+			{
 				pControl =  new CUICombo();
-				break;
-			default:
+			}
+			else
+			{
 				pControl =  new CUICombo();
-				break;
 			}
 			if (pControl)
 			{
@@ -173,7 +185,7 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 		// 公共属性
 		if (pControl)
 		{
-			if (UI_CONTROL_COMBO==pControl->GetType())
+			if (pControl->isCombo())
 			{
 				((CUICombo*)pControl)->OnControlRegister();
 				((CUICombo*)pControl)->LoadXml(UIGetDialogRes(), strElement);
@@ -301,29 +313,6 @@ void CUICombo::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 {
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bVisible == false)
-	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(IsPressed())
-	{
-		iState = CONTROL_STATE_PRESSED;
-	}
-	else if(m_bMouseOver)
-	{
-		iState = CONTROL_STATE_MOUSEOVER;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
-	}
-
 	// If this assert triggers, you need to call CUIComboResMgr::On*Device() from inside
 	// the application's device callbacks.  See the SDK samples for an example of how to do this.
 
@@ -337,7 +326,7 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 
 	// For invisible dialog, out now.
 
-	m_Style.draw(m_rcBoundingBox, L"",iState, fElapsedTime);
+	m_Style.draw(m_rcBoundingBox, L"",GetState(), fElapsedTime);
 
 	// If the dialog is minimized, skip rendering
 	// its controls.
@@ -356,7 +345,7 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 		s_pControlFocus->OnFrameRender(fTime, fElapsedTime);
 }
 
-void CUICombo::SendEvent(uint32 uEvent, CUIControl* pControl)
+void CUICombo::progressEvent(uint32 uEvent, CUIControl* pControl)
 {
 	// Discard events triggered programatically if these types of events haven't been
 	// enabled
@@ -556,12 +545,6 @@ void CUICombo::SetVisible(bool bVisible)
 
 void CUICombo::OnMouseMove(POINT point)
 {
-	if(s_pControlPressed)
-	{
-		s_pControlPressed->OnMouseMove(point);
-		return;
-	}
-
 	// Figure out which control the mouse is over now
 	CUIControl* pControl = GetControlAtPoint(point);
 
@@ -569,10 +552,10 @@ void CUICombo::OnMouseMove(POINT point)
 	{
 		pControl->OnMouseMove(point);
 	}
-	else if(s_pControlFocus)
-	{
-		s_pControlFocus->OnMouseMove(point);
-	}
+	//else if(s_pControlFocus)
+	//{
+	//	s_pControlFocus->OnMouseMove(point);
+	//}
 
 	// If the mouse is still over the same control, nothing needs to be done
 	if(pControl == s_pControlMouseOver)
@@ -596,13 +579,9 @@ void CUICombo::OnMouseWheel(POINT point,short wheelDelta)
 	{
 		pControl->OnMouseWheel(point,wheelDelta);
 		return;
+		//return true;
 	}
-	// 焦点控件
-	if(s_pControlFocus)
-	{
-		s_pControlFocus->OnMouseWheel(point,wheelDelta);
-		return;
-	}
+	// return false;
 }
 
 void CUICombo::OnLButtonDblClk(POINT point)
@@ -641,12 +620,6 @@ void CUICombo::OnLButtonUp(POINT point)
 	if(pControl!=NULL)
 	{
 		pControl->OnLButtonUp(point);
-	}
-	// 按住的控件
-	if(s_pControlPressed)
-	{
-		s_pControlPressed->SetPressed(false);
-		s_pControlPressed = NULL;
 	}
 }
 void CUICombo::OnRButtonDblClk(POINT point)

@@ -28,27 +28,7 @@ void CUIImage::OnFrameRender(double fTime, float fElapsedTime)
 	if(m_bVisible == false)
 		return;
 
-	CONTROL_STATE iState = CONTROL_STATE_NORMAL;
-
-	if(m_bEnabled == false)
-		iState = CONTROL_STATE_DISABLED;
-
-	if(m_bVisible == false)
-	{
-		iState = CONTROL_STATE_HIDDEN;
-	}
-	else if(m_bEnabled == false)
-	{
-		iState = CONTROL_STATE_DISABLED;
-	}
-	else if(m_bMouseOver)
-	{
-		iState = CONTROL_STATE_MOUSEOVER;
-	}
-	else if(IsFocus())
-	{
-		iState = CONTROL_STATE_FOCUS;
-	}
+	CONTROL_STATE iState = GetState();
 
 	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
 

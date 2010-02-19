@@ -2,7 +2,7 @@
 #include "FileSystem.h"
 #include "RenderSystem.h"
 
-#include "M2Model.h"
+//#include "M2Model.h"
 
 #include "CSVFile.h"
 #include "IORead.h"
@@ -31,7 +31,7 @@ bLoaded(false)
 
 	m_bHasAlphaTex = false;
 
-	m_ModelType = MT_NORMAL;
+//	m_ModelType = MT_NORMAL;
 	m_nOrder=0;
 }
 

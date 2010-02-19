@@ -51,16 +51,16 @@ void CUIComboNumber::setExtentSize(float fExtentSize)
 void CUIComboNumber::OnBtnUp()
 {
 	m_EditBox.SetFloat(m_EditBox.GetFloat()+m_fExtentSize);
-	GetParentDialog()->SendEvent(EVENT_DEFAULT, this);
+	SendEvent(EVENT_DEFAULT, this);
 }
 
 void CUIComboNumber::OnBtnDown()
 {
 	m_EditBox.SetFloat(m_EditBox.GetFloat()-m_fExtentSize);
-	GetParentDialog()->SendEvent(EVENT_DEFAULT, this);
+	SendEvent(EVENT_DEFAULT, this);
 }
 
 void CUIComboNumber::OnEditBoxChanged()
 {
-	GetParentDialog()->SendEvent(EVENT_DEFAULT, this);
+	SendEvent(EVENT_DEFAULT, this);
 }

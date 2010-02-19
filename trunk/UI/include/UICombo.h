@@ -39,6 +39,8 @@ public:
 	virtual bool Create(CUICombo* pParent = NULL);
 	virtual bool Create(const std::string& strID, CUICombo* pParent=NULL);
 
+	virtual bool isCombo(){return true;}
+
 	virtual void XMLParse(TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnChildSize(const RECT& rc);
@@ -88,7 +90,7 @@ public:
 	void ClearRadioButtonGroup(uint32 nGroup);
 
 	// Methods called by controls
-	void SendEvent(uint32 uEvent, CUIControl* pControl);
+	void progressEvent(uint32 uEvent, CUIControl* pControl);
 	void RequestFocus(CUIControl* pControl);
 
 	virtual void ClientToScreen(RECT& rc);

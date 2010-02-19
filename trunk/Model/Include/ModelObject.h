@@ -71,7 +71,7 @@ public:// 属性
 	// 设置显示粒子
 	void ShowParticle(uint32 uID, bool bShow = true){ if (uID<m_setShowParticle.size()) m_setShowParticle[uID] = bShow;}
 protected: 
-	ModelType m_ModelType;		// 模型类别
+//	ModelType m_ModelType;		// 模型类别
 	float	m_fRad;				// 半径
 	uint32	m_uLodID;			// 当前LodID
 	int		m_nLodLevel;		// LOD 等级

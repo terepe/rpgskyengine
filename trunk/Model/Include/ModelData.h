@@ -2,7 +2,7 @@
 #include "Manager.h"
 #include "Modelheaders.h"
 #include "Animated.h"
-#include "enums.h"
+//#include "enums.h"
 #include "ParticleEmitter.h"
 
 #include "Vec4D.h"
@@ -120,8 +120,8 @@ public: // 动画源
 public:
 	bool m_bHasAlphaTex;	// 是否有ALPHA透明纹理
 public:
-	ModelType	m_ModelType;	// 模型类别
-public:
+//	ModelType	m_ModelType;	// 模型类别
+//public:
 	std::vector<ModelAttachment> atts;
 	int attLookup[40];
 	int boneLookup[27];
