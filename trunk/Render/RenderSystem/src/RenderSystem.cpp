@@ -64,7 +64,7 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 		Color32 cFactor = material.cEmissive;
 		if (material.m_fOpacity<0.0f)
 		{
-			fOpacity = rand()%255;
+			fOpacity = (float)(rand()%255)/255.0f;
 		}
 		else
 		{
@@ -73,7 +73,7 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 
 		if (material.uDiffuse)
 		{
-			cFactor.a *= fOpacity;
+			cFactor.a*=(unsigned char)(cFactor.a*fOpacity);
 			SetTextureFactor(cFactor);
 			SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 			if(material.bBlend||material.m_fOpacity<1.0f)
@@ -131,9 +131,9 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 			SetDepthBufferFunc(true, false);
 			if(material.uReflection)
 			{
-				cFactor.r*=fOpacity;
-				cFactor.g*=fOpacity;
-				cFactor.b*=fOpacity;
+				cFactor.r*=(unsigned char)(cFactor.r*fOpacity);
+				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
+				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
 				SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ONE);
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
@@ -143,8 +143,9 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 				if (material.vTexAnim.lengthSquared()>0.0f)
 				{
 					Matrix matTex=Matrix::UNIT;
-					matTex._14=GetGlobalTimer().GetTime()*material.vTexAnim.x;
-					matTex._24=GetGlobalTimer().GetTime()*material.vTexAnim.y;
+					float fTime = (float)GetGlobalTimer().GetTime();
+					matTex._14=fTime*material.vTexAnim.x;
+					matTex._24=fTime*material.vTexAnim.y;
 					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
 				}
 			}
@@ -157,9 +158,9 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 			}
 			else if (material.uEmissive)
 			{
-				cFactor.r*=fOpacity;
-				cFactor.g*=fOpacity;
-				cFactor.b*=fOpacity;
+				cFactor.r*=(unsigned char)(cFactor.r*fOpacity);
+				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
+				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
 				SetBlendFunc(true, BLENDOP_ADD, SBF_ONE, SBF_ONE);
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
@@ -168,8 +169,9 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 				if (material.vTexAnim.lengthSquared()>0.0f)
 				{
 					Matrix matTex=Matrix::UNIT;
-					matTex._13=GetGlobalTimer().GetTime()*material.vTexAnim.x;
-					matTex._23=GetGlobalTimer().GetTime()*material.vTexAnim.y;
+					float fTime = (float)GetGlobalTimer().GetTime();
+					matTex._13=fTime*material.vTexAnim.x;
+					matTex._23=fTime*material.vTexAnim.y;
 					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
 				}
 			}

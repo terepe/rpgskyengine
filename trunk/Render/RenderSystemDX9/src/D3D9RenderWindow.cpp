@@ -62,7 +62,8 @@ bool CD3D9RenderWindow::Init(bool bParseCommandLine, bool bShowMsgBoxOnError, bo
 	{
 		// If still NULL, then something went wrong
 		DXUTDisplayErrorMessage(DXUTERR_NODIRECT3D);
-		return DXUT_ERR(L"Direct3DCreate9", DXUTERR_NODIRECT3D);
+		DXUT_ERR(L"Direct3DCreate9", DXUTERR_NODIRECT3D);
+		return false;//DXUT_ERR(L"Direct3DCreate9", DXUTERR_NODIRECT3D);
 	}
 	// Reset the timer
 	GetGlobalTimer().Reset();

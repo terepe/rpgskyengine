@@ -96,7 +96,6 @@ bool CD3D9Shader::createFromMemory(IDirect3DDevice9* pD3D9Device, void* pBuf, in
 	{
 		D3DXCreateEffectPool( & ms_pEffectPool);
 	}
-	ID3DXEffect* pEffect;
 	DWORD dwShaderFlags = D3DXFX_NOT_CLONEABLE;
 	ID3DXBuffer* errorBuffer = 0;
 	D3DXCreateEffect(pD3D9Device,pBuf,nSize, NULL, pInclude, dwShaderFlags, 
