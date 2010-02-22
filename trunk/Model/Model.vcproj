@@ -162,15 +162,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\M2Model.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Include\ModelComplex.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Include\ModelData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Modelheaders.h"
 				>
 			</File>
 			<File
@@ -223,38 +223,6 @@
 			</File>
 			<File
 				RelativePath=".\src\Skeleton.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="M2Model"
-			>
-			<File
-				RelativePath=".\src\database.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\database.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\dbcfile.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\dbcfile.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\enums.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\M2Model.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Modelheaders.h"
 				>
 			</File>
 		</Filter>
