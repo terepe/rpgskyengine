@@ -132,6 +132,16 @@ void CUIDialog::UpdateRects()
 	m_rcCaption.bottom = m_rcCaption.top+m_nCaptionHeight;
 }
 
+bool CUIDialog::ContainsPoint(POINT pt)
+{
+	if (CUICombo::ContainsPoint(pt))
+	{
+		return true;
+	}
+	CUIControl* pControl = GetControlAtPoint(pt);
+	return pControl!=NULL;
+}
+
 void CUIDialog::OnFrameMove(double fTime, float fElapsedTime)
 {
 	if(!m_bMinimized&&m_bVisible)
@@ -326,19 +336,18 @@ CUIDialog* CUIDialog::GetChildDialogAtPoint(POINT pt)
 void CUIDialog::SetVisible(bool bVisible)
 {
 	CUICombo::SetVisible(bVisible);
-	if (bVisible&&GetParentDialog())
+	if (bVisible)
 	{
-		((CUIDialog*)GetParentDialog())->UnregisterDialog(this);
-		((CUIDialog*)GetParentDialog())->RegisterDialog(this);
+		toTop();
 	}
 }
 
 void CUIDialog::SetFocus(bool bFocus)
 {
-	if (GetParentDialog())
+	CUICombo::SetFocus(bFocus);
+	if (bFocus)
 	{
-		((CUIDialog*)GetParentDialog())->UnregisterDialog(this);
-		((CUIDialog*)GetParentDialog())->RegisterDialog(this);
+		toTop();
 	}
 }
 
@@ -394,7 +403,7 @@ void CUIDialog::OnLButtonDblClk(POINT point)
 void CUIDialog::OnLButtonDown(POINT point)
 {
 	// 设置为焦点对话框
-	SetFocus(true);
+	toTop();
 	// 子对话框
 	CUIDialog* pChildDialog = GetChildDialogAtPoint(point);
 	if(pChildDialog)
@@ -445,7 +454,7 @@ void CUIDialog::OnRButtonDblClk(POINT point)
 void CUIDialog::OnRButtonDown(POINT point)
 {
 	// 设置为焦点对话框
-	SetFocus(true);
+	toTop();
 	// 子对话框
 	CUIDialog* pChildDialog = GetChildDialogAtPoint(point);
 	if(pChildDialog)
@@ -480,7 +489,7 @@ void CUIDialog::OnMButtonDblClk(POINT point)
 void CUIDialog::OnMButtonDown(POINT point)
 {
 	// 设置为焦点对话框
-	SetFocus(true);
+	toTop();
 	// 子对话框
 	CUIDialog* pChildDialog = GetChildDialogAtPoint(point);
 	if(pChildDialog)
@@ -683,4 +692,22 @@ bool CUIDialog::UnregisterDialog(CUIDialog *pDialog)
 		}
 	}
 	return false;
+}
+
+bool CUIDialog::setTopDialog(const CUIDialog *pDialog)
+{
+	if (!UnregisterDialog(this))
+	{
+		return false;
+	}
+	return RegisterDialog(this);
+}
+
+bool CUIDialog::toTop()
+{
+	if (!GetParentDialog())
+	{
+		return false;
+	}
+	return ((CUIDialog*)GetParentDialog())->setTopDialog(this);
 }

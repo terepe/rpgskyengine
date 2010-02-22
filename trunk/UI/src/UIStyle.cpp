@@ -223,6 +223,14 @@ void CUICyclostyle::Refresh()
 	//m_FontColor.Current = m_FontColor.States[ CONTROL_STATE_HIDDEN ];
 }
 
+void CUICyclostyle::add(const CUICyclostyle& cyc)
+{
+	m_SpriteStyle.insert(m_SpriteStyle.end(), cyc.m_SpriteStyle.begin(), cyc.m_SpriteStyle.end());   
+	m_setBorder.insert(m_setBorder.end(), cyc.m_setBorder.begin(), cyc.m_setBorder.end()); 
+	m_setBackgroundColor.insert(m_setBackgroundColor.end(), cyc.m_setBackgroundColor.begin(), cyc.m_setBackgroundColor.end()); 
+	m_FontStyle.insert(m_FontStyle.end(), cyc.m_FontStyle.begin(), cyc.m_FontStyle.end()); 
+}
+
 CUIStyleMgr::CUIStyleMgr()
 {
 }
@@ -478,11 +486,10 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 				Tokenizer(pStyleElement->Attribute("name"),setTokenizer);
 				for (size_t i=0; i<setTokenizer.size(); ++i)
 				{
-					m_CyclostyleList[setTokenizer[i]] = Cyclostyle;
+					m_CyclostyleList[setTokenizer[i]].add(Cyclostyle);
 				}
 			}
 		}
-
 
 		// 查找下一个
 		pStyleElement = pStyleElement->NextSiblingElement("element");

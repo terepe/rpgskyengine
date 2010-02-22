@@ -42,8 +42,8 @@ public:
 	int		GetScrollBarWidth() const { return m_nSBWidth; }
 	void	SetScrollBarWidth(int nWidth) { m_nSBWidth = nWidth; UpdateRects(); }
 	void	SetBorder(int nBorder, int nMargin) { m_nBorder = nBorder; m_nMargin = nMargin; }
-	HRESULT	AddItem(const std::wstring& wstrText, void *pData=NULL);
-	HRESULT	InsertItem(int nIndex, const std::wstring& wstrText, void *pData=NULL);
+	bool	AddItem(const std::wstring& wstrText, void *pData=NULL);
+	bool	InsertItem(int nIndex, const std::wstring& wstrText, void *pData=NULL);
 	void	RemoveItem(int nIndex);
 	void	RemoveItemByText(WCHAR *wszText);
 	void	RemoveItemByData(void *pData);

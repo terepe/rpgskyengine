@@ -127,16 +127,6 @@ void CUIComboBox::OnLButtonDown(POINT point)
 		}
 		return;
 	}
-
-	// Mouse click not on main control or in dropdown, fire an event if needed
-	if(m_ListBox.IsVisible())
-	{
-		if(!m_ListBox.ContainsPoint(point))
-		{
-			SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
-			m_ListBox.SetVisible(false);
-		}
-	}
 }
 
 void CUIComboBox::OnLButtonUp(POINT point)
@@ -210,6 +200,18 @@ void CUIComboBox::OnFrameRender(double fTime, float fElapsedTime)
 	m_Style.draw(m_rcBoundingBox,m_wstrText,iState, fElapsedTime, fBlendRate);
 }
 
+bool CUIComboBox::AddItem(const std::wstring& wstrText, void* pData)
+{
+	if (m_ListBox.AddItem(wstrText,pData))
+	{
+		if(m_ListBox.GetItemCount()==1)
+		{
+			m_ListBox.SelectItem(0);
+		}
+		return true;
+	}
+	return false;
+}
 const std::wstring&	CUIComboBox::GetText()
 {
 	UIListBoxItem* pItem = m_ListBox.GetSelectedItem();

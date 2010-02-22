@@ -24,6 +24,7 @@ public:
 	virtual void OnFocusOut();
 	virtual void OnFrameRender(double fTime, float fElapsedTime);
 
+	bool	AddItem(const std::wstring& wstrText, void *pData=NULL);
 	//void    SetDropHeight(UINT nHeight) { m_nDropHeight = nHeight; UpdateRects(); }
 	virtual const std::wstring&	GetText();
 	CUIListBox& getListBox();

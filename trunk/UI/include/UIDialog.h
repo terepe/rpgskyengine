@@ -15,7 +15,7 @@ public:
 	virtual void OnChildSize(const RECT& rc);
 	virtual void OnSize(const RECT& rc);
 	virtual void UpdateRects();
-
+	virtual bool ContainsPoint(POINT pt);
 	// my message
 	virtual bool postMsg(const std::string& strMsg);
 	virtual bool postMsg(uint32 uEvent);
@@ -26,6 +26,7 @@ public:
 
 	virtual void SetVisible(bool bVisible);
 	virtual void SetFocus(bool bFocus=true);
+	virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 
 	virtual void ClientToScreen(RECT& rc);
 	virtual void ScreenToClient(RECT& rc);
@@ -64,6 +65,8 @@ public:
 
 	bool RegisterDialog(CUIDialog *pDialog);
 	bool UnregisterDialog(CUIDialog *pDialog);
+	bool setTopDialog(const CUIDialog *pDialog);
+	bool toTop();
 protected:
 	CUIStyle m_StyleCaption;
 
