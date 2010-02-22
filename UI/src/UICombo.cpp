@@ -328,21 +328,26 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 
 	m_Style.draw(m_rcBoundingBox, L"",GetState(), fElapsedTime);
 
-	// If the dialog is minimized, skip rendering
-	// its controls.
+	// render controls
 	for(uint32 i=0; i < m_Controls.size(); i++)
 	{
 		CUIControl* pControl = m_Controls[i];   
 
-		//焦点控件最后绘制
-		if(pControl == s_pControlFocus)
+		if (pControl->IsFocus())
+		{
 			continue;
-
+		}
 		pControl->OnFrameRender(fTime, fElapsedTime);
 	}
+	for(uint32 i=0; i < m_Controls.size(); i++)
+	{
+		CUIControl* pControl = m_Controls[i];   
 
-	if(s_pControlFocus != NULL && s_pControlFocus->GetParentDialog() == this)
-		s_pControlFocus->OnFrameRender(fTime, fElapsedTime);
+		if (pControl->IsFocus())
+		{
+			pControl->OnFrameRender(fTime, fElapsedTime);
+		}
+	}
 }
 
 void CUICombo::progressEvent(uint32 uEvent, CUIControl* pControl)
@@ -605,6 +610,7 @@ void CUICombo::OnLButtonDown(POINT point)
 		pControl->OnLButtonDown(point);
 		return;
 	}
+	SetFocus(true);
 }
 void CUICombo::OnLButtonUp(POINT point)
 {
@@ -621,6 +627,7 @@ void CUICombo::OnLButtonUp(POINT point)
 	{
 		pControl->OnLButtonUp(point);
 	}
+	SetFocus(true);
 }
 void CUICombo::OnRButtonDblClk(POINT point)
 {
@@ -631,6 +638,7 @@ void CUICombo::OnRButtonDblClk(POINT point)
 		pControl->OnRButtonDblClk(point);
 		return;
 	}
+	SetFocus(true);
 }
 void CUICombo::OnRButtonDown(POINT point)
 {
@@ -643,6 +651,7 @@ void CUICombo::OnRButtonDown(POINT point)
 		pControl->OnRButtonDown(point);
 		return;
 	}
+	SetFocus(true);
 }
 void CUICombo::OnRButtonUp(POINT point)
 {
@@ -663,6 +672,7 @@ void CUICombo::OnMButtonDblClk(POINT point)
 		pControl->OnMButtonDblClk(point);
 		return;
 	}
+	SetFocus(true);
 }
 void CUICombo::OnMButtonDown(POINT point)
 {
@@ -675,6 +685,7 @@ void CUICombo::OnMButtonDown(POINT point)
 		pControl->OnMButtonDown(point);
 		return;
 	}
+	SetFocus(true);
 }
 void CUICombo::OnMButtonUp(POINT point)
 {
@@ -684,6 +695,36 @@ void CUICombo::OnMButtonUp(POINT point)
 	{
 		pControl->OnMButtonUp(point);
 		return;
+	}
+}
+
+bool CUICombo::IsFocus()
+{
+	if (CUIControl::IsFocus())
+	{
+		return true;
+	}
+	
+	for(uint32 i=0; i < m_Controls.size(); i++)
+	{
+		CUIControl* pControl = m_Controls[i];
+		if (pControl->IsFocus())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void CUICombo::OnFocusOut()
+{
+	CUIControl::OnFocusOut();
+	if (GetParentDialog())
+	{
+		if (!GetParentDialog()->IsFocus())
+		{
+			GetParentDialog()->OnFocusOut();
+		}
 	}
 }
 
@@ -834,21 +875,6 @@ void CUICombo::ClearRadioButtonGroup(uint32 nButtonGroup)
 	}
 }
 
-void CUICombo::RequestFocus(CUIControl* pControl)
-{
-	if(s_pControlFocus == pControl)
-		return;
-
-	if(!pControl->CanHaveFocus())
-		return;
-
-	if(s_pControlFocus)
-		s_pControlFocus->OnFocusOut();
-
-	pControl->OnFocusIn();
-	s_pControlFocus = pControl;
-}
-
 void CUICombo::ClientToScreen(RECT& rc)
 {
 	CUIControl::ClientToScreen(rc);
@@ -869,17 +895,6 @@ void CUICombo::ClearState()
 	s_pControlFocus = NULL;
 	s_pControlPressed = NULL;
 	s_pControlMouseOver = NULL;
-}
-
-void CUICombo::ClearFocus()
-{
-	if(s_pControlFocus)
-	{
-		s_pControlFocus->OnFocusOut();
-		s_pControlFocus = NULL;
-	}
-
-	ReleaseCapture();
 }
 
 void CUICombo::FocusDefaultControl()

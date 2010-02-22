@@ -100,7 +100,7 @@ class DLL_EXPORT CUICyclostyle
 public:
 	CUICyclostyle(){}
 	void Refresh();
-
+	void add(const CUICyclostyle& cyc);
 	std::vector<CUISpriteCyclostyle> m_SpriteStyle;
 	std::vector<StyleBorder> m_setBorder;
 	std::vector<StyleBackgroundColor> m_setBackgroundColor;

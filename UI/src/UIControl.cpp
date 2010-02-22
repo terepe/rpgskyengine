@@ -368,7 +368,10 @@ bool CUIControl::ContainsPoint(POINT pt)
 
 void CUIControl::SendEvent(uint32 uEvent, CUIControl* pControl)
 {
-	GetParentDialog()->progressEvent(uEvent, pControl);
+	if (GetParentDialog())
+	{
+		GetParentDialog()->progressEvent(uEvent, pControl);
+	}
 }
 
 void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
@@ -425,18 +428,36 @@ void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
 
 void CUIControl::SetFocus(bool bFocus)
 {
-	if (GetParentDialog())
+	if (bFocus)
 	{
-		if (bFocus)
+		if(s_pControlFocus==this)
+			return;
+		if(!CanHaveFocus())
+			return;
+		CUIControl* pOldControlFocus=s_pControlFocus;
+		s_pControlFocus=this;
+		if(pOldControlFocus&&!pOldControlFocus->IsFocus())
 		{
-			GetParentDialog()->RequestFocus(this);
+			pOldControlFocus->OnFocusOut();
 		}
-		else
-		{
-			if(!GetParentDialog()->IsKeyboardInputEnabled())
-				m_pParentDialog->ClearFocus();
-		}
+		OnFocusIn();
+		
 	}
+	else if(GetParentDialog()&&!GetParentDialog()->IsKeyboardInputEnabled())
+	{
+		ClearFocus();
+	}
+}
+
+void CUIControl::ClearFocus()
+{
+	if(s_pControlFocus)
+	{
+		s_pControlFocus->OnFocusOut();
+		s_pControlFocus = NULL;
+	}
+
+	ReleaseCapture();
 }
 
 void CUIControl::ClientToScreen(RECT& rc)

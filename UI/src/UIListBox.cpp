@@ -51,16 +51,16 @@ void CUIListBox::UpdateRects()
 	}
 }
 
-HRESULT CUIListBox::AddItem(const std::wstring& wstrText, void *pData)
+bool CUIListBox::AddItem(const std::wstring& wstrText, void *pData)
 {
 	return InsertItem(m_Items.size(), wstrText, pData);
 }
 
-HRESULT CUIListBox::InsertItem(int nIndex, const std::wstring& wstrText, void *pData)
+bool CUIListBox::InsertItem(int nIndex, const std::wstring& wstrText, void *pData)
 {
 	UIListBoxItem *pNewItem = new UIListBoxItem;
 	if(!pNewItem)
-		return E_OUTOFMEMORY;
+		return false;
 
 	pNewItem->wstrText = wstrText;
 	pNewItem->pData = pData;
@@ -71,7 +71,7 @@ HRESULT CUIListBox::InsertItem(int nIndex, const std::wstring& wstrText, void *p
 
 	m_ScrollBar.SetTrackRange(0, m_Items.size());
 
-	return S_OK;
+	return true;
 }
 
 void CUIListBox::RemoveItem(int nIndex)

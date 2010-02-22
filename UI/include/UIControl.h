@@ -180,9 +180,10 @@ public:
 
 	RECT& GetBoundingBox(){return m_rcBoundingBox;}
 
-	bool IsPressed(){return this==s_pControlPressed;}
+	virtual bool IsPressed(){return this==s_pControlPressed;}
 	void SetPressed(bool bPressed){s_pControlPressed=bPressed?this:NULL;}
-	bool IsFocus(){return this==s_pControlFocus;}
+	virtual bool IsFocus(){return this==s_pControlFocus;}
+	static void ClearFocus();
 	static CUIControl* s_pControlFocus;        // The control which has focus
 	static CUIControl* s_pControlPressed;      // The control currently pressed
 	static CUIControl* s_pControlMouseOver;    // The control which is hovered over

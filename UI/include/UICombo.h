@@ -91,7 +91,6 @@ public:
 
 	// Methods called by controls
 	void progressEvent(uint32 uEvent, CUIControl* pControl);
-	void RequestFocus(CUIControl* pControl);
 
 	virtual void ClientToScreen(RECT& rc);
 	virtual void ScreenToClient(RECT& rc);
@@ -132,8 +131,10 @@ public:
 	// Shared resource access. Indexed fonts and textures are shared among
 	// all the controls.
 
+	virtual bool IsFocus();
+	virtual void OnFocusOut();
+
 	static void ClearState();
-	static void ClearFocus();
 	void FocusDefaultControl();
 
 	bool m_bNonUserEvents;
