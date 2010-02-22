@@ -184,6 +184,7 @@ public:
 	void SetPressed(bool bPressed){s_pControlPressed=bPressed?this:NULL;}
 	virtual bool IsFocus(){return this==s_pControlFocus;}
 	static void ClearFocus();
+	static void clearFocus();
 	static CUIControl* s_pControlFocus;        // The control which has focus
 	static CUIControl* s_pControlPressed;      // The control currently pressed
 	static CUIControl* s_pControlMouseOver;    // The control which is hovered over

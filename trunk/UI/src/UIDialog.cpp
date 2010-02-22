@@ -623,9 +623,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 		if((!bForward && nLastDialogIndex < nDialogIndex) ||
 			(bForward && nDialogIndex < nLastDialogIndex))
 		{
-			if(s_pControlFocus)
-				s_pControlFocus->OnFocusOut();
-			s_pControlFocus = NULL;
+			clearFocus();
 			return true;
 		}
 
@@ -637,10 +635,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 		// move focus
 		if(pControl->GetParentDialog()->IsKeyboardInputEnabled() && pControl->CanHaveFocus())
 		{
-			if(s_pControlFocus)
-				s_pControlFocus->OnFocusOut();
-			s_pControlFocus = pControl;
-			s_pControlFocus->OnFocusIn();
+			pControl->SetFocus(true);
 			return true;
 		}
 
