@@ -58,7 +58,7 @@ void CMapSound::Process(void* pInfo)
 	Vec3D vHeroWorldpos;
 	//g_objHero.GetCellPos( posHero );
 	//GetSceneMgr().Cell2World( posHero, vHeroWorldpos );
-	BOOL bActive;
+	//BOOL bActive;
 	if((abs(vHeroWorldpos.x - m_vPos.x) > m_nRange)// && abs(posHero.x - m_vPos.x) > 1000)
 		|| (abs(vHeroWorldpos.z - m_vPos.z) > m_nRange))// && abs(posHero.y - m_vPos.y) > 1000))
 	{
