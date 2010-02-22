@@ -280,13 +280,11 @@ void CUICombo::RemoveAllControls()
 
 void CUICombo::Refresh()
 {
-	if(s_pControlFocus)
-		s_pControlFocus->OnFocusOut();
+	clearFocus();
 
 	if(s_pControlMouseOver)
 		s_pControlMouseOver->OnMouseLeave();
 
-	s_pControlFocus = NULL;
 	s_pControlPressed = NULL;
 	s_pControlMouseOver = NULL;
 
@@ -483,9 +481,16 @@ bool CUICombo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 CUIControl* CUICombo::GetControlAtPoint(POINT pt)
 {
-	if (s_pControlFocus&&s_pControlFocus->GetParentDialog()==this&&s_pControlFocus->ContainsPoint(pt))
+	for(uint32 i=0; i < m_Controls.size(); i++)
 	{
-		return s_pControlFocus;
+		CUIControl* pControl = m_Controls[i];
+		if (pControl->IsFocus())
+		{
+			if (pControl->ContainsPoint(pt))
+			{
+				return pControl;
+			}
+		}
 	}
 	for(int i = m_Controls.size()-1; i >= 0; i--)
 	{
@@ -626,8 +631,8 @@ void CUICombo::OnLButtonUp(POINT point)
 	if(pControl!=NULL)
 	{
 		pControl->OnLButtonUp(point);
+		return;
 	}
-	SetFocus(true);
 }
 void CUICombo::OnRButtonDblClk(POINT point)
 {
@@ -882,19 +887,6 @@ void CUICombo::ClientToScreen(RECT& rc)
 
 void CUICombo::ScreenToClient(RECT& rc)
 {
-}
-
-void CUICombo::ClearState()
-{
-	if(s_pControlFocus)
-		s_pControlFocus->OnFocusOut();
-
-	if(s_pControlMouseOver)
-		s_pControlMouseOver->OnMouseLeave();
-
-	s_pControlFocus = NULL;
-	s_pControlPressed = NULL;
-	s_pControlMouseOver = NULL;
 }
 
 void CUICombo::FocusDefaultControl()

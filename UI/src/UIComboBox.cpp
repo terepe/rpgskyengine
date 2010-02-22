@@ -14,14 +14,18 @@ void CUIComboBox::OnControlRegister()
 	CUICombo::OnControlRegister();
 	RegisterControl("IDC_LISTBOX",m_ListBox);
 	RegisterControlEvent("IDC_LISTBOX",(PEVENT)&CUIComboBox::OnSelectionChanged);
+	RegisterControlEvent("IDC_LISTBOX",(PEVENT)&CUIComboBox::OnSelectionChanged,EVENT_LISTBOX_SELECTION);
 
 	m_ListBox.SetVisible(false);
 }
 
 void CUIComboBox::OnSelectionChanged()
 {
-	if(!m_ListBox.IsVisible())
-		SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
+	if(m_ListBox.IsVisible())
+	{
+		m_ListBox.SetVisible(false);
+	}
+	SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
 }
 
 bool CUIComboBox::ContainsPoint(POINT pt) 

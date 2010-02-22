@@ -134,7 +134,6 @@ public:
 	virtual bool IsFocus();
 	virtual void OnFocusOut();
 
-	static void ClearState();
 	void FocusDefaultControl();
 
 	bool m_bNonUserEvents;

@@ -441,7 +441,6 @@ void CUIControl::SetFocus(bool bFocus)
 			pOldControlFocus->OnFocusOut();
 		}
 		OnFocusIn();
-		
 	}
 	else if(GetParentDialog()&&!GetParentDialog()->IsKeyboardInputEnabled())
 	{
@@ -451,13 +450,18 @@ void CUIControl::SetFocus(bool bFocus)
 
 void CUIControl::ClearFocus()
 {
+	clearFocus();
+	ReleaseCapture();
+}
+
+void CUIControl::clearFocus()
+{
 	if(s_pControlFocus)
 	{
-		s_pControlFocus->OnFocusOut();
-		s_pControlFocus = NULL;
+		CUIControl* pOldControlFocus=s_pControlFocus;
+		s_pControlFocus=NULL;
+		pOldControlFocus->OnFocusOut();
 	}
-
-	ReleaseCapture();
 }
 
 void CUIControl::ClientToScreen(RECT& rc)
