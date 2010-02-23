@@ -14,6 +14,8 @@
 #include "UIEditBox.h"
 #include "UIIMEEditBox.h"
 #include "UIDisplay.h"
+#include "UIComboNumber.h"
+#include "UIComboColor.h"
 #include "tinyxml.h"
 
 ////double        CUICombo::s_fTimeRefresh = 0.0f;
@@ -136,10 +138,6 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 			{
 				pControl =  new CUIRadioButton();
 			}
-			else if(strElement=="combobox")
-			{
-				pControl =  new CUIComboBox();
-			}
 			else if(strElement=="slider")
 			{
 				pControl =  new CUISlider();
@@ -156,21 +154,33 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 			{
 				pControl =  new CUIIMEEditBox();
 			}
-			else if(strElement=="imeeditbox")
-			{
-				pControl =  new CUIListBox();
-			}
 			else if(strElement=="grid")
 			{
 				pControl =  new CUIGrid();
+			}
+			else if(strElement=="combo")
+			{
+				pControl =  new CUICombo();
 			}
 			else if(strElement=="scrollbar")
 			{
 				pControl =  new CUIScrollBar();
 			}
-			else if(strElement=="combo")
+			else if(strElement=="listbox")
 			{
-				pControl =  new CUICombo();
+				pControl =  new CUIListBox();
+			}
+			else if(strElement=="combobox")
+			{
+				pControl =  new CUIComboBox();
+			}
+			else if(strElement=="numeditbox")
+			{
+				pControl =  new CUIComboNumber();
+			}
+			else if(strElement=="color")
+			{
+				pControl =  new CUIComboColor();
 			}
 			else
 			{
