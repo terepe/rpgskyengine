@@ -434,11 +434,10 @@ void CTextRender::DrawTextVB(int nVertexCount, void* pVB)
 	R.SetTexture(0, (CTexture*)NULL);
 }
 
-void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT& rcDest, UINT format, Color32 dwColor)
+void CTextRender::drawText(const std::wstring& strText,int cchText,const RECT& rcDest,UINT format,Color32 dwColor,RECT* prcRet)
 {
-	RECT rc= rcDest;
 	bool bVisible = !(format & DTL_CALCRECT);
-	int nX = rc.left;
+	int nX = rcDest.left;
 	std::vector<VERTEX_XYZW_DIF_TEX> vb;
 	size_t uTextLength = strText.length();
 	if (cchText > 0)
@@ -459,12 +458,12 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT&
 				int nX1 = nX+charInfo->nWidth;
 				float fSecondU = charInfo->fU1;
 				// ³¬³ö¾ØÕó·¶Î§ ½Ø¶Ï
-				if (0 != rc.right && nX1 > rc.right)
+				if (0 != rcDest.right && nX1 > rcDest.right)
 				{
-					fSecondU = charInfo->fU1 - (charInfo->fU1 - charInfo->fU0) * (float) (nX1 - rc.right) / (float) charInfo->nWidth;
-					nX1 = rc.right;
+					fSecondU = charInfo->fU1 - (charInfo->fU1 - charInfo->fU0) * (float) (nX1 - rcDest.right) / (float) charInfo->nWidth;
+					nX1 = rcDest.right;
 				}
-				int nY0 = rc.top+m_nH-charInfo->nOffsetY;
+				int nY0 = rcDest.top+m_nH-charInfo->nOffsetY;
 				int nY1 = nY0+charInfo->nHeight;
 				//if (dwShadowColor.a)
 				//{
@@ -492,7 +491,7 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT&
 			if (format & DTL_CALCRECT)
 			{
 			}
-			else if (0 != rc.right && nX > rc.right)
+			else if (0 != rcDest.right && nX > rcDest.right)
 			{
 				break;
 			}
@@ -501,12 +500,13 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT&
 	if (format > 0)
 	{
 		// Ö»Ðè¼ÆËã¾ØÕó
-		if (format & DTL_CALCRECT)
+		if (prcRet)
 		{
-			//rc.left = 0;
-			rc.right = nX;
-			//rc.top = 0;
-			rc.bottom = rc.top+m_nH;
+			*prcRet=rcDest;
+			//rcDest.left = 0;
+			prcRet->right = nX;
+			//rcDest.top = 0;
+			prcRet->bottom = rcDest.top+m_nH;
 		}
 		else
 		{
@@ -514,20 +514,20 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT&
 			int nOffsetY = 0;
 			if (format & DTL_CENTER)
 			{
-				nOffsetX = (rc.right - nX)/2;
+				nOffsetX = (rcDest.right - nX)/2;
 			}
 			else if (format & DTL_RIGHT)
 			{
-				nOffsetX = rc.right - nX;
+				nOffsetX = rcDest.right - nX;
 			}
 
 			if (format & DTL_VCENTER)
 			{
-				nOffsetY = (rc.bottom - rc.top - m_nH)/2;
+				nOffsetY = (rcDest.bottom - rcDest.top - m_nH)/2;
 			}
 			else if (format & DTL_BOTTOM)
 			{
-				nOffsetY = rc.bottom - rc.top - m_nH;
+				nOffsetY = rcDest.bottom - rcDest.top - m_nH;
 			}
 			// update
 			for (std::vector<VERTEX_XYZW_DIF_TEX>::iterator it = vb.begin(); it != vb.end(); ++it)
