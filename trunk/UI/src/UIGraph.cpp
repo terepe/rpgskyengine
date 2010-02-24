@@ -122,7 +122,7 @@ void UIGraph::DrawSprite(const RECT& rcDest, UINT TextureID, Color32 color)
 
 void UIGraph::CalcTextRect(const std::wstring& wstrText, RECT& rcDest)
 {
-	GetTextRender().drawText(wstrText, -1, rcDest,DTL_CALCRECT);
+	GetTextRender().drawText(wstrText, -1, rcDest,DTL_CALCRECT,0,&rcDest);
 }
 
 void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex, RECT& rcDest, bool bShadow, int nCount)
