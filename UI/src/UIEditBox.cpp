@@ -71,10 +71,10 @@ void CUIEditBox::PlaceCaret(int nCP)
 	else
 		// If the right of the character is bigger than the offset of the control's
 		// right edge, we need to scroll right to this character.
-		if(nX2 > nX1st + RectWidth(m_rcBoundingBox))
+		if(nX2 > nX1st + RectWidth(m_rcText))
 		{
 			// Compute the X of the new left-most pixel
-			int nXNewLeft = nX2 - RectWidth(m_rcBoundingBox);
+			int nXNewLeft = nX2 - RectWidth(m_rcText);
 
 			// Compute the char position of this character
 			int nCPNew1st;
@@ -360,7 +360,7 @@ void CUIEditBox::OnMouseMove(POINT pt)
 		int nCP, nX1st;
 		bool bTrail;
 		m_Buffer.CPtoX(m_nFirstVisible, FALSE, nX1st);  // X offset of the 1st visible char
-		if(m_Buffer.XtoCP(pt.x - m_rcBoundingBox.left + nX1st, nCP, bTrail))
+		if(m_Buffer.XtoCP(pt.x - m_rcText.left + nX1st, nCP, bTrail))
 		{
 			// Cap at the NULL character.
 			if(bTrail && nCP < m_Buffer.GetTextSize())
@@ -380,7 +380,7 @@ void CUIEditBox::OnLButtonDown(POINT point)
 	int nCP, nX1st;
 	bool bTrail;
 	m_Buffer.CPtoX(m_nFirstVisible, FALSE, nX1st);  // X offset of the 1st visible char
-	if(m_Buffer.XtoCP(point.x - m_rcBoundingBox.left + nX1st, nCP, bTrail))
+	if(m_Buffer.XtoCP(point.x - m_rcText.left + nX1st, nCP, bTrail))
 	{
 		// Cap at the NULL character.
 		if(bTrail && nCP < m_Buffer.GetTextSize())
@@ -575,9 +575,8 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	}
 
 	m_Style.draw(m_rcBoundingBox,m_Buffer.GetBuffer() + m_nFirstVisible,CONTROL_STATE_NORMAL,fElapsedTime);
-	//m_Style.Blend(CONTROL_STATE_NORMAL, fElapsedTime);
-	//UIGraph::DrawText(, m_Style, 0, m_rcBoundingBox);
-	//
+	m_rcText = m_Style.m_mapFont[0].rc;
+
 	// Compute the X coordinates of the first visible character.
 	//
 	int nXFirst;
@@ -603,13 +602,13 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 		if(nSelLeftX > nSelRightX)
 		{ int nTemp = nSelLeftX; nSelLeftX = nSelRightX; nSelRightX = nTemp; }
 
-		SetRect(&rcSelection, nSelLeftX, m_rcBoundingBox.top, nSelRightX, m_rcBoundingBox.bottom);
-		OffsetRect(&rcSelection, m_rcBoundingBox.left - nXFirst, 0);
-		IntersectRect(&rcSelection, &m_rcBoundingBox, &rcSelection);
+		SetRect(&rcSelection, nSelLeftX, m_rcText.top, nSelRightX, m_rcText.bottom);
+		OffsetRect(&rcSelection, m_rcText.left - nXFirst, 0);
+		IntersectRect(&rcSelection, &m_rcText, &rcSelection);
 
 		int nFirstToRender = __max(m_nFirstVisible, __min(m_nSelStart, m_nCaret));
 		int nNumChatToRender = __max(m_nSelStart, m_nCaret) - nFirstToRender;
-		//m_Styles[0].m_crFontColor = m_SelTextColor;
+		//m_Styles[0].m_mapFont = m_SelTextColor;
 		///m_Style.Blend(CONTROL_STATE_FOCUS, fElapsedTime, 1);
 		std::wstring wstrSelection = m_Buffer.GetBuffer() + nFirstToRender;
 		wstrSelection = wstrSelection.substr(0,nNumChatToRender);
@@ -631,8 +630,8 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	if(IsFocus() && m_bCaretOn && !s_bHideCaret)
 	{
 		// Start the rectangle with insert mode caret
-		RECT rcCaret = { m_rcBoundingBox.left - nXFirst + nCaretX - 1, m_rcBoundingBox.top,
-			m_rcBoundingBox.left - nXFirst + nCaretX + 1, m_rcBoundingBox.bottom };
+		RECT rcCaret = { m_rcText.left - nXFirst + nCaretX - 1, m_rcText.top,
+			m_rcText.left - nXFirst + nCaretX + 1, m_rcText.bottom };
 
 		// If we are in overwrite mode, adjust the caret rectangle
 		// to fill the entire character.
@@ -641,7 +640,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 			// Obtain the right edge X coord of the current character
 			int nRightEdgeX;
 			m_Buffer.CPtoX(m_nCaret, TRUE, nRightEdgeX);
-			rcCaret.right = m_rcBoundingBox.left - nXFirst + nRightEdgeX;
+			rcCaret.right = m_rcText.left - nXFirst + nRightEdgeX;
 		}
 		m_StyleCaret.draw(rcCaret,L"",CONTROL_STATE_NORMAL,fElapsedTime);
 	}

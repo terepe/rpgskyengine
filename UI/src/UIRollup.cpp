@@ -530,8 +530,8 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 		return;
 
 
-	m_Style.Blend(CONTROL_STATE_NORMAL, fElapsedTime);
-	UIGraph::DrawSprite(m_Style, 0, m_rcBoundingBox);
+	//m_Style.Blend(CONTROL_STATE_NORMAL, fElapsedTime);
+//	UIGraph::DrawSprite(m_Style, 0, m_rcBoundingBox);
 
 	// Render the text
 	if(m_Pages.size() > 0)
@@ -584,7 +584,7 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 				if(bSelectedStyle)
 				{
 					rcSel.top = rc.top; rcSel.bottom = rc.bottom;
-					UIGraph::DrawSprite(m_Style, 1, rcSel);
+	//				UIGraph::DrawSprite(m_Style, 1, rcSel);
 					UIGraph::DrawText(pPage->wstrName, m_Style, 1, rc);
 				}
 				else

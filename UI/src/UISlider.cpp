@@ -217,8 +217,6 @@ void CUISlider::OnFrameRender(double fTime, float fElapsedTime)
 	CONTROL_STATE iState = GetState();
 	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
 
-	m_Style.Blend(iState, fElapsedTime, fBlendRate);
-
 	m_Style.draw(m_rcBoundingBox,L"",iState, fElapsedTime, fBlendRate);
 	m_StyleButton.draw(m_rcButton,L"",iState, fElapsedTime, fBlendRate);
 }

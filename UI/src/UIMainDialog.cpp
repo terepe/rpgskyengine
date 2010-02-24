@@ -28,7 +28,7 @@ void CUIMainDialog::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	else
 	{
-		CUIControl::s_TipStyle.Blend(CONTROL_STATE_HIDDEN,fElapsedTime);
+		CUIControl::s_TipStyle.Blend(m_rcBoundingBox, CONTROL_STATE_HIDDEN,fElapsedTime);
 	}
 }
 

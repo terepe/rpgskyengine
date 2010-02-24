@@ -62,4 +62,5 @@ protected:
 	static bool s_bHideCaret;   // If true, we don't render the caret.
 
 	bool	m_bEditEnabled;
+	RECT	m_rcText;			// Rect of text.
 };

@@ -34,6 +34,12 @@ enum SPRITE_LAYOUT_TYPE
 	SPRITE_LAYOUT_DISPERSE_3X3GRID,
 };
 
+struct StyleDrawData
+{
+	Vec4D	vColor;
+	RECT	rc;
+};
+
 struct ControlBlendColor
 {
 	ControlBlendColor()
@@ -74,6 +80,7 @@ class CUISpriteCyclostyle: public BaseCyclostyle
 public:
 	virtual void XML(TiXmlElement& element);
 	virtual void updataRect(RECT& rc)const;
+	void		draw(const RECT& rc,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
@@ -85,14 +92,17 @@ class CUITextCyclostyle: public BaseCyclostyle
 {
 public:
 	virtual void updataRect(RECT& rc)const;
+	void draw(const std::wstring& wstrText,const RECT& rc,const Color32& color)const;
 };
 
 struct  StyleBorder: public BaseCyclostyle
 {
+	void draw(const RECT& rc,const Color32& color)const;
 };
 
 struct  StyleBackgroundColor: public BaseCyclostyle
 {
+	void draw(const RECT& rc,const Color32& color)const;
 };
 
 class DLL_EXPORT CUICyclostyle
@@ -110,19 +120,21 @@ public:
 class DLL_EXPORT CUIStyle
 {
 public:
+
+
 	CUIStyle(){};
 	~CUIStyle(){};
-	void Blend(UINT iState, float fElapsedTime, float fRate = 0.7f);
+	void Blend(const RECT& rc, UINT iState, float fElapsedTime, float fRate = 0.7f);
 	void SetStyle(const std::string& strName);
 	const CUICyclostyle& GetCyclostyle();
 	void draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime, float fRate = 0.7f);
-	void Draw(const RECT& rc, const std::wstring& wstrText);
+	void Draw(const std::wstring& wstrText);
 
 	std::string	m_strName;
-	std::map<int,Vec4D> m_crSpriteColor;
-	std::map<int,Vec4D> m_mapBorder;
-	std::map<int,Vec4D> m_mapBackgroundColor;
-	std::map<int,Vec4D> m_crFontColor;
+	std::map<int,StyleDrawData> m_mapSprite;
+	std::map<int,StyleDrawData> m_mapBorder;
+	std::map<int,StyleDrawData> m_mapBackground;
+	std::map<int,StyleDrawData> m_mapFont;
 };
 
 class CUIStyleMgr

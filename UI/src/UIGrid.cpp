@@ -468,9 +468,9 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 	if(m_bVisible == false)
 		return;
 
-	m_Style.Blend(CONTROL_STATE_NORMAL, fElapsedTime);
+	//m_Style.Blend(CONTROL_STATE_NORMAL, fElapsedTime);
 
-	UIGraph::DrawSprite(m_Style, 0, m_rcBoundingBox);
+	//UIGraph::DrawSprite(m_Style, 0, m_rcBoundingBox);
 
 	// Render the text
 	if(GetLineCount() > 0)
@@ -516,7 +516,7 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 			if(y == m_nSelected)
 			{
 				rcSel.top = rc.top; rcSel.bottom = rc.bottom;
-				UIGraph::DrawSprite(m_Style, 1, rcSel);
+		//		UIGraph::DrawSprite(m_Style, 1, rcSel);
 				//UIGraph::DrawText(pCell->m_wstrText, m_Style, 1, rc);
 				//UIGraph::DrawText(pCell->GetValString(), m_Styles[0], rcVal);
 				//m_EditBox.SetLocation(rcVal.left-8,rcVal.top-8);

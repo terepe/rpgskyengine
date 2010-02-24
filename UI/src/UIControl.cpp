@@ -376,54 +376,51 @@ void CUIControl::SendEvent(uint32 uEvent, CUIControl* pControl)
 
 void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
 {
-	if (m_wstrTip.length()>0)
+	if (m_wstrTip.length()<=0)
 	{
-		RECT rect={0,0,0,0};
-		UIGraph::CalcTextRect(m_wstrTip, rect);// 计算文本框大小
-		rect.right	+=5;
-		rect.bottom	+=5;
+		return;
+	}
+	RECT rect={0,0,0,0};
+	UIGraph::CalcTextRect(m_wstrTip, rect);// 计算文本框大小
+	rect.right	+=5;
+	rect.bottom	+=5;
 
-		if (rc.right<m_rcBoundingBox.left+rect.right)
-		{
-			rect.left	= rc.right-rect.right;
-			rect.right	= rc.right;
-		}
-		else if (rc.left>m_rcBoundingBox.left)
-		{
-			rect.left	= rc.left;
-			rect.right	= rc.left+rect.right;
-		}
-		else
-		{
-			rect.left	= m_rcBoundingBox.left;
-			rect.right	= m_rcBoundingBox.left+rect.right;
-		}
-
-		if (rc.bottom<m_rcBoundingBox.bottom+rect.bottom)
-		{
-			if (m_rcBoundingBox.top<rect.bottom)
-			{
-				rect.top	= rc.bottom-rect.bottom;
-				rect.bottom	= rc.bottom;
-			}
-			else
-			{
-				rect.top	= m_rcBoundingBox.top-rect.bottom;
-				rect.bottom	= m_rcBoundingBox.top;
-			}
-		}
-		else
-		{
-			rect.top	= m_rcBoundingBox.bottom;
-			rect.bottom	= m_rcBoundingBox.bottom+rect.bottom;
-		}
-
-		CUIControl::s_TipStyle.draw(rect,m_wstrTip,CONTROL_STATE_NORMAL, fElapsedTime);
+	if (rc.right<m_rcBoundingBox.left+rect.right)
+	{
+		rect.left	= rc.right-rect.right;
+		rect.right	= rc.right;
+	}
+	else if (rc.left>m_rcBoundingBox.left)
+	{
+		rect.left	= rc.left;
+		rect.right	= rc.left+rect.right;
 	}
 	else
 	{
-		CUIControl::s_TipStyle.Blend(CONTROL_STATE_HIDDEN,fElapsedTime);
+		rect.left	= m_rcBoundingBox.left;
+		rect.right	= m_rcBoundingBox.left+rect.right;
 	}
+
+	if (rc.bottom<m_rcBoundingBox.bottom+rect.bottom)
+	{
+		if (m_rcBoundingBox.top<rect.bottom)
+		{
+			rect.top	= rc.bottom-rect.bottom;
+			rect.bottom	= rc.bottom;
+		}
+		else
+		{
+			rect.top	= m_rcBoundingBox.top-rect.bottom;
+			rect.bottom	= m_rcBoundingBox.top;
+		}
+	}
+	else
+	{
+		rect.top	= m_rcBoundingBox.bottom;
+		rect.bottom	= m_rcBoundingBox.bottom+rect.bottom;
+	}
+
+	CUIControl::s_TipStyle.draw(rect,m_wstrTip,CONTROL_STATE_NORMAL, fElapsedTime);
 }
 
 void CUIControl::SetFocus(bool bFocus)
