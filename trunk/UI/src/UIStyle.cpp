@@ -78,24 +78,32 @@ inline void StrToXY(const char* str, int& x, int& y)
 	sscanf(str, "%d,%d", &x, &y);
 }
 
-void CUIStyle::Blend(UINT iState, float fElapsedTime, float fRate)
+void CUIStyle::Blend(const RECT& rc, UINT iState, float fElapsedTime, float fRate)
 {
 	const CUICyclostyle& style =  GetCyclostyle();
 	for (uint32 i=0; i<style.m_SpriteStyle.size(); i++)
 	{
-		m_crSpriteColor[i] = style.m_SpriteStyle[i].Blend(m_crSpriteColor[i], iState, fElapsedTime, fRate);
+		m_mapSprite[i].vColor = style.m_SpriteStyle[i].Blend(m_mapSprite[i].vColor, iState, fElapsedTime, fRate);
+		m_mapSprite[i].rc = rc;
+		style.m_SpriteStyle[i].updataRect(m_mapSprite[i].rc);
 	}
 	for (uint32 i=0; i<style.m_setBorder.size(); i++)
 	{
-		m_mapBorder[i] = style.m_setBorder[i].Blend(m_mapBorder[i], iState, fElapsedTime, fRate);
+		m_mapBorder[i].vColor = style.m_setBorder[i].Blend(m_mapBorder[i].vColor, iState, fElapsedTime, fRate);
+		m_mapBorder[i].rc = rc;
+		style.m_setBorder[i].updataRect(m_mapBorder[i].rc);
 	}
 	for (uint32 i=0; i<style.m_setBackgroundColor.size(); i++)
 	{
-		m_mapBackgroundColor[i] = style.m_setBackgroundColor[i].Blend(m_mapBackgroundColor[i], iState, fElapsedTime, fRate);
+		m_mapBackground[i].vColor = style.m_setBackgroundColor[i].Blend(m_mapBackground[i].vColor, iState, fElapsedTime, fRate);
+		m_mapBackground[i].rc = rc;
+		style.m_setBackgroundColor[i].updataRect(m_mapBackground[i].rc);
 	}
 	for (uint32 i=0; i<style.m_FontStyle.size(); i++)
 	{
-		m_crFontColor[i] = style.m_FontStyle[i].Blend(m_crFontColor[i], iState, fElapsedTime, fRate);
+		m_mapFont[i].vColor = style.m_FontStyle[i].Blend(m_mapFont[i].vColor, iState, fElapsedTime, fRate);
+		m_mapFont[i].rc = rc;
+		style.m_FontStyle[i].updataRect(m_mapFont[i].rc);
 	}
 }
 
@@ -110,8 +118,8 @@ const CUICyclostyle& CUIStyle::GetCyclostyle()
 }
 void CUIStyle::draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime, float fRate)
 {
-	Blend(state, fElapsedTime, fRate);
-	Draw(rc, wstrText);
+	Blend(rc, state, fElapsedTime, fRate);
+	Draw(wstrText);
 }
 
 inline void offsetRect(RECT& rc1, const RECT& rc2)
@@ -122,98 +130,36 @@ inline void offsetRect(RECT& rc1, const RECT& rc2)
 	rc1.bottom+=rc2.bottom;
 }
 
-void CUIStyle::Draw(const RECT& rc, const std::wstring& wstrText)
+void CUIStyle::Draw(const std::wstring& wstrText)
 {
 	GetRenderSystem().SetDepthBufferFunc(false,false);
-	for (size_t i=0; i<m_crSpriteColor.size(); i++)
+	for (size_t i=0; i<m_mapSprite.size(); i++)
 	{
-		Color32 color = m_crSpriteColor[i].getColor();
-		if(color.a==0)
-		{
-			continue;
-		}
-		const CUISpriteCyclostyle& SpriteCyclostyle = GetCyclostyle().m_SpriteStyle[i];
-
-		RECT rcDest =rc;
-		SpriteCyclostyle.updataRect(rcDest);
-		if (SpriteCyclostyle.m_bDecolor)
-		{
-			GetRenderSystem().SetTextureStageStateDecolor();
-		}
-
-		switch(SpriteCyclostyle.m_nSpriteLayoutType)
-		{
-		case SPRITE_LAYOUT_WRAP:
-			{
-				UIGraph::DrawSprite(rcDest, rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_SIMPLE:
-			{
-				UIGraph::DrawSprite(SpriteCyclostyle.m_rcBorder,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_3X3GRID:
-			{
-				UIGraph::DrawSprite3x3Grid(SpriteCyclostyle.m_rcBorder,
-					SpriteCyclostyle.m_rcCenter,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_3X3GRID_WRAP:
-			{
-				UIGraph::DrawSprite3x3GridWrap(SpriteCyclostyle.m_rcBorder,
-					SpriteCyclostyle.m_rcCenter,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_DISPERSE_3X3GRID:
-			break;
-		default:
-			break;
-		}
-
-		if (SpriteCyclostyle.m_bDecolor)
-		{
-			GetRenderSystem().SetupRenderState();
-		}
+		GetCyclostyle().m_SpriteStyle[i].draw(m_mapSprite[i].rc,m_mapSprite[i].vColor.getColor());
 	}
 	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
-	for (size_t i=0; i<m_mapBackgroundColor.size(); ++i)
+	for (size_t i=0; i<m_mapBackground.size(); ++i)
 	{
-		Color32 color = m_mapBackgroundColor[i].getColor();
+		Color32 color = m_mapBackground[i].vColor.getColor();
 		if(color.a!=0)
 		{
-			RECT rcDest =rc;
-			const StyleBackgroundColor&  styleBackgroundColor = GetCyclostyle().m_setBackgroundColor[i];
-			styleBackgroundColor.updataRect(rcDest);
-			GetGraphics().FillRect(rcDest, color);
+			GetGraphics().FillRect(m_mapBackground[i].rc, color);
 		}
 	}
 	for (size_t i=0; i<m_mapBorder.size(); ++i)
 	{
-		Color32 color = m_mapBorder[i].getColor();
+		Color32 color = m_mapBorder[i].vColor.getColor();
 		if(color.a!=0)
 		{
-			RECT rcDest =rc;
-			GetCyclostyle().m_setBorder[i].updataRect(rcDest);
-			GetGraphics().DrawRect(rcDest, color);
+			GetGraphics().DrawRect(m_mapBorder[i].rc, color);
 		}
 	}
 	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
-	if (m_crFontColor.size()>0)
+	if (m_mapFont.size()>0)
 	{
-		Color32 color = m_crFontColor[0].getColor();
-		if(color.a!=0)
-		{
-			RECT rcDest =rc;
-			const CUITextCyclostyle&  textCyclostyle = GetCyclostyle().m_FontStyle[0];
-			textCyclostyle.updataRect(rcDest);
-			GetTextRender().drawText(wstrText,-1,rcDest,textCyclostyle.uFormat, color);
-		}
+		GetCyclostyle().m_FontStyle[0].draw(wstrText,m_mapFont[0].rc,m_mapFont[0].vColor.getColor());
 	}
 }
 
@@ -395,6 +341,60 @@ void CUISpriteCyclostyle::XML(TiXmlElement& element)
 		}
 	}
 }
+
+void CUITextCyclostyle::draw(const std::wstring& wstrText,const RECT& rc,const Color32& color)const
+{
+	if(color.a==0)
+	{
+		return;
+	}
+	GetTextRender().drawText(wstrText,-1,rc,uFormat,color);
+}
+
+void CUISpriteCyclostyle::draw(const RECT& rc,const Color32& color)const
+{
+	if(color.a==0)
+	{
+		return;
+	}
+	if (m_bDecolor)
+	{
+		GetRenderSystem().SetTextureStageStateDecolor();
+	}
+	switch(m_nSpriteLayoutType)
+	{
+	case SPRITE_LAYOUT_WRAP:
+		UIGraph::DrawSprite(rc,rc,m_nTexture,color);
+		break;
+	case SPRITE_LAYOUT_SIMPLE:
+		UIGraph::DrawSprite(m_rcBorder,rc,m_nTexture,color);
+		break;
+	case SPRITE_LAYOUT_3X3GRID:
+		UIGraph::DrawSprite3x3Grid(m_rcBorder,m_rcCenter,rc, m_nTexture,color);
+		break;
+	case SPRITE_LAYOUT_3X3GRID_WRAP:
+		UIGraph::DrawSprite3x3GridWrap(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
+		break;
+	case SPRITE_LAYOUT_DISPERSE_3X3GRID:
+		break;
+	default:
+		break;
+	}
+	if (m_bDecolor)
+	{
+		GetRenderSystem().SetupRenderState();
+	}
+}
+
+void StyleBorder::draw(const RECT& rc,const Color32& color)const
+{
+	if(color.a==0)
+	{
+		return;
+	}
+	GetGraphics().DrawRect(rc, color);
+}
+
 #include "IORead.h"
 bool CUIStyleMgr::Create(const std::string& strFilename)
 {

@@ -434,10 +434,11 @@ void CTextRender::DrawTextVB(int nVertexCount, void* pVB)
 	R.SetTexture(0, (CTexture*)NULL);
 }
 
-void CTextRender::drawText(const std::wstring& strText, int cchText, RECT& rcDest, UINT format, Color32 dwColor)
+void CTextRender::drawText(const std::wstring& strText, int cchText, const RECT& rcDest, UINT format, Color32 dwColor)
 {
+	RECT rc= rcDest;
 	bool bVisible = !(format & DTL_CALCRECT);
-	int nX = rcDest.left;
+	int nX = rc.left;
 	std::vector<VERTEX_XYZW_DIF_TEX> vb;
 	size_t uTextLength = strText.length();
 	if (cchText > 0)
@@ -458,12 +459,12 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, RECT& rcDes
 				int nX1 = nX+charInfo->nWidth;
 				float fSecondU = charInfo->fU1;
 				// ≥¨≥ˆæÿ’Û∑∂Œß Ωÿ∂œ
-				if (0 != rcDest.right && nX1 > rcDest.right)
+				if (0 != rc.right && nX1 > rc.right)
 				{
-					fSecondU = charInfo->fU1 - (charInfo->fU1 - charInfo->fU0) * (float) (nX1 - rcDest.right) / (float) charInfo->nWidth;
-					nX1 = rcDest.right;
+					fSecondU = charInfo->fU1 - (charInfo->fU1 - charInfo->fU0) * (float) (nX1 - rc.right) / (float) charInfo->nWidth;
+					nX1 = rc.right;
 				}
-				int nY0 = rcDest.top+m_nH-charInfo->nOffsetY;
+				int nY0 = rc.top+m_nH-charInfo->nOffsetY;
 				int nY1 = nY0+charInfo->nHeight;
 				//if (dwShadowColor.a)
 				//{
@@ -491,7 +492,7 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, RECT& rcDes
 			if (format & DTL_CALCRECT)
 			{
 			}
-			else if (0 != rcDest.right && nX > rcDest.right)
+			else if (0 != rc.right && nX > rc.right)
 			{
 				break;
 			}
@@ -502,10 +503,10 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, RECT& rcDes
 		// ÷ª–Ëº∆À„æÿ’Û
 		if (format & DTL_CALCRECT)
 		{
-			//rcDest.left = 0;
-			rcDest.right = nX;
-			//rcDest.top = 0;
-			rcDest.bottom = rcDest.top+m_nH;
+			//rc.left = 0;
+			rc.right = nX;
+			//rc.top = 0;
+			rc.bottom = rc.top+m_nH;
 		}
 		else
 		{
@@ -513,20 +514,20 @@ void CTextRender::drawText(const std::wstring& strText, int cchText, RECT& rcDes
 			int nOffsetY = 0;
 			if (format & DTL_CENTER)
 			{
-				nOffsetX = (rcDest.right - nX)/2;
+				nOffsetX = (rc.right - nX)/2;
 			}
 			else if (format & DTL_RIGHT)
 			{
-				nOffsetX = rcDest.right - nX;
+				nOffsetX = rc.right - nX;
 			}
 
 			if (format & DTL_VCENTER)
 			{
-				nOffsetY = (rcDest.bottom - rcDest.top - m_nH)/2;
+				nOffsetY = (rc.bottom - rc.top - m_nH)/2;
 			}
 			else if (format & DTL_BOTTOM)
 			{
-				nOffsetY = rcDest.bottom - rcDest.top - m_nH;
+				nOffsetY = rc.bottom - rc.top - m_nH;
 			}
 			// update
 			for (std::vector<VERTEX_XYZW_DIF_TEX>::iterator it = vb.begin(); it != vb.end(); ++it)

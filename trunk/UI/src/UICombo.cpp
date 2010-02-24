@@ -552,15 +552,15 @@ void CUICombo::setControlVisible(const std::string& strID, bool bEnabled)
 void CUICombo::SetVisible(bool bVisible)
 {
 	CUIControl::SetVisible(bVisible);
-	if (false==bVisible)
-	{
-		m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
-		for(uint32 i=0; i < m_Controls.size(); i++)
-		{
-			CUIControl* pControl = m_Controls[i];
-			pControl->m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
-		}
-	}
+	//if (false==bVisible)
+	//{
+	//	m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
+	//	for(uint32 i=0; i < m_Controls.size(); i++)
+	//	{
+	//		CUIControl* pControl = m_Controls[i];
+	//		pControl->m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
+	//	}
+	//}
 }
 
 void CUICombo::OnMouseMove(POINT point)

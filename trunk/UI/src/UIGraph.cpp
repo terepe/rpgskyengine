@@ -92,42 +92,6 @@ void UIGraph::DrawPolyLine(POINT* apPoints, UINT nNumPoints, Color32 color)
 	S_DELS(vertices);
 }
 
-void UIGraph::DrawSprite(CUIStyle& style, int nIndex, const RECT& rcDest)
-{
-		Color32 color = style.m_crSpriteColor[nIndex].getColor();
-		// No need to draw fully transparent layers
-		if(color.a == 0)
-			return;
-		const CUISpriteCyclostyle& SpriteCyclostyle = style.GetCyclostyle().m_SpriteStyle[nIndex];
-		switch(SpriteCyclostyle.m_nSpriteLayoutType)
-		{
-		case SPRITE_LAYOUT_SIMPLE:
-			{
-				return DrawSprite(SpriteCyclostyle.m_rcBorder,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_3X3GRID:
-			{
-				return DrawSprite3x3Grid(SpriteCyclostyle.m_rcBorder,
-					SpriteCyclostyle.m_rcCenter,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_3X3GRID_WRAP:
-			{
-				return DrawSprite3x3GridWrap(SpriteCyclostyle.m_rcBorder,
-					SpriteCyclostyle.m_rcCenter,
-					rcDest, SpriteCyclostyle.m_nTexture, color.c);
-			}
-			break;
-		case SPRITE_LAYOUT_DISPERSE_3X3GRID:
-			break;
-		default:
-			break;
-		}
-}
-
 void UIGraph::DrawSprite3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
@@ -163,7 +127,7 @@ void UIGraph::CalcTextRect(const std::wstring& wstrText, RECT& rcDest)
 
 void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex, RECT& rcDest, bool bShadow, int nCount)
 {
-	Color32 color = style.m_crFontColor[nIndex].getColor();
+	Color32 color = style.m_mapFont[nIndex].vColor.getColor();
 	uint32 uFormat =  style.GetCyclostyle().m_FontStyle[nIndex].uFormat;
 	// No need to draw fully transparent layers
 	if(color.a == 0)
