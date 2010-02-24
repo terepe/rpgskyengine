@@ -86,11 +86,5 @@ bool CUIButton::ContainsPoint(POINT pt)
 
 void CUIButton::OnFrameRender(double fTime, float fElapsedTime)
 {
-	CONTROL_STATE iState = GetState();
-	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
-	m_Style.draw(m_rcBoundingBox,m_wstrText,iState, fElapsedTime, fBlendRate);
-	//if (iState == CONTROL_STATE_PRESSED)
-	//{
-	//	OffsetRect(&rcText, 1, 2);
-	//}
+	m_Style.draw(m_rcBoundingBox,m_wstrText,GetState(),fElapsedTime);
 }

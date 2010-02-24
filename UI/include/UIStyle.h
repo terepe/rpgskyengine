@@ -51,15 +51,15 @@ struct ControlBlendColor
 // 		}
 	}
 
-	Vec4D Blend(Vec4D crCurrent, UINT iState, float fElapsedTime, float fRate) const
+	Vec4D Blend(Vec4D crCurrent, UINT iState, float fElapsedTime)const
 	{
-		return interpolate(1.0f - powf(fRate, 30 * fElapsedTime),crCurrent,ColorOfStates[ iState ]);
+		return interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),crCurrent,ColorOfStates[iState]);
 		//return Color32::lerp(1.0f - powf(fRate, 30 * fElapsedTime), crCurrent, States[ iState ]);
 	}
-
-	void XMLStateColor(TiXmlElement& element);
+	void XMLState(TiXmlElement& element);
 
 	Vec4D	ColorOfStates[CONTROL_STATE_MAX];
+	float	m_BlendRates[CONTROL_STATE_MAX];
 };
 
 struct BaseCyclostyle: public ControlBlendColor
@@ -100,7 +100,7 @@ struct  StyleBorder: public BaseCyclostyle
 	void draw(const RECT& rc,const Color32& color)const;
 };
 
-struct  StyleBackgroundColor: public BaseCyclostyle
+struct  StyleSquare: public BaseCyclostyle
 {
 	void draw(const RECT& rc,const Color32& color)const;
 };
@@ -113,7 +113,7 @@ public:
 	void add(const CUICyclostyle& cyc);
 	std::vector<CUISpriteCyclostyle> m_SpriteStyle;
 	std::vector<StyleBorder> m_setBorder;
-	std::vector<StyleBackgroundColor> m_setBackgroundColor;
+	std::vector<StyleSquare> m_setSquare;
 	std::vector<CUITextCyclostyle> m_FontStyle;
 };
 
@@ -124,16 +124,16 @@ public:
 
 	CUIStyle(){};
 	~CUIStyle(){};
-	void Blend(const RECT& rc, UINT iState, float fElapsedTime, float fRate = 0.7f);
+	void Blend(const RECT& rc, UINT iState, float fElapsedTime);
 	void SetStyle(const std::string& strName);
 	const CUICyclostyle& GetCyclostyle();
-	void draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime, float fRate = 0.7f);
+	void draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
 
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapSprite;
 	std::map<int,StyleDrawData> m_mapBorder;
-	std::map<int,StyleDrawData> m_mapBackground;
+	std::map<int,StyleDrawData> m_mapSquare;
 	std::map<int,StyleDrawData> m_mapFont;
 };
 
