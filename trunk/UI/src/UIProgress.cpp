@@ -56,9 +56,6 @@ void CUIProgress::OnFrameRender(double fTime, float fElapsedTime)
 		nOffsetX = -1;
 		nOffsetY = -2;
 	}
-
-	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
-
-	m_Style.draw(m_rcBoundingBox,L"",iState, fElapsedTime, fBlendRate);
+	m_Style.draw(m_rcBoundingBox,L"",iState, fElapsedTime);
 	//m_StyleButton.draw(m_rcButton,m_wstrText,iState, fElapsedTime, fBlendRate);
 }

@@ -192,16 +192,13 @@ void CUIComboBox::OnFrameRender(double fTime, float fElapsedTime)
 	CUICombo::OnFrameRender(fTime, fElapsedTime);
 
 	CONTROL_STATE iState = GetState();
-	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
-
 	if(m_ListBox.IsVisible())
 	{
 		iState = CONTROL_STATE_PRESSED;
 	}
-
 	// Main text box
 	GetText(); // For Temp
-	m_Style.draw(m_rcBoundingBox,m_wstrText,iState, fElapsedTime, fBlendRate);
+	m_Style.draw(m_rcBoundingBox,m_wstrText,iState, fElapsedTime);
 }
 
 bool CUIComboBox::AddItem(const std::wstring& wstrText, void* pData)

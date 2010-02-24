@@ -36,7 +36,6 @@ void CUICheckBox::OnPressUp()
 void CUICheckBox::OnFrameRender(double fTime, float fElapsedTime)
 {
 	CONTROL_STATE iState = GetState();
-	float fBlendRate = (iState == CONTROL_STATE_PRESSED) ? 0.0f : 0.8f;
-	m_Style.draw(m_rcBoundingBox,m_wstrText,m_bChecked?CONTROL_STATE_HIDDEN:iState,fElapsedTime,fBlendRate);
-	m_StyleChecked.draw(m_rcBoundingBox,m_wstrText,m_bChecked?iState:CONTROL_STATE_HIDDEN,fElapsedTime,fBlendRate);
+	m_Style.draw(m_rcBoundingBox,m_wstrText,m_bChecked?CONTROL_STATE_HIDDEN:iState,fElapsedTime);
+	m_StyleChecked.draw(m_rcBoundingBox,m_wstrText,m_bChecked?iState:CONTROL_STATE_HIDDEN,fElapsedTime);
 }
