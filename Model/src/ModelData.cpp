@@ -675,3 +675,13 @@ bool CModelMgr::createPlug(const std::string& strFilename)
 	}
 	return brt;
 }
+
+std::string CModelMgr::getAllExtensions()
+{
+	std::string strExts;
+	for (size_t i=0;i<m_arrPlugObj.size();++i)
+	{
+		strExts+=m_arrPlugObj[i].pObj->GetFormat();
+	}
+	return strExts;
+}
