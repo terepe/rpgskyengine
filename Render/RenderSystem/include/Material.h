@@ -16,21 +16,16 @@ enum E_MATERIAL_RENDER_TYPE
 
 struct CMaterial
 {
-	std::string strDiffuse;
-	std::string strEmissive;
-	std::string strSpecular;
-	std::string strBump;
-	std::string strReflection;
-	std::string strEffect;
-	std::string strLightMap;
-
+	// texture
 	uint32	uDiffuse;
 	uint32	uEmissive;
 	uint32	uSpecular;
 	uint32	uBump;
 	uint32	uReflection;//nTexEnvironment
 	uint32	uLightMap;
-	uint32	uEffect;//uShaderID
+	// shader
+	uint32	uEffect;
+	// other
 	bool	bAlphaTest;
 	uint8	uAlphaTestValue;
 	bool	bBlend;

@@ -133,11 +133,12 @@ public:
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);
 
 	// set material
-	bool createMaterial(CMaterial& material, const std::string& strName,
+	void createMaterialByScript(CMaterial& material, const std::string& strMaterialScript);
+	void createMaterial(CMaterial& material,
 		const std::string& strDiffuse, const std::string& strEmissive,
 		const std::string& strSpecular, const std::string& strNormal,
 		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV);
+		int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV);
 	bool prepareMaterial(const CMaterial& material, float fOpacity=1.0f);
 	void finishMaterial();
 };

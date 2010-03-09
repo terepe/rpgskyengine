@@ -116,12 +116,7 @@ class iModelData
 {
 public:
 	virtual void addAnimation(long timeStart, long timeEnd)=0;
-	virtual void setRenderPass(int nID, const std::string& strName,
-		const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV)=0;
-
+	virtual void setRenderPass(int nID,const std::string& strMaterialScript)=0;
 	virtual	bool loadMaterial(const std::string& strFilename,const std::string& strPath)=0;
 	virtual	bool loadParticleEmitters(const std::string& strFilename,const std::string& strPath)=0;
 

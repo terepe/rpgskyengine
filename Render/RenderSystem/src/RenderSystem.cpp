@@ -53,6 +53,56 @@ void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 	vRayDir.normalize();
 	//vRayPos = m_vEye;
 }
+
+void CRenderSystem::createMaterial(CMaterial& material,
+					const std::string& strDiffuse, const std::string& strEmissive,
+					const std::string& strSpecular, const std::string& strNormal,
+					const std::string& strEnvironment, const std::string& strShader,
+					int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV)
+{
+	//nChannel
+	//bBlend
+	material.bCull = bCull;
+	material.bAlphaTest			= bAlphaTest;
+	material.uAlphaTestValue	= uAlphaTestValue;
+	material.vUVScale.x			= fTexScaleU;
+	material.vUVScale.y			= fTexScaleV;
+
+	CTextureMgr& TM = GetTextureMgr();
+	material.uDiffuse	= TM.RegisterTexture(strDiffuse);
+	material.uEmissive	= TM.RegisterTexture(strEmissive);
+	material.uSpecular	= TM.RegisterTexture(strSpecular);
+	material.uBump		= TM.RegisterTexture(strNormal);
+	material.uReflection= TM.RegisterTexture(strEnvironment);
+	material.uEffect	= GetShaderMgr().registerItem(strShader);
+}
+
+void CRenderSystem::createMaterialByScript(CMaterial& material, const std::string& strMaterialScript)
+{
+	std::vector<std::string> line;
+	Tokenizer(strMaterialScript,line);
+	if (line.size()<13)
+	{
+		return;
+	}
+	std::string strDiffuse		= line[0];
+	std::string strEmissive		= line[1];
+	std::string strSpecular		= line[2];
+	std::string strNormal		= line[3];
+	std::string strEnvironment	= line[4];
+	std::string strShader		= line[5];
+	int nChannel		= atoi(line[6].c_str());
+	bool bBlend			= atoi(line[7].c_str())!=0;
+	bool bCull			= atoi(line[8].c_str())!=0;
+	bool bAlphaTest		= atoi(line[9].c_str())!=0;
+	unsigned char uAlphaTestValue = atoi(line[10].c_str());
+	float fTexScaleU = 1.0f/(float)atof(line[11].c_str());
+	float fTexScaleV = 1.0f/(float)atof(line[12].c_str());
+
+	createMaterial(material, strDiffuse, strEmissive, strSpecular, strNormal, strEnvironment, strShader,
+		nChannel, bBlend, bCull, bAlphaTest, uAlphaTestValue, fTexScaleU, fTexScaleV);
+}
+
 #include "Timer.h"
 bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 {
