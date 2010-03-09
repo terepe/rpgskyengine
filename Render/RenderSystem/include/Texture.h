@@ -59,4 +59,6 @@ protected:
 	int					m_nWidth, m_nHeight;
 	int					m_nLevels;
 	TEX_TYPE			m_eTexType;
+	// texture wrapping
+	bool bSwrap, bTwrap;
 };

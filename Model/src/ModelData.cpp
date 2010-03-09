@@ -51,20 +51,14 @@ void CModelData::setRenderPass(int nID, const std::string& strName,
 				   const std::string& strDiffuse, const std::string& strEmissive,
 				   const std::string& strSpecular, const std::string& strNormal,
 				   const std::string& strEnvironment, const std::string& strShader,
-				   int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV)
+				   int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV)
 {
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 	ModelRenderPass& pass = m_mapPasses[nID];
 	pass.nSubID = nID;
-	// Œ∆¿Ì—∞÷∑
-	pass.bSwrap = true;
-	pass.bTwrap = true;
-
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
-	pass.bUseEnvMap = false;
-	pass.bCull = true;
 	pass.material.bAlphaTest = bAlphaTest;
-	pass.material.uAlphaTestValue = 0x80;
+	pass.material.uAlphaTestValue = uAlphaTestValue;
 	pass.material.vUVScale.x		= fTexScaleU;
 	pass.material.vUVScale.y		= fTexScaleV;
 
