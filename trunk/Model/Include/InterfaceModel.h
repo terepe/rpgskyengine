@@ -93,10 +93,8 @@ struct ModelRenderPass
 	// Geoset ID
 	int nSubID;
 	//
-	bool bUseTex2, bUseEnvMap, bCull, bTrans, bUnlit, bNoZWrite;
+	bool bUseTex2, bTrans, bUnlit, bNoZWrite;
 	bool bHasAlphaTex;
-	// texture wrapping
-	bool bSwrap, bTwrap;
 
 	// colours
 	Vec4D ocol, ecol;
