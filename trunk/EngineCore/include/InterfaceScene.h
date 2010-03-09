@@ -209,36 +209,11 @@ struct Cube
 	}
 };
 
-//struct TileMaterial
-//{
-//	TileMaterial():nTexDiffuse(0),nTexEmissive(false),nTexSpecular(0),nTexNormal(0),nTexEnvironment(0),
-//		bAlphaBlend(false),bAlphaTest(false),uShaderID(0){}
-//	~TileMaterial(){}
-//	uint32			nTexDiffuse;
-//	uint32			nTexEmissive;
-//	uint32			nTexSpecular;
-//	uint32			nTexNormal;
-//	uint32			nTexEnvironment;
-//	uint32			uShaderID;
-//
-//	std::string		strTexDiffuse;
-//	std::string		strTexEmissive;
-//	std::string		strTexSpecular;
-//	std::string		strTexNormal;
-//	std::string		strTexEnvironment;
-//	std::string		strShader;
-//
-//	int				nTexChannel;
-//	bool			bAlphaBlend;
-//	bool			bAlphaTest;
-//
-//};
-
 struct Tile
 {
 	Tile():nIBStart(0),nIBCount(0){}
 	std::string		strName;
-	CMaterial		tileMaterial;
+	CMaterial		material;
 	int				nIBStart;
 	int				nIBCount;
 };
@@ -250,12 +225,7 @@ class iTerrain
 public:
 	typedef std::map<int,Tile>		MAP_TILES;
 	typedef std::vector<const Cube*>		LIST_CUBES;
-	virtual void setTile(int nTileID, const std::string& strName,
-		const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV)=0;
-
+	virtual void setTile(int nTileID, const std::string& strName, const std::string& strMaterialScript)=0;
 	virtual iTerrainData& GetData()=0;
 	virtual const iTerrainData& GetData()const=0;
 

@@ -82,11 +82,7 @@ public:
 	~CModelData();
 public:
 	virtual void addAnimation(long timeStart, long timeEnd);
-	virtual void setRenderPass(int nID, const std::string& strName,
-		const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV);
+	virtual void setRenderPass(int nID,const std::string& strMaterialScript);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
 

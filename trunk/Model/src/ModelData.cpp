@@ -47,29 +47,13 @@ void CModelData::addAnimation(long timeStart, long timeEnd)
 	animation.timeEnd = timeEnd;
 	m_AnimList.push_back(animation);
 }
-void CModelData::setRenderPass(int nID, const std::string& strName,
-				   const std::string& strDiffuse, const std::string& strEmissive,
-				   const std::string& strSpecular, const std::string& strNormal,
-				   const std::string& strEnvironment, const std::string& strShader,
-				   int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV)
+
+void CModelData::setRenderPass(int nID,const std::string& strMaterialScript)
 {
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 	ModelRenderPass& pass = m_mapPasses[nID];
 	pass.nSubID = nID;
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
-	pass.material.bAlphaTest = bAlphaTest;
-	pass.material.uAlphaTestValue = uAlphaTestValue;
-	pass.material.vUVScale.x		= fTexScaleU;
-	pass.material.vUVScale.y		= fTexScaleV;
-
-	pass.material.uDiffuse	= TM.RegisterTexture(strDiffuse);
-	pass.material.uEmissive	= TM.RegisterTexture(strEmissive);
-	pass.material.uSpecular	= TM.RegisterTexture(strSpecular);
-	pass.material.uBump		= TM.RegisterTexture(strNormal);
-	pass.material.uReflection= TM.RegisterTexture(strEnvironment);
-	pass.material.uEffect	= GetRenderSystem().GetShaderMgr().registerItem(strShader);
-
-	pass.material.bCull = false;
+	GetRenderSystem().createMaterialByScript(pass.material,strMaterialScript);
 }
 
 bool CModelData::LoadFile(const std::string& strFilename)
@@ -232,11 +216,19 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
 		CMaterial& material = it->second.material;
+		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();		
 		ofs<<(it->second.nSubID)<<","<<
-			(material.strDiffuse.c_str())<<","<<(material.strEmissive.c_str())<<","<<(material.strSpecular.c_str())<<","<<
-			(material.strBump.c_str())<<","<<(material.strReflection.c_str())<<","<<(material.strLightMap.c_str())<<","<<
-			(material.m_fOpacity)<<","<<(material.bAlphaTest)<<","<<(material.bBlend)<<","<<
-			(material.vTexAnim.x)<<","<<(material.vTexAnim.y)<<std::endl;
+			(TM.getItemName(material.uDiffuse).c_str())<<","<<
+			(TM.getItemName(material.uEmissive).c_str())<<","<<
+			(TM.getItemName(material.uSpecular).c_str())<<","<<
+			(TM.getItemName(material.uBump).c_str())<<","<<
+			(TM.getItemName(material.uReflection).c_str())<<","<<
+			(TM.getItemName(material.uLightMap).c_str())<<","<<
+			(material.m_fOpacity)<<","<<
+			(material.bAlphaTest)<<","<<
+			(material.bBlend)<<","<<
+			(material.vTexAnim.x)<<","<<
+			(material.vTexAnim.y)<<std::endl;
 	}
 	ofs.close();
 	return true;

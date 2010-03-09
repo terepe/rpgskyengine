@@ -27,11 +27,7 @@ public:
 	CTerrain(const std::string& strFilename); 
 	~CTerrain();
 	//
-	void setTile(int nTileID, const std::string& strName,
-		const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bAlphaTest, float fTexScaleU, float fTexScaleV);
+	virtual void setTile(int nTileID, const std::string& strName, const std::string& strMaterialScript);
 	//
 	virtual void create(size_t width, size_t height,  size_t cubeSize);
 	virtual void resize(size_t width, size_t height,  size_t cubeSize);
@@ -55,7 +51,7 @@ public:
 	virtual void DrawCubeBoxes(Color32 color=0xFF00FF00);
 	virtual void drawLayer0();
 	virtual void drawLayer1();
-		
+
 	virtual bool prepareGrass();
 	virtual void drawGrass();
 	virtual void finishGrass();
