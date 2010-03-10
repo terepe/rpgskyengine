@@ -1,7 +1,7 @@
 #pragma once
 #include "Animated.h"
-#include "Material.h"
 #include "Frustum.h"
+#include "Vec2D.h"
 
 //////////////////////////////////////////////////////////////////////////
 struct FaceIndex
@@ -24,6 +24,7 @@ class iLodMesh
 {
 public:
 	virtual void addFaceIndex(const FaceIndex& faceIndex)=0;
+	virtual int getSubCount()=0;
 
 	virtual const BBox& getBBox()=0;
 	virtual size_t getPosCount()=0;
@@ -68,50 +69,6 @@ public:
 	//std::vector<ModelAnimation>		m_AnimList;		// 动画配表源
 };
 
-//////////////////////////////////////////////////////////////////////////
-#pragma pack(push) // 将当前pack设置压栈保存 
-#pragma pack(1) // 必须在结构体定义之前使用 
-struct ModelRenderPass
-{
-	ModelRenderPass():
-	nRenderFlag(0),
-		nBlendMode(0),
-		nTransID(-1),
-		nTexanimID(-1),
-		nColorID(-1),
-		nOrder(0),
-		p(0)
-	{
-	}
-	// RenderFlag;
-	uint16 nRenderFlag;	//
-	uint16 nBlendMode;	//
-	int nTransID,nTexanimID,nColorID;
-	int nOrder;
-	float p;
-
-	// Geoset ID
-	int nSubID;
-	//
-	bool bUseTex2, bTrans, bUnlit, bNoZWrite;
-	bool bHasAlphaTex;
-
-	// colours
-	Vec4D ocol, ecol;
-
-	CMaterial material;
-	bool operator< (const ModelRenderPass &m) const
-	{
-		// sort order method
-		if (nOrder!=m.nOrder)
-			return nOrder<m.nOrder;
-		else
-			return nBlendMode == m.nBlendMode ? (p<m.p) : (nBlendMode<m.nBlendMode);
-	}
-};
-#pragma pack(pop) // 恢复先前的pack设置 
-
-//////////////////////////////////////////////////////////////////////////
 class iModelData
 {
 public:

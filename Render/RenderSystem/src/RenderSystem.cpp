@@ -54,55 +54,6 @@ void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 	//vRayPos = m_vEye;
 }
 
-void CRenderSystem::createMaterial(CMaterial& material,
-					const std::string& strDiffuse, const std::string& strEmissive,
-					const std::string& strSpecular, const std::string& strNormal,
-					const std::string& strEnvironment, const std::string& strShader,
-					int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV)
-{
-	//nChannel
-	//bBlend
-	material.bCull = bCull;
-	material.bAlphaTest			= bAlphaTest;
-	material.uAlphaTestValue	= uAlphaTestValue;
-	material.vUVScale.x			= fTexScaleU;
-	material.vUVScale.y			= fTexScaleV;
-
-	CTextureMgr& TM = GetTextureMgr();
-	material.uDiffuse	= TM.RegisterTexture(strDiffuse);
-	material.uEmissive	= TM.RegisterTexture(strEmissive);
-	material.uSpecular	= TM.RegisterTexture(strSpecular);
-	material.uBump		= TM.RegisterTexture(strNormal);
-	material.uReflection= TM.RegisterTexture(strEnvironment);
-	material.uEffect	= GetShaderMgr().registerItem(strShader);
-}
-
-void CRenderSystem::createMaterialByScript(CMaterial& material, const std::string& strMaterialScript)
-{
-	std::vector<std::string> line;
-	Tokenizer(strMaterialScript,line);
-	if (line.size()<13)
-	{
-		return;
-	}
-	std::string strDiffuse		= line[0];
-	std::string strEmissive		= line[1];
-	std::string strSpecular		= line[2];
-	std::string strNormal		= line[3];
-	std::string strEnvironment	= line[4];
-	std::string strShader		= line[5];
-	int nChannel		= atoi(line[6].c_str());
-	bool bBlend			= atoi(line[7].c_str())!=0;
-	bool bCull			= atoi(line[8].c_str())!=0;
-	bool bAlphaTest		= atoi(line[9].c_str())!=0;
-	unsigned char uAlphaTestValue = atoi(line[10].c_str());
-	float fTexScaleU = 1.0f/(float)atof(line[11].c_str());
-	float fTexScaleV = 1.0f/(float)atof(line[12].c_str());
-
-	createMaterial(material, strDiffuse, strEmissive, strSpecular, strNormal, strEnvironment, strShader,
-		nChannel, bBlend, bCull, bAlphaTest, uAlphaTestValue, fTexScaleU, fTexScaleV);
-}
-
 #include "Timer.h"
 bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 {
@@ -148,7 +99,22 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 			}
 			SetTexture(0, material.uDiffuse);
 			//////////////////////////////////////////////////////////////////////////
-			if (material.uReflection)
+			if (material.uSpecular)
+			{
+				SetLightingEnabled(true);
+				SetTexture(0, material.uSpecular);
+				SetTexture(1, material.uDiffuse);
+				setResultARGToTemp(0,true);
+				SetTextureColorOP(0, TBOP_MODULATE_X2, TBS_TEXTURE, TBS_SPECULAR);
+				SetTextureColorOP(1, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
+				SetTextureColorOP(2, TBOP_ADD, TBS_CURRENT, TBS_TEMP);
+
+				//SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
+				SetTexCoordIndex(0,0);
+				SetTexCoordIndex(1,0);
+				SetTexCoordIndex(2,0);
+			}
+			else if (material.uReflection)
 			{
 				SetTextureColorOP(1, TBOP_MODULATE_X2, TBS_CURRENT, TBS_TEXTURE);
 				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
@@ -179,7 +145,17 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 			SetLightingEnabled(false);
 			SetTextureFactor(cFactor);
 			SetDepthBufferFunc(true, false);
-			if(material.uReflection)
+			if (material.uSpecular)
+			{
+				SetLightingEnabled(true);
+				SetBlendFunc(false);
+				SetDepthBufferFunc(true, true);
+				SetAlphaTestFunc(false);
+				//SetTexture(0, material.uSpecular);
+				SetTextureColorOP(0, TBOP_SOURCE1, TBS_SPECULAR);
+				SetTexCoordIndex(0,0);
+			}
+			else if(material.uReflection)
 			{
 				cFactor.r*=(unsigned char)(cFactor.r*fOpacity);
 				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
@@ -266,4 +242,11 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 void CRenderSystem::finishMaterial()
 {
 	SetShader((CShader*)NULL);
+	SetTextureColorOP(1,TBOP_DISABLE);
+	SetTextureAlphaOP(1,TBOP_DISABLE);
+	SetTextureColorOP(2,TBOP_DISABLE);
+	SetTextureAlphaOP(2,TBOP_DISABLE);
+	setResultARGToTemp(0,false);
+	setResultARGToTemp(1,false);
+	setResultARGToTemp(2,false);
 }

@@ -41,6 +41,20 @@ CLodMesh::~CLodMesh()
 	S_DEL(m_pVertexDeclHardware);
 }
 
+void CLodMesh::addFaceIndex(const FaceIndex& faceIndex)
+{
+	m_setFaceIndex.push_back(faceIndex);
+}
+
+int CLodMesh::getSubCount()
+{
+	if (m_setFaceIndex.size()>0)
+	{
+		return m_setFaceIndex[m_setFaceIndex.size()-1].uSubID+1;
+	}
+	return 0;
+}
+
 template <class _T, class _T2>
 void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut, std::vector<_T2>& index)
 {
@@ -324,11 +338,18 @@ bool CLodMesh::SetMeshSource(int nLodLevel, CHardwareVertexBuffer* pSkinVB)
 	return true;
 }
 
-void CLodMesh::DrawSub(int nLodLevel,int nSubID)const
+void CLodMesh::drawSub(size_t uSubID, size_t uLodLevel)const
 {
-	CRenderSystem& R = GetRenderSystem();
-	const IndexedSubset &subset = m_Lods[ nLodLevel ].setSubset[nSubID];
-	R.drawIndexedSubset(subset);
+	if (m_Lods.size()<=uLodLevel)
+	{
+		return;
+	}
+	if (m_Lods[uLodLevel].setSubset.size()<=uSubID)
+	{
+		return;
+	}
+	const IndexedSubset &subset = m_Lods[uLodLevel].setSubset[uSubID];
+	GetRenderSystem().drawIndexedSubset(subset);
 }
 
 void CLodMesh::draw(size_t uLodLevel)const

@@ -23,10 +23,7 @@ public:
 	bool PassBegin(ModelRenderPass& pass)const;	// ‰÷»æ≤Ω÷Ë
 	void PassEnd()const;
 
-	virtual void DrawSubsHasNoAlphaTex()const;
-	bool PrepareEdge()const;
-	void FinishEdge()const;
-	virtual void DrawModelEdge()const;
+	virtual void drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void render(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;

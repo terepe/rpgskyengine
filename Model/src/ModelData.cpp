@@ -29,8 +29,6 @@ bLoaded(false)
 	globalSequences = NULL;
 
 
-	m_bHasAlphaTex = false;
-
 //	m_ModelType = MT_NORMAL;
 	m_nOrder=0;
 }
@@ -53,7 +51,7 @@ void CModelData::setRenderPass(int nID,const std::string& strMaterialScript)
 	ModelRenderPass& pass = m_mapPasses[nID];
 	pass.nSubID = nID;
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
-	GetRenderSystem().createMaterialByScript(pass.material,strMaterialScript);
+	pass.material.createByScript(strMaterialScript);
 }
 
 bool CModelData::LoadFile(const std::string& strFilename)
@@ -97,16 +95,9 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				std::string strTexFileName;
 				pFilenamelNode->GetString(strTexFileName);
 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
-				int nTexID = GetRenderSystem().GetTextureMgr().RegisterTexture(strTexFileName);
-				
-				ModelRenderPass& pass = m_mapPasses[subID];
-				pass.nSubID = subID++;
-				pass.material.uDiffuse	=nTexID;
-				pass.material.m_fOpacity	=1;
-				pass.material.bAlphaTest	=true;
-				pass.material.bBlend		=false;
-				pass.material.vTexAnim.x	=0;
-				pass.material.vTexAnim.y	=0;
+				std::string strMaterialScript = "Diffuse="+strTexFileName+";AlphaTest=true";
+				setRenderPass(subID, strMaterialScript);
+				subID++;
 			}
 			pChannelNode = pChannelNode->nextSibling("Channel");
 		}
@@ -167,23 +158,6 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	return true;
 }
 
-inline void readMaterial(CMaterial& material,CCsvFile& csv,const std::string& strPath)
-{
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
-	material.uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
-	material.uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
-	material.uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Bump")));
-	material.uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
-	material.uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
-	material.m_fOpacity	=csv.GetFloat("Opacity");
-	material.bAlphaTest	=csv.GetBool("IsAlphaTest");
-	material.bBlend		=csv.GetBool("IsBlend");
-	material.vTexAnim.x	=csv.GetFloat("TexAnimX");
-	material.vTexAnim.y	=csv.GetFloat("TexAnimY");
-	material.uEffect	=GetRenderSystem().GetShaderMgr().registerItem(getRealFilename(strPath,csv.GetStr("effect")));
-}
-
 bool CModelData::loadMaterial(const std::string& strFilename,const std::string& strPath)
 {
 	CCsvFile csv;
@@ -195,8 +169,7 @@ bool CModelData::loadMaterial(const std::string& strFilename,const std::string& 
 			const size_t uSubID			= csv.GetInt("SubID");
 			ModelRenderPass& pass = m_mapPasses[uSubID];
 			pass.nSubID = uSubID;
-			readMaterial(pass.material,csv,strPath);
-
+			pass.material.readFromCSV(csv,strPath);
 		}
 		csv.Close();
 	}
@@ -246,7 +219,7 @@ bool CModelData::loadParticleMaterial(const std::string& strFilename,const std::
 			if (m_setParticleEmitter.size()>uSubID)
 			{
 				m_setParticleEmitter[uSubID].m_Material.bCull=false;
-				readMaterial(m_setParticleEmitter[uSubID].m_Material,csv,strPath);
+				m_setParticleEmitter[uSubID].m_Material.readFromCSV(csv,strPath);
 			}
 		}
 		csv.Close();
@@ -405,12 +378,6 @@ void CModelData::Init()
 			{
 				ModelRenderPass& pass = m_mapPasses[i];
 				pass.nSubID = i;
-				pass.material.uDiffuse		=1;
-				pass.material.m_fOpacity	=1;
-				pass.material.bAlphaTest	=true;
-				pass.material.bBlend		=false;
-				pass.material.vTexAnim.x	=0;
-				pass.material.vTexAnim.y	=0;
 			}
 		}
 	}
@@ -418,23 +385,7 @@ void CModelData::Init()
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
 		CMaterial& material = it->second.material;
-		if (material.m_fOpacity<1.0f)
-		{
-			m_nOrder--;
-		}
-		if (material.uDiffuse==0)
-		{
-			m_nOrder--;
-			if (material.uEmissive!=0)
-			{
-				m_nOrder--;
-			}
-		}
-		// alpha test
-		if (material.bAlphaTest)
-		{
-			m_bHasAlphaTex = true;
-		}
+		m_nOrder+=material.getOrder();
 	}
 }
 

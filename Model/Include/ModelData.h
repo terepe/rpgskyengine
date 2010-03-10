@@ -11,6 +11,8 @@
 #include "Skeleton.h"
 #include "LodMesh.h"
 
+#include "Material.h"
+
 class CModelData;
 class CBone;
 
@@ -75,6 +77,50 @@ struct ModelAttachment
 };
 
 
+//////////////////////////////////////////////////////////////////////////
+#pragma pack(push) // 将当前pack设置压栈保存 
+#pragma pack(1) // 必须在结构体定义之前使用 
+struct ModelRenderPass
+{
+	ModelRenderPass():
+nRenderFlag(0),
+nBlendMode(0),
+nTransID(-1),
+nTexanimID(-1),
+nColorID(-1),
+nOrder(0),
+p(0)
+{
+}
+// RenderFlag;
+uint16 nRenderFlag;	//
+uint16 nBlendMode;	//
+int nTransID,nTexanimID,nColorID;
+int nOrder;
+float p;
+
+// Geoset ID
+int nSubID;
+//
+bool bUseTex2, bTrans, bUnlit, bNoZWrite;
+
+// colours
+Vec4D ocol, ecol;
+
+CMaterial material;
+bool operator< (const ModelRenderPass &m) const
+{
+	// sort order method
+	if (nOrder!=m.nOrder)
+		return nOrder<m.nOrder;
+	else
+		return nBlendMode == m.nBlendMode ? (p<m.p) : (nBlendMode<m.nBlendMode);
+}
+};
+#pragma pack(pop) // 恢复先前的pack设置 
+
+//////////////////////////////////////////////////////////////////////////
+
 class DLL_EXPORT CModelData:public iModelData
 {
 public:
@@ -113,8 +159,6 @@ public: // 动画源
 	std::map<int,ModelRenderPass>m_mapPasses;				// 渲染过程集
 	std::vector<CParticleEmitter>	m_setParticleEmitter;	// Particle Emitters
 	//std::vector<CRibbonEmitter>	ribbons;			// 条带源
-public:
-	bool m_bHasAlphaTex;	// 是否有ALPHA透明纹理
 public:
 //	ModelType	m_ModelType;	// 模型类别
 //public:

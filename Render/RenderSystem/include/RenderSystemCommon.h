@@ -50,8 +50,9 @@ enum TextureBlendSource
 	TBS_TEXTURE,
 	TBS_DIFFUSE,
 	TBS_SPECULAR,
-	TBS_MANUAL,/// a colour supplied manually as a separate argument
-	TBS_TFACTOR
+	TBS_MANUAL,		// a colour supplied manually as a separate argument
+	TBS_TFACTOR,
+	TBS_TEMP		// select temporary register color (read/write) (from d3d)
 };
 
 enum SceneBlendType
