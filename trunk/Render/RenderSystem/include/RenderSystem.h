@@ -76,6 +76,7 @@ public:
 	virtual void SetCullingMode(CullingMode mode) = 0;	// 设置剔除模式
 	virtual void SetTextureFactor(Color32 color) = 0;	// 设置纹理因素颜色
 	// TextureOP
+	virtual void setResultARGToTemp(size_t unit, bool bResultARGToTemp=true) = 0;
 	virtual void SetTextureColorOP(size_t unit, TextureBlendOperation op = TBOP_MODULATE,
 		TextureBlendSource src1 = TBS_TEXTURE, TextureBlendSource src2 = TBS_DIFFUSE) = 0;
 	virtual void SetTextureAlphaOP(size_t unit, TextureBlendOperation op,
@@ -133,12 +134,6 @@ public:
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);
 
 	// set material
-	void createMaterialByScript(CMaterial& material, const std::string& strMaterialScript);
-	void createMaterial(CMaterial& material,
-		const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV);
 	bool prepareMaterial(const CMaterial& material, float fOpacity=1.0f);
 	void finishMaterial();
 };

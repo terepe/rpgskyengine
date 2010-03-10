@@ -8,8 +8,7 @@ public:
 	~CModelComplex();
 public:
 	virtual void OnFrameMove(float fElapsedTime);
-	virtual void DrawSubsHasNoAlphaTex()const;
-	virtual void DrawModelEdge()const;
+	virtual void drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void draw()const;

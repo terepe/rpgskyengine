@@ -27,32 +27,18 @@ void CModelComplex::OnFrameMove(float fElapsedTime)
 	}
 }
 
-void CModelComplex::DrawSubsHasNoAlphaTex()const
+void CModelComplex::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
-	CModelObject::DrawSubsHasNoAlphaTex();
+	CModelObject::drawMesh(eModelRenderType);
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
 	{
-		it->second->DrawSubsHasNoAlphaTex();
+		it->second->drawMesh(eModelRenderType);
 	}
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
-		it->second->DrawSubsHasNoAlphaTex();
+		it->second->drawMesh(eModelRenderType);
 	}
 }
-
-void CModelComplex::DrawModelEdge()const
-{
-	CModelObject::DrawModelEdge();
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
-	{
-		it->second->DrawModelEdge();
-	}
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
-	{
-		it->second->DrawModelEdge();
-	}
-}
-
 
 void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {

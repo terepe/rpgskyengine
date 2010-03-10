@@ -126,7 +126,7 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	SetMaterial(Vec4D(0.2f,0.2f,0.2f,0.2f),Vec4D(0.8f,0.8f,0.8f,0.8f));
 
 	// …Ë÷√ƒ¨»œµ∆π‚
-	DirectionalLight light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,1.0f));
+	DirectionalLight light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,-1.0f));
 
 	SetDirectionalLight(0,light);
 	LightEnable(0, true);
@@ -141,6 +141,11 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	SetRenderState(D3DRS_POINTSCALE_A, static_cast<uint32>(0.0f));
 	SetRenderState(D3DRS_POINTSCALE_B, static_cast<uint32>(0.0f));
 	SetRenderState(D3DRS_POINTSCALE_C, static_cast<uint32>(1.0f));
+
+	SetRenderState(D3DRS_SPECULARENABLE, false);
+	SetRenderState(D3DRS_LOCALVIEWER, true);
+	SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	SetRenderState(D3DRS_LOCALVIEWER, false);
 
 	uint32 zFormat = D3DFMT_D16;//D3DFMT_D24S8;
 	//m_bitDepth = 24;
@@ -621,9 +626,17 @@ inline uint32 TextureBlendSourceForD3D9(TextureBlendSource src)
 	case TBS_TFACTOR:
 		return D3DTA_TFACTOR;
 		break;
+	case TBS_TEMP:
+		return D3DTA_TEMP;
+		break;
 	default:
 		return D3DTA_DIFFUSE;
 	}
+}
+
+void CD3D9RenderSystem::setResultARGToTemp(size_t unit, bool bResultARGToTemp)
+{
+	SetTextureStageState(unit, D3DTSS_RESULTARG, bResultARGToTemp?D3DTA_TEMP:D3DTA_CURRENT);
 }
 
 void CD3D9RenderSystem::SetTextureColorOP(size_t unit, TextureBlendOperation op, TextureBlendSource src1, TextureBlendSource src2)
@@ -719,9 +732,12 @@ void CD3D9RenderSystem::SetupRenderState()
 	SetTextureAlphaOP(0,TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
 	SetTextureColorOP(1,TBOP_DISABLE);
 	SetTextureAlphaOP(1,TBOP_DISABLE);
+	SetTextureColorOP(2,TBOP_DISABLE);
+	SetTextureAlphaOP(2,TBOP_DISABLE);
 
 	SetSamplerFilter(0, TEXF_POINT, TEXF_POINT, TEXF_POINT);
 	SetSamplerFilter(1, TEXF_POINT, TEXF_POINT, TEXF_POINT);
+	SetSamplerFilter(2, TEXF_POINT, TEXF_POINT, TEXF_POINT);
 
 	//
 	SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, false);
@@ -1003,7 +1019,7 @@ void CD3D9RenderSystem::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse
 	D3DMATERIAL9 mtrl;
 	mtrl.Ambient	= *(const D3DXCOLOR*)&vAmbient;//D3DXCOLOR(0.2,0.2,0.2,0.2);
 	mtrl.Diffuse	= *(const D3DXCOLOR*)&vDiffuse;//D3DXCOLOR(0.8,0.8,0.8,0.8);
-	mtrl.Specular	= D3DXCOLOR(0.6f,0.6f,0.6f,0.6f);
+	mtrl.Specular	= D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
 	mtrl.Emissive	= D3DXCOLOR(0,0,0,0);
 	mtrl.Power		= 72;
 	D3DCheckHresult( m_pD3D9Device->SetMaterial(&mtrl) );

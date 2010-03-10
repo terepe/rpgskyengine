@@ -76,6 +76,7 @@ public:
 	void SetCullingMode(CullingMode mode);	// 设置剔除模式
 	void SetTextureFactor(Color32 color);	// 设置纹理因素颜色
 	// TextureOP
+	void setResultARGToTemp(size_t unit, bool bResultARGToTemp=true);
 	void SetTextureColorOP(size_t unit, TextureBlendOperation op = TBOP_MODULATE,
 		TextureBlendSource src1 = TBS_TEXTURE, TextureBlendSource src2 = TBS_DIFFUSE);
 	void SetTextureAlphaOP(size_t unit, TextureBlendOperation op,

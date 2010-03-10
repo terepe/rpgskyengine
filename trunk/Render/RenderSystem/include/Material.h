@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Color.h"
 #include "Vec2D.h"
+#include "CSVFile.h"
 
 enum E_MATERIAL_RENDER_TYPE
 {
@@ -14,8 +15,29 @@ enum E_MATERIAL_RENDER_TYPE
 	MATERIAL_RENDER_ALL			= MATERIAL_RENDER_NORMAL+MATERIAL_RENDER_BUMP,
 };
 
-struct CMaterial
+class CMaterial
 {
+public:
+	CMaterial();
+	void createByScript(const std::string& strMaterialScript);
+	void readFromCSV(CCsvFile& csv,const std::string& strPath);
+
+	int	getOrder();
+/*
+	void setDiffuse(const std::string& strFilename);
+	void setEmissive(const std::string& strFilename);
+	void setSpecular(const std::string& strFilename);
+	void setBump(const std::string& strFilename);
+	void setReflection(const std::string& strFilename);
+	void setLightMap(const std::string& strFilename);
+	void setShader(const std::string& strFilename);*/
+protected:
+	void create(const std::string& strDiffuse, const std::string& strEmissive,
+		const std::string& strSpecular, const std::string& strNormal,
+		const std::string& strEnvironment, const std::string& strShader,
+		int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV);
+private:
+public:
 	// texture
 	uint32	uDiffuse;
 	uint32	uEmissive;
@@ -25,6 +47,7 @@ struct CMaterial
 	uint32	uLightMap;
 	// shader
 	uint32	uEffect;
+
 	// other
 	bool	bAlphaTest;
 	uint8	uAlphaTestValue;
@@ -34,7 +57,6 @@ struct CMaterial
 	float	m_fOpacity;
 	Color32 cEmissive;
 	Vec2D	vUVScale; // for terrain's tile, temp
-	CMaterial();
 	void SetEmissiveColor(const Color32& color);
 	E_MATERIAL_RENDER_TYPE getRenderType();
 };

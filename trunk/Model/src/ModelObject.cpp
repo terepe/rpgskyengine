@@ -316,7 +316,6 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 			//R.SetRenderState(D3DRS_LOCALVIEWER, true);
 			//R.SetRenderState(D3DRS_NORMALIZENORMALS, true);
 			//R.SetRenderState(D3DRS_LOCALVIEWER, false);
-
 		}
 		if(m_bLightmap)
 		{
@@ -461,51 +460,40 @@ bool CModelObject::Prepare()const
 	return m_pMesh&&m_pMesh->SetMeshSource(m_uLodID,m_pVB);
 }
 
-void CModelObject::DrawSubsHasNoAlphaTex()const
+//bool CModelObject::PrepareEdge()const
+//{
+//	CRenderSystem& R = GetRenderSystem();
+//	R.SetDepthBufferFunc(true, false);
+//	R.SetAlphaTestFunc(false);
+//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+//	//R.SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+//
+//	R.SetLightingEnabled(false);
+//	R.SetCullingMode(CULL_CLOCK_WISE);
+//
+//	R.SetTextureFactor(Color32(176,176,176,176));
+//	R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_TFACTOR);
+//	R.SetTextureAlphaOP(0,TBOP_DISABLE);
+//
+//	//R.SetShader(m_pModelData->m_nEdgeShaderID);
+//	return true;
+//}
+
+void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
-	for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
+	if (eModelRenderType!=MATERIAL_RENDER_NOTHING&&Prepare())
 	{
-		if (!it->second.bHasAlphaTex)
+		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
 		{
-			m_pMesh->DrawSub(m_uLodID, it->second.nSubID);
+			if (m_setShowSubset[it->second.nSubID])
+			{
+				if (it->second.material.getRenderType()&eModelRenderType)
+				{
+					m_pMesh->drawSub(it->second.nSubID,m_uLodID);
+				}
+			}
 		}
 	}
-}
-
-bool CModelObject::PrepareEdge()const
-{
-	CRenderSystem& R = GetRenderSystem();
-	R.SetDepthBufferFunc(true, false);
-	R.SetAlphaTestFunc(false);
-	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	//R.SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
-
-	R.SetLightingEnabled(false);
-	R.SetCullingMode(CULL_CLOCK_WISE);
-
-	R.SetTextureFactor(Color32(176,176,176,176));
-	R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_TFACTOR);
-	R.SetTextureAlphaOP(0,TBOP_DISABLE);
-
-	//R.SetShader(m_pModelData->m_nEdgeShaderID);
-	return true;
-}
-
-void CModelObject::FinishEdge()const
-{
-	GetRenderSystem().SetShader((CShader*)NULL);
-}
-
-void CModelObject::DrawModelEdge()const
-{
-	if (PrepareEdge())
-	{
-		if (m_pModelData->m_bHasAlphaTex)
-		{
-			DrawSubsHasNoAlphaTex();
-		}
-	}
-	FinishEdge();
 }
 
 void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
@@ -523,7 +511,14 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 				{
 					if (PassBegin(it->second))
 					{
-						m_pMesh->DrawSub(m_uLodID, it->second.nSubID);
+						if (it->second.nSubID<0)
+						{
+							m_pMesh->draw(m_uLodID);
+						}
+						else
+						{
+							m_pMesh->drawSub(it->second.nSubID,m_uLodID);
+						}
 					}
 					PassEnd();
 					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);

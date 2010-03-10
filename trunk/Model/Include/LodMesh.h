@@ -98,7 +98,8 @@ public:
 	CLodMesh();
 	~CLodMesh();
 public:
-	virtual void addFaceIndex(const FaceIndex& faceIndex){m_setFaceIndex.push_back(faceIndex);}
+	virtual void addFaceIndex(const FaceIndex& faceIndex);
+	virtual int getSubCount();
 
 	virtual const BBox& getBBox(){return m_bbox;}
 	virtual size_t getPosCount(){return pos.size();}
@@ -118,8 +119,8 @@ public:
 	void Init();
 	uint32 GetSkinVertexSize();
 	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL);
-	void DrawSub(int nLodLevel,int nSubID)const;
-	void draw(size_t uLodLevel = 0)const;
+	void drawSub(size_t uSubID, size_t uLodLevel=0)const;
+	void draw(size_t uLodLevel=0)const;
 	void SkinMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones);
 	void InitBBox();
 	void Clear();
