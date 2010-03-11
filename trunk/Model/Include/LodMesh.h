@@ -98,7 +98,7 @@ public:
 	CLodMesh();
 	~CLodMesh();
 public:
-	virtual void addFaceIndex(const FaceIndex& faceIndex);
+	virtual void addFaceIndex(int nSubID, const FaceIndex& faceIndex);
 	virtual int getSubCount();
 
 	virtual const BBox& getBBox(){return m_bbox;}
@@ -128,7 +128,8 @@ public:
 
 	void load(CLumpNode& lump);
 	void save(CLumpNode& lump);
-	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir);
+	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const;
+	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
 protected:
 public:
 	// 原顶点数据
@@ -140,7 +141,8 @@ public:
 	std::vector<uint32>	weight;
 	std::vector<uint32>	bone;
 
-	std::vector<FaceIndex>	m_setFaceIndex;
+	std::map<int,std::vector<FaceIndex>> m_mapFaceIndex;
+
 
 	CHardwareVertexBuffer*	m_pShareBuffer;	// Share Vertex Buffer
 	std::vector<ModelLod>	m_Lods;			// the lods

@@ -41,18 +41,14 @@ CLodMesh::~CLodMesh()
 	S_DEL(m_pVertexDeclHardware);
 }
 
-void CLodMesh::addFaceIndex(const FaceIndex& faceIndex)
+void CLodMesh::addFaceIndex(int nSubID, const FaceIndex& faceIndex)
 {
-	m_setFaceIndex.push_back(faceIndex);
+	m_mapFaceIndex[nSubID].push_back(faceIndex);
 }
 
 int CLodMesh::getSubCount()
 {
-	if (m_setFaceIndex.size()>0)
-	{
-		return m_setFaceIndex[m_setFaceIndex.size()-1].uSubID+1;
-	}
-	return 0;
+	return m_mapFaceIndex.size();
 }
 
 template <class _T, class _T2>
@@ -80,25 +76,30 @@ void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut,
 void CLodMesh::Init()
 {
 	std::vector<VertexIndex> setVertexIndex;
-	if (m_setFaceIndex.size()!=0)
+	if (m_mapFaceIndex.size()!=0)
 	{
 		m_Lods.resize(1);
 		std::map<uint16,std::vector<VertexIndex>> mapSubs;
-		for (size_t i=0; i<m_setFaceIndex.size(); ++i)
+		for (std::map<int,std::vector<FaceIndex>>::iterator it = m_mapFaceIndex.begin();
+			it != m_mapFaceIndex.end();it++)
 		{
-			for (size_t n=0; n<3; ++n)
+			for (size_t i=0; i<it->second.size(); ++i)
 			{
-				VertexIndex vertexIndex;
-				vertexIndex.p = m_setFaceIndex[i].v[n];
-				vertexIndex.n = m_setFaceIndex[i].n[n];
-				vertexIndex.c = m_setFaceIndex[i].c[n];
-				vertexIndex.uv1 = m_setFaceIndex[i].uv1[n];
-				vertexIndex.uv2 = m_setFaceIndex[i].uv2[n];
-				vertexIndex.w = m_setFaceIndex[i].w[n];
-				vertexIndex.b = m_setFaceIndex[i].b[n];
-				mapSubs[m_setFaceIndex[i].uSubID].push_back(vertexIndex);
+				for (size_t n=0; n<3; ++n)
+				{
+					VertexIndex vertexIndex;
+					vertexIndex.p = it->second[i].v[n];
+					vertexIndex.n = it->second[i].n[n];
+					vertexIndex.c = it->second[i].c[n];
+					vertexIndex.uv1 = it->second[i].uv1[n];
+					vertexIndex.uv2 = it->second[i].uv2[n];
+					vertexIndex.w = it->second[i].w[n];
+					vertexIndex.b = it->second[i].b[n];
+					mapSubs[it->first].push_back(vertexIndex);
+				}
 			}
 		}
+
 		IndexedSubset subset;
 		std::vector<uint16> setIndex;
 		for (std::map<uint16,std::vector<VertexIndex>>::iterator itSub = mapSubs.begin();
@@ -482,7 +483,7 @@ void CLodMesh::load(CLumpNode& lump)
 	lump.getVector("uv2",		texcoord2);
 	lump.getVector("weight",	weight);
 	lump.getVector("bone",		bone);
-	lump.getVector("face",		m_setFaceIndex);
+	// error lump.getVector("face",		m_mapFaceIndex);
 	update();
 	//m_Lods.resize(1);
 }
@@ -496,20 +497,30 @@ void CLodMesh::save(CLumpNode& lump)
 	lump.SetVector("uv2",		texcoord2);
 	lump.SetVector("weight",	weight);
 	lump.SetVector("bone",		bone);
-	lump.SetVector("face",		m_setFaceIndex);
+	// error lump.SetVector("face",		m_setFaceIndex);
 }
 
-bool CLodMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)
+bool CLodMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const
 {
-	for (std::vector<FaceIndex>::const_iterator it=m_setFaceIndex.begin(); it!=m_setFaceIndex.end(); it++)
+	for (std::map<int,std::vector<FaceIndex>>::const_iterator it = m_mapFaceIndex.begin();it != m_mapFaceIndex.end();it++)
 	{
-		Vec3D vOut;
-		if (IntersectTri(pos[it->v[0]],pos[it->v[1]],pos[it->v[2]],vRayPos,vRayDir,vOut))
+		for (std::vector<FaceIndex>::const_iterator itFaceIndex=it->second.begin(); itFaceIndex!=it->second.end(); itFaceIndex++)
 		{
-			return true;
+			if (IntersectTri(pos[itFaceIndex->v[0]],pos[itFaceIndex->v[1]],pos[itFaceIndex->v[2]],vRayPos,vRayDir,vOut))
+			{
+				nSubID = it->first;
+				return true;
+			}
 		}
 	}
 	return false;
+}
+
+bool CLodMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const
+{
+	Vec3D vOut;
+	int nSubID;
+	return intersect(vRayPos, vRayDir, vOut, nSubID);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -579,40 +590,36 @@ void CMeshCoordinate::init()
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-1;++j)
 		{
 			FaceIndex faceIndex;
-			faceIndex.uSubID = i;
 			faceIndex.v[0]=0+start;
 			faceIndex.v[1]=1+j+start;
 			faceIndex.v[2]=2+j+start;
 			faceIndex.c[0]=i;
 			faceIndex.c[1]=i;
 			faceIndex.c[2]=i;
-			m_setFaceIndex.push_back(faceIndex);
+			m_mapFaceIndex[i].push_back(faceIndex);
 		}
 		{
 			FaceIndex faceIndex;
-			faceIndex.uSubID = i;
 			faceIndex.v[0]=0+start;
 			faceIndex.v[1]=CIRCLE_LINE_COUNT+start;
 			faceIndex.v[2]=1+start;
 			faceIndex.c[0]=i;
 			faceIndex.c[1]=i;
 			faceIndex.c[2]=i;
-			m_setFaceIndex.push_back(faceIndex);
+			m_mapFaceIndex[i].push_back(faceIndex);
 		}
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-2;++j)
 		{
 			FaceIndex faceIndex;
-			faceIndex.uSubID = i;
 			faceIndex.v[0]=1+start;
 			faceIndex.v[1]=2+j+start;
 			faceIndex.v[2]=3+j+start;
 			faceIndex.c[0]=i+3;
 			faceIndex.c[1]=i+3;
 			faceIndex.c[2]=i+3;
-			m_setFaceIndex.push_back(faceIndex);
+			m_mapFaceIndex[i].push_back(faceIndex);
 		}
 	}
-
 	//
 	Init();
 	InitBBox();
@@ -684,27 +691,25 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 		return true;
 	}
 
-	for (std::vector<FaceIndex>::const_iterator it=m_setFaceIndex.begin(); it!=m_setFaceIndex.end(); it++)
+	Vec3D vOut;
+	int nSubID  = -1;
+	if (CLodMesh::intersect(vNewRayPos, vNewRayDir, vOut, nSubID))
 	{
-		Vec3D vOut;
-		if (IntersectTri(pos[it->v[0]],pos[it->v[1]],pos[it->v[2]],vNewRayPos,vNewRayDir,vOut))
+		switch(nSubID)
 		{
-			switch(it->uSubID)
-			{
-			case 0:
-				vCoord = Vec3D(1,0,0);
-				break;
-			case 1:
-				vCoord = Vec3D(0,1,0);
-				break;
-			case 2:
-				vCoord = Vec3D(0,0,1);
-			    break;
-			default:
-			    break;
-			}
-			return true;
+		case 0:
+			vCoord = Vec3D(1,0,0);
+			break;
+		case 1:
+			vCoord = Vec3D(0,1,0);
+			break;
+		case 2:
+			vCoord = Vec3D(0,0,1);
+			break;
+		default:
+			break;
 		}
+		return true;
 	}
 	return false;
 }

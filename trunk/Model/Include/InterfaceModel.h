@@ -10,7 +10,6 @@ struct FaceIndex
 	{
 		memset(this,0,sizeof(*this));
 	}
-	uint16 uSubID;
 	uint16 v[3];
 	uint16 n[3];
 	uint16 c[3];
@@ -23,7 +22,7 @@ struct FaceIndex
 class iLodMesh
 {
 public:
-	virtual void addFaceIndex(const FaceIndex& faceIndex)=0;
+	virtual void addFaceIndex(int nSubID, const FaceIndex& faceIndex)=0;
 	virtual int getSubCount()=0;
 
 	virtual const BBox& getBBox()=0;
