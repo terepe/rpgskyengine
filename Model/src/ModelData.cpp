@@ -56,6 +56,7 @@ void CModelData::setRenderPass(int nID,const std::string& strMaterialScript)
 
 bool CModelData::LoadFile(const std::string& strFilename)
 {
+	m_strModelFilename = strFilename;
 	GetModelMgr().loadModel(*this,strFilename);
 
 	bLoaded=true;
