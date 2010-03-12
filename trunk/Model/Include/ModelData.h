@@ -127,6 +127,8 @@ public:
 	CModelData();
 	~CModelData();
 public:
+	virtual const std::string& getItemName(){return m_strModelFilename;}
+
 	virtual void addAnimation(long timeStart, long timeEnd);
 	virtual void setRenderPass(int nID,const std::string& strMaterialScript);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
@@ -168,6 +170,8 @@ public:
 public:
 	int m_nOrder;
 	bool bLoaded;
+private:
+	std::string m_strModelFilename;
 };
 
 typedef struct{
