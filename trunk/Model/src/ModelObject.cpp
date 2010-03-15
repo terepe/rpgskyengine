@@ -300,7 +300,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		{
 			Vec4D ecol = m_pModelData->m_ColorAnims[pass.nColorID].GetColor(m_nAnimTime);
 			ecol.w = 1;
-			pass.material.SetEmissiveColor(ocol.getColor());
+			GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName).SetEmissiveColor(ocol.getColor());
 
 			//glMaterialfv(GL_FRONT, GL_EMISSION, ecol);
 			/*			D3DMATERIAL9 mtrl;
@@ -319,7 +319,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		}
 		if(m_bLightmap)
 		{
-			pass.material.uLightMap = m_idLightMapTex;
+		//	pass.material.uLightMap = m_idLightMapTex;
 		}
 
 		// TEXTURE
@@ -354,7 +354,7 @@ bool CModelObject::PassBegin(ModelRenderPass& pass)const
 		//	R.SetTextureFactor(Color32(176,176,176,176));
 		//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
 		//}
-		return GetRenderSystem().prepareMaterial(pass.material,fOpacity);
+		return GetRenderSystem().prepareMaterial(pass.strMaterialName,fOpacity);
 }
 
 void CModelObject::PassEnd()const
@@ -487,7 +487,7 @@ void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 		{
 			if (m_setShowSubset[it->second.nSubID])
 			{
-				if (it->second.material.getRenderType()&eModelRenderType)
+				if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
 				{
 					m_pMesh->drawSub(it->second.nSubID,m_uLodID);
 				}
@@ -507,7 +507,7 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 		{
 			if (m_setShowSubset[it->second.nSubID])
 			{
-				if (it->second.material.getRenderType()&eModelRenderType)
+				if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
 				{
 					if (PassBegin(it->second))
 					{

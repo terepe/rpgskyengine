@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "RenderSystemCommon.h"
 #include "TextureMgr.h"
+#include "MaterialMgr.h"
 #include "RenderWindow.h"
 #include "HardwareVertexBuffer.h"
 #include "HardwareIndexBuffer.h"
@@ -9,7 +10,7 @@
 #include "ShaderMgr.h"
 #include "VertexDeclaration.h"
 #include "Pos2D.h"
-#include "Material.h"
+
 
 #if defined(_DEBUG)
 #pragma comment(lib, "commond.lib")
@@ -29,6 +30,7 @@ public:
 	virtual ~CRenderSystem();
 public:
 	virtual CTextureMgr& GetTextureMgr() = 0;
+	virtual CMaterialMgr& getMaterialMgr();
 	virtual CHardwareBufferMgr& GetHardwareBufferMgr() = 0;
 	virtual CShaderMgr& GetShaderMgr() = 0;
 	virtual CRenderWindow* CreateRenderWindow(WNDPROC pWndProc, const std::wstring& strWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen = false) = 0;
@@ -134,8 +136,11 @@ public:
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);
 
 	// set material
+	bool prepareMaterial(const std::string& strMaterialName, float fOpacity=1.0f);
 	bool prepareMaterial(const CMaterial& material, float fOpacity=1.0f);
 	void finishMaterial();
+private:
+	CMaterialMgr m_MaterialMgr;
 };
 
 DLL_EXPORT void SetRenderSystem(CRenderSystem* pRenderSystem);

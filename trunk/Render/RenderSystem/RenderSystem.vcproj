@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\MaterialMgr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\RenderSystem.h"
 				>
 			</File>
@@ -280,6 +284,10 @@
 			</File>
 			<File
 				RelativePath=".\src\Material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\MaterialMgr.cpp"
 				>
 			</File>
 			<File

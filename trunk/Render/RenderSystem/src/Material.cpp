@@ -2,8 +2,6 @@
 #include "Material.h"
 #include "RenderSystem.h"
 
-#include "FileSystem.h"
-
 CMaterial::CMaterial():
 uDiffuse(0),
 uEmissive(0),
@@ -93,22 +91,7 @@ void CMaterial::createByScript(const std::string& strMaterialScript)
 		nChannel, bBlend, bCull, bAlphaTest, uAlphaTestValue, fTexScaleU, fTexScaleV);
 }
 
-void CMaterial::readFromCSV(CCsvFile& csv,const std::string& strPath)
-{
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
-	uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
-	uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
-	uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Bump")));
-	uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
-	uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
-	m_fOpacity	=csv.GetFloat("Opacity");
-	bAlphaTest	=csv.GetBool("IsAlphaTest");
-	bBlend		=csv.GetBool("IsBlend");
-	vTexAnim.x	=csv.GetFloat("TexAnimX");
-	vTexAnim.y	=csv.GetFloat("TexAnimY");
-	uEffect	=GetRenderSystem().GetShaderMgr().registerItem(getRealFilename(strPath,csv.GetStr("effect")));
-}
+
 
 int	CMaterial::getOrder()
 {

@@ -73,7 +73,7 @@ class iModelData
 public:
 	virtual const std::string& getItemName()=0;
 	virtual void addAnimation(long timeStart, long timeEnd)=0;
-	virtual void setRenderPass(int nID,const std::string& strMaterialScript)=0;
+	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
 	virtual	bool loadMaterial(const std::string& strFilename,const std::string& strPath)=0;
 	virtual	bool loadParticleEmitters(const std::string& strFilename,const std::string& strPath)=0;
 
