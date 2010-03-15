@@ -207,35 +207,20 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 	return true;
 }
 
-bool CModelData::loadParticleMaterial(const std::string& strFilename,const std::string& strPath)
+bool CModelData::initParticleMaterial()
 {
-	if (m_mapPasses.size()==0)
+	//if (m_setParticleEmitter.size()==0)
 	{
-		for (size_t i=0;i<m_Mesh.getSubCount();++i)
+		for (size_t i=0;i<m_setParticleEmitter.size();++i)
 		{
-			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
-			setRenderPass(i, i, strMaterialName );
+			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".par"),i);
+			m_setParticleEmitter[i].m_strMaterialName = strMaterialName
 		}
-	}
-	CCsvFile csv;
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	if (csv.Open(strFilename))
-	{
-		while (csv.SeekNextLine())
-		{
-			const size_t uSubID			= csv.GetInt("SubID");
-			if (m_setParticleEmitter.size()>uSubID)
-			{
-				m_setParticleEmitter[uSubID].m_Material.bCull=false;
-				m_setParticleEmitter[uSubID].m_Material.readFromCSV(csv,strPath);
-			}
-		}
-		csv.Close();
 	}
 	return true;
 }
 
-bool CModelData::loadParticleEmitters(const std::string& strFilename,const std::string& strPath)
+bool CModelData::loadParticleEmitters(const std::string& strFilename)
 {
 	CCsvFile csv;
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
@@ -312,7 +297,7 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename,const std::
 		}
 		csv.Close();
 	}
-	loadParticleMaterial(ChangeExtension(strFilename,".mat.csv"),strPath);
+	initParticleMaterial();
 	return true;
 }
 
