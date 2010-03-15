@@ -54,6 +54,16 @@ void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 	//vRayPos = m_vEye;
 }
 
+CMaterialMgr& CRenderSystem::getMaterialMgr()
+{
+	return m_MaterialMgr;
+}
+
+bool CRenderSystem::prepareMaterial(const std::string& strMaterialName, float fOpacity)
+{
+	return prepareMaterial(getMaterialMgr().getItem(strMaterialName),fOpacity);
+}
+
 #include "Timer.h"
 bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 {

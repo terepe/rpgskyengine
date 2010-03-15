@@ -107,7 +107,8 @@ bool bUseTex2, bTrans, bUnlit, bNoZWrite;
 // colours
 Vec4D ocol, ecol;
 
-CMaterial material;
+std::string strMaterialName;
+
 bool operator< (const ModelRenderPass &m) const
 {
 	// sort order method
@@ -130,7 +131,7 @@ public:
 	virtual const std::string& getItemName(){return m_strModelFilename;}
 
 	virtual void addAnimation(long timeStart, long timeEnd);
-	virtual void setRenderPass(int nID,const std::string& strMaterialScript);
+	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
 

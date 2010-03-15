@@ -46,12 +46,12 @@ void CModelData::addAnimation(long timeStart, long timeEnd)
 	m_AnimList.push_back(animation);
 }
 
-void CModelData::setRenderPass(int nID,const std::string& strMaterialScript)
+void CModelData::setRenderPass(int nID, int nSubID, const std::string& strMaterialName)
 {
 	ModelRenderPass& pass = m_mapPasses[nID];
-	pass.nSubID = nID;
+	pass.nSubID = nSubID;
+	pass.strMaterialName = strMaterialName;
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
-	pass.material.createByScript(strMaterialScript);
 }
 
 bool CModelData::LoadFile(const std::string& strFilename)
@@ -97,7 +97,9 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				pFilenamelNode->GetString(strTexFileName);
 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
 				std::string strMaterialScript = "Diffuse="+strTexFileName+";AlphaTest=true";
-				setRenderPass(subID, strMaterialScript);
+				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
+				GetRenderSystem().getMaterialMgr().getItem(strMaterialName).createByScript(strMaterialScript);
+				setRenderPass(subID, subID, strMaterialName );
 				subID++;
 			}
 			pChannelNode = pChannelNode->nextSibling("Channel");
@@ -161,19 +163,16 @@ bool CModelData::LoadFile(const std::string& strFilename)
 
 bool CModelData::loadMaterial(const std::string& strFilename,const std::string& strPath)
 {
-	CCsvFile csv;
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	if (csv.Open(strFilename))
+	GetRenderSystem().getMaterialMgr().createFromFile(strFilename);
+	if (m_mapPasses.size()==0)
 	{
-		while (csv.SeekNextLine())
+		for (size_t i=0;i<m_Mesh.getSubCount();++i)
 		{
-			const size_t uSubID			= csv.GetInt("SubID");
-			ModelRenderPass& pass = m_mapPasses[uSubID];
-			pass.nSubID = uSubID;
-			pass.material.readFromCSV(csv,strPath);
+			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
+			setRenderPass(i, i, strMaterialName );
 		}
-		csv.Close();
 	}
+
 	return true;
 }
 
@@ -210,6 +209,14 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 
 bool CModelData::loadParticleMaterial(const std::string& strFilename,const std::string& strPath)
 {
+	if (m_mapPasses.size()==0)
+	{
+		for (size_t i=0;i<m_Mesh.getSubCount();++i)
+		{
+			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
+			setRenderPass(i, i, strMaterialName );
+		}
+	}
 	CCsvFile csv;
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 	if (csv.Open(strFilename))

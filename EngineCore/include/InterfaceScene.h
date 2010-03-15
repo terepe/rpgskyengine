@@ -209,23 +209,14 @@ struct Cube
 	}
 };
 
-struct Tile
-{
-	Tile():nIBStart(0),nIBCount(0){}
-	std::string		strName;
-	CMaterial		material;
-	int				nIBStart;
-	int				nIBCount;
-};
-
 class CTerrainDecal;
 
 class iTerrain
 {
 public:
-	typedef std::map<int,Tile>		MAP_TILES;
+	typedef std::map<int,std::string>		MAP_TILES;
 	typedef std::vector<const Cube*>		LIST_CUBES;
-	virtual void setTile(int nTileID, const std::string& strName, const std::string& strMaterialScript)=0;
+	virtual void setTile(int nTileID, const std::string& strMaterialName)=0;
 	virtual iTerrainData& GetData()=0;
 	virtual const iTerrainData& GetData()const=0;
 

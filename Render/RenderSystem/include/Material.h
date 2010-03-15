@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "Color.h"
 #include "Vec2D.h"
-#include "CSVFile.h"
 
 enum E_MATERIAL_RENDER_TYPE
 {
@@ -20,7 +19,6 @@ class CMaterial
 public:
 	CMaterial();
 	void createByScript(const std::string& strMaterialScript);
-	void readFromCSV(CCsvFile& csv,const std::string& strPath);
 
 	int	getOrder();
 /*
