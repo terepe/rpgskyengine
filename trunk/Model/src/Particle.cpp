@@ -227,11 +227,12 @@ void CParticleGroup::render(E_MATERIAL_RENDER_TYPE eRenderType)const
 	{
 		return;
 	}
-	if (!(m_pEmitter->m_Material.getRenderType()&eRenderType))
+	CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(m_pEmitter->m_strMaterialName);
+	if (!(material.getRenderType()&eRenderType))
 	{
 		return;
 	}
-	if (GetRenderSystem().prepareMaterial(m_pEmitter->m_Material))
+	if (GetRenderSystem().prepareMaterial(material))
 	{
 		draw();
 	}

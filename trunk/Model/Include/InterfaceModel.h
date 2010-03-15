@@ -74,8 +74,8 @@ public:
 	virtual const std::string& getItemName()=0;
 	virtual void addAnimation(long timeStart, long timeEnd)=0;
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
-	virtual	bool loadMaterial(const std::string& strFilename,const std::string& strPath)=0;
-	virtual	bool loadParticleEmitters(const std::string& strFilename,const std::string& strPath)=0;
+	virtual	bool loadMaterial(const std::string& strFilename)=0;
+	virtual	bool loadParticleEmitters(const std::string& strFilename)=0;
 
 	virtual	iLodMesh& getMesh()=0;
 	virtual iSkeleton& getSkeleton()=0;
