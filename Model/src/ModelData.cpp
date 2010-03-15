@@ -97,7 +97,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				pFilenamelNode->GetString(strTexFileName);
 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
 				std::string strMaterialScript = "Diffuse="+strTexFileName+";AlphaTest=true";
-				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
+				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),subID);
 				GetRenderSystem().getMaterialMgr().getItem(strMaterialName).createByScript(strMaterialScript);
 				setRenderPass(subID, subID, strMaterialName );
 				subID++;
@@ -154,14 +154,14 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	}
 	// Skeleton
 	m_Skeleton.Load(lumpFile,"Skeleton");
-	loadMaterial(ChangeExtension(strFilename,".mat.csv"),GetParentPath(strFilename));
-	loadParticleEmitters(ChangeExtension(strFilename,".par.csv"),GetParentPath(strFilename));
+	loadMaterial(ChangeExtension(strFilename,".mat.csv"));
+	loadParticleEmitters(ChangeExtension(strFilename,".par.csv"));
 
 	bLoaded=true;
 	return true;
 }
 
-bool CModelData::loadMaterial(const std::string& strFilename,const std::string& strPath)
+bool CModelData::loadMaterial(const std::string& strFilename)
 {
 	GetRenderSystem().getMaterialMgr().createFromFile(strFilename);
 	if (m_mapPasses.size()==0)
@@ -172,7 +172,6 @@ bool CModelData::loadMaterial(const std::string& strFilename,const std::string& 
 			setRenderPass(i, i, strMaterialName );
 		}
 	}
-
 	return true;
 }
 
@@ -188,7 +187,7 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = it->second.material;
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
 		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();		
 		ofs<<(it->second.nSubID)<<","<<
 			(TM.getItemName(material.uDiffuse).c_str())<<","<<
@@ -214,7 +213,7 @@ bool CModelData::initParticleMaterial()
 		for (size_t i=0;i<m_setParticleEmitter.size();++i)
 		{
 			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".par"),i);
-			m_setParticleEmitter[i].m_strMaterialName = strMaterialName
+			m_setParticleEmitter[i].m_strMaterialName = strMaterialName;
 		}
 	}
 	return true;
@@ -377,7 +376,7 @@ void CModelData::Init()
 	m_nOrder=0;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = it->second.material;
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
 		m_nOrder+=material.getOrder();
 	}
 }
