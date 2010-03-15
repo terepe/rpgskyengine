@@ -72,7 +72,8 @@ public:
 	int	m_nBoneID;
 
 	float tofs;
-	CMaterial m_Material;
+
+	std::string m_strMaterialName;
 public:
 	CParticleEmitter(): m_nBoneID(0), m_nTexChannel(0), m_fLifeMid(0)
 	{
