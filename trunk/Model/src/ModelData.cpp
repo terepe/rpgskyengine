@@ -162,24 +162,10 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	}
 	// Skeleton
 	m_Skeleton.Load(lumpFile,"Skeleton");
-	loadMaterial(ChangeExtension(strFilename,".mat.csv"));
+	//loadMaterial(ChangeExtension(strFilename,".mat.csv"));
 	loadParticleEmitters(ChangeExtension(strFilename,".par.csv"));
 
 	bLoaded=true;
-	return true;
-}
-
-bool CModelData::loadMaterial(const std::string& strFilename)
-{
-	GetRenderSystem().getMaterialMgr().createFromFile(strFilename);
-	if (m_mapPasses.size()==0)
-	{
-		for (size_t i=0;i<m_Mesh.getSubCount();++i)
-		{
-			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),i);
-			setRenderPass(i, i, strMaterialName );
-		}
-	}
 	return true;
 }
 

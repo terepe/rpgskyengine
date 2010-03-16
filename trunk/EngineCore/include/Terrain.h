@@ -27,8 +27,8 @@ public:
 	CTerrain(const std::string& strFilename); 
 	~CTerrain();
 	//
-	virtual	bool loadMaterial(const std::string& strFilename);
 	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName);
+	virtual CMaterial& getMaterial(const std::string& strMaterialName);
 	//
 	virtual void create(size_t width, size_t height,  size_t cubeSize);
 	virtual void resize(size_t width, size_t height,  size_t cubeSize);
