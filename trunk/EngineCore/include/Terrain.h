@@ -28,12 +28,10 @@ public:
 	~CTerrain();
 	//
 	virtual	bool loadMaterial(const std::string& strFilename);
-	virtual void setTile(int nTileID, const std::string& strMaterialName);
+	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName);
 	//
 	virtual void create(size_t width, size_t height,  size_t cubeSize);
 	virtual void resize(size_t width, size_t height,  size_t cubeSize);
-	//
-	void InitTiles();
 	//
 	void	ShowBox(bool bShowBox){m_bShowBox = bShowBox;}
 	bool	IsShowBox(){return m_bShowBox;}
@@ -53,14 +51,11 @@ public:
 	virtual void drawLayer0();
 	virtual void drawLayer1();
 
-	virtual bool prepareGrass();
-	virtual void drawGrass();
-	virtual void finishGrass();
+	virtual void renderGrass();
 
 	virtual void Render();
 	virtual void draw();
 	virtual void DrawChunk(const Cube& cube);
-	virtual void Finish();
 	//
 	MAP_TILES& GetTiles(){return m_Tiles;}
 	iTerrainData& GetData(){return m_TerrainData;}
@@ -71,8 +66,6 @@ public:
 	std::string	getTileListFilename(){return m_strTileListFilename;}
 	void clearAllTiles();
 	void setLightMapTexture(const std::string& strFilename);
-	void setGrassTexture(const std::string& strFilename);
-	void setGrassShader(const std::string& strFilename);
 	virtual bool create();// ≥ı ºªØ
 protected:
 	//
@@ -105,11 +98,10 @@ protected:
 	uint32			m_uShowTileIBCount;
 	// For Render
 	std::map<uint8,TerrainSub>	m_RenderTileSubsLayer[2];
+	TerrainSub					m_GrassSub;
 	//
 	LIST_CUBES		m_RenderCubesList;
 	LIST_CUBES		m_RenderChunkCubesList;
 
 	std::string		m_strTileListFilename;
-	uint32			m_uGrassTexID;
-	uint32			m_uGrassShaderID;
 };

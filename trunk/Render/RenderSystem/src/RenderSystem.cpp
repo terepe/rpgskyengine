@@ -65,9 +65,35 @@ bool CRenderSystem::prepareMaterial(const std::string& strMaterialName, float fO
 }
 
 #include "Timer.h"
-bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
+bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacity) // 由于使用了自动注册纹理的机制,很遗憾的导致不能用“const”
 {
-	if (0==material.uEffect)
+	CTextureMgr& TM = GetTextureMgr();
+	if (material.uDiffuse==-1)
+	{
+		material.uDiffuse = TM.RegisterTexture(material.strDiffuse);
+	}
+	if (material.uEmissive==-1)
+	{
+		material.uEmissive = TM.RegisterTexture(material.strEmissive);
+	}
+	if (material.uSpecular==-1)
+	{
+		material.uSpecular = TM.RegisterTexture(material.strSpecular);
+	}
+	if (material.uNormal==-1)
+	{
+		material.uNormal = TM.RegisterTexture(material.strNormal);
+	}
+	if (material.uReflection==-1)
+	{
+		material.uReflection = TM.RegisterTexture(material.strReflection);
+	}
+	if (material.uShader==-1)
+	{
+		material.uShader = GetShaderMgr().registerItem(material.strShader);
+	}
+
+	if (0==material.uShader)
 	{
 		SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
 		SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
@@ -182,7 +208,7 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 					float fTime = (float)GetGlobalTimer().GetTime();
 					matTex._14=fTime*material.vTexAnim.x;
 					matTex._24=fTime*material.vTexAnim.y;
-					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
+					setTextureMatrix(0, TTF_COUNT2, matTex);
 				}
 			}
 			else if (material.uLightMap)
@@ -208,16 +234,16 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 					float fTime = (float)GetGlobalTimer().GetTime();
 					matTex._13=fTime*material.vTexAnim.x;
 					matTex._23=fTime*material.vTexAnim.y;
-					GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
+					setTextureMatrix(0, TTF_COUNT2, matTex);
 				}
 			}
-			else if (material.uBump)
+			else if (material.uNormal)
 			{
 				CShader* pShader = GetShaderMgr().getSharedShader();
 				if (pShader)
 				{
-					static size_t s_uShaderID = GetRenderSystem().GetShaderMgr().registerItem("Data\\fx\\SpaceBump.fx");
-					pShader->setTexture("g_texNormal",material.uBump);
+					static size_t s_uShaderID = GetShaderMgr().registerItem("Data\\fx\\SpaceBump.fx");
+					pShader->setTexture("g_texNormal",material.uNormal);
 					SetShader(s_uShaderID);
 				}
 				//SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
@@ -238,14 +264,14 @@ bool CRenderSystem::prepareMaterial(const CMaterial& material, float fOpacity)
 		{
 			pShader->setTexture("g_texDiffuse",material.uDiffuse);
 			pShader->setTexture("g_texLight",material.uLightMap);
-			pShader->setTexture("g_texNormal",material.uBump);
+			pShader->setTexture("g_texNormal",material.uNormal);
 			//pShader->setTexture("g_texEnvironment",uEmissive);
 			//pShader->setTexture("g_texEmissive",uEmissive);
 			pShader->setTexture("g_texSpecular",material.uSpecular);
 			// for Terrain
 			pShader->setVec2D("g_fScaleUV",material.vUVScale);
 		}
-		SetShader(material.uEffect);
+		SetShader(material.uShader);
 	}
 	return true;
 }

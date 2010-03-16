@@ -17,10 +17,64 @@ enum E_MATERIAL_RENDER_TYPE
 class CMaterial
 {
 public:
-	CMaterial();
-	void createByScript(const std::string& strMaterialScript);
+	CMaterial():
+	uDiffuse(-1),
+		uEmissive(-1),
+		uSpecular(-1),
+		uNormal(-1),
+		uReflection(-1),
+		uLightMap(-1),
+		uShader(-1),
+		bAlphaTest(false),
+		uAlphaTestValue(0x80),
+		bBlend(false),
+		bCull(false),
+		vTexAnim(0.0f,0.0f),
+		m_fOpacity(1.0f),
+		cEmissive(255,255,255,255),
+		vUVScale(0.0f,0.0f)
+	{
+	}
 
-	int	getOrder();
+	E_MATERIAL_RENDER_TYPE getRenderType()
+	{
+		if (uDiffuse)
+		{
+			return MATERIAL_RENDER_GEOMETRY;
+		}
+		else if (uNormal)
+		{
+			return MATERIAL_RENDER_BUMP;
+		}
+		else
+		{
+			return MATERIAL_RENDER_GLOW;
+		}
+		return MATERIAL_RENDER_GLOW;
+	}
+
+	int	getOrder()
+	{
+		int nOrder=0;
+		if (m_fOpacity<1.0f)
+		{
+			nOrder--;
+		}
+		if (uDiffuse==0)
+		{
+			nOrder--;
+			if (uEmissive!=0)
+			{
+				nOrder--;
+			}
+		}
+		return nOrder;
+	}
+
+	void SetEmissiveColor(const Color32& color)
+	{
+		cEmissive = color;
+	}
 /*
 	void setDiffuse(const std::string& strFilename);
 	void setEmissive(const std::string& strFilename);
@@ -29,22 +83,25 @@ public:
 	void setReflection(const std::string& strFilename);
 	void setLightMap(const std::string& strFilename);
 	void setShader(const std::string& strFilename);*/
-protected:
-	void create(const std::string& strDiffuse, const std::string& strEmissive,
-		const std::string& strSpecular, const std::string& strNormal,
-		const std::string& strEnvironment, const std::string& strShader,
-		int nChannel, bool bBlend, bool bCull, bool bAlphaTest, unsigned char uAlphaTestValue, float fTexScaleU, float fTexScaleV);
+
 private:
+public:
+	std::string	strDiffuse;
+	std::string	strEmissive;
+	std::string	strSpecular;
+	std::string	strNormal;
+	std::string	strReflection;	// nTexEnvironment
+	std::string	strLightMap;
+	std::string	strShader;		// shader
 public:
 	// texture
 	uint32	uDiffuse;
 	uint32	uEmissive;
 	uint32	uSpecular;
-	uint32	uBump;
-	uint32	uReflection;//nTexEnvironment
+	uint32	uNormal;
+	uint32	uReflection;		// nTexEnvironment
 	uint32	uLightMap;
-	// shader
-	uint32	uEffect;
+	uint32	uShader;			// shader
 
 	// other
 	bool	bAlphaTest;
@@ -55,6 +112,4 @@ public:
 	float	m_fOpacity;
 	Color32 cEmissive;
 	Vec2D	vUVScale; // for terrain's tile, temp
-	void SetEmissiveColor(const Color32& color);
-	E_MATERIAL_RENDER_TYPE getRenderType();
 };

@@ -132,6 +132,7 @@ public:
 
 	virtual void addAnimation(long timeStart, long timeEnd);
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
+	virtual CMaterial& getMaterial(const std::string& strMaterialName);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
 

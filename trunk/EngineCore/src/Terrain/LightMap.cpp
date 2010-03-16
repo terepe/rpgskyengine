@@ -205,7 +205,6 @@ void CLightMap::RenderDepthToTex(const Matrix& mLight)
 					m_pScene->getTerrain()->DrawChunk(cube);
 				}
 			}
-			m_pScene->getTerrain()->Finish();
 			pShader->end();
 		}
 		//m_pDepthRenderTarget->SaveToFile(L"D:\\depth.bmp");
@@ -260,7 +259,6 @@ void CLightMap::RenderTerrainLightMapToTex(const Matrix& mLight, const Cube& cub
 				R.SetDepthBufferFunc(false,false);
 				m_pScene->getTerrain()->DrawChunk(cube);
 			}
-			m_pScene->getTerrain()->Finish();
 			pShader->end();
 		}
 	}
