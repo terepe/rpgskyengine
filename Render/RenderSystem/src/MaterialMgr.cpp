@@ -37,7 +37,7 @@ bool CMaterialMgr::createFromFile(const std::string& strFilename, const std::str
 		material.uDiffuse	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Diffuse")));
 		material.uEmissive	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Emissive")));
 		material.uSpecular	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Specular")));
-		material.uBump		=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Normal")));
+		material.uNormal	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Normal")));
 		material.uReflection=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Reflection")));
 		material.uLightMap	=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("LightMap")));
 		material.m_fOpacity	=csv.GetFloat("Opacity");
@@ -48,7 +48,7 @@ bool CMaterialMgr::createFromFile(const std::string& strFilename, const std::str
 		material.vUVScale.x	=csv.GetFloat("USize");
 		material.vUVScale.y	=csv.GetFloat("VSize");
 
-		material.uEffect	=GetRenderSystem().GetShaderMgr().registerItem(getRealFilename(strPath,csv.GetStr("Shader")));
+		material.uShader	=GetRenderSystem().GetShaderMgr().registerItem(getRealFilename(strPath,csv.GetStr("Shader")));
 	}
 	csv.Close();
 	return true;

@@ -54,6 +54,11 @@ void CModelData::setRenderPass(int nID, int nSubID, const std::string& strMateri
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
 }
 
+CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
+{
+	return GetRenderSystem().getMaterialMgr().getItem(strMaterialName);
+}
+
 bool CModelData::LoadFile(const std::string& strFilename)
 {
 	m_strModelFilename = strFilename;
@@ -96,9 +101,12 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				std::string strTexFileName;
 				pFilenamelNode->GetString(strTexFileName);
 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
-				std::string strMaterialScript = "Diffuse="+strTexFileName+";AlphaTest=true";
 				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),subID);
-				GetRenderSystem().getMaterialMgr().getItem(strMaterialName).createByScript(strMaterialScript);
+				{
+					CMaterial& material = this->getMaterial(strMaterialName);
+					material.strDiffuse=strTexFileName;
+					material.bAlphaTest=true;
+				}
 				setRenderPass(subID, subID, strMaterialName );
 				subID++;
 			}
@@ -187,13 +195,13 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
-		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();		
+		CMaterial& material = this->getMaterial(it->second.strMaterialName);
+		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 		ofs<<(it->second.nSubID)<<","<<
 			(TM.getItemName(material.uDiffuse).c_str())<<","<<
 			(TM.getItemName(material.uEmissive).c_str())<<","<<
 			(TM.getItemName(material.uSpecular).c_str())<<","<<
-			(TM.getItemName(material.uBump).c_str())<<","<<
+			(TM.getItemName(material.uNormal).c_str())<<","<<
 			(TM.getItemName(material.uReflection).c_str())<<","<<
 			(TM.getItemName(material.uLightMap).c_str())<<","<<
 			(material.m_fOpacity)<<","<<
@@ -376,7 +384,7 @@ void CModelData::Init()
 	m_nOrder=0;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
+		CMaterial& material = this->getMaterial(it->second.strMaterialName);
 		m_nOrder+=material.getOrder();
 	}
 }

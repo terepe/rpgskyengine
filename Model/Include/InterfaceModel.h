@@ -1,7 +1,7 @@
 #pragma once
 #include "Animated.h"
 #include "Frustum.h"
-#include "Vec2D.h"
+#include "Material.h"
 
 //////////////////////////////////////////////////////////////////////////
 struct FaceIndex
@@ -74,6 +74,7 @@ public:
 	virtual const std::string& getItemName()=0;
 	virtual void addAnimation(long timeStart, long timeEnd)=0;
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
+	virtual CMaterial& getMaterial(const std::string& strMaterialName)=0;
 	virtual	bool loadMaterial(const std::string& strFilename)=0;
 	virtual	bool loadParticleEmitters(const std::string& strFilename)=0;
 

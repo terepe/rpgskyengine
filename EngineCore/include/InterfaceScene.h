@@ -217,7 +217,7 @@ public:
 	typedef std::map<int,std::string>		MAP_TILES;
 	typedef std::vector<const Cube*>		LIST_CUBES;
 	virtual	bool loadMaterial(const std::string& strFilename)=0;
-	virtual void setTile(int nTileID, const std::string& strMaterialName)=0;
+	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName)=0;
 	virtual iTerrainData& GetData()=0;
 	virtual const iTerrainData& GetData()const=0;
 
@@ -228,13 +228,10 @@ public:
 
 	virtual bool Prepare()=0;
 	virtual void DrawChunk(const Cube& cube)=0;
-	virtual void Finish()=0;
 
 	virtual void clearAllTiles()=0;
 
 	virtual void setLightMapTexture(const std::string& strFilename)=0;
-	virtual void setGrassTexture(const std::string& strFilename)=0;
-	virtual void setGrassShader(const std::string& strFilename)=0;
 
 	virtual bool create()=0;
 };

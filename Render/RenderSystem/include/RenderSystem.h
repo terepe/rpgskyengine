@@ -137,7 +137,7 @@ public:
 
 	// set material
 	bool prepareMaterial(const std::string& strMaterialName, float fOpacity=1.0f);
-	bool prepareMaterial(const CMaterial& material, float fOpacity=1.0f);
+	bool prepareMaterial(CMaterial& material, float fOpacity=1.0f);
 	void finishMaterial();
 private:
 	CMaterialMgr m_MaterialMgr;
