@@ -104,6 +104,7 @@ public:
 	uint32	uShader;			// shader
 
 	// other
+	bool	bDepthWrite;
 	bool	bAlphaTest;
 	uint8	uAlphaTestValue;
 	bool	bBlend;
