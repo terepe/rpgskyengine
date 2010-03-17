@@ -25,10 +25,11 @@ public:
 		uReflection(-1),
 		uLightMap(-1),
 		uShader(-1),
+		bDepthWrite(true),
 		bAlphaTest(false),
 		uAlphaTestValue(0x80),
 		bBlend(false),
-		bCull(false),
+		uCull(0),
 		vTexAnim(0.0f,0.0f),
 		m_fOpacity(1.0f),
 		cEmissive(255,255,255,255),
@@ -104,11 +105,11 @@ public:
 	uint32	uShader;			// shader
 
 	// other
+	unsigned char uCull;
 	bool	bDepthWrite;
+	bool	bBlend;
 	bool	bAlphaTest;
 	uint8	uAlphaTestValue;
-	bool	bBlend;
-	bool	bCull;
 	Vec2D	vTexAnim;
 	float	m_fOpacity;
 	Color32 cEmissive;
