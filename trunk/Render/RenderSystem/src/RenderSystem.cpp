@@ -88,16 +88,37 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	{
 		material.uReflection = TM.RegisterTexture(material.strReflection);
 	}
+	if (material.uLightMap==-1)
+	{
+		material.uLightMap = TM.RegisterTexture(material.strLightMap);
+	}
 	if (material.uShader==-1)
 	{
 		material.uShader = GetShaderMgr().registerItem(material.strShader);
+	}
+	//SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
+	SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
+	SetBlendFunc(material.bBlend, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+	SetDepthBufferFunc(material.bDepthWrite, true);
+	switch(material.uCull)
+	{
+	case 0:
+		SetCullingMode(CULL_NONE);
+		break;
+	case 1:
+		SetCullingMode(CULL_CLOCK_WISE);
+	    break;
+	case 2:
+		SetCullingMode(CULL_ANTI_CLOCK_WISE);
+		break;
+	default:
+		// Do nothing.
+	    break;
 	}
 
 	if (0==material.uShader)
 	{
 		SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
-		SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
-		SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
 		Color32 cFactor = material.cEmissive;
 		if (material.m_fOpacity<0.0f)
 		{
@@ -110,19 +131,18 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 
 		if (material.uDiffuse)
 		{
-			cFactor.a*=(unsigned char)(cFactor.a*fOpacity);
+			cFactor.a=(unsigned char)(cFactor.a*fOpacity);
 			SetTextureFactor(cFactor);
 			SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 			if(material.bBlend||material.m_fOpacity<1.0f)
 			{
 				SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
 				SetTextureAlphaOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
-				SetDepthBufferFunc(true, false);
+				//SetDepthBufferFunc(true, false);
 			}
 			else
 			{
-				SetBlendFunc(false);
-				if (material.bAlphaTest)
+				if (material.bAlphaTest||material.bBlend)
 				{
 					SetTextureAlphaOP(0, TBOP_SOURCE1, TBS_TEXTURE);
 				}
@@ -130,8 +150,6 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				{
 					SetTextureAlphaOP(0, TBOP_DISABLE);
 				}
-
-				SetDepthBufferFunc(true, true);
 			}
 			SetTexture(0, material.uDiffuse);
 			//////////////////////////////////////////////////////////////////////////
@@ -184,9 +202,6 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			if (material.uSpecular)
 			{
 				SetLightingEnabled(true);
-				SetBlendFunc(false);
-				SetDepthBufferFunc(true, true);
-				SetAlphaTestFunc(false);
 				//SetTexture(0, material.uSpecular);
 				SetTextureColorOP(0, TBOP_SOURCE1, TBS_SPECULAR);
 				SetTexCoordIndex(0,0);
@@ -197,7 +212,10 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
 				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
-				SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ONE);
+				if (material.bBlend)
+				{
+					SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ONE);
+				}
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 				SetTextureAlphaOP(0, TBOP_DISABLE);
 				SetTexCoordIndex(0,TCI_CAMERASPACE_NORMAL|TCI_CAMERASPACE_POSITION);
@@ -213,7 +231,10 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			}
 			else if (material.uLightMap)
 			{
-				SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+				if (material.bBlend)
+				{
+					SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
+				}
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 				SetTextureAlphaOP(0, TBOP_DISABLE);
 				SetTexture(0, material.uLightMap);
@@ -224,7 +245,10 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
 				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
-				SetBlendFunc(true, BLENDOP_ADD, SBF_ONE, SBF_ONE);
+				if (material.bBlend)
+				{
+					SetBlendFunc(true, BLENDOP_ADD, SBF_ONE, SBF_ONE);
+				}
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 				SetTextureAlphaOP(0, TBOP_DISABLE);
 				SetTexture(0, material.uEmissive);
