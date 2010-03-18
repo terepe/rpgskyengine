@@ -119,6 +119,15 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	if (0==material.uShader)
 	{
 		SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
+		if (material.vTexAnim.lengthSquared()>0.0f)
+		{
+			Matrix matTex=Matrix::UNIT;
+			float fTime = (float)GetGlobalTimer().GetTime();
+			matTex._14=fTime*material.vTexAnim.x;
+			matTex._24=fTime*material.vTexAnim.y;
+			setTextureMatrix(0, TTF_COUNT2, matTex);
+		}
+
 		Color32 cFactor = material.cEmissive;
 		if (material.m_fOpacity<0.0f)
 		{
@@ -220,14 +229,6 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				SetTextureAlphaOP(0, TBOP_DISABLE);
 				SetTexCoordIndex(0,TCI_CAMERASPACE_NORMAL|TCI_CAMERASPACE_POSITION);
 				SetTexture(0, material.uReflection);
-				if (material.vTexAnim.lengthSquared()>0.0f)
-				{
-					Matrix matTex=Matrix::UNIT;
-					float fTime = (float)GetGlobalTimer().GetTime();
-					matTex._14=fTime*material.vTexAnim.x;
-					matTex._24=fTime*material.vTexAnim.y;
-					setTextureMatrix(0, TTF_COUNT2, matTex);
-				}
 			}
 			else if (material.uLightMap)
 			{
@@ -252,14 +253,6 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 				SetTextureAlphaOP(0, TBOP_DISABLE);
 				SetTexture(0, material.uEmissive);
-				if (material.vTexAnim.lengthSquared()>0.0f)
-				{
-					Matrix matTex=Matrix::UNIT;
-					float fTime = (float)GetGlobalTimer().GetTime();
-					matTex._13=fTime*material.vTexAnim.x;
-					matTex._23=fTime*material.vTexAnim.y;
-					setTextureMatrix(0, TTF_COUNT2, matTex);
-				}
 			}
 			else if (material.uNormal)
 			{
