@@ -14,7 +14,7 @@ void CUIStatic::OnFrameRender(double fTime, float fElapsedTime)
 	{
 		UIGraph::CalcTextRect(m_wstrText, m_rcBoundingBox);
 	}
-	m_Style.draw(m_rcBoundingBox,m_wstrText,m_bEnabled?CONTROL_STATE_NORMAL:CONTROL_STATE_DISABLED, fElapsedTime);
+	m_Style.draw(m_rcBoundingBox,m_wstrText,GetState(), fElapsedTime);
 }
 
 void CUIStatic::SetText(const std::wstring& wstrText)

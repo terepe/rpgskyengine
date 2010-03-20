@@ -145,6 +145,7 @@ public:
 	virtual bool GetEnabled() { return m_bEnabled; }
 	virtual void SetVisible(bool bVisible) { m_bVisible = bVisible; }
 	virtual bool IsVisible() { return m_bVisible; }
+	virtual bool isHidden(){return m_Style.isHidden();}
 
 	virtual void SetTip(const std::wstring& wstrTip) { m_wstrTip = wstrTip; }
 	virtual void drawTip(const RECT& rc, double fTime, float fElapsedTime);

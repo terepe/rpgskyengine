@@ -38,6 +38,18 @@ public:
 	virtual void addNormal(const Vec3D& vNormal)=0;
 	virtual void addTexcoord(const Vec2D& vUV)=0;
 
+	virtual void setPos(size_t n, const Vec3D& vPos)=0;
+	virtual void setBone(size_t n, uint32 uBone)=0;
+	virtual void setWeight(size_t n, uint32 uWeight)=0;
+	virtual void setNormal(size_t n, const Vec3D& vNormal)=0;
+	virtual void setTexcoord(size_t n, const Vec2D& vUV)=0;
+
+	virtual void getPos(size_t n, Vec3D& vPos)=0;
+	virtual void getBone(size_t n, uint32& uBone)=0;
+	virtual void getWeight(size_t n, uint32& uWeight)=0;
+	virtual void getNormal(size_t n, Vec3D& vNormal)=0;
+	virtual void getTexcoord(size_t n, Vec2D& vUV)=0;
+
 	virtual void update()=0;
 };
 

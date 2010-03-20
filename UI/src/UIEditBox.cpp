@@ -574,7 +574,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 		// so that scrolling can be handled.
 	}
 
-	m_Style.draw(m_rcBoundingBox,m_Buffer.GetBuffer() + m_nFirstVisible,CONTROL_STATE_NORMAL,fElapsedTime);
+	m_Style.draw(m_rcBoundingBox,m_Buffer.GetBuffer() + m_nFirstVisible,GetState(),fElapsedTime);
 	m_rcText = m_Style.m_mapFont[0].rc;
 
 	// Compute the X coordinates of the first visible character.
@@ -612,7 +612,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 		///m_Style.Blend(CONTROL_STATE_FOCUS, fElapsedTime, 1);
 		std::wstring wstrSelection = m_Buffer.GetBuffer() + nFirstToRender;
 		wstrSelection = wstrSelection.substr(0,nNumChatToRender);
-		m_StyleSelection.draw(rcSelection,wstrSelection,CONTROL_STATE_NORMAL,fElapsedTime);
+		m_StyleSelection.draw(rcSelection,wstrSelection,GetState(),fElapsedTime);
 	}
 
 	//
@@ -642,7 +642,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 			m_Buffer.CPtoX(m_nCaret, TRUE, nRightEdgeX);
 			rcCaret.right = m_rcText.left - nXFirst + nRightEdgeX;
 		}
-		m_StyleCaret.draw(rcCaret,L"",CONTROL_STATE_NORMAL,fElapsedTime);
+		m_StyleCaret.draw(rcCaret,L"",GetState(),fElapsedTime);
 	}
 }
 

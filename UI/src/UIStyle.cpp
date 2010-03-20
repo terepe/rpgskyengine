@@ -78,32 +78,53 @@ inline void StrToXY(const char* str, int& x, int& y)
 	sscanf(str, "%d,%d", &x, &y);
 }
 
+CUIStyle::CUIStyle():
+m_bHidden(true)
+{}
+
 void CUIStyle::Blend(const RECT& rc, UINT iState, float fElapsedTime)
 {
+	m_bHidden = false;
 	const CUICyclostyle& style =  GetCyclostyle();
 	for (uint32 i=0; i<style.m_SpriteStyle.size(); i++)
 	{
 		m_mapSprite[i].vColor = style.m_SpriteStyle[i].Blend(m_mapSprite[i].vColor, iState, fElapsedTime);
 		m_mapSprite[i].rc = rc;
 		style.m_SpriteStyle[i].updataRect(m_mapSprite[i].rc);
+		if (CONTROL_STATE_HIDDEN==iState&&m_mapSprite[i].vColor.w<0.01f)
+		{
+			m_bHidden = true;
+		}
 	}
 	for (uint32 i=0; i<style.m_setBorder.size(); i++)
 	{
 		m_mapBorder[i].vColor = style.m_setBorder[i].Blend(m_mapBorder[i].vColor, iState, fElapsedTime);
 		m_mapBorder[i].rc = rc;
 		style.m_setBorder[i].updataRect(m_mapBorder[i].rc);
+		if (CONTROL_STATE_HIDDEN==iState&&m_mapBorder[i].vColor.w<0.01f)
+		{
+			m_bHidden = true;
+		}
 	}
 	for (uint32 i=0; i<style.m_setSquare.size(); i++)
 	{
 		m_mapSquare[i].vColor = style.m_setSquare[i].Blend(m_mapSquare[i].vColor, iState, fElapsedTime);
 		m_mapSquare[i].rc = rc;
 		style.m_setSquare[i].updataRect(m_mapSquare[i].rc);
+		if (CONTROL_STATE_HIDDEN==iState&&m_mapSquare[i].vColor.w<0.01f)
+		{
+			m_bHidden = true;
+		}
 	}
 	for (uint32 i=0; i<style.m_FontStyle.size(); i++)
 	{
 		m_mapFont[i].vColor = style.m_FontStyle[i].Blend(m_mapFont[i].vColor, iState, fElapsedTime);
 		m_mapFont[i].rc = rc;
 		style.m_FontStyle[i].updataRect(m_mapFont[i].rc);
+		if (CONTROL_STATE_HIDDEN==iState&&m_mapFont[i].vColor.w<0.01f)
+		{
+			m_bHidden = true;
+		}
 	}
 }
 
@@ -163,6 +184,11 @@ void CUIStyle::Draw(const std::wstring& wstrText)
 	}
 }
 
+bool CUIStyle::isHidden()
+{
+	return m_bHidden;
+}
+
 void CUICyclostyle::Refresh()
 {
 	//m_SpriteColor.Current = m_TextureColor.States[ CONTROL_STATE_HIDDEN ];
@@ -195,6 +221,7 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 			{
 				ColorOfStates[i] = c;
 			}
+			ColorOfStates[CONTROL_STATE_HIDDEN].w = 0.0f;
 		}
 		for (int i = 0; i < CONTROL_STATE_MAX; i++)
 		{
@@ -216,12 +243,12 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 		const char* pszBlend = pBlendElement->GetText();
 		if(pszBlend)
 		{
-			for (int i = 0; i < CONTROL_STATE_MAX; i++)
+			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 			{
 				m_BlendRates[i] = (float)atof(pszBlend);
 			}
 		}
-		for (int i = 0; i < CONTROL_STATE_MAX; i++)
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 		{
 			pszBlend =  pBlendElement->Attribute(szControlState[i]);
 			if (pszBlend)

@@ -101,18 +101,30 @@ public:
 	virtual void addFaceIndex(int nSubID, const FaceIndex& faceIndex);
 	virtual int getSubCount();
 
-	virtual const BBox& getBBox(){return m_bbox;}
-	virtual size_t getPosCount(){return pos.size();}
-	virtual size_t getBoneCount(){return bone.size();}
-	virtual size_t getWeightCount(){return weight.size();}
-	virtual size_t getNormalCount(){return normal.size();}
-	virtual size_t getTexcoordCount(){return texcoord.size();}
+	virtual const BBox& getBBox();
+	virtual size_t getPosCount();
+	virtual size_t getBoneCount();
+	virtual size_t getWeightCount();
+	virtual size_t getNormalCount();
+	virtual size_t getTexcoordCount();
 
-	virtual void addPos(const Vec3D& vPos){pos.push_back(vPos);}
-	virtual void addBone(uint32 uBone){bone.push_back(uBone);}
-	virtual void addWeight(uint32 uWeight){weight.push_back(uWeight);}
-	virtual void addNormal(const Vec3D& vNormal){normal.push_back(vNormal);}
-	virtual void addTexcoord(const Vec2D& vUV){texcoord.push_back(vUV);}
+	virtual void addPos(const Vec3D& vPos);
+	virtual void addBone(uint32 uBone);
+	virtual void addWeight(uint32 uWeight);
+	virtual void addNormal(const Vec3D& vNormal);
+	virtual void addTexcoord(const Vec2D& vUV);
+
+	virtual void setPos(size_t n, const Vec3D& vPos);
+	virtual void setBone(size_t n, uint32 uBone);
+	virtual void setWeight(size_t n, uint32 uWeight);
+	virtual void setNormal(size_t n, const Vec3D& vNormal);
+	virtual void setTexcoord(size_t n, const Vec2D& vUV);
+
+	virtual void getPos(size_t n, Vec3D& vPos);
+	virtual void getBone(size_t n, uint32& uBone);
+	virtual void getWeight(size_t n, uint32& uWeight);
+	virtual void getNormal(size_t n, Vec3D& vNormal);
+	virtual void getTexcoord(size_t n, Vec2D& vUV);
 
 	void update();
 

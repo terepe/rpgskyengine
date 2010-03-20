@@ -120,16 +120,16 @@ public:
 class DLL_EXPORT CUIStyle
 {
 public:
-
-
-	CUIStyle(){};
+	CUIStyle();
 	~CUIStyle(){};
 	void Blend(const RECT& rc, UINT iState, float fElapsedTime);
 	void SetStyle(const std::string& strName);
 	const CUICyclostyle& GetCyclostyle();
 	void draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
+	bool isHidden();
 
+	bool m_bHidden;
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapSprite;
 	std::map<int,StyleDrawData> m_mapBorder;
