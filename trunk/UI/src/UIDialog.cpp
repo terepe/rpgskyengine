@@ -188,9 +188,10 @@ void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 	//
 	for (uint32 i=0; i<m_Dialogs.size(); ++i)
 	{
-		if (m_Dialogs[i]->IsVisible())
+		CUIDialog* pDialog = m_Dialogs[i];
+		if (pDialog->IsVisible()||!pDialog->isHidden())
 		{
-			m_Dialogs[i]->OnFrameRender(fTime, fElapsedTime);
+			pDialog->OnFrameRender(fTime, fElapsedTime);
 		}
 	}
 	return;

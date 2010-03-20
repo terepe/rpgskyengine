@@ -51,6 +51,96 @@ int CLodMesh::getSubCount()
 	return m_mapFaceIndex.size();
 }
 
+const BBox& CLodMesh::getBBox()
+{return m_bbox;}
+
+size_t CLodMesh::getPosCount()
+{return pos.size();}
+
+size_t CLodMesh::getBoneCount()
+{return bone.size();}
+
+size_t CLodMesh::getWeightCount()
+{return weight.size();}
+
+size_t CLodMesh::getNormalCount()
+{return normal.size();}
+
+size_t CLodMesh::getTexcoordCount()
+{return texcoord.size();}
+
+void CLodMesh::addPos(const Vec3D& vPos)
+{pos.push_back(vPos);}
+void CLodMesh::addBone(uint32 uBone)
+{bone.push_back(uBone);}
+void CLodMesh::addWeight(uint32 uWeight)
+{weight.push_back(uWeight);}
+void CLodMesh::addNormal(const Vec3D& vNormal)
+{normal.push_back(vNormal);}
+void CLodMesh::addTexcoord(const Vec2D& vUV)
+{texcoord.push_back(vUV);}
+
+template <class _T>
+void  setVectorValue(std::vector<_T>& vec, size_t pos, const _T& val)
+{
+	if (vec.size()<=pos)
+	{
+		vec.resize(pos+1);
+	}
+	vec.push_back(val);
+}
+
+void CLodMesh::setPos(size_t n, const Vec3D& vPos)
+{
+	setVectorValue(pos,n,vPos);
+}
+void CLodMesh::setBone(size_t n, uint32 uBone)
+{
+	setVectorValue(bone,n,uBone);
+}
+void CLodMesh::setWeight(size_t n, uint32 uWeight)
+{
+	setVectorValue(weight,n,uWeight);
+}
+void CLodMesh::setNormal(size_t n, const Vec3D& vNormal)
+{
+	setVectorValue(normal,n,vNormal);
+}
+void CLodMesh::setTexcoord(size_t n, const Vec2D& vUV)
+{
+	setVectorValue(texcoord,n,vUV);
+}
+
+template <class _T>
+void  getVectorValue(const std::vector<_T>& vec, size_t pos, _T& val)
+{
+	if (vec.size()>pos)
+	{
+		val=vec[pos];
+	}
+}
+
+void CLodMesh::getPos(size_t n, Vec3D& vPos)
+{
+	getVectorValue(pos,n,vPos);
+}
+void CLodMesh::getBone(size_t n, uint32& uBone)
+{
+	getVectorValue(bone,n,uBone);
+}
+void CLodMesh::getWeight(size_t n, uint32& uWeight)
+{
+	getVectorValue(weight,n,uWeight);
+}
+void CLodMesh::getNormal(size_t n, Vec3D& vNormal)
+{
+	getVectorValue(normal,n,vNormal);
+}
+void CLodMesh::getTexcoord(size_t n, Vec2D& vUV)
+{
+	getVectorValue(texcoord,n,vUV);
+}
+
 template <class _T, class _T2>
 void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut, std::vector<_T2>& index)
 {
