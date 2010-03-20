@@ -23,7 +23,7 @@ struct UI_SCREEN_VERTEX_UNTEX
 };
 DWORD UI_SCREEN_VERTEX_UNTEX::FVF = FVF_XYZRHW | FVF_DIFFUSE;
 
-void UIGraph::DrawRect(const RECT& rcDest, Color32 color)
+void UIGraph::DrawRect(const CRect<float>& rcDest, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
 
@@ -39,7 +39,7 @@ void UIGraph::DrawRect(const RECT& rcDest, Color32 color)
 	R.SetTextureAlphaOP(0, TBOP_MODULATE);
 }
 
-void UIGraph::FillRect(const RECT& rcDest, Color32 color)
+void UIGraph::FillRect(const CRect<float>& rcDest, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
 
@@ -92,40 +92,40 @@ void UIGraph::DrawPolyLine(POINT* apPoints, UINT nNumPoints, Color32 color)
 	S_DELS(vertices);
 }
 
-void UIGraph::DrawSprite3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, UINT TextureID, Color32 color)
+void UIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
 		return;
 	GetGraphics().Draw3x3Grid(rcSrc, rcCenterSrc, rcDest, TextureID, color);
 }
 
-void UIGraph::DrawSprite3x3GridWrap(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, UINT TextureID, Color32 color)
+void UIGraph::DrawSprite3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
 		return;
 	GetGraphics().Draw3x3GridWrap(rcSrc, rcCenterSrc, rcDest, TextureID, color);
 }
 
-void UIGraph::DrawSprite(const RECT& rcSrc, const RECT& rcDest, UINT TextureID, Color32 color)
+void UIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
 		return;
 	GetGraphics().DrawTex(rcSrc, rcDest, TextureID, color);
 }
 
-void UIGraph::DrawSprite(const RECT& rcDest, UINT TextureID, Color32 color)
+void UIGraph::DrawSprite(const CRect<float>& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
 		return;
 	GetGraphics().DrawTex(rcDest, TextureID, color);
 }
 
-void UIGraph::CalcTextRect(const std::wstring& wstrText, RECT& rcDest)
+void UIGraph::CalcTextRect(const std::wstring& wstrText, CRect<float>& rcDest)
 {
 	GetTextRender().drawText(wstrText, -1, rcDest,DTL_CALCRECT,0,&rcDest);
 }
 
-void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex, RECT& rcDest, bool bShadow, int nCount)
+void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex,const CRect<float>& rcDest, bool bShadow, int nCount)
 {
 	Color32 color = style.m_mapFont[nIndex].vColor.getColor();
 	uint32 uFormat =  style.GetCyclostyle().m_FontStyle[nIndex].uFormat;

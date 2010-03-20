@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 #include "Frustum.h"
 #include <Windows.h>
+#include "Rect.h"
 
 enum eDrawFlag
 {
@@ -47,30 +48,30 @@ public:
 	void DrawLine	(int x0, int y0, int x1, int y1, Color32 color);
 	// æÿ–ŒøÚ
 	void DrawRect	(int x0, int y0, int x1, int y1, Color32 color);
-	void DrawRect	(const RECT& rcDest, Color32 color);
+	void DrawRect	(const CRect<float>& rcDest, Color32 color);
 	// æÿ–ŒÃÓ≥‰
 	void FillRect	(int x0, int y0, int x1, int y1, Color32 color);
 	void FillRect	(int x0, int y0, int x1, int y1, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
-	void FillRect	(const RECT& rcDest, Color32 color);
-	void FillRect	(const RECT& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
+	void FillRect	(const CRect<float>& rcDest, Color32 color);
+	void FillRect	(const CRect<float>& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
 	// Õ÷‘≤–Œ
 	void DrawCircle	(int x0, int y0, int x1, int y1, Color32 color);
 	// Õ÷‘≤–ŒÃÓ≥‰
 	void FillCircle	(int x0, int y0, int x1, int y1, Color32 color);
 
 	//
-	void DrawQuad	(const RECT& rcSrc, const RECT& rcDest, int nWidth, int nHeight, Color32 color);
+	void DrawQuad	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nWidth, int nHeight, Color32 color);
 	void DrawTex	(int destX, int destY, int nTexID, Color32 color);
-	void DrawTex	(const RECT& rcDest, int nTexID, Color32 color);
-	void DrawTex	(const RECT& rcSrc, const RECT& rcDest, int nTexID, Color32 color);
-	void DrawTex	(const RECT& rcSrc, int destX, int destY, int nTexID, Color32 color);
+	void DrawTex	(const CRect<float>& rcDest, int nTexID, Color32 color);
+	void DrawTex	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
+	void DrawTex	(const CRect<float>& rcSrc, int destX, int destY, int nTexID, Color32 color);
 
 	//
-	void DrawTexWrap(const RECT& rcSrc, const RECT& rcDest, int nTexID, Color32 color);
+	void DrawTexWrap(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 	//
-	void Draw3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, int nTexID, Color32 color);
+	void Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 	//
-	void Draw3x3GridWrap(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, int nTexID, Color32 color);
+	void Draw3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 
 	// ªÊ÷∆2Dœﬂ
 	void Line2DBegin();

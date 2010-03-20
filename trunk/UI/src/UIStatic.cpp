@@ -12,7 +12,9 @@ void CUIStatic::OnFrameRender(double fTime, float fElapsedTime)
 {
 	if (m_width==0||m_height==0)
 	{
-		UIGraph::CalcTextRect(m_wstrText, m_rcBoundingBox);
+		CRect<float> rect = m_rcBoundingBox;
+		UIGraph::CalcTextRect(m_wstrText,rect);
+		m_rcBoundingBox=rect.getRECT();
 	}
 	m_Style.draw(m_rcBoundingBox,m_wstrText,GetState(), fElapsedTime);
 }

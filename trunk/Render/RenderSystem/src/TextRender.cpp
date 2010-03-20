@@ -434,7 +434,7 @@ void CTextRender::DrawTextVB(int nVertexCount, void* pVB)
 	R.SetTexture(0, (CTexture*)NULL);
 }
 
-void CTextRender::drawText(const std::wstring& strText,int cchText,const RECT& rcDest,UINT format,Color32 dwColor,RECT* prcRet)
+void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<float>& rcDest,UINT format,Color32 dwColor,CRect<float>* prcRet)
 {
 	bool bVisible = !(format & DTL_CALCRECT);
 	int nX = rcDest.left;

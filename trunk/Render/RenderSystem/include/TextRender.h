@@ -147,7 +147,7 @@ public:
 	void OnFrameMove();
 
 	void DrawTextVB(int nVertexCount, void* pVB);
-	void drawText(const std::wstring& strText, int cchText, const RECT& rcDes, UINT format, Color32 dwColor = 0xffffffff,RECT* prcRet=NULL);
+	void drawText(const std::wstring& strText, int cchText, const CRect<float>& rcDes, UINT format, Color32 dwColor = 0xffffffff,CRect<float>* prcRet=NULL);
 	void drawText(const std::wstring& strText, int x, int y, Color32 dwColor = 0xffffffff);
 
 	void SetInsertionPos(int x, int y) { m_nX = x; m_nY = y; }

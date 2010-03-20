@@ -5,16 +5,6 @@
 
 #define MAX_VBSIZE 10000
 
-int GetRectWidth(const RECT& rc)
-{
-	return abs(rc.right - rc.left);
-}
-
-int GetRectHeight(const RECT& rc)
-{
-	return abs(rc.bottom - rc.top);
-}
-
 CGraphics& GetGraphics()
 {
 	static CGraphics g_Graphics;
@@ -290,7 +280,7 @@ void CGraphics::DrawRect(int x0, int y0, int x1, int y1, Color32 color)
 	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZW_DIF));
 }
 
-void CGraphics::DrawRect(const RECT& rcDest, Color32 color)
+void CGraphics::DrawRect(const CRect<float>& rcDest, Color32 color)
 {
 	DrawRect(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, color);
 }
@@ -341,31 +331,31 @@ void CGraphics::FillRect(int x0, int y0, int x1, int y1, Color32 color0, Color32
 	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZW_DIF));
 }
 
-void CGraphics::FillRect(const RECT& rcDest, Color32 color)
+void CGraphics::FillRect(const CRect<float>& rcDest, Color32 color)
 {
 	FillRect(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, color);
 }
 
-void CGraphics::FillRect(const RECT& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3)
+void CGraphics::FillRect(const CRect<float>& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3)
 {
 	FillRect(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, color0, color1, color2, color3);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void CGraphics::DrawQuad(const RECT& rcSrc, const RECT& rcDest, int nWidth, int nHeight, Color32 color)
+void CGraphics::DrawQuad(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nWidth, int nHeight, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
-	float u0 = (float)(rcSrc.left+0.5f)		/ (float)nWidth;
-	float v0 = (float)(rcSrc.top+0.5f)		/ (float)nHeight;
-	float u1 = (float)(rcSrc.right)	/ (float)nWidth;
-	float v1 = (float)(rcSrc.bottom)	/ (float)nHeight;
+	float u0 = (rcSrc.left+0.5f)/ (float)nWidth;
+	float v0 = (rcSrc.top+0.5f)	/ (float)nHeight;
+	float u1 = (rcSrc.right)	/ (float)nWidth;
+	float v1 = (rcSrc.bottom)	/ (float)nHeight;
 	VERTEX_XYZW_DIF_TEX v[4]=
 	{
-		Vec4D((float) rcDest.left,	(float) rcDest.top,		0.5f, 1.0f), color, Vec2D(u0, v0),
-		Vec4D((float) rcDest.right,	(float) rcDest.top,		0.5f, 1.0f), color, Vec2D(u1, v0),
-		Vec4D((float) rcDest.right,	(float) rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u1, v1),
-		Vec4D((float) rcDest.left,	(float) rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u0, v1),
+		Vec4D( rcDest.left,		rcDest.top,		0.5f, 1.0f), color, Vec2D(u0, v0),
+		Vec4D( rcDest.right,	rcDest.top,		0.5f, 1.0f), color, Vec2D(u1, v0),
+		Vec4D( rcDest.right,	rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u1, v1),
+		Vec4D( rcDest.left,		rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u0, v1),
 	};
 	R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
 	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZW_DIF_TEX));
@@ -385,7 +375,7 @@ void CGraphics::DrawTex(int destX, int destY, int nTexID, Color32 color)
 	}
 }
 
-void CGraphics::DrawTex(const RECT& rcDest, int nTexID, Color32 color)
+void CGraphics::DrawTex(const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
 	if (pTex)
@@ -398,7 +388,7 @@ void CGraphics::DrawTex(const RECT& rcDest, int nTexID, Color32 color)
 	}
 }
 
-void CGraphics::DrawTex(const RECT& rcSrc, const RECT& rcDest, int nTexID, Color32 color)
+void CGraphics::DrawTex(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
@@ -409,9 +399,9 @@ void CGraphics::DrawTex(const RECT& rcSrc, const RECT& rcDest, int nTexID, Color
 	}
 }
 
-void CGraphics::DrawTex(const RECT& rcSrc, int destX, int destY, int nTexID, Color32 color)
+void CGraphics::DrawTex(const CRect<float>& rcSrc, int destX, int destY, int nTexID, Color32 color)
 {
-	RECT rcDest = rcSrc;
+	CRect<float> rcDest = rcSrc;
 	rcDest.right += destX;
 	rcDest.left += destX;
 	rcDest.top += destY;
@@ -419,15 +409,15 @@ void CGraphics::DrawTex(const RECT& rcSrc, int destX, int destY, int nTexID, Col
 	DrawTex(rcSrc, rcDest, nTexID, color);
 }
 
-void CGraphics::DrawTexWrap(const RECT& rcSrc, const RECT& rcDest, int nTexID, Color32 color)
+void CGraphics::DrawTexWrap(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
 	if (pTex)
 	{
-		int nTileWidth = GetRectWidth(rcSrc);
-		int nTileHeight = GetRectHeight(rcSrc);
-		int nWidth = GetRectWidth(rcDest)/nTileWidth;
-		int nHeight = GetRectHeight(rcDest)/nTileHeight;
+		int nTileWidth = rcSrc.getWidth();
+		int nTileHeight = rcSrc.getHeight();
+		int nWidth	= rcDest.getWidth()/nTileWidth;
+		int nHeight	= rcDest.getHeight()/nTileHeight;
 
 		int nTileCount = int(nWidth) * int(nHeight);
 		int nVertexCount = nTileCount*4;
@@ -445,10 +435,10 @@ void CGraphics::DrawTexWrap(const RECT& rcSrc, const RECT& rcDest, int nTexID, C
 			{
 				VERTEX_XYZW_DIF_TEX v[ 4 ] =
 				{
-					Vec4D((float) rcDest.left+nTileWidth*x,		(float) rcDest.top+nTileHeight*y,		0.5f, 1.0f), color, Vec2D(u0, v0),
-					Vec4D((float) rcDest.left+nTileWidth*(x+1),	(float) rcDest.top+nTileHeight*y,		0.5f, 1.0f), color, Vec2D(u1, v0),
-					Vec4D((float) rcDest.left+nTileWidth*(x+1),	(float) rcDest.top+nTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u1, v1),
-					Vec4D((float) rcDest.left+nTileWidth*x,		(float) rcDest.top+nTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u0, v1),
+					Vec4D(rcDest.left+nTileWidth*x,		rcDest.top+nTileHeight*y,		0.5f, 1.0f), color, Vec2D(u0, v0),
+					Vec4D(rcDest.left+nTileWidth*(x+1),	rcDest.top+nTileHeight*y,		0.5f, 1.0f), color, Vec2D(u1, v0),
+					Vec4D(rcDest.left+nTileWidth*(x+1),	rcDest.top+nTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u1, v1),
+					Vec4D(rcDest.left+nTileWidth*x,		rcDest.top+nTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u0, v1),
 				};
 				memcpy(&vb[ (y * nWidth + x)*4 ], v, sizeof(VERTEX_XYZW_DIF_TEX)*4);
 			}
@@ -475,7 +465,7 @@ void CGraphics::DrawTexWrap(const RECT& rcSrc, const RECT& rcDest, int nTexID, C
 	}
 }
 
-void CGraphics::Draw3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, int nTexID, Color32 color)
+void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
 	if (pTex)
@@ -498,17 +488,17 @@ void CGraphics::Draw3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RE
 		//////////////////////////////////////////////////////////////////////////
 		float X[4] =
 		{
-			(float)rcDest.left,
-			(float)rcCenterDest.left,
-			(float)rcCenterDest.right,
-			(float)rcDest.right,
+			rcDest.left,
+			rcCenterDest.left,
+			rcCenterDest.right,
+			rcDest.right,
 		};
 		float U[4] =
 		{
-			(float)(rcSrc.left+0.5f)/pTex->GetWidth(),
-			(float)(rcCenterSrc.left+0.5f)/pTex->GetWidth(),
-			(float)(rcCenterSrc.right+0.5f)/pTex->GetWidth(),
-			(float)(rcSrc.right+0.5f)/pTex->GetWidth(),
+			(rcSrc.left+0.5f)/pTex->GetWidth(),
+			(rcCenterSrc.left+0.5f)/pTex->GetWidth(),
+			(rcCenterSrc.right+0.5f)/pTex->GetWidth(),
+			(rcSrc.right+0.5f)/pTex->GetWidth(),
 		};
 		for (int i = 0; i<4; i++)
 		{
@@ -522,17 +512,17 @@ void CGraphics::Draw3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RE
 		//////////////////////////////////////////////////////////////////////////
 		float Y[4] =
 		{
-			(float)rcDest.top,
-			(float)rcCenterDest.top,
-			(float)rcCenterDest.bottom,
-			(float)rcDest.bottom,
+			rcDest.top,
+			rcCenterDest.top,
+			rcCenterDest.bottom,
+			rcDest.bottom,
 		};
 		float V[4] =
 		{
-			(float)(rcSrc.top+0.5f)/pTex->GetHeight(),
-			(float)(rcCenterSrc.top+0.5f)/pTex->GetHeight(),
-			(float)(rcCenterSrc.bottom+0.5f)/pTex->GetHeight(),
-			(float)(rcSrc.bottom+0.5f)/pTex->GetHeight(),
+			(rcSrc.top+0.5f)/pTex->GetHeight(),
+			(rcCenterSrc.top+0.5f)/pTex->GetHeight(),
+			(rcCenterSrc.bottom+0.5f)/pTex->GetHeight(),
+			(rcSrc.bottom+0.5f)/pTex->GetHeight(),
 		};
 		for (int i = 0; i<4; i++)
 		{
@@ -561,7 +551,7 @@ void CGraphics::Draw3x3Grid(const RECT& rcSrc, const RECT& rcCenterSrc, const RE
 	}
 }
 
-void CGraphics::Draw3x3GridWrap(const RECT& rcSrc, const RECT& rcCenterSrc, const RECT& rcDest, int nTexID, Color32 color)
+void CGraphics::Draw3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	RECT rcCenterDest =
 	{

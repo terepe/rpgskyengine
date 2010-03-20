@@ -7,10 +7,22 @@
 #include <Windows.h>
 #include "Vec4D.h"
 #include "interpolation.h"
+#include "Rect.h"
 
 class TiXmlElement;
 
-void StrToRect(const char* str, RECT& rect);
+template<typename T>
+inline void StrToRect(const char* str, T& rect)
+{
+	sscanf(str, "%d,%d,%d,%d", &rect.left, &rect.top, &rect.right, &rect.bottom);
+}
+
+template<>
+inline void StrToRect<CRect<float>>(const char* str, CRect<float>& rect)
+{
+	sscanf(str, "%f,%f,%f,%f", &rect.left, &rect.top, &rect.right, &rect.bottom);
+}
+
 void StrToXY(const char* str, int& x, int& y);
 
 enum CONTROL_STATE
@@ -36,29 +48,33 @@ enum SPRITE_LAYOUT_TYPE
 
 struct StyleDrawData
 {
+	StyleDrawData()
+	{
+		memset(this,0,sizeof(*this));
+	}
+
 	Vec4D	vColor;
-	RECT	rc;
+	CRect<float> offset;
+	CRect<float> rc;
 };
 
 struct ControlBlendColor
 {
 	ControlBlendColor()
 	{
-// 		memset(&ColorOfStates,0,sizof)
-// 		for(int i=0; i < CONTROL_STATE_MAX; i++)
-// 		{
-// 			ColorOfStates[i] = 0x0;
-// 		}
+		memset(this,0,sizeof(*this));
 	}
 
-	Vec4D Blend(Vec4D crCurrent, UINT iState, float fElapsedTime)const
+	void blend(Vec4D& crCurrent, CRect<float>& offset, UINT iState, float fElapsedTime)const
 	{
-		return interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),crCurrent,ColorOfStates[iState]);
+		crCurrent	= interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),crCurrent,ColorOfStates[iState]);
+		offset		= interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),offset,setOffset[iState]);
 		//return Color32::lerp(1.0f - powf(fRate, 30 * fElapsedTime), crCurrent, States[ iState ]);
 	}
 	void XMLState(TiXmlElement& element);
 
 	Vec4D	ColorOfStates[CONTROL_STATE_MAX];
+	CRect<float>	setOffset[CONTROL_STATE_MAX];
 	float	m_BlendRates[CONTROL_STATE_MAX];
 };
 
@@ -67,20 +83,20 @@ struct BaseCyclostyle: public ControlBlendColor
 	BaseCyclostyle()
 	{
 		uFormat = 0;
-		SetRect(&rcOffset,0,0,0,0);
+		memset(&rcOffset,0,sizeof(rcOffset));
 	}
-	RECT rcOffset;
+	CRect<float> rcOffset;
 	uint32 uFormat;// The format argument to DrawText or Texture
 	virtual void XML(TiXmlElement& element);
-	virtual void updataRect(RECT& rc)const;
+	virtual void updataRect(CRect<float>& rc)const;
 };
 
 class CUISpriteCyclostyle: public BaseCyclostyle
 {
 public:
 	virtual void XML(TiXmlElement& element);
-	virtual void updataRect(RECT& rc)const;
-	void		draw(const RECT& rc,const Color32& color)const;
+	virtual void updataRect(CRect<float>& rc)const;
+	void		draw(const CRect<float>& rc,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
@@ -91,18 +107,18 @@ public:
 class CUITextCyclostyle: public BaseCyclostyle
 {
 public:
-	virtual void updataRect(RECT& rc)const;
-	void draw(const std::wstring& wstrText,const RECT& rc,const Color32& color)const;
+	virtual void updataRect(CRect<float>& rc)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
 struct  StyleBorder: public BaseCyclostyle
 {
-	void draw(const RECT& rc,const Color32& color)const;
+	void draw(const CRect<float>& rc,const Color32& color)const;
 };
 
 struct  StyleSquare: public BaseCyclostyle
 {
-	void draw(const RECT& rc,const Color32& color)const;
+	void draw(const CRect<float>& rc,const Color32& color)const;
 };
 
 class DLL_EXPORT CUICyclostyle
@@ -122,10 +138,10 @@ class DLL_EXPORT CUIStyle
 public:
 	CUIStyle();
 	~CUIStyle(){};
-	void Blend(const RECT& rc, UINT iState, float fElapsedTime);
+	void Blend(const CRect<float>& rc, UINT iState, float fElapsedTime);
 	void SetStyle(const std::string& strName);
 	const CUICyclostyle& GetCyclostyle();
-	void draw(const RECT& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
+	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
 	bool isHidden();
 
