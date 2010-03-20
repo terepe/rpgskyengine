@@ -575,7 +575,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	}
 
 	m_Style.draw(m_rcBoundingBox,m_Buffer.GetBuffer() + m_nFirstVisible,GetState(),fElapsedTime);
-	m_rcText = m_Style.m_mapFont[0].rc;
+	m_rcText = m_Style.m_mapFont[0].rc.getRECT();
 
 	// Compute the X coordinates of the first visible character.
 	//

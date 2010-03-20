@@ -710,7 +710,7 @@ bool CUIIMEEditBox::MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReading)
 {
-    RECT rc;
+    CRect<float> rc;
     UINT nNumEntries = bReading ? 4 : MAX_CANDLIST;
     Color32 clrTextColor, clrTextBkColor, clrSelTextColor, clrSelBkColor;
     int nX, nXFirst, nXComp;
@@ -755,7 +755,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
         {
             if(CIME::s_CandList.awszCandidate[i][0] == L'\0')
                 break;
-            SetRect(&rc, 0, 0, 0, 0);
+            rc.set(0, 0, 0, 0);
             UIGraph::CalcTextRect(CIME::s_CandList.awszCandidate[i], rc);
             nWidthRequired = __max(nWidthRequired, rc.right - rc.left);
             nSingleLineHeight = __max(nSingleLineHeight, rc.bottom - rc.top);
@@ -764,7 +764,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     } else
     {
         // Horizontal window
-        SetRect(&rc, 0, 0, 0, 0);
+        rc.set(0, 0, 0, 0);
         if(bReading)
 			UIGraph::CalcTextRect(CIME::s_wstrReadingString, rc);
         else
@@ -780,7 +780,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     bool bHasPosition = false;
 
     // Bottom
-    SetRect(&rc, CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y + m_rcBoundingBox.bottom - m_rcBoundingBox.top,
+    rc.set(CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y + m_rcBoundingBox.bottom - m_rcBoundingBox.top,
                   CIME::s_ptCompString.x + nXComp + nWidthRequired, CIME::s_ptCompString.y + m_rcBoundingBox.bottom - m_rcBoundingBox.top + nHeightRequired);
     // if the right edge is cut off, move it left.
     if(rc.right > m_pParentDialog->GetWidth())
@@ -794,7 +794,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     // Top
     if(!bHasPosition)
     {
-        SetRect(&rc, CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y - nHeightRequired,
+        rc.set(CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y - nHeightRequired,
                       CIME::s_ptCompString.x + nXComp + nWidthRequired, CIME::s_ptCompString.y);
         // if the right edge is cut off, move it left.
         if(rc.right > m_pParentDialog->GetWidth())
@@ -811,7 +811,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     {
         int nXCompTrail;
         CIME::s_CompString.CPtoX(CIME::s_nCompCaret, TRUE, nXCompTrail);
-        SetRect(&rc, CIME::s_ptCompString.x + nXCompTrail, 0,
+        rc.set(CIME::s_ptCompString.x + nXCompTrail, 0,
                       CIME::s_ptCompString.x + nXCompTrail + nWidthRequired, nHeightRequired);
         if(rc.right <= m_pParentDialog->GetWidth())
             bHasPosition = true;
@@ -820,7 +820,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     // Left
     if(!bHasPosition)
     {
-        SetRect(&rc, CIME::s_ptCompString.x + nXComp - nWidthRequired, 0,
+        rc.set(CIME::s_ptCompString.x + nXComp - nWidthRequired, 0,
                       CIME::s_ptCompString.x + nXComp, nHeightRequired);
         if(rc.right >= 0)
             bHasPosition = true;
@@ -838,7 +838,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     // If we are rendering the candidate window, save the position
     // so that mouse clicks are checked properly.
     if(!bReading)
-        CIME::s_CandList.rcCandidate = rc;
+        CIME::s_CandList.rcCandidate = rc.getRECT();
 
     // Render the elements
 	// ºòÑ¡×Ö´ÊÁÐ±í±³¾°
@@ -898,18 +898,19 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
     //CUIStyle *pStyle = GetStyle(1);
 
     // Get the required width
-    RECT rc = { m_rcBoundingBox.left + nX - nXFirst, m_rcBoundingBox.top,
-                m_rcBoundingBox.left + nX - nXFirst, m_rcBoundingBox.bottom };
+	CRect<float> rc;
+	rc.set( m_rcBoundingBox.left + nX - nXFirst, m_rcBoundingBox.top,
+                m_rcBoundingBox.left + nX - nXFirst, m_rcBoundingBox.bottom);
 	UIGraph::CalcTextRect(CIME::s_CompString.GetBuffer(), rc);
 
     // If the composition string is too long to fit within
     // the text area, move it to below the current line.
     // This matches the behavior of the default IME.
     if(rc.right > m_rcBoundingBox.right)
-        OffsetRect(&rc, m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
+        rc.offset(m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
 
     // Save the rectangle position for processing highlighted text.
-    RECT rcFirst = rc;
+    RECT rcFirst = rc.getRECT();
 
     // Update CIME::s_ptCompString for RenderCandidateReadingWindow().
     CIME::s_ptCompString.x = rc.left; CIME::s_ptCompString.y = rc.top;
@@ -962,7 +963,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
             break;
 
         // Advance rectangle coordinates to beginning of next line
-        OffsetRect(&rc, m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
+       rc.offset(m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
     }
 
     // Load the rect for the first line again.
@@ -991,7 +992,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
         if(nXRight - nXFirst > m_rcBoundingBox.right - rc.left)
         {
             // Advance rectangle coordinates to beginning of next line
-            OffsetRect(&rc, m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
+            rc.offset(m_rcBoundingBox.left - rc.left, rc.bottom - rc.top);
 
             // Update the line's first character information
             nCharFirst = int(pcComp - CIME::s_CompString.GetBuffer());
@@ -1002,7 +1003,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
         // for drawing the caret later.
         if(CIME::s_nCompCaret == int(pcComp - CIME::s_CompString.GetBuffer()))
         {
-            rcCaret = rc;
+            rcCaret = rc.getRECT();
             rcCaret.left += nXLeft - nXFirst - 1;
             rcCaret.right = rcCaret.left + 2;
         }
@@ -1041,7 +1042,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
         if(CIME::s_nCompCaret == CIME::s_CompString.GetTextSize())
         {
             CIME::s_CompString.CPtoX(CIME::s_nCompCaret, FALSE, nX);
-            rcCaret = rc;
+            rcCaret = rc.getRECT();
             rcCaret.left += nX - nXFirst - 1;
             rcCaret.right = rcCaret.left + 2;
         }
@@ -1057,7 +1058,8 @@ void CUIIMEEditBox::RenderIndicator(float fElapsedTime)
     //UIGraph::DrawSprite(m_Style, 1, m_rcIndicator);?????????????????????????????????????????ÎÒ×¢ÊÍµô
     RECT rc = m_rcIndicator;
     m_Style.m_mapFont[1].vColor = CIME::s_ImeState == CIME::IMEUI_STATE_ON && CIME::s_bEnableImeSystem ? m_IndicatorImeColor : m_IndicatorEngColor;
-    RECT rcCalc = { 0, 0, 0, 0 };
+    CRect<float> rcCalc;
+	rcCalc.set( 0, 0, 0, 0 );
     // If IME system is off, draw English indicator.
     WCHAR *pwszIndicator = CIME::s_bEnableImeSystem ? CIME::s_wszCurrIndicator : CIME::s_aszIndicator[0];
 
@@ -1078,7 +1080,8 @@ void CUIIMEEditBox::OnFrameRender(double fTime, float fElapsedTime)
     {
         for(int i = 0; i < 5; ++i)
         {
-            RECT rc = { 0, 0, 0, 0 };
+            CRect<float> rc;
+			rc.set(0,0,0,0);
             UIGraph::CalcTextRect(CIME::s_aszIndicator[i], rc);
             m_nIndicatorWidth = __max(m_nIndicatorWidth, rc.right - rc.left);
         }

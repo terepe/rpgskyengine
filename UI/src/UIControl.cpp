@@ -352,6 +352,8 @@ void CUIControl::SetHotkey(std::string& strHotkey)
 void CUIControl::SetStyle(const std::string& strStyleName)
 {
 	m_Style.SetStyle(strStyleName);
+	CRect<float> rc;
+	m_Style.Blend(rc,CONTROL_STATE_HIDDEN,100);
 }
 
 void CUIControl::Refresh()
@@ -380,7 +382,7 @@ void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
 	{
 		return;
 	}
-	RECT rect={0,0,0,0};
+	CRect<float> rect;
 	UIGraph::CalcTextRect(m_wstrTip, rect);// 计算文本框大小
 	rect.right	+=5;
 	rect.bottom	+=5;
