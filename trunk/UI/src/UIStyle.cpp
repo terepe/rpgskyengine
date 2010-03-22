@@ -107,6 +107,8 @@ void CUIStyle::Blend(const CRect<float>& rc, UINT iState, float fElapsedTime)
 void CUIStyle::SetStyle(const std::string& strName)
 {
 	m_strName = strName;
+	CRect<float> rc;
+	Blend(rc,CONTROL_STATE_HIDDEN,100);
 }
 
 const CUICyclostyle& CUIStyle::GetCyclostyle()

@@ -104,8 +104,8 @@ public:
 	virtual const char * GetTitle()		= 0;
 	virtual const char * GetFormat()	= 0;
 	virtual int Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName) = 0;
-	virtual int importData(iModelData * pModelData, const std::string& strFilename)=0;
-	virtual int exportData(iModelData * pModelData, const std::string& strFilename)=0;
+	virtual bool importData(iModelData * pModelData, const std::string& strFilename)=0;
+	virtual bool exportData(iModelData * pModelData, const std::string& strFilename)=0;
 
 	virtual DWORD GetExportDataType() = 0;
 	virtual DWORD GetImportDataType() = 0;
