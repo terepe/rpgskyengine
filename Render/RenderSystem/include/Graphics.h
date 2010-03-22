@@ -45,26 +45,26 @@ public:
 	void End();
 	/// 2D几何绘制
 	// 直线
-	void DrawLine	(int x0, int y0, int x1, int y1, Color32 color);
+	void DrawLine	(float x0, float y0, float x1, float y1, Color32 color);
 	// 矩形框
-	void DrawRect	(int x0, int y0, int x1, int y1, Color32 color);
+	void DrawRect	(float x0, float y0, float x1, float y1, Color32 color);
 	void DrawRect	(const CRect<float>& rcDest, Color32 color);
 	// 矩形填充
-	void FillRect	(int x0, int y0, int x1, int y1, Color32 color);
-	void FillRect	(int x0, int y0, int x1, int y1, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
+	void FillRect	(float x0, float y0, float x1, float y1, Color32 color);
+	void FillRect	(float x0, float y0, float x1, float y1, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
 	void FillRect	(const CRect<float>& rcDest, Color32 color);
 	void FillRect	(const CRect<float>& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
 	// 椭圆形
-	void DrawCircle	(int x0, int y0, int x1, int y1, Color32 color);
+	void DrawCircle	(float x0, float y0, float x1, float y1, Color32 color);
 	// 椭圆形填充
-	void FillCircle	(int x0, int y0, int x1, int y1, Color32 color);
+	void FillCircle	(float x0, float y0, float x1, float y1, Color32 color);
 
 	//
-	void DrawQuad	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nWidth, int nHeight, Color32 color);
-	void DrawTex	(int destX, int destY, int nTexID, Color32 color);
+	void DrawQuad	(const CRect<float>& rcSrc, const CRect<float>& rcDest, float fWidth, float fHeight, Color32 color);
+	void DrawTex	(float destX, float destY, int nTexID, Color32 color);
 	void DrawTex	(const CRect<float>& rcDest, int nTexID, Color32 color);
 	void DrawTex	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
-	void DrawTex	(const CRect<float>& rcSrc, int destX, int destY, int nTexID, Color32 color);
+	void DrawTex	(const CRect<float>& rcSrc, float destX, float destY, int nTexID, Color32 color);
 
 	//
 	void DrawTexWrap(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);

@@ -23,17 +23,10 @@ m_nHeight(0)
 
 CSceneEffect::~CSceneEffect()
 {
-	S_DEL(m_pGlowRenderTarget);
-	S_DEL(m_pDepthRenderTarget);
-	S_DEL(m_pSceneTexture);
-	S_DEL(m_pExposureTexture);
-	S_DEL(m_pExposureTexture2);
-	S_DEL(m_pBackTexture);
-	// new 
-	S_DEL(m_pSceneCopyTexture);
+	clearTextures();
 }
 
-void CSceneEffect::Reset(const RECT& rc)
+void CSceneEffect::clearTextures()
 {
 	S_DEL(m_pGlowRenderTarget);
 	S_DEL(m_pDepthRenderTarget);
@@ -42,8 +35,18 @@ void CSceneEffect::Reset(const RECT& rc)
 	S_DEL(m_pExposureTexture2);
 	S_DEL(m_pBackTexture);
 	// new 
-	S_DEL(m_pSceneCopyTexture);
+	{ // Fixed the scene texture release.
+		CRenderSystem& R = GetRenderSystem();
+		CShader* pShader = R.GetShaderMgr().getSharedShader();
+		pShader->setTexture("g_texScene",(CTexture*)NULL);
+	}
 
+	S_DEL(m_pSceneCopyTexture);
+}
+
+void CSceneEffect::Reset(const RECT& rc)
+{
+	clearTextures();
 	int nWidth = rc.right-rc.left;
 	int nHeight = rc.bottom-rc.top;
 
@@ -567,7 +570,7 @@ void CSceneEffect::compose()
 
 			if (fLumScale > 1.0f)// ¼ÓÁÁÆÁÄ»²Ù×÷
 			{
-				fLumScale -= 1;
+				fLumScale -= 1.0f;
 				unsigned char ucFactor = min(255,fLumScale*255);
 				Color32 clrFactor(ucFactor,255,255,255);
 				R.SetTextureFactor(clrFactor);

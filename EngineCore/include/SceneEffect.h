@@ -27,6 +27,7 @@ public:
 	CSceneEffect(); 
 	~CSceneEffect();
 public:
+	void clearTextures();
 	void Reset(const RECT& rc);
 	void RenderTemporalBloom();
 	void RenderBloom();
