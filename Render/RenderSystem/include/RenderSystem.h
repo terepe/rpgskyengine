@@ -47,8 +47,8 @@ public:
 	virtual bool BeginFrame() = 0;	// Ö¡äÖÈ¾¿ªÊ¼
 	virtual void EndFrame() = 0;	// Ö¡äÖÈ¾½áÊø
 
-	virtual void setViewport(const RECT& rect) = 0;
-	virtual void getViewport(RECT& rect) = 0;
+	virtual void setViewport(const CRect<int>& rect) = 0;
+	virtual void getViewport(CRect<int>& rect) = 0;
 	// Çå³ý»º´æ
 	virtual void ClearBuffer(bool bZBuffer, bool bTarget, Color32 color) = 0;
 
