@@ -162,6 +162,7 @@ public:
 	void SetLocation(int x, int y);
 	void SetSize(int nWidth, int nHeight, bool bPercentWidth = false, bool bPercentHeight = false);
 	void SetAlign(uint32 uAlign);
+	void setOffset(const CRect<int>& rc);
 
 	int GetWidth() { return m_width; }
 	int GetHeight() { return m_height; }
@@ -179,7 +180,7 @@ public:
 	//virtual void SetTextColor(D3DCOLOR Color);
 	//CUIStyle* GetStyle(UINT iElement);
 
-	RECT& GetBoundingBox(){return m_rcBoundingBox;}
+	CRect<int>& GetBoundingBox(){return m_rcBoundingBox;}
 
 	virtual bool IsPressed(){return this==s_pControlPressed;}
 	void SetPressed(bool bPressed){s_pControlPressed=bPressed?this:NULL;}
@@ -197,7 +198,7 @@ public:
 	// Size, scale, and positioning members
 	int m_x, m_y;
 	int m_width, m_height;
-	RECT rcOffset;
+
 	int m_nPercentWidth;
 	int m_nPercentHeight;
 	uint32 m_uAlign;
@@ -220,5 +221,6 @@ protected:
 
 	bool				m_bEnabled;			// Enabled/disabled flag
 
-	RECT				m_rcBoundingBox;	// Rectangle defining the active region of the control
+	CRect<int>			m_rcBoundingBox;	// Rectangle defining the active region of the control
+	CRect<int>			m_rcOffset;
 };

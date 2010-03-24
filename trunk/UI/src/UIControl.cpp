@@ -72,7 +72,7 @@ CUIControl::CUIControl()
 	m_uAlign = 0;
 
 	ZeroMemory(&m_rcBoundingBox, sizeof(m_rcBoundingBox));
-	ZeroMemory(&rcOffset, sizeof(rcOffset));
+	ZeroMemory(&m_rcOffset, sizeof(m_rcOffset));
 }
 
 
@@ -108,7 +108,7 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 	{
 		if (pControlElement->Attribute("offset"))
 		{
-			StrToRect(pControlElement->Attribute("offset"),rcOffset);
+			StrToRect(pControlElement->Attribute("offset"),m_rcOffset);
 		}
 		if (pControlElement->Attribute("rect"))
 		{
@@ -279,10 +279,7 @@ void CUIControl::OnSize(const RECT& rc)
 	m_rcBoundingBox.top		= rc.top+nY;
 	m_rcBoundingBox.bottom	= m_rcBoundingBox.top+nHeight;
 
-	m_rcBoundingBox.left	+= rcOffset.left;
-	m_rcBoundingBox.right	+= rcOffset.right;
-	m_rcBoundingBox.top		+= rcOffset.top;
-	m_rcBoundingBox.bottom	+= rcOffset.bottom;
+	m_rcBoundingBox+= m_rcOffset;
 	UpdateRects();
 }
 
@@ -309,6 +306,11 @@ void CUIControl::SetSize(int nWidth, int nHeight, bool bPercentWidth, bool bPerc
 void CUIControl::SetAlign(uint32 uAlign)
 {
 	m_uAlign = uAlign;
+}
+
+void CUIControl::setOffset(const CRect<int>& rc)
+{
+	m_rcOffset = rc;
 }
 
 void CUIControl::SetHotkey(std::string& strHotkey)
