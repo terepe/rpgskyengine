@@ -306,7 +306,9 @@ CTexture* CSceneEffect::getSceneTexture()
 {
 	CRenderSystem& R = GetRenderSystem();
 	CTexture* m_pRenderSystemTarget = R.GetRenderTarget();
-	R.StretchRect(m_pRenderSystemTarget,NULL,m_pSceneCopyTexture,NULL, TEXF_LINEAR);
+	RECT rcSrc;
+	R.getViewport(rcSrc);
+	R.StretchRect(m_pRenderSystemTarget,&rcSrc,m_pSceneCopyTexture,NULL, TEXF_LINEAR);
 	S_DEL(m_pRenderSystemTarget);
 	return m_pSceneCopyTexture;
 }

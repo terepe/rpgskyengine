@@ -94,7 +94,11 @@ void CD3D9Texture::createCubeTextureFromFile(const std::string& strFilename)
 		//CTexture* pTexture = R.GetTextureMgr().CreateTextureFromFile(szSkyBoxFilename[i]);
 
 		CD3D9Texture d3D9Texture;
-		d3D9Texture.createTextureFromFile(strTemp,1);
+		if (d3D9Texture.createTextureFromFile(strTemp,1)==false)
+		{
+			MessageBoxA(0,"CD3D9Texture::createCubeTextureFromFile()", "Error",0);
+			continue;
+		}
 		//LPDIRECT3DTEXTURE9 pd3dTexture;
 		//D3DXCreateTextureFromFileExA(
 		//	DXUTGetD3DDevice(), strTemp.c_str(),
