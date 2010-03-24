@@ -38,15 +38,15 @@ void CUIRollup::UpdateRects()
 
 	m_rcSelection = m_rcBoundingBox;
 	m_rcSelection.right -= m_nSBWidth;
-	InflateRect(&m_rcSelection, -m_nBorder, -m_nBorder);
+	m_rcSelection.InflateRect(-m_nBorder, -m_nBorder);
 	m_rcText = m_rcSelection;
-	InflateRect(&m_rcText, -m_nMargin, 0);
+	m_rcText.InflateRect(-m_nMargin, 0);
 
 	// Update the scrollbar's rects
 	m_ScrollBar.SetLocation(m_rcBoundingBox.right - m_nSBWidth, m_rcBoundingBox.top);
 	m_ScrollBar.SetSize(m_nSBWidth, m_height);
 	{
-		m_ScrollBar.SetPageSize(RectHeight(m_rcText) / UIGraph::GetFontSize());
+		m_ScrollBar.SetPageSize(m_rcText.getHeight() / UIGraph::GetFontSize());
 
 		// The selected Page may have been scrolled off the page.
 		// Ensure that it is in page again.
@@ -325,7 +325,7 @@ bool CUIRollup::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONDBLCLK:
 		// Check for clicks in the text area
-		if(m_Pages.size() > 0 && PtInRect(&m_rcSelection, pt))
+		if(m_Pages.size() > 0 && m_rcSelection.ptInRect(pt))
 		{
 			// Compute the index of the clicked Page
 
@@ -537,8 +537,8 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 	if(m_Pages.size() > 0)
 	{
 		// Find out the height of a single line of text
-		RECT rc = m_rcText;
-		RECT rcSel = m_rcSelection;
+		CRect<int> rc = m_rcText;
+		CRect<int> rcSel = m_rcSelection;
 		rc.bottom = rc.top+UIGraph::GetFontSize();
 
 		// Update the line height formation
@@ -549,9 +549,9 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			// Update the page size of the scroll bar
 			if(m_nTextHeight)
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText) / m_nTextHeight);
+				m_ScrollBar.SetPageSize(m_rcText.getHeight() / m_nTextHeight);
 			else
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText));
+				m_ScrollBar.SetPageSize(m_rcText.getHeight());
 			bSBInit = true;
 		}
 
@@ -585,12 +585,12 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 				{
 					rcSel.top = rc.top; rcSel.bottom = rc.bottom;
 	//				UIGraph::DrawSprite(m_Style, 1, rcSel);
-					UIGraph::DrawText(pPage->wstrName, m_Style, 1, rc);
+					UIGraph::DrawText(pPage->wstrName, m_Style, 1, rc.getRECT());
 				}
 				else
-					UIGraph::DrawText(pPage->wstrName, m_Style, 0, rc);
+					UIGraph::DrawText(pPage->wstrName, m_Style, 0, rc.getRECT());
 
-				OffsetRect(&rc, 0, m_nTextHeight);
+				rc.offset(0, m_nTextHeight);
 		}
 	}
 

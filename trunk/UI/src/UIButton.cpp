@@ -81,7 +81,7 @@ void CUIButton::OnHotkey()
 
 bool CUIButton::ContainsPoint(POINT pt)
 {
-	return PtInRect(&m_rcBoundingBox, pt)==TRUE;
+	return m_rcBoundingBox.ptInRect(pt);
 }
 
 void CUIButton::OnFrameRender(double fTime, float fElapsedTime)

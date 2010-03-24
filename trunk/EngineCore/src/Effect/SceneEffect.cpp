@@ -44,11 +44,11 @@ void CSceneEffect::clearTextures()
 	S_DEL(m_pSceneCopyTexture);
 }
 
-void CSceneEffect::Reset(const RECT& rc)
+void CSceneEffect::Reset(const CRect<int>& rc)
 {
 	clearTextures();
-	int nWidth = rc.right-rc.left;
-	int nHeight = rc.bottom-rc.top;
+	int nWidth = rc.getWidth();
+	int nHeight = rc.getHeight();
 
 	m_nWidth = nWidth;
 	m_nHeight= nHeight;
@@ -306,7 +306,7 @@ CTexture* CSceneEffect::getSceneTexture()
 {
 	CRenderSystem& R = GetRenderSystem();
 	CTexture* m_pRenderSystemTarget = R.GetRenderTarget();
-	RECT rcSrc;
+	CRect<int> rcSrc;
 	R.getViewport(rcSrc);
 	R.StretchRect(m_pRenderSystemTarget,&rcSrc,m_pSceneCopyTexture,NULL, TEXF_LINEAR);
 	S_DEL(m_pRenderSystemTarget);
@@ -468,7 +468,7 @@ void CSceneEffect::renderTargetGlow()// not good
 	CRenderSystem& R = GetRenderSystem();
 	// first: copy system render target to my render target.
 
-	RECT rect={0,0,m_nWidth,m_nHeight};
+	CRect<int> rect(0,0,m_nWidth,m_nHeight);
 	R.StretchRect(m_pGlowRenderTarget, NULL, m_pSceneTexture, &rect, TEXF_POINT);
 
 	return;

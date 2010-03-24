@@ -28,7 +28,7 @@ void CRenderSystem::world2Screen(const Vec3D& vWorldPos, Pos2D& posScreen)
 	getViewMatrix(View);
 	Vec4D vOut = mProj*View*Vec4D(vWorldPos,1);
 	float fW = vOut.w;
-	RECT rc;
+	CRect<int> rc;
 	getViewport(rc);
 	posScreen.x = int(rc.left+(rc.right-rc.left)*(0.5f+vOut.x*0.5f/fW));
 	posScreen.y = int(rc.top+(rc.bottom-rc.top)*(0.5f-vOut.y*0.5f/fW));
@@ -38,7 +38,7 @@ void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 {
 	Matrix mProj;
 	getProjectionMatrix(mProj);
-	RECT rc;
+	CRect<int> rc;
 	getViewport(rc);
 	Vec3D v;
 	v.x =  (((2.0f * (x-rc.left)) / (rc.right-rc.left)) - 1) / mProj._11;

@@ -74,8 +74,8 @@ public:
 protected:
 	CUIStyle m_StyleItem;
 	CUIStyle m_StyleSelected;
-	RECT	m_rcText;      // Text rendering bound
-	RECT	m_rcSelection; // Selection box bound
+	CRect<int> 	m_rcText;      // Text rendering bound
+	CRect<int> 	m_rcSelection; // Selection box bound
 	CUIScrollBar	m_ScrollBar;
 	int		m_nSBWidth;
 	int		m_nBorder;

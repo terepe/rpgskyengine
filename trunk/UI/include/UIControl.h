@@ -14,8 +14,6 @@ void UISetHWND(HWND hWnd);
 
 #define UITRACE	(__noop)
 
-inline int RectWidth(RECT &rc) { return ((rc).right - (rc).left); }
-inline int RectHeight(RECT &rc) { return ((rc).bottom - (rc).top); }
 // Align
 #define ALIGN_TOP						0x00000000
 #define ALIGN_LEFT						0x00000000
@@ -148,7 +146,7 @@ public:
 	virtual bool isHidden(){return m_Style.isHidden();}
 
 	virtual void SetTip(const std::wstring& wstrTip) { m_wstrTip = wstrTip; }
-	virtual void drawTip(const RECT& rc, double fTime, float fElapsedTime);
+	virtual void drawTip(const CRect<int>& rc, double fTime, float fElapsedTime);
 
 	virtual void SetStyle(const std::string& strStyleName);
 
@@ -158,7 +156,7 @@ public:
 	void SetID(const std::string& strID){m_strID = strID;}
 
 	virtual void OnMove(int x, int y);
-	virtual void OnSize(const RECT& rc);
+	virtual void OnSize(const CRect<int>& rc);
 	void SetLocation(int x, int y);
 	void SetSize(int nWidth, int nHeight, bool bPercentWidth = false, bool bPercentHeight = false);
 	void SetAlign(uint32 uAlign);

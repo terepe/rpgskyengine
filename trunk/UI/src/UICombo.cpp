@@ -918,7 +918,7 @@ void CUICombo::FocusDefaultControl()
 	}
 }
 
-void CUICombo::OnChildSize(const RECT& rc)
+void CUICombo::OnChildSize(const CRect<int>& rc)
 {
 	// change Controls' size
 	for(uint32 i=0; i < m_Controls.size(); i++)
@@ -931,7 +931,7 @@ void CUICombo::OnChildSize(const RECT& rc)
 	}
 }
 
-void CUICombo::OnSize(const RECT& rc)
+void CUICombo::OnSize(const CRect<int>& rc)
 {
 	CUIControl::OnSize(rc);
 	OnChildSize(m_rcBoundingBox);

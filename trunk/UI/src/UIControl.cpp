@@ -216,9 +216,9 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 
 void CUIControl::OnMove(int x, int y)
 {
-	int w = m_rcBoundingBox.right-m_rcBoundingBox.left;
-	int h = m_rcBoundingBox.bottom-m_rcBoundingBox.top;
-	SetRect(&m_rcBoundingBox,x,y,x+w,y+h);
+	int w = m_rcBoundingBox.getWidth();
+	int h = m_rcBoundingBox.getHeight();
+	m_rcBoundingBox.set(x,y,x+w,y+h);
 	UpdateRects();
 }
 
@@ -228,7 +228,7 @@ void CUIControl::SetLocation(int x, int y)
 	UpdateRects();
 }
 
-void CUIControl::OnSize(const RECT& rc)
+void CUIControl::OnSize(const CRect<int>& rc)
 {
 	int nX = m_x;
 	int nY = m_y;
@@ -365,7 +365,7 @@ void CUIControl::Refresh()
 
 bool CUIControl::ContainsPoint(POINT pt)
 {
-	return PtInRect(&m_rcBoundingBox, pt)==TRUE;
+	return m_rcBoundingBox.ptInRect(pt);
 }
 
 void CUIControl::SendEvent(uint32 uEvent, CUIControl* pControl)
@@ -376,7 +376,7 @@ void CUIControl::SendEvent(uint32 uEvent, CUIControl* pControl)
 	}
 }
 
-void CUIControl::drawTip(const RECT& rc, double fTime, float fElapsedTime)
+void CUIControl::drawTip(const CRect<int>& rc, double fTime, float fElapsedTime)
 {
 	if (m_wstrTip.length()<=0)
 	{

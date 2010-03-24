@@ -142,6 +142,7 @@ public:
 	void SetStyle(const std::string& strName);
 	const CUICyclostyle& GetCyclostyle();
 	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
+	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
 	bool isHidden();
 

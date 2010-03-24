@@ -30,7 +30,7 @@ void CUIComboBox::OnSelectionChanged()
 
 bool CUIComboBox::ContainsPoint(POINT pt) 
 { 
-	return PtInRect(&m_rcBoundingBox, pt) || (m_ListBox.IsVisible() && m_ListBox.ContainsPoint(pt)); 
+	return m_rcBoundingBox.ptInRect(pt) || (m_ListBox.IsVisible() && m_ListBox.ContainsPoint(pt)); 
 }
 
 void CUIComboBox::OnFocusOut()
@@ -111,7 +111,7 @@ void CUIComboBox::OnMouseMove(POINT point)
 void CUIComboBox::OnLButtonDown(POINT point)
 {
 	CUICombo::OnLButtonDown(point);
-	if(PtInRect(&m_rcBoundingBox, point))
+	if(m_rcBoundingBox.ptInRect(point))
 	{
 		// Pressed while inside the control
 		SetPressed(true);

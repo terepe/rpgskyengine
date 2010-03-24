@@ -94,7 +94,7 @@ void CCamera::FrameMove(float fElapsedTime)
 }
 
 #include "RenderSystem.h"
-void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,RECT rc)
+void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,const CRect<int>& rc)
 {
 	Vec3D v;
 	v.x =  (((2.0f * (x-rc.left)) / (rc.right-rc.left)) - 1) / m_mProj._11;

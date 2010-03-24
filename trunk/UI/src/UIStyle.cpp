@@ -121,6 +121,12 @@ void CUIStyle::draw(const CRect<float>& rc, const std::wstring& wstrText, CONTRO
 	Draw(wstrText);
 }
 
+void CUIStyle::draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
+{
+	Blend(rc.getRECT(), state, fElapsedTime);
+	Draw(wstrText);
+}
+
 void CUIStyle::Draw(const std::wstring& wstrText)
 {
 	GetRenderSystem().SetDepthBufferFunc(false,false);

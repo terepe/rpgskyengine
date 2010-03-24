@@ -12,8 +12,8 @@ public:
 
 	virtual void XMLParse(TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
-	virtual void OnChildSize(const RECT& rc);
-	virtual void OnSize(const RECT& rc);
+	virtual void OnChildSize(const CRect<int>& rc);
+	virtual void OnSize(const CRect<int>& rc);
 	virtual void UpdateRects();
 	virtual bool ContainsPoint(POINT pt);
 	// my message
@@ -82,7 +82,7 @@ protected:
 	bool m_bMinimized;
 	std::wstring m_wstrCaption;
 
-	RECT	m_rcCaption;
+	CRect<int>	m_rcCaption;
 
 	int m_nCaptionHeight;
 	int m_nMouseOriginX;
