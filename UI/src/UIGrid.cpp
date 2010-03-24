@@ -47,15 +47,15 @@ void CUIGrid::UpdateRects()
 
 	m_rcSelection = m_rcBoundingBox;
 	m_rcSelection.right -= m_nSBWidth;
-	InflateRect(&m_rcSelection, -m_nBorder, -m_nBorder);
+	m_rcSelection.InflateRect(-m_nBorder, -m_nBorder);
 	m_rcText = m_rcSelection;
-	InflateRect(&m_rcText, -m_nMargin, 0);
+	m_rcText.InflateRect(-m_nMargin, 0);
 
 	// Update the scrollbar's rects
 	m_ScrollBar.SetLocation(m_rcBoundingBox.right - m_nSBWidth, m_rcBoundingBox.top);
 	m_ScrollBar.SetSize(m_nSBWidth, m_height);
 	{
-		m_ScrollBar.SetPageSize(RectHeight(m_rcText) / UIGraph::GetFontSize());
+		m_ScrollBar.SetPageSize(m_rcText.getHeight() / UIGraph::GetFontSize());
 
 		// The selected item may have been scrolled off the page.
 		// Ensure that it is in page again.
@@ -361,7 +361,7 @@ bool CUIGrid::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONDBLCLK:
 		// Check for clicks in the text area
-		if(GetLineCount() > 0 && PtInRect(&m_rcSelection, pt))
+		if(GetLineCount() > 0 && m_rcSelection.ptInRect(pt))
 		{
 			// Compute the index of the clicked item
 
@@ -476,8 +476,8 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 	if(GetLineCount() > 0)
 	{
 		// Find out the height of a single line of text
-		RECT rc = m_rcText;
-		RECT rcSel = m_rcSelection;
+		CRect<int> rc = m_rcText;
+		CRect<int> rcSel = m_rcSelection;
 		rc.bottom = rc.top+UIGraph::GetFontSize();
 
 		// Update the line height formation
@@ -488,9 +488,9 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			// Update the page size of the scroll bar
 			if(m_nTextHeight)
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText) / m_nTextHeight);
+				m_ScrollBar.SetPageSize(m_rcText.getHeight() / m_nTextHeight);
 			else
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText));
+				m_ScrollBar.SetPageSize(m_rcText.getHeight());
 			bSBInit = true;
 		}
 
@@ -498,14 +498,14 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			for(uint32 x=0; x<m_Row.size(); ++x )
 			{
-				RECT rcVal = rc;
+				CRect<int> rcVal = rc;
 				int nWidth = (rc.right - rc.left)/m_Row.size();
 				rcVal.left = rc.left+nWidth*x;
 				rcVal.right = rcVal.left+nWidth;
 
-				UIGraph::DrawText(m_Row[x], m_Style, 0, rcVal);
+				UIGraph::DrawText(m_Row[x], m_Style, 0, rcVal.getRECT());
 			}
-			OffsetRect(&rc, 0, m_nTextHeight);
+			rc.InflateRect(0, m_nTextHeight);
 		}
 		for(int y = m_ScrollBar.GetTrackPos(); y < (int)GetLineCount(); ++y)
 		{
@@ -526,7 +526,7 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 			}
 			for(uint32 x=0; x<m_Row.size(); ++x )
 			{
-				RECT rcVal = rc;
+				CRect<int> rcVal = rc;
 				int nWidth = (rc.right - rc.left)/m_Row.size();
 				rcVal.left = rc.left+nWidth*x;
 				rcVal.right = rcVal.left+nWidth;
@@ -534,10 +534,10 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 				Cell* pCell = GetCell(x, y);
 				if(pCell)
 				{
-					UIGraph::DrawText(pCell->wstrText, m_Style, nTextStyle, rcVal);
+					UIGraph::DrawText(pCell->wstrText, m_Style, nTextStyle, rcVal.getRECT());
 				}
 			}
-			OffsetRect(&rc, 0, m_nTextHeight);
+			rc.InflateRect(0, m_nTextHeight);
 		}
 	}
 

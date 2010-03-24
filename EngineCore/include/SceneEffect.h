@@ -28,7 +28,7 @@ public:
 	~CSceneEffect();
 public:
 	void clearTextures();
-	void Reset(const RECT& rc);
+	void Reset(const CRect<int>& rc);
 	void RenderTemporalBloom();
 	void RenderBloom();
 	float GetSceneExposure();

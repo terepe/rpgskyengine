@@ -2,6 +2,7 @@
 #include "BaseCamera.h"
 #include "Frustum.h"
 #include "Pos2D.h"
+#include "Rect.h"
 
 class DLL_EXPORT CCamera  : public CBaseCamera
 {
@@ -22,7 +23,7 @@ public:
 	virtual int		BoxCrossF(BBox & bbox)	{ return m_Frustum.CheckAABBVisible(bbox); }
 	virtual CFrustum& GetFrustum()	{ return m_Frustum; }
 public:
-	virtual void GetPickRay(Vec3D& pRayPos, Vec3D& pRayDir,int x, int y,RECT rc);		// ʰȡ
+	virtual void GetPickRay(Vec3D& pRayPos, Vec3D& pRayDir,int x, int y,const CRect<int>& rc);		// ʰȡ
 	virtual void World2Screen(const Vec3D& vWorldPos, Pos2D& posScreen);
 
 

@@ -112,7 +112,7 @@ public:
 		DWORD dwPageSize;
 		int   nReadingError; // Index of the error character
 		bool  bShowWindow;   // Whether the candidate list window is visible
-		RECT  rcCandidate;   // Candidate rectangle computed and filled each time before rendered
+		CRect<int>  rcCandidate;   // Candidate rectangle computed and filled each time before rendered
 	};
 
 	struct CInputLocale

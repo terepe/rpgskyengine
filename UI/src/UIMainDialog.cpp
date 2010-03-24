@@ -24,11 +24,11 @@ void CUIMainDialog::OnFrameRender(double fTime, float fElapsedTime)
 	// ÏÔÊ¾Tips
 	if (s_pControlMouseOver)
 	{
-		s_pControlMouseOver->drawTip(m_rcBoundingBox, fTime, fElapsedTime);
+		s_pControlMouseOver->drawTip(m_rcBoundingBox.getRECT(), fTime, fElapsedTime);
 	}
 	else
 	{
-		CUIControl::s_TipStyle.Blend(m_rcBoundingBox, CONTROL_STATE_HIDDEN,fElapsedTime);
+		CUIControl::s_TipStyle.Blend(m_rcBoundingBox.getRECT(), CONTROL_STATE_HIDDEN,fElapsedTime);
 	}
 }
 

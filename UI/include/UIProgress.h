@@ -16,5 +16,5 @@ protected:
 	int		m_nValue;
 	int		m_nMin;
 	int		m_nMax;
-	RECT	m_rcButton;
+	CRect<int>	m_rcButton;
 };

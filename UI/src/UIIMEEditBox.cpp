@@ -208,7 +208,7 @@ void CUIIMEEditBox::OnLButtonDown(POINT point)
 	}
 
 	// Check if the click is on top of the candidate window
-	if(CIME::s_CandList.bShowWindow && PtInRect(&CIME::s_CandList.rcCandidate, point))
+	if(CIME::s_CandList.bShowWindow && CIME::s_CandList.rcCandidate.ptInRect(point))
 	{
 		if(CIME::s_bVerticalCand)
 		{

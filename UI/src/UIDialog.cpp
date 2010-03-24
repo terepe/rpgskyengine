@@ -393,7 +393,7 @@ void CUIDialog::OnLButtonDblClk(POINT point)
 	}
 	CUICombo::OnLButtonDblClk(point);
 	// 标题
-	if(m_bCaption&&PtInRect(&m_rcCaption, point))
+	if(m_bCaption&&m_rcCaption.ptInRect(point))
 	{
 		ReleaseCapture();
 		//m_bMinimized = !m_bMinimized;
@@ -414,7 +414,7 @@ void CUIDialog::OnLButtonDown(POINT point)
 	}
 	CUICombo::OnLButtonDown(point);
 	// 标题
-	if(m_bCaption&&m_bCanMove&&PtInRect(&m_rcCaption, point))
+	if(m_bCaption&&m_bCanMove&&m_rcCaption.ptInRect(point))
 	{
 		m_nMouseOriginX = point.x-m_rcBoundingBox.left;
 		m_nMouseOriginY = point.y-m_rcBoundingBox.top;
@@ -515,7 +515,7 @@ void CUIDialog::OnMButtonUp(POINT point)
 void CUIDialog::OnMove(int x, int y)
 {
 	CUICombo::OnMove(x, y);
-	RECT rcChild = m_rcBoundingBox;
+	CRect<int> rcChild = m_rcBoundingBox;
 	rcChild.top+=m_nCaptionHeight;
 	OnChildSize(rcChild);
 }
@@ -647,7 +647,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 	return false;
 }
 
-void CUIDialog::OnChildSize(const RECT& rc)
+void CUIDialog::OnChildSize(const CRect<int>& rc)
 {
 	for (uint32 i=0; i<m_Dialogs.size(); ++i)
 	{
@@ -656,10 +656,10 @@ void CUIDialog::OnChildSize(const RECT& rc)
 	CUICombo::OnChildSize(rc);
 }
 
-void CUIDialog::OnSize(const RECT& rc)
+void CUIDialog::OnSize(const CRect<int>& rc)
 {
 	CUICombo::OnSize(rc);
-	RECT rcChild = m_rcBoundingBox;
+	CRect<int> rcChild = m_rcBoundingBox;
 	rcChild.top+=m_nCaptionHeight;
 	OnChildSize(rcChild);
 }

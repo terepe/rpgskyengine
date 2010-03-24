@@ -24,28 +24,28 @@ void CUISlider::SetStyle(const std::string& strStyleName)
 void CUISlider::UpdateRects()
 {
 	CUIControl::UpdateRects();
-	m_bH = RectWidth(m_rcBoundingBox)>RectHeight(m_rcBoundingBox);
+	m_bH = m_rcBoundingBox.getWidth()>m_rcBoundingBox.getHeight();
 	m_rcButton = m_rcBoundingBox;
 	if(m_bH)
 	{
 		int nRangeLength = m_nMax-m_nMin;
-		int nButtonSize = __max(RectWidth(m_rcBoundingBox)*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
+		int nButtonSize = __max(m_rcBoundingBox.getWidth()*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
 		m_rcButton.right = m_rcButton.left + nButtonSize;
 		if(nRangeLength>0)
 		{
-			int nButtonX = (int) ((m_nValue - m_nMin) * (float)(RectWidth(m_rcBoundingBox)-nButtonSize)/nRangeLength);
-			OffsetRect(&m_rcButton, nButtonX, 0);
+			int nButtonX = (int) ((m_nValue - m_nMin) * (float)(m_rcBoundingBox.getWidth()-nButtonSize)/nRangeLength);
+			m_rcButton.offset(nButtonX, 0);
 		}
 	}
 	else
 	{
 		int nRangeLength = m_nMax-m_nMin;
-		int nButtonSize = __max(RectHeight(m_rcBoundingBox)*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
+		int nButtonSize = __max(m_rcBoundingBox.getHeight()*m_nPageSize/(nRangeLength+m_nPageSize),SCROLLBAR_MINTHUMBSIZE);
 		m_rcButton.bottom = m_rcButton.top + nButtonSize;
 		if(nRangeLength>0)
 		{
-			int nButtonY = (int) ((m_nValue - m_nMin) * (float)(RectHeight(m_rcBoundingBox)-nButtonSize)/nRangeLength);
-			OffsetRect(&m_rcButton, 0, nButtonY);
+			int nButtonY = (int) ((m_nValue - m_nMin) * (float)(m_rcBoundingBox.getHeight()-nButtonSize)/nRangeLength);
+			m_rcButton.offset(0, nButtonY);
 		}
 	}
 }
@@ -54,14 +54,14 @@ int CUISlider::ValueFromPos(POINT pt)
 {
 	if(m_bH)
 	{
-		int nButtonSize = RectWidth(m_rcButton);
-		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(RectWidth(m_rcBoundingBox)-nButtonSize);
+		int nButtonSize = m_rcButton.getWidth();
+		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(m_rcBoundingBox.getWidth()-nButtonSize);
 		return (int) (0.5f + m_nMin + fValuePerPixel * (pt.x - m_rcBoundingBox.left-nButtonSize));
 	}
 	else
 	{
-		int nButtonSize = RectHeight(m_rcButton);
-		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(RectHeight(m_rcBoundingBox)-nButtonSize);
+		int nButtonSize = m_rcButton.getHeight();
+		float fValuePerPixel = (float)(m_nMax - m_nMin)/(float)(m_rcBoundingBox.getHeight()-nButtonSize);
 		return (int) (0.5f + m_nMin + fValuePerPixel * (pt.y - m_rcBoundingBox.top-nButtonSize));
 	}
 	return 0;
@@ -128,7 +128,7 @@ void CUISlider::OnMouseWheel(POINT point,short wheelDelta)
 
 void CUISlider::OnLButtonDown(POINT point)
 {
-	if(PtInRect(&m_rcButton, point))
+	if(m_rcButton.ptInRect(point))
 	{
 		// Pressed while inside the control
 		SetPressed(true);
@@ -140,7 +140,7 @@ void CUISlider::OnLButtonDown(POINT point)
 		SetFocus();
 		return;
 	}
-	if(PtInRect(&m_rcBoundingBox, point))
+	if(m_rcBoundingBox.ptInRect(point))
 	{
 		m_ptDragOffset.x=0;
 		m_ptDragOffset.y=0;

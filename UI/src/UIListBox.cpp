@@ -35,15 +35,15 @@ void CUIListBox::UpdateRects()
 	CUICombo::UpdateRects();
 
 	m_rcSelection = m_rcBoundingBox;
-	InflateRect(&m_rcSelection, -m_nBorder, -m_nBorder);
+	m_rcSelection.InflateRect(-m_nBorder, -m_nBorder);
 	m_rcSelection.right -= m_nSBWidth+m_nBorder;
 	m_rcText = m_rcSelection;
-	InflateRect(&m_rcText, -m_nMargin, 0);
+	m_rcText.InflateRect(-m_nMargin, 0);
 
 	// Update the scrollbar's rects
 	//if(pFontNode && pFontNode->nHeight)
 	{
-		m_ScrollBar.SetPageSize(RectHeight(m_rcText) / UIGraph::GetFontSize());
+		m_ScrollBar.SetPageSize(m_rcText.getHeight() / UIGraph::GetFontSize());
 
 		// The selected item may have been scrolled off the page.
 		// Ensure that it is in page again.
@@ -415,7 +415,7 @@ void CUIListBox::OnMouseWheel(POINT point,short wheelDelta)
 
 int CUIListBox::getItemIndexByPoint(POINT point)
 {
-	if(m_Items.size() > 0 && PtInRect(&m_rcSelection, point))
+	if(m_Items.size() > 0 && m_rcSelection.ptInRect(point))
 	{
 		if(m_nTextHeight)
 		{
@@ -602,7 +602,7 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 	if(m_Items.size() > 0)
 	{
 		// Find out the height of a single line of text
-		RECT rc = m_rcText;
+		CRect<int> rc = m_rcText;
 		rc.bottom = rc.top+UIGraph::GetFontSize();
 
 		// Update the line height formation
@@ -613,9 +613,9 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			// Update the page size of the scroll bar
 			if(m_nTextHeight)
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText) / m_nTextHeight);
+				m_ScrollBar.SetPageSize(m_rcText.getHeight() / m_nTextHeight);
 			else
-				m_ScrollBar.SetPageSize(RectHeight(m_rcText));
+				m_ScrollBar.SetPageSize(m_rcText.getHeight());
 			bSBInit = true;
 		}
 
@@ -653,7 +653,7 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 				{
 					m_StyleItem.draw(rc, pItem->wstrText,iState, fElapsedTime);
 				}
-				OffsetRect(&rc, 0, m_nTextHeight);
+				rc.offset(0, m_nTextHeight);
 		}
 	}
 }

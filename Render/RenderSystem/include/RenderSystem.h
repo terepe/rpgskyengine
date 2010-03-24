@@ -10,7 +10,7 @@
 #include "ShaderMgr.h"
 #include "VertexDeclaration.h"
 #include "Pos2D.h"
-
+#include "Rect.h"
 
 #if defined(_DEBUG)
 #pragma comment(lib, "commond.lib")
@@ -130,7 +130,7 @@ public:
 	virtual void setFog(const Fog& fog) = 0;
 	virtual void setFogEnable(bool bEnable) = 0;
 
-	virtual void StretchRect(CTexture* pSource,const RECT* pSourceRect,CTexture* pDest,const RECT* pDestRect,TextureFilterType filter) = 0;
+	virtual void StretchRect(CTexture* pSource,const CRect<int>* pSourceRect,CTexture* pDest,const CRect<int>* pDestRect,TextureFilterType filter) = 0;
 	//
 	void world2Screen(const Vec3D& vWorldPos, Pos2D& posScreen);
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);

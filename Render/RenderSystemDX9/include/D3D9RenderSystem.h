@@ -45,8 +45,8 @@ public:
 	bool BeginFrame();	// 帧渲染开始
 	void EndFrame();	// 帧渲染结束
 
-	void setViewport(const RECT& rect);
-	void getViewport(RECT& rect);
+	void setViewport(const CRect<int>& rect);
+	void getViewport(CRect<int>& rect);
 	//
 	void ClearBuffer(bool bZBuffer, bool bTarget, Color32 color);
 
@@ -134,7 +134,7 @@ public:
 	void setFog(const Fog& fog);
 	void setFogEnable(bool bEnable);
 
-	void StretchRect(CTexture* pSource,const RECT* pSourceRect,CTexture* pDest,const RECT* pDestRect,TextureFilterType filter);
+	void StretchRect(CTexture* pSource,const CRect<int>* pSourceRect,CTexture* pDest,const CRect<int>* pDestRect,TextureFilterType filter);
 protected:
 	void SetTexture(uint32 Stage, IDirect3DTexture9* pD3D9Texture);
 	// 设置顶点采样器状态

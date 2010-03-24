@@ -252,7 +252,7 @@ void CD3D9RenderSystem::EndFrame()
 	D3DCheckHresult( m_pD3D9Device->EndScene(), L"EndFrame" );
 }
 
-void CD3D9RenderSystem::setViewport(const RECT& rect)
+void CD3D9RenderSystem::setViewport(const CRect<int>& rect)
 {
 	D3DVIEWPORT9 vp;
 	vp.X = rect.left;
@@ -264,11 +264,11 @@ void CD3D9RenderSystem::setViewport(const RECT& rect)
 	D3DCheckHresult( m_pD3D9Device->SetViewport(&vp) );
 }
 
-void CD3D9RenderSystem::getViewport(RECT& rect)
+void CD3D9RenderSystem::getViewport(CRect<int>& rect)
 {
 	D3DVIEWPORT9 vp;
 	D3DCheckHresult( m_pD3D9Device->GetViewport(&vp) );
-	SetRect(&rect,vp.X,vp.Y,vp.X+vp.Width,vp.Y+vp.Height);
+	rect.set(vp.X,vp.Y,vp.X+vp.Width,vp.Y+vp.Height);
 }
 
 void CD3D9RenderSystem::ClearBuffer (bool bZBuffer, bool bTarget, Color32 color)
@@ -999,7 +999,7 @@ void CD3D9RenderSystem::setFogEnable(bool bEnable)
 	SetRenderState(D3DRS_FOGENABLE,	bEnable);
 }
 
-void CD3D9RenderSystem::StretchRect(CTexture* pSourceTexture,const RECT* pSourceRect,CTexture* pDestTexture,const RECT* pDestRect,TextureFilterType filter)
+void CD3D9RenderSystem::StretchRect(CTexture* pSourceTexture,const CRect<int>* pSourceRect,CTexture* pDestTexture,const CRect<int>* pDestRect,TextureFilterType filter)
 {
 	LPDIRECT3DSURFACE9 pD3D9SourceSurface = NULL;
 	if (pSourceTexture)
@@ -1011,7 +1011,7 @@ void CD3D9RenderSystem::StretchRect(CTexture* pSourceTexture,const RECT* pSource
 	{
 		pD3D9DestSurface = ((CD3D9Texture*)pDestTexture)->GetD3D9Surface();
 	}
-	D3DCheckHresult( m_pD3D9Device->StretchRect(pD3D9SourceSurface, pSourceRect, pD3D9DestSurface, pDestRect, TextureFilterTypeForD3D9(filter)) );
+	D3DCheckHresult( m_pD3D9Device->StretchRect(pD3D9SourceSurface, pSourceRect==NULL?NULL:&pSourceRect->getRECT(), pD3D9DestSurface, pDestRect==NULL?NULL:&pDestRect->getRECT(), TextureFilterTypeForD3D9(filter)) );
 }
 
 void CD3D9RenderSystem::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse)

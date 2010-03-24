@@ -18,7 +18,7 @@ void CUIProgress::UpdateRects()
 {
 	CUIControl::UpdateRects();
 	m_rcButton = m_rcBoundingBox;
-	int nButtonX = (int) ((m_nValue - m_nMin) * (float)RectWidth(m_rcBoundingBox) / (m_nMax - m_nMin));
+	int nButtonX = (int) ((m_nValue - m_nMin) * (float)m_rcBoundingBox.getWidth() / (m_nMax - m_nMin));
 	m_rcButton.right = m_rcButton.left + nButtonX;
 }
 

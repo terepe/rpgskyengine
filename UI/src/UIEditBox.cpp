@@ -71,10 +71,10 @@ void CUIEditBox::PlaceCaret(int nCP)
 	else
 		// If the right of the character is bigger than the offset of the control's
 		// right edge, we need to scroll right to this character.
-		if(nX2 > nX1st + RectWidth(m_rcText))
+		if(nX2 > nX1st + m_rcText.getWidth())
 		{
 			// Compute the X of the new left-most pixel
-			int nXNewLeft = nX2 - RectWidth(m_rcText);
+			int nXNewLeft = nX2 - m_rcText.getWidth();
 
 			// Compute the char position of this character
 			int nCPNew1st;
@@ -594,7 +594,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	//
 	// Render the selection rectangle
 	//
-	RECT rcSelection;  // Make this available for rendering selected text
+	CRect<int> rcSelection;  // Make this available for rendering selected text
 	if(m_nCaret != m_nSelStart)
 	{
 		int nSelLeftX = nCaretX, nSelRightX = nSelStartX;
@@ -602,9 +602,9 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 		if(nSelLeftX > nSelRightX)
 		{ int nTemp = nSelLeftX; nSelLeftX = nSelRightX; nSelRightX = nTemp; }
 
-		SetRect(&rcSelection, nSelLeftX, m_rcText.top, nSelRightX, m_rcText.bottom);
-		OffsetRect(&rcSelection, m_rcText.left - nXFirst, 0);
-		IntersectRect(&rcSelection, &m_rcText, &rcSelection);
+		rcSelection.set(nSelLeftX, m_rcText.top, nSelRightX, m_rcText.bottom);
+		rcSelection.offset(m_rcText.left - nXFirst, 0);
+		rcSelection.IntersectRect(m_rcText, rcSelection);
 
 		int nFirstToRender = __max(m_nFirstVisible, __min(m_nSelStart, m_nCaret));
 		int nNumChatToRender = __max(m_nSelStart, m_nCaret) - nFirstToRender;
@@ -630,8 +630,8 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	if(IsFocus() && m_bCaretOn && !s_bHideCaret)
 	{
 		// Start the rectangle with insert mode caret
-		RECT rcCaret = { m_rcText.left - nXFirst + nCaretX - 1, m_rcText.top,
-			m_rcText.left - nXFirst + nCaretX + 1, m_rcText.bottom };
+		CRect<int> rcCaret(m_rcText.left - nXFirst + nCaretX - 1, m_rcText.top,
+			m_rcText.left - nXFirst + nCaretX + 1, m_rcText.bottom);
 
 		// If we are in overwrite mode, adjust the caret rectangle
 		// to fill the entire character.
