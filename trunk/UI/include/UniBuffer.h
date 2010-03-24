@@ -12,7 +12,7 @@ public:
 	static void Uninitialize();
 
 	size_t	GetTextSize()  { return m_wstrBuffer.length(); }
-	const WCHAR* GetBuffer() { return m_wstrBuffer.c_str(); }
+	const WCHAR* GetBuffer()const { return m_wstrBuffer.c_str(); }
 	const WCHAR& operator[](int n) const { return m_wstrBuffer[n]; }
 	WCHAR& operator[](int n);
 	void Clear();

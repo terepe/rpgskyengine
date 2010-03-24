@@ -28,7 +28,7 @@ public:
 	virtual void SetText(const std::wstring& wstrText);
 	void SetText(const std::wstring& wstrText, bool bSelected);
 	void SetSelected(int nSelStart, int nSelEnd);
-	std::wstring GetText() { return m_Buffer.GetBuffer(); }
+	std::wstring GetText()const { return m_Buffer.GetBuffer(); }
 	int	GetInt();
 	float GetFloat();
 	size_t GetTextLength() { return m_Buffer.GetTextSize(); }  // Returns text length in chars excluding NULL.
