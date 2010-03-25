@@ -944,7 +944,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
                 // Not drawing composition string background. We
                 // use the editbox's text color for composition
                 // string text.
-                TextColor = m_Style.GetCyclostyle().m_FontStyle[0].ColorOfStates[CONTROL_STATE_NORMAL].getColor();
+                TextColor = m_Style.GetCyclostyle().m_FontStyle[0].setColor[CONTROL_STATE_NORMAL].getColor();
             }
         } else
         {
