@@ -84,10 +84,10 @@ inline void updateStyle(const std::vector<T>& setSrc, std::map<int,StyleDrawData
 {
 	for (uint32 i=0; i<setSrc.size(); i++)
 	{
-		setSrc[i].blend(setDest[i].vColor, setDest[i].offset, iState, fElapsedTime);
-		setDest[i].rc = rc+setDest[i].offset;
+		setSrc[i].blend(setDest[i], iState, fElapsedTime);
+		setDest[i].updateRect(rc);
 		setSrc[i].updataRect(setDest[i].rc);
-		if (CONTROL_STATE_HIDDEN==iState&&setDest[i].vColor.w<0.01f)
+		if (CONTROL_STATE_HIDDEN==iState&&setDest[i].color.w<0.01f)
 		{
 			bHidden = true;
 		}
@@ -132,13 +132,13 @@ void CUIStyle::Draw(const std::wstring& wstrText)
 	GetRenderSystem().SetDepthBufferFunc(false,false);
 	for (size_t i=0; i<m_mapSprite.size(); i++)
 	{
-		GetCyclostyle().m_SpriteStyle[i].draw(m_mapSprite[i].rc,m_mapSprite[i].vColor.getColor());
+		GetCyclostyle().m_SpriteStyle[i].draw(m_mapSprite[i].rc,m_mapSprite[i].color.getColor());
 	}
 	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
 	for (size_t i=0; i<m_mapSquare.size(); ++i)
 	{
-		Color32 color = m_mapSquare[i].vColor.getColor();
+		Color32 color = m_mapSquare[i].color.getColor();
 		if(color.a!=0)
 		{
 			GetGraphics().FillRect(m_mapSquare[i].rc, color);
@@ -146,7 +146,7 @@ void CUIStyle::Draw(const std::wstring& wstrText)
 	}
 	for (size_t i=0; i<m_mapBorder.size(); ++i)
 	{
-		Color32 color = m_mapBorder[i].vColor.getColor();
+		Color32 color = m_mapBorder[i].color.getColor();
 		if(color.a!=0)
 		{
 			GetGraphics().DrawRect(m_mapBorder[i].rc, color);
@@ -156,7 +156,7 @@ void CUIStyle::Draw(const std::wstring& wstrText)
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 	if (m_mapFont.size()>0)
 	{
-		GetCyclostyle().m_FontStyle[0].draw(wstrText,m_mapFont[0].rc,m_mapFont[0].vColor.getColor());
+		GetCyclostyle().m_FontStyle[0].draw(wstrText,m_mapFont[0].rc,m_mapFont[0].color.getColor());
 	}
 }
 
@@ -186,6 +186,10 @@ CUIStyleMgr::CUIStyleMgr()
 void ControlBlendColor::XMLState(TiXmlElement& element)
 {
 	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setColor[i].set(0.0f,0.0f,0.0f,0.0f);
+		}
 		TiXmlElement *pElement = element.FirstChildElement("color");
 		if (pElement)
 		{
@@ -196,9 +200,9 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 				c = pszText;
 				for (int i = 0; i < CONTROL_STATE_MAX; i++)
 				{
-					ColorOfStates[i] = c;
+					setColor[i] = c;
 				}
-				ColorOfStates[CONTROL_STATE_HIDDEN].w = 0.0f;
+				setColor[CONTROL_STATE_HIDDEN].w = 0.0f;
 			}
 			for (int i = 0; i < CONTROL_STATE_MAX; i++)
 			{
@@ -207,15 +211,17 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 				{
 					Color32 c;
 					c = pszText;
-					ColorOfStates[i] = c;
+					setColor[i] = c;
 				}
 			}
 		}
 	}
-
-
 	//
 	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setBlendRate[i]=0.8f;
+		}
 		TiXmlElement *pElement = element.FirstChildElement("blend");
 		if (pElement)
 		{
@@ -224,7 +230,7 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 			{
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
-					m_BlendRates[i] = (float)atof(pszText);
+					setBlendRate[i] = (float)atof(pszText);
 				}
 			}
 			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
@@ -232,14 +238,17 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					m_BlendRates[i] = (float)atof(pszText);
+					setBlendRate[i] = (float)atof(pszText);
 				}
 			}
 		}
 	}
-
 	//
 	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setOffset[i].set(0.0f,0.0f,0.0f,0.0f);
+		}
 		TiXmlElement *pElement = element.FirstChildElement("offset");
 		if (pElement)
 		{
@@ -259,6 +268,35 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 				if (pszText)
 				{
 					StrToRect(pszText, setOffset[i]);
+				}
+			}
+		}
+	}
+	// 
+	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setScale[i].set(1.0f,1.0f,1.0f,1.0f);
+		}
+		TiXmlElement *pElement = element.FirstChildElement("scale");
+		if (pElement)
+		{
+			const char* pszText = pElement->GetText();
+			if(pszText)
+			{
+				CRect<float> rc;
+				StrToRect(pszText, rc);
+				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+				{
+					setScale[i] = rc;
+				}
+			}
+			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+			{
+				pszText =  pElement->Attribute(szControlState[i]);
+				if (pszText)
+				{
+					StrToRect(pszText, setScale[i]);
 				}
 			}
 		}

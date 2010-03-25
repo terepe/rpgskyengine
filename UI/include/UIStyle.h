@@ -53,9 +53,18 @@ struct StyleDrawData
 		memset(this,0,sizeof(*this));
 	}
 
-	Vec4D	vColor;
+	Vec4D	color;
+	CRect<float> scale;
 	CRect<float> offset;
 	CRect<float> rc;
+	void updateRect(CRect<float> rect)
+	{
+		rc = rect+offset;
+		rc.left		+= rc.getWidth()*0.5f*(1.0f-scale.left);
+		rc.right	-= rc.getWidth()*0.5f*(1.0f-scale.right);
+		rc.top		+= rc.getHeight()*0.5f*(1.0f-scale.top);
+		rc.bottom	-= rc.getHeight()*0.5f*(1.0f-scale.bottom);
+	}
 };
 
 struct ControlBlendColor
@@ -65,17 +74,18 @@ struct ControlBlendColor
 		memset(this,0,sizeof(*this));
 	}
 
-	void blend(Vec4D& crCurrent, CRect<float>& offset, UINT iState, float fElapsedTime)const
+	void blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const
 	{
-		crCurrent	= interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),crCurrent,ColorOfStates[iState]);
-		offset		= interpolate(1.0f - powf(m_BlendRates[iState], 30 * fElapsedTime),offset,setOffset[iState]);
-		//return Color32::lerp(1.0f - powf(fRate, 30 * fElapsedTime), crCurrent, States[ iState ]);
+		sdd.color		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.color,	setColor[iState]);
+		sdd.offset		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.offset, setOffset[iState]);
+		sdd.scale		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.scale,	setScale[iState]);
 	}
 	void XMLState(TiXmlElement& element);
 
-	Vec4D	ColorOfStates[CONTROL_STATE_MAX];
+	float			setBlendRate[CONTROL_STATE_MAX];
+	Vec4D			setColor[CONTROL_STATE_MAX];
 	CRect<float>	setOffset[CONTROL_STATE_MAX];
-	float	m_BlendRates[CONTROL_STATE_MAX];
+	CRect<float>	setScale[CONTROL_STATE_MAX];
 };
 
 struct BaseCyclostyle: public ControlBlendColor
