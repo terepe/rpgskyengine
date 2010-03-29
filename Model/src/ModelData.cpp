@@ -325,7 +325,6 @@ bool CModelData::SaveFile(const std::string& strFilename)
 		//std::vector<ModelSkin>		m_Skins;
 	}
 
-
 	// ColorAnim
 	CLumpNode* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
 	if (pColorAnimsNode)

@@ -456,7 +456,7 @@ void CLodMesh::draw(size_t uLodLevel)const
 	}
 }
 
-void CLodMesh::SkinMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)
+void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)const
 {
 	// ‘ÀÀ„∂•µ„
 	if (pVB)
@@ -468,7 +468,7 @@ void CLodMesh::SkinMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)
 		//}
 		uint16 uCount	= m_setSkinVertex.size();
 		//ModelVertex* pVIn		= &[0];
-		SkinVertex* pSkinVertex	= &m_setSkinVertex[0];
+		const SkinVertex* pSkinVertex	= &m_setSkinVertex[0];
 
 
 		SkinnedVertex* pVOut = (SkinnedVertex*)pVB->lock(CHardwareBuffer::HBL_NO_OVERWRITE);

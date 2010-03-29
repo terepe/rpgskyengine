@@ -133,7 +133,7 @@ public:
 	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL);
 	void drawSub(size_t uSubID, size_t uLodLevel=0)const;
 	void draw(size_t uLodLevel=0)const;
-	void SkinMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones);
+	void skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)const;
 	void InitBBox();
 	void Clear();
 	size_t GetSkinVertexCount(){return m_setSkinVertex.size();}
