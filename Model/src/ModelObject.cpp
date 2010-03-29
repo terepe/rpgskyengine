@@ -485,7 +485,7 @@ void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	{
 		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
 		{
-			if (m_setShowSubset[it->second.nSubID])
+			//if (m_setShowSubset[it->second.nSubID])
 			{
 				if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
 				{
@@ -505,7 +505,7 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	{
 		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
 		{
-			if (m_setShowSubset[it->second.nSubID])
+			//if (m_setShowSubset[it->second.nSubID])
 			{
 				if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
 				{
