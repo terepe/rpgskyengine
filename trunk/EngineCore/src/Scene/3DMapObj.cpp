@@ -35,7 +35,7 @@ Matrix C3DMapObj::getWorldMatrix()const
 BBox C3DMapObj::getBBox()const
 {
 	BBox bbox;
-	if (m_pModelObject&&m_pModelObject->m_pModelData)
+	if (m_pModelObject)
 	{
 		bbox=m_pModelObject->getBBox();
 	}
@@ -112,7 +112,7 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		Vec3D vNewRayDir = vRayDir;
 		transformRay(vNewRayPos,vNewRayDir,mWorld);
 
-		if (m_pModelObject->m_pMesh->intersect(vNewRayPos , vNewRayDir))
+		if (m_pModelObject->getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 		{
 			return true;
 		}
@@ -122,9 +122,9 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 
 bool C3DMapObj::isSkinMesh()
 {
-	if (m_pModelObject&&m_pModelObject->m_pMesh)
+	if (m_pModelObject&&m_pModelObject->getModelData())
 	{
-		return m_pModelObject->m_pMesh->m_bSkinMesh;
+		return m_pModelObject->getModelData()->m_Mesh.m_bSkinMesh;
 	}
 	return false;
 }

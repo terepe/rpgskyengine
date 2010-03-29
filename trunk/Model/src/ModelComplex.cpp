@@ -13,11 +13,12 @@ void CModelComplex::OnFrameMove(float fElapsedTime)
 	CModelObject::OnFrameMove(fElapsedTime);
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
 	{
-		if (it->second->m_pMesh)
+		const CModelData* pModelData = it->second->getModelData();
+		if (pModelData)
 		{
-			if (it->second->m_pMesh->m_bSkinMesh)
+			if (pModelData->m_Mesh.m_bSkinMesh)
 			{
-				it->second->m_pMesh->SkinMesh(it->second->m_pVB, m_Bones);
+				pModelData->m_Mesh.skinningMesh(it->second->m_pVB, m_Bones);
 			}
 		}
 	}
