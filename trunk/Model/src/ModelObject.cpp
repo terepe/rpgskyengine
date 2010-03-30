@@ -103,7 +103,7 @@ int CModelObject::getModelDataID()const
 	return m_nModelID;
 }
 
-const CModelData* CModelObject::getModelData()const
+CModelData* CModelObject::getModelData()const
 {
 	return m_pModelData;
 }

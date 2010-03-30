@@ -2,7 +2,7 @@
 #include "RenderSystem.h"
 #include "ModelDataMgr.h"
 
-//int globalTime = 0;
+int globalTime = 0;
 
 CModelData::CModelData():
 bLoaded(false)
@@ -28,6 +28,11 @@ void CModelData::addAnimation(long timeStart, long timeEnd)
 	m_AnimList.push_back(animation);
 }
 
+size_t CModelData::getRenderPassCount()
+{
+	return m_mapPasses.size();
+}
+
 void CModelData::setRenderPass(int nID, int nSubID, const std::string& strMaterialName)
 {
 	ModelRenderPass& pass = m_mapPasses[nID];
@@ -45,6 +50,18 @@ bool CModelData::getRenderPass(int nID, int& nSubID, std::string& strMaterialNam
 	}
 	nSubID = it->second.nSubID;
 	strMaterialName = it->second.strMaterialName;
+	return true;
+}
+
+bool CModelData::delRenderPass(int nID)
+{
+	std::map<int,ModelRenderPass>::iterator it=m_mapPasses.find(nID);
+	if(it!=m_mapPasses.end())
+	{
+		m_mapPasses.erase(nID);
+		return true;
+	}
+	return false;
 }
 
 CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
