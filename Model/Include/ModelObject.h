@@ -15,22 +15,17 @@ public:
 	void SetSkin(uint32 uSkinID);	// 设置皮肤
 	void SetAnim(uint32 uAnimID);	// 设置动画ID
 	void SetLightMap(const std::string& strFilename);	// SetLightMap
-	void SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse);
 public:
 	void Register(const std::string& strFilename);
 	bool load(const std::string& strFilename);
 	bool Prepare()const;
-	bool PassBegin(ModelRenderPass& pass)const;	// 渲染步骤
-	void PassEnd()const;
 
-	virtual void drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
-	virtual void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
-	virtual void renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
-	virtual void render(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void drawMesh			(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void renderMesh			(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void renderParticles	(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void render				(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
 
-	virtual void draw()const;
-
-	virtual void DrawBones()const;
+	virtual void drawSkeleton()const;
 
 	void updateEmitters(const Matrix& mWorld, float fElapsedTime);
 	void SetLodLevel(int nLodLevel);
@@ -45,6 +40,7 @@ public:
 	void create();
 
 	const BBox& getBBox()const;
+	int getModelDataID()const;
 	const CModelData* getModelData()const;
 protected:
 	int m_nModelID;									// 模型ID
@@ -67,8 +63,6 @@ protected:											// Attribute.
 	bool	m_bLightmap;
 	bool	m_bCreated;
 protected:
-	Vec4D m_vAmbient;
-	Vec4D m_vDiffuse;
 	//LightAnim		*lights;
 	//RibbonEmitter	*ribbons;
 	//void lightsOn(int lbase);

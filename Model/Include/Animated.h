@@ -49,7 +49,7 @@ public:
 	std::vector<uint32> m_KeyTimes;
 	std::vector<T> m_KeyData;
 
-	bool isUsed()
+	bool isUsed()const
 	{
 		return m_KeyData.size()!=0;
 	}
@@ -60,7 +60,7 @@ public:
 		m_KeyData.push_back(data);
 	}
 
-	T getValue(unsigned int time)
+	T getValue(unsigned int time)const
 	{
 		if (/*type != INTERPOLATION_NONE || */m_KeyData.size()>1)
 		{

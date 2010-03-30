@@ -1,35 +1,17 @@
 #include "ModelData.h"
-#include "FileSystem.h"
 #include "RenderSystem.h"
+#include "ModelDataMgr.h"
 
-//#include "M2Model.h"
-
-#include "CSVFile.h"
-#include "IORead.h"
-
-int globalTime = 0;
-
-CModelMgr& GetModelMgr()
-{
-	static CModelMgr g_ModelMgr;
-	return g_ModelMgr;
-}
+//int globalTime = 0;
 
 CModelData::CModelData():
 bLoaded(false)
 {
-	// Initiate our model variables.
-	// 初始化我们的模型的变量
-
 	for (int i=0; i<40; i++) 
 		attLookup[i] = -1;
 	for (int i=0; i<27; i++) 
 		boneLookup[i] = -1;
-
 	globalSequences = NULL;
-
-
-//	m_ModelType = MT_NORMAL;
 	m_nOrder=0;
 }
 
@@ -54,6 +36,17 @@ void CModelData::setRenderPass(int nID, int nSubID, const std::string& strMateri
 	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
 }
 
+bool CModelData::getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const
+{
+	std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.find(nID);
+	if (it==m_mapPasses.end())
+	{
+		return false;
+	}
+	nSubID = it->second.nSubID;
+	strMaterialName = it->second.strMaterialName;
+}
+
 CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
 {
 	return GetRenderSystem().getMaterialMgr().getItem(strMaterialName);
@@ -62,7 +55,7 @@ CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
 bool CModelData::LoadFile(const std::string& strFilename)
 {
 	m_strModelFilename = strFilename;
-	GetModelMgr().loadModel(*this,strFilename);
+	CModelDataMgr::getInstance().loadModel(*this,strFilename);
 
 	bLoaded=true;
 	return true;
@@ -213,6 +206,7 @@ bool CModelData::initParticleMaterial()
 	return true;
 }
 
+#include "CSVFile.h"
 bool CModelData::loadParticleEmitters(const std::string& strFilename)
 {
 	CCsvFile csv;
@@ -383,6 +377,147 @@ bool CModelData::isLoaded()
 {
 	return bLoaded;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+bool CModelData::passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const
+{
+	Vec4D ocol = Vec4D(1.0f, 1.0f, 1.0f, fOpacity);
+	Vec4D ecol = Vec4D(0.0f, 0.0f, 0.0f, 0.0f);
+
+	//float fOpacity = m_fTrans;
+	// emissive colors
+	if (m_TransAnims.size() > 0)
+	{
+		// opacity
+		if (pass.nTransID!=-1)
+		{
+			fOpacity *= m_TransAnims[pass.nTransID].trans.getValue(nAnimTime)/32767.0f;
+		}
+	}
+	if (fOpacity<=0.0f)
+	{
+		return false;
+	}
+	if (-1 != pass.nColorID)
+	{
+		Vec4D ecol = m_ColorAnims[pass.nColorID].GetColor(nAnimTime);
+		ecol.w = 1;
+		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName).SetEmissiveColor(ocol.getColor());
+
+		//glMaterialfv(GL_FRONT, GL_EMISSION, ecol);
+		/*			D3DMATERIAL9 mtrl;
+		mtrl.Ambient	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.2,0.2,0.2,0.2);
+		mtrl.Diffuse	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.8,0.8,0.8,0.8);
+		Vec4D Specular	= Vec4D(m_ColorAnims[pass.nColorID].color.getValue(nAnimTime), 1);
+		mtrl.Specular	= *(D3DXCOLOR*)&Specular;
+		mtrl.Emissive	= D3DXCOLOR(0,0,0,0);//*(D3DXCOLOR*)&ecol;
+		mtrl.Power		= 71;
+		R.SetMaterial(&mtrl);
+		R.SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);*/
+		//R.SetRenderState(D3DRS_SPECULARENABLE, true);
+		//R.SetRenderState(D3DRS_LOCALVIEWER, true);
+		//R.SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		//R.SetRenderState(D3DRS_LOCALVIEWER, false);
+	}
+	//if(m_bLightmap)
+	{
+		//	pass.material.uLightMap = m_idLightMapTex;
+	}
+
+	// TEXTURE
+
+	// Texture wrapping around the geometry
+	//if (swrap)
+	//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	//if (twrap)
+	//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+
+	// 纹理动画实现
+	if (m_TexAnims.size() && pass.nTexanimID !=-1)
+	{
+		// 纹理动画
+		Matrix matTex;
+		m_TexAnims[pass.nTexanimID].Calc(nAnimTime, matTex);
+		// 在里面设置纹理矩阵
+		GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
+	}
+	// color
+	//glColor4fv(ocol);
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, ocol);
+
+	//if (!pass.bUnlit&&0) 
+	//{
+	//	//R.SetLightingEnabled(false);
+	//	R.SetShader(m_nCartoonShaderID);
+	//	static int nCartoonTex = GetRenderSystem().GetTextureMgr().RegisterTexture("toonshade.tga");
+	//	R.SetTexture(1 , nCartoonTex, 1);
+	//	COLOROP = D3DTOP_SELECTARG1;
+
+	//	R.SetTextureFactor(Color32(176,176,176,176));
+	//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
+	//}
+	return GetRenderSystem().prepareMaterial(pass.strMaterialName,fOpacity);
+}
+
+void CModelData::passEnd()const
+{
+	CRenderSystem& R = GetRenderSystem();
+	R.finishMaterial();
+	R.setTextureMatrix(0, TTF_DISABLE);
+	R.SetTexCoordIndex(0,0);
+	R.SetTexCoordIndex(1,0);
+}
+
+void CModelData::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const
+{
+	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
+	{
+		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		{
+			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
+			{
+				if (passBegin(it->second,fOpacity,nAnimTime))
+				{
+					if (it->second.nSubID<0)
+					{
+						m_Mesh.draw(uLodLevel);
+					}
+					else
+					{
+						m_Mesh.drawSub(it->second.nSubID,uLodLevel);
+					}
+				}
+				passEnd();
+				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
+				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
+			}
+		}
+	}
+}
+
+void CModelData::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB)const
+{
+	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
+	{
+		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		{
+			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
+			{
+				m_Mesh.drawSub(it->second.nSubID,uLodLevel);
+			}
+		}
+	}
+}
+
+void CModelData::drawMesh(CHardwareVertexBuffer* pSkinVB)const
+{
+	if (m_Mesh.SetMeshSource(0,pSkinVB))
+	{
+		m_Mesh.draw();
+	}
+}
+
 //// Sets up the models attachments
 //void CObject::setupAtt(int id)
 //{
@@ -399,7 +534,7 @@ bool CModelData::isLoaded()
 //		atts[l].setupParticle();
 //}
 
-void TexAnim::Calc(int nTime, Matrix& matrix)
+void TexAnim::Calc(int nTime, Matrix& matrix)const
 {
 	Vec3D tval, rval, sval;
 	if (trans.isUsed())
@@ -485,125 +620,4 @@ void ModelAttachment::setupParticle()
 	//m.transpose();
 	//glMultMatrixf(m);
 	//glTranslatef(pos.x, pos.y, pos.z);
-}
-
-#include "IORead.h"
-CModelMgr::CModelMgr()
-{
-	loadPlugFromPath("");
-}
-
-uint32 CModelMgr::RegisterModel(const std::string& strFilename)
-{
-	if (strFilename.length()==0)
-	{
-		return 0;
-	}
-	if(!IOReadBase::Exists(strFilename))// 检查文件是否存在
-	{
-		return 0;
-	}
-	if (find(strFilename))// 有一样的纹理在了 不用再创建了啦
-	{
-		return addRef(strFilename);
-	}
-
-	CModelData* pModel = new CModelData();
-	//if (strExt==".sm")
-	//{
-	//	pModel = new CModelData();
-	//}
-	//else if (strExt==".m2")
-	//{
-	//	pModel = new CM2Model();
-	//}
-	//else if (strExt==".bmd")
-	//{
-	//	pModel = new CBmdModel();
-	//}
-	return add(strFilename, pModel);
-}
-
-CModelData* CModelMgr::GetModel(uint32 uModelID)
-{
-	return getItem(uModelID);
-}
-
-bool CModelMgr::loadModel(CModelData& modelData,const std::string& strFilename)
-{
-	// 判断格式--根据文件后缀名
-	std::string strExt = GetExtension(strFilename);
-	for (size_t i=0;i<m_arrPlugObj.size();++i)
-	{
-		if (m_arrPlugObj[i].pObj->GetFormat()==strExt)
-		{
-			return m_arrPlugObj[i].pObj->importData(&modelData,strFilename);
-		}
-	}
-	return false;
-}
-
-bool CModelMgr::loadPlugFromPath(const std::string& strPath)
-{
-	std::string strFindFile = strPath+"*.dll";
-
-	WIN32_FIND_DATAA wfd;
-	HANDLE hf = FindFirstFileA(strFindFile.c_str(), &wfd);
-	if (INVALID_HANDLE_VALUE != hf)
-	{
-		createPlug(strPath + wfd.cFileName);
-		while (FindNextFileA(hf, &wfd))
-		{
-			createPlug(strPath + wfd.cFileName);
-		}
-		FindClose(hf);
-	}
-	return true;
-}
-
-bool CModelMgr::createPlug(const std::string& strFilename)
-{
-	bool brt = FALSE;
-
-	if (m_arrPlugObj.size() > 255){
-		MessageBoxA(NULL,"插件过多", "message", MB_OK|MB_ICONINFORMATION);
-		return brt;
-	}
-
-	MODEL_PLUG_ST stPs;
-
-	ZeroMemory(&stPs, sizeof(stPs));
-
-	stPs.hIns = LoadLibraryA(strFilename.c_str());
-	if (stPs.hIns)
-	{
-		PFN_Model_Plug_CreateObject pFunc = (PFN_Model_Plug_CreateObject)GetProcAddress(
-			stPs.hIns, "Model_Plug_CreateObject");
-		if (pFunc){
-			if (pFunc((void **)&stPs.pObj)){
-				brt =true;
-				m_arrPlugObj.push_back(stPs);
-				//m_wstrFileType=s2ws(stPs.pObj->GetFormat());
-			}
-		}
-	}
-	if (!brt){
-		if (stPs.pObj){
-			stPs.pObj->Release();
-		}
-		if (stPs.hIns){
-			FreeLibrary(stPs.hIns);
-		}
-	}
-	return brt;
-}
-
-std::string CModelMgr::getAllExtensions()
-{
-	std::string strExts;
-	for (size_t i=0;i<m_arrPlugObj.size();++i)
-	{
-		strExts+=m_arrPlugObj[i].pObj->GetFormat();
-	}
-	return strExts;
 }

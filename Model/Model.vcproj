@@ -170,6 +170,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Include\ModelDataMgr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Modelheaders.h"
 				>
 			</File>
@@ -207,6 +211,10 @@
 			</File>
 			<File
 				RelativePath=".\src\ModelData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ModelDataMgr.cpp"
 				>
 			</File>
 			<File

@@ -44,6 +44,10 @@ void CModelComplex::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	CModelObject::renderMesh(eModelRenderType);
+	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
+	{
+		it->second->renderMesh(eModelRenderType);
+	}
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
 		it->second->renderMesh(eModelRenderType);
@@ -59,25 +63,12 @@ void CModelComplex::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)c
 	}
 }
 
-void CModelComplex::draw()const
+void CModelComplex::drawSkeleton()const
 {
-	CModelObject::draw();
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
-	{
-		it->second->draw();
-	}
+	CModelObject::drawSkeleton();
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
-		it->second->draw();
-	}
-}
-
-void CModelComplex::DrawBones()const
-{
-	CModelObject::DrawBones();
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
-	{
-		it->second->DrawBones();
+		it->second->drawSkeleton();
 	}
 }
 

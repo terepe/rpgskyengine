@@ -4,17 +4,15 @@
 #include "Graphics.h"
 #include "ParticleEmitter.h"
 #include "Particle.h"
-
+#include "ModelDataMgr.h"
 
 CModelObject::CModelObject() :
 m_idLightMapTex(0),
 m_bLightmap(false),
 m_pModelData(NULL),
-m_bCreated(false),
-m_vAmbient(0.4f,0.4f,0.4f,1.0f),
-m_vDiffuse(0.6f,0.6f,0.6f,1.0f)
+m_bCreated(false)
 {
-	m_nModelID = -1;
+	m_nModelID = 0;
 	m_AnimMgr = NULL;
 	m_pVB = NULL;
 	m_nCurrentAnimID = 0;
@@ -29,7 +27,7 @@ m_vDiffuse(0.6f,0.6f,0.6f,1.0f)
 
 CModelObject::~CModelObject()
 {
-	GetModelMgr().del(m_nModelID);
+	CModelDataMgr::getInstance().del(m_nModelID);
 	m_pModelData = NULL;
 	S_DEL(m_pVB);
 }
@@ -100,6 +98,11 @@ const BBox& CModelObject::getBBox()const
 	return m_BBox;
 }
 
+int CModelObject::getModelDataID()const
+{
+	return m_nModelID;
+}
+
 const CModelData* CModelObject::getModelData()const
 {
 	return m_pModelData;
@@ -107,8 +110,8 @@ const CModelData* CModelObject::getModelData()const
 
 void CModelObject::Register(const std::string& strFilename)
 {
-	m_nModelID = GetModelMgr().RegisterModel(strFilename);
-	m_pModelData = GetModelMgr().GetModel(m_nModelID);
+	m_nModelID = CModelDataMgr::getInstance().RegisterModel(strFilename);
+	m_pModelData = CModelDataMgr::getInstance().GetModel(m_nModelID);
 	m_strModelFilename = strFilename;
 }
 
@@ -276,100 +279,6 @@ void CModelObject::Animate(int anim)
 	//}
 }
 
-bool CModelObject::PassBegin(ModelRenderPass& pass)const
-{
-	Vec4D ocol = Vec4D(1.0f, 1.0f, 1.0f, m_fTrans);
-	Vec4D ecol = Vec4D(0.0f, 0.0f, 0.0f, 0.0f);
-
-	float fOpacity = m_fTrans;
-	// emissive colors
-	if (m_pModelData->m_TransAnims.size() > 0)
-	{
-		// opacity
-		if (pass.nTransID!=-1)
-		{
-			fOpacity *= m_pModelData->m_TransAnims[pass.nTransID].trans.getValue(m_nAnimTime)/32767.0f;
-		}
-	}
-	if (fOpacity<=0.0f)
-	{
-		return false;
-	}
-	if (-1 != pass.nColorID)
-	{
-		Vec4D ecol = m_pModelData->m_ColorAnims[pass.nColorID].GetColor(m_nAnimTime);
-		ecol.w = 1;
-		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName).SetEmissiveColor(ocol.getColor());
-
-		//glMaterialfv(GL_FRONT, GL_EMISSION, ecol);
-		/*			D3DMATERIAL9 mtrl;
-		mtrl.Ambient	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.2,0.2,0.2,0.2);
-		mtrl.Diffuse	= *(D3DXCOLOR*)&ecol;//D3DXCOLOR(0.8,0.8,0.8,0.8);
-		Vec4D Specular	= Vec4D(m_pModelData->m_ColorAnims[pass.nColorID].color.getValue(m_nAnimTime), 1);
-		mtrl.Specular	= *(D3DXCOLOR*)&Specular;
-		mtrl.Emissive	= D3DXCOLOR(0,0,0,0);//*(D3DXCOLOR*)&ecol;
-		mtrl.Power		= 71;
-		R.SetMaterial(&mtrl);
-		R.SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);*/
-		//R.SetRenderState(D3DRS_SPECULARENABLE, true);
-		//R.SetRenderState(D3DRS_LOCALVIEWER, true);
-		//R.SetRenderState(D3DRS_NORMALIZENORMALS, true);
-		//R.SetRenderState(D3DRS_LOCALVIEWER, false);
-	}
-	if(m_bLightmap)
-	{
-		//	pass.material.uLightMap = m_idLightMapTex;
-	}
-
-	// TEXTURE
-
-	// Texture wrapping around the geometry
-	//if (swrap)
-	//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	//if (twrap)
-	//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-
-	// 纹理动画实现
-	if (m_pModelData->m_TexAnims.size() && pass.nTexanimID !=-1)
-	{
-		// 纹理动画
-		Matrix matTex;
-		m_pModelData->m_TexAnims[pass.nTexanimID].Calc(m_nAnimTime, matTex);
-		// 在里面设置纹理矩阵
-		GetRenderSystem().setTextureMatrix(0, TTF_COUNT2, matTex);
-	}
-	// color
-	//glColor4fv(ocol);
-	//glMaterialfv(GL_FRONT, GL_SPECULAR, ocol);
-
-	//if (!pass.bUnlit&&0) 
-	//{
-	//	//R.SetLightingEnabled(false);
-	//	R.SetShader(m_pModelData->m_nCartoonShaderID);
-	//	static int nCartoonTex = GetRenderSystem().GetTextureMgr().RegisterTexture("toonshade.tga");
-	//	R.SetTexture(1 , nCartoonTex, 1);
-	//	COLOROP = D3DTOP_SELECTARG1;
-
-	//	R.SetTextureFactor(Color32(176,176,176,176));
-	//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
-	//}
-	return GetRenderSystem().prepareMaterial(pass.strMaterialName,fOpacity);
-}
-
-void CModelObject::PassEnd()const
-{
-	CRenderSystem& R = GetRenderSystem();
-	R.finishMaterial();
-	R.setTextureMatrix(0, TTF_DISABLE);
-	R.SetTexCoordIndex(0,0);
-	R.SetTexCoordIndex(1,0);
-	//R.SetRenderState(D3DRS_SPECULARENABLE, false);
-	R.SetTexture(1 , -1);
-	R.SetShader((CShader*)NULL);
-	R.SetTextureColorOP(1,TBOP_DISABLE);
-	R.SetTextureAlphaOP(1,TBOP_DISABLE);
-}
-
 void CModelObject::OnFrameMove(float fElapsedTime)
 {
 	if (m_AnimMgr)
@@ -421,11 +330,6 @@ void CModelObject::SetLightMap(const std::string& strFilename)
 	m_bLightmap = true;
 }
 
-void CModelObject::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse)
-{
-	m_vAmbient = vAmbient;
-	m_vDiffuse = vDiffuse;
-}
 // These aren't really needed in the model viewer.. only wowmapviewer
 //void CObject::lightsOn(int lbase)
 //{
@@ -487,16 +391,11 @@ void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	{
 		return;
 	}
-	if (eModelRenderType!=MATERIAL_RENDER_NOTHING&&Prepare())
+	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
 	{
-		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
-		{
-			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
-			{
-				m_pModelData->m_Mesh.drawSub(it->second.nSubID,m_uLodLevel);
-			}
-		}
+		return;
 	}
+	m_pModelData->drawMesh(eModelRenderType,m_uLodLevel,m_pVB);
 }
 
 void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
@@ -505,32 +404,11 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	{
 		return;
 	}
-	//GetRenderSystem().SetMaterial(m_vAmbient,m_vDiffuse);
-	//GetRenderSystem().GetSharedShader()->setVec3D("g_vAmbient",m_vAmbient);
-	//GetRenderSystem().GetSharedShader()->setVec3D("g_vDiffuse",m_vDiffuse);
-	if (eModelRenderType!=MATERIAL_RENDER_NOTHING&&Prepare())
+	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
 	{
-		for (std::map<int,ModelRenderPass>::iterator it = m_pModelData->m_mapPasses.begin(); it != m_pModelData->m_mapPasses.end(); ++it)
-		{
-			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
-			{
-				if (PassBegin(it->second))
-				{
-					if (it->second.nSubID<0)
-					{
-						m_pModelData->m_Mesh.draw(m_uLodLevel);
-					}
-					else
-					{
-						m_pModelData->m_Mesh.drawSub(it->second.nSubID,m_uLodLevel);
-					}
-				}
-				PassEnd();
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
-			}
-		}
+		return;
 	}
+	m_pModelData->renderMesh(eModelRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 }
 
 void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
@@ -554,19 +432,7 @@ void CModelObject::render(E_MATERIAL_RENDER_TYPE eModelRenderType,E_MATERIAL_REN
 	renderParticles(eParticleRenderType);
 }
 
-void CModelObject::draw()const
-{
-	if(NULL==m_pModelData)
-	{
-		return;
-	}
-	if (Prepare())
-	{
-		m_pModelData->m_Mesh.draw();
-	}
-}
-
-void CModelObject::DrawBones()const
+void CModelObject::drawSkeleton()const
 {
 	if (m_pModelData)
 	{

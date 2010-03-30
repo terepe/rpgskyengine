@@ -95,7 +95,7 @@ void C3DMapObj::drawWithoutMaterial()const
 {
 	if (m_pModelObject)
 	{
-		m_pModelObject->draw();
+		m_pModelObject->drawMesh(MATERIAL_RENDER_NORMAL);
 	}
 }
 
