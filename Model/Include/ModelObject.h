@@ -41,7 +41,7 @@ public:
 
 	const BBox& getBBox()const;
 	int getModelDataID()const;
-	const CModelData* getModelData()const;
+	CModelData* getModelData()const;
 protected:
 	int m_nModelID;									// 模型ID
 	CModelData*		m_pModelData;					// 模型源数据
