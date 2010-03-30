@@ -2,15 +2,11 @@
 #include "Manager.h"
 #include "Modelheaders.h"
 #include "Animated.h"
-//#include "enums.h"
 #include "ParticleEmitter.h"
-
 #include "Vec4D.h"
 #include "Matrix.h"
-
 #include "Skeleton.h"
 #include "LodMesh.h"
-
 #include "Material.h"
 
 class CModelData;
@@ -20,7 +16,7 @@ struct TexAnim
 {
 	Animated<Vec3D> trans, rot, scale;
 	// 计算
-	void Calc(int nTime, Matrix& matrix);
+	void Calc(int nTime, Matrix& matrix)const;
 };
 
 struct ColorAnim
@@ -29,7 +25,7 @@ struct ColorAnim
 	Animated<Vec3D> specular;
 	Animated<short> opacity;
 
-	Vec4D GetColor(uint32 uTime)
+	Vec4D GetColor(uint32 uTime)const
 	{
 		return Vec4D(color.getValue(uTime), opacity.getValue(uTime)/32767.0f);
 	}
@@ -132,6 +128,7 @@ public:
 
 	virtual void addAnimation(long timeStart, long timeEnd);
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
+	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
 	virtual CMaterial& getMaterial(const std::string& strMaterialName);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
@@ -145,6 +142,13 @@ public:
 	void Init();
 	int	GetOrder();
 	bool isLoaded();
+private:
+	bool passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const;
+	void passEnd()const;
+public:
+	void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
+	void drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB=NULL)const;
+	void drawMesh(CHardwareVertexBuffer* pSkinVB=NULL)const;
 public:
 	CLodMesh				m_Mesh;
  	CBoundMesh				m_BoundMesh;	// 包围盒
@@ -163,8 +167,6 @@ public: // 动画源
 	std::vector<CParticleEmitter>	m_setParticleEmitter;	// Particle Emitters
 	//std::vector<CRibbonEmitter>	ribbons;			// 条带源
 public:
-//	ModelType	m_ModelType;	// 模型类别
-//public:
 	std::vector<ModelAttachment> atts;
 	int attLookup[40];
 	int boneLookup[27];
@@ -174,25 +176,3 @@ public:
 private:
 	std::string m_strModelFilename;
 };
-
-typedef struct{
-	CModelPlugBase * pObj;
-	HINSTANCE hIns;
-}MODEL_PLUG_ST, * LPMODEL_PLUG_ST;
-
-class CModelMgr: public CManager<CModelData>
-{
-public:
-	CModelMgr();
-	uint32 RegisterModel(const std::string& strFilename);
-	CModelData* GetModel(uint32 uModelID);
-	bool loadModel(CModelData& modelData,const std::string& strFilename);
-	std::string getAllExtensions();
-private:
-	bool loadPlugFromPath(const std::string& strPath);
-	bool createPlug(const std::string& strFilename);
-
-	std::vector<MODEL_PLUG_ST> m_arrPlugObj;
-};
-
-CModelMgr& GetModelMgr();

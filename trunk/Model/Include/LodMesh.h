@@ -60,7 +60,7 @@ class CBoundMesh
 public:
 	std::vector<Vec3D>			pos;		// АќЮЇКа
 	std::vector<uint16>			indices;	// АќЮЇКа
-	void Draw();
+	void draw()const;
 };
 
 struct VertexIndex
@@ -130,7 +130,7 @@ public:
 
 	void Init();
 	uint32 GetSkinVertexSize();
-	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL);
+	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL)const;
 	void drawSub(size_t uSubID, size_t uLodLevel=0)const;
 	void draw(size_t uLodLevel=0)const;
 	void skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)const;

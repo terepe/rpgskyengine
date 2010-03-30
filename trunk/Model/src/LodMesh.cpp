@@ -3,7 +3,7 @@
 #include "Intersect.h"
 #include "LumpFile.h"
 
-void CBoundMesh::Draw()
+void CBoundMesh::draw()const
 {
 	if (indices.size())
 	{
@@ -384,7 +384,7 @@ uint32 CLodMesh::GetSkinVertexSize()
 	return m_uSkinVertexSize;
 }
 
-bool CLodMesh::SetMeshSource(int nLodLevel, CHardwareVertexBuffer* pSkinVB)
+bool CLodMesh::SetMeshSource(int nLodLevel, CHardwareVertexBuffer* pSkinVB)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	if (m_bSkinMesh)
