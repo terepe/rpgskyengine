@@ -65,7 +65,7 @@ public:
 	  }
 	  std::string				strName;
 	  Animated<Vec3D>			trans;
-	  Animated<Quaternion>	rot;
+	  Animated<Quaternion>		rot;
 	  Animated<Vec3D>			scale;
 	  Matrix					mSkin;
 	  Vec3D pivot;
@@ -84,7 +84,13 @@ class iModelData
 {
 public:
 	virtual const std::string& getItemName()=0;
-	virtual void addAnimation(long timeStart, long timeEnd)=0;
+
+	virtual size_t getAnimationCount()=0;
+	virtual void setAnimation(const std::string& strName, long timeStart, long timeEnd)=0;
+	virtual bool getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const=0;
+	virtual bool getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const=0;
+	virtual bool delAnimation(const std::string& strName)=0;
+
 	virtual size_t getRenderPassCount()=0;
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
 	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const=0;

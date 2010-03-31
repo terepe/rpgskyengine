@@ -18,7 +18,7 @@ AnimManager::AnimManager(ModelAnimation *anim) {
 
 	if (anims != NULL)
 	{ 
-		Set(0, 0, 0);
+	//	Set(0, 0, 0);
 	}
 }
 
@@ -37,27 +37,28 @@ void AnimManager::AddAnim(uint32 id, short loops)
 	Count++;
 }
 
-void AnimManager::Set(short index, uint32 id, short loops) {
-	// error check, we currently only support 4 animations.
-	if (index > 3)
-		return;
-
-	animList[index].AnimID = id;
-	animList[index].Loops = loops;
-
-
-	// Just an error check for our "auto animate"
-	if (index == 0)
-	{
-		if (Count == 0)
-		{
-			Count = 1;
-		}
-		PlayIndex = index;
-		Frame = anims[id].timeStart;
-		TotalFrames = anims[id].timeEnd - anims[id].timeStart;
-	}
-}
+// void AnimManager::Set(short index, const std::string& strAnimName, short loops)
+// {
+// 	// error check, we currently only support 4 animations.
+// 	if (index > 3)
+// 		return;
+// 
+// 	animList[index].AnimID = strAnimName;
+// 	animList[index].Loops = loops;
+// 
+// 
+// 	// Just an error check for our "auto animate"
+// 	if (index == 0)
+// 	{
+// 		if (Count == 0)
+// 		{
+// 			Count = 1;
+// 		}
+// 		PlayIndex = index;
+// 		Frame = anims[id].timeStart;
+// 		TotalFrames = anims[id].timeEnd - anims[id].timeStart;
+// 	}
+// }
 
 void AnimManager::Play() {
 	PlayIndex = 0;

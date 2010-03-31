@@ -13,9 +13,7 @@ m_pModelData(NULL),
 m_bCreated(false)
 {
 	m_nModelID = 0;
-	m_AnimMgr = NULL;
 	m_pVB = NULL;
-	m_nCurrentAnimID = 0;
 	m_nAnimTime = 0;
 	m_fTrans = 1;
 	m_fAlpha = 1;
@@ -39,7 +37,6 @@ bool CModelObject::isCreated()
 
 void CModelObject::create()
 {
-	S_DEL(m_AnimMgr);
 	if (NULL==m_pModelData)
 	{
 		return;
@@ -76,9 +73,9 @@ void CModelObject::create()
 		// 
 		SetSkin(m_uSkinID);
 
-		if(m_pModelData->m_AnimList.size()>0)
+		//if(m_pModelData->m_AnimList.size()>0)
 		{
-			m_AnimMgr = new AnimManager(&m_pModelData->m_AnimList[0]);
+			//m_AnimMgr = new AnimManager(&m_pModelData->m_AnimList[0]);
 		}
 		// 设置默认LOD
 		SetLOD(0);
@@ -223,32 +220,32 @@ void CModelObject::CalcBones(int time)
 	//}
 }
 
-void CModelObject::Animate(int anim)
+void CModelObject::Animate(const std::string& strAnimName)
 {
 	if (NULL==m_pModelData)
 	{
 		return;
 	}
 	int t=0;
-	ModelAnimation &a = m_pModelData->m_AnimList[anim];
-	int tmax = (a.timeEnd-a.timeStart);
-	if (tmax==0) 
-		tmax = 1;
+// 	ModelAnimation &a = m_pModelData->m_AnimList[strAnimName];
+// 	int tmax = (a.timeEnd-a.timeStart);
+// 	if (tmax==0) 
+// 		tmax = 1;
 
 	if (/*isWMO == true*/0) {
 		t = globalTime;
-		t %= tmax;
-		t += a.timeStart;
+		//t %= tmax;
+		//t += a.timeStart;
 	} else
-		t = m_AnimMgr->GetFrame();
+		t = m_AnimMgr.uFrame;
 
 	// 骨骼动画
-	if ((m_Bones.size()>0)  && (m_nAnimTime != t || m_nAnim != anim))
+	if ((m_Bones.size()>0)  && (m_nAnimTime != t || m_strAnimName != strAnimName))
 	{
 		CalcBones(t);
 	}
 	m_nAnimTime = t;
-	m_nAnim = anim;
+	m_strAnimName = strAnimName;
 
 	// 几何体动画
 	if (m_pModelData->m_Mesh.m_bSkinMesh)
@@ -268,7 +265,7 @@ void CModelObject::Animate(int anim)
 	for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
 	{
 		// random time distribution for teh win ..?
-		int pt = a.timeStart + (t + (int)(tmax*m_pModelData->m_setParticleEmitter[i].tofs)) % tmax;
+		int pt = globalTime;//a.timeStart + (t + (int)(tmax*m_pModelData->m_setParticleEmitter[i].tofs)) % tmax;
 
 		m_setParticleGroup[i].Setup(pt);
 	}
@@ -281,12 +278,8 @@ void CModelObject::Animate(int anim)
 
 void CModelObject::OnFrameMove(float fElapsedTime)
 {
-	if (m_AnimMgr)
-	{
-		m_AnimMgr->Tick(int(fElapsedTime*1000));
-		//m_nCurrentAnimID++;
-				Animate(m_nCurrentAnimID);
-	}
+	m_AnimMgr.Tick(int(fElapsedTime*1000));
+	Animate(m_strAnimName);
 }
 
 void CModelObject::SetLOD(uint32 uLodID)
@@ -306,18 +299,20 @@ void CModelObject::SetSkin(uint32 uSkinID)
 
 }
 
-void CModelObject::SetAnim(uint32 uAnimID)
+void CModelObject::SetAnim(const std::string& strAnimName)
 {
-	if (m_pModelData&&m_pModelData->m_AnimList.size() > uAnimID)
+	if (m_pModelData)
 	{
-		if(m_AnimMgr)
+		if(m_strAnimName!=strAnimName)
 		{
-			if(m_nCurrentAnimID!=uAnimID)
+			m_strAnimName = strAnimName;
+
+			long timeStart, timeEnd;
+			if (m_pModelData->getAnimation(strAnimName,timeStart,timeEnd))
 			{
-				m_nCurrentAnimID = uAnimID;
-				//m_AnimMgr->Stop();
-				m_AnimMgr->Set(0, uAnimID, -1);
-				m_AnimMgr->Play();
+				m_AnimMgr.uFrame=timeStart;
+				m_AnimMgr.timeStart = timeStart;
+				m_AnimMgr.timeEnd = timeEnd;
 			}
 		}
 	}
