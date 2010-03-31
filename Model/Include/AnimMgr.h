@@ -25,13 +25,98 @@ enum ANIMTYPE
 
 struct AnimNode
 {
-	AnimNode():nAnimID(-1),uFrame(0),uTotalFrames(0),fSpeed(0){}
-	int		nAnimID;
+	AnimNode():CurLoop(-1),uFrame(0),timeStart(0),timeEnd(0),uTotalFrames(0),fSpeed(0){}
+	short	CurLoop;			// Current loop that we're upto.
 	uint32	timeStart;
 	uint32	timeEnd;
 	uint32	uFrame;
 	uint32	uTotalFrames;
 	float	fSpeed;
+	virtual int Tick(uint32 uElapsedTime)=0;
+	virtual int next()
+	{
+		uTotalFrames = timeEnd - timeStart;
+		uFrame -= uTotalFrames;
+		if (CurLoop==1)
+		{
+			return 1;
+		}
+		else if(CurLoop>1)
+		{
+			CurLoop--;
+			return 0;
+		}
+	}
+
+	virtual int prev()
+	{
+		uTotalFrames = timeEnd - timeStart;
+		uFrame += uTotalFrames;
+		if (CurLoop==1)
+		{
+			return -1;
+		}
+		else if(CurLoop>1)
+		{
+			CurLoop++;
+			return 0;
+		}
+	}
+};
+
+struct SingleAnimNode:public AnimNode
+{
+	
+	//int		nAnimID;
+
+	virtual int Tick(uint32 uElapsedTime)
+	{
+		uFrame += uint32(uElapsedTime*fSpeed);
+		if (uFrame >= timeEnd)
+		{
+			return next();
+		}
+		else if (uFrame < timeStart)
+		{
+			return prev();
+		}
+		return 0;
+	}
+};
+
+struct ListAnimNode:public AnimNode
+{
+	short nPlayIndex;		// Current animation index we're upto
+	std::vector<AnimNode*>	setNodes;
+	virtual int Tick(uint32 uElapsedTime)
+	{
+		timeStart = 0;
+		timeEnd = setNodes.size();
+		if (setNodes.size()>uFrame)
+		{
+			uFrame+=setNodes[uFrame]->Tick(uElapsedTime*fSpeed);
+			if (uFrame >= timeEnd)
+			{
+				return next();
+			}
+			else if (uFrame < timeStart)
+			{
+				return prev();
+			}
+		}
+	}
+};
+
+struct ParallelAnimNode:public AnimNode
+{
+	std::vector<AnimNode*>	setNodes;
+	virtual int Tick(uint32 uElapsedTime)
+	{
+		for (size_t i=0;i<setNodes.size();++i)
+		{
+			setNodes[i]->Tick(uElapsedTime*fSpeed);
+		}
+	}
 };
 
 struct MyAnimInfo
@@ -100,7 +185,7 @@ public:
 	~AnimManager();
 
 	void AddAnim(uint32 id, short loop); // Adds an animation to our array.
-	void Set(short index, uint32 id, short loop); // sets one of the 4 existing animations and changes it (not really used currently)
+	//void Set(short index, uint32 id, short loop); // sets one of the 4 existing animations and changes it (not really used currently)
 
 	void SetSecondary(int id) {
 		AnimIDSecondary = id;

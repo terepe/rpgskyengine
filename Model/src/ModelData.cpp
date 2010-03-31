@@ -20,12 +20,53 @@ CModelData::~CModelData()
 	S_DELS(globalSequences);
 }
 
-void CModelData::addAnimation(long timeStart, long timeEnd)
+size_t CModelData::getAnimationCount()
 {
-	ModelAnimation animation;
+	return m_AnimList.size();
+}
+
+void CModelData::setAnimation(const std::string& strName, long timeStart, long timeEnd)
+{
+	ModelAnimation& animation=m_AnimList[strName];
 	animation.timeStart = timeStart;
 	animation.timeEnd = timeEnd;
-	m_AnimList.push_back(animation);
+}
+
+bool CModelData::getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const
+{
+	std::map<std::string, ModelAnimation>::const_iterator it = m_AnimList.find(strName);
+	if (it==m_AnimList.end())
+	{
+		return false;
+	}
+	timeStart = it->second.timeStart;
+	timeEnd = it->second.timeEnd;
+	return true;
+}
+
+bool CModelData::getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const
+{
+	if (m_AnimList.size()<=index)
+	{
+		return false;
+	}
+	std::map<std::string, ModelAnimation>::const_iterator it = m_AnimList.begin();
+	advance(it,index);
+	strName = it->first;
+	timeStart = it->second.timeStart;
+	timeEnd = it->second.timeEnd;
+	return true;
+}
+
+bool CModelData::delAnimation(const std::string& strName)
+{
+	std::map<std::string, ModelAnimation>::iterator it=m_AnimList.find(strName);
+	if(it!=m_AnimList.end())
+	{
+		m_AnimList.erase(it);
+		return true;
+	}
+	return false;
 }
 
 size_t CModelData::getRenderPassCount()
@@ -58,7 +99,7 @@ bool CModelData::delRenderPass(int nID)
 	std::map<int,ModelRenderPass>::iterator it=m_mapPasses.find(nID);
 	if(it!=m_mapPasses.end())
 	{
-		m_mapPasses.erase(nID);
+		m_mapPasses.erase(it);
 		return true;
 	}
 	return false;
@@ -148,7 +189,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 		}
 	}
 	// AnimList
-	lumpFile.getVector("AnimList", m_AnimList);
+	//lumpFile.getVector("AnimList", m_AnimList);
 	if (m_AnimList.size()==0)
 	{
 		ModelAnimation anim;
@@ -166,9 +207,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 		//float rad;
 
 		//int16 s[2];
-		ModelAnimation* buffer = new ModelAnimation[10];
-		ModelAnimation* buffer1 = new ModelAnimation[10];
-		m_AnimList.push_back(anim);
+		m_AnimList["0"]=anim;
 	}
 	// Skeleton
 	m_Skeleton.Load(lumpFile,"Skeleton");
@@ -353,7 +392,7 @@ bool CModelData::SaveFile(const std::string& strFilename)
 	}
 
 	// AnimList
-	lumpFile.SetVector("AnimList", m_AnimList);
+	//lumpFile.SetVector("AnimList", m_AnimList);
 
 	// Skeleton
 	m_Skeleton.Save(lumpFile,"Skeleton");

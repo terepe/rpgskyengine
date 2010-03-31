@@ -126,11 +126,17 @@ public:
 public:
 	virtual const std::string& getItemName(){return m_strModelFilename;}
 
-	virtual void addAnimation(long timeStart, long timeEnd);
+	virtual size_t getAnimationCount();
+	virtual void setAnimation(const std::string& strName, long timeStart, long timeEnd);
+	virtual bool getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const;
+	virtual bool getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const;
+	virtual bool delAnimation(const std::string& strName);
+	
 	virtual size_t getRenderPassCount();
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
 	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
 	virtual bool delRenderPass(int nID);
+
 	virtual CMaterial& getMaterial(const std::string& strMaterialName);
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
@@ -159,7 +165,6 @@ public: // 动画源
 	ModelCamera		m_Camera;
 	int				*globalSequences;
 	
-	std::vector<ModelAnimation>	m_AnimList;				// 动画配表源
 	std::vector<TexAnim>		m_TexAnims;				// 纹理动画源
 	std::vector<ColorAnim>		m_ColorAnims;			// 颜色动画源
 	std::vector<TransAnim>		m_TransAnims;			// 透明动画源
@@ -168,6 +173,7 @@ public: // 动画源
 	std::vector<CParticleEmitter>	m_setParticleEmitter;	// Particle Emitters
 	//std::vector<CRibbonEmitter>	ribbons;			// 条带源
 private:
+	std::map<std::string, ModelAnimation>	m_AnimList;	// 动画配表源
 	std::map<int,ModelRenderPass>m_mapPasses;				// 渲染过程集
 public:
 	std::vector<ModelAttachment> atts;

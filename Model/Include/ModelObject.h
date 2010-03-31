@@ -13,7 +13,7 @@ public:
 public:
 	void SetLOD(uint32 uLodID);		// 设置LodID
 	void SetSkin(uint32 uSkinID);	// 设置皮肤
-	void SetAnim(uint32 uAnimID);	// 设置动画ID
+	void SetAnim(const std::string& strAnimName);
 	void SetLightMap(const std::string& strFilename);	// SetLightMap
 public:
 	void Register(const std::string& strFilename);
@@ -33,7 +33,7 @@ public:
 	//void setupAtt(int id);
 	//void setupAtt2(int id);
 
-	void Animate(int anim);
+	void Animate(const std::string& strAnimName);
 	void CalcBones(int time);
 
 	bool isCreated();
@@ -46,12 +46,11 @@ protected:
 	int m_nModelID;									// 模型ID
 	CModelData*		m_pModelData;					// 模型源数据
 public:												// All the anim data.
-	AnimManager*				m_AnimMgr;			// 动作管理器
+	SingleAnimNode				m_AnimMgr;			// 动作管理器
 	CHardwareVertexBuffer*		m_pVB;				// 顶点缓冲
 	std::vector<CBone>			m_Bones;			// 骨骼
 	std::vector<CParticleGroup>	m_setParticleGroup;	// 粒子ID集合
-	int		m_nCurrentAnimID;						// 当前动作ID
-	int		m_nAnim;								// 当前动作ID
+	std::string	m_strAnimName;						// Current Name Of Animate
 	int		m_nAnimTime;							// 动作时间帧
 	float	m_fTrans;								// 自身透明度
 	float	m_fAlpha;								// 过度透明
