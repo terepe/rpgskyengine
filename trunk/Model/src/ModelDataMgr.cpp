@@ -3,7 +3,11 @@
 
 CModelDataMgr::CModelDataMgr()
 {
-	loadPlugFromPath("");
+#ifdef _DEBUG
+	loadPlugFromPath("Plugins\\debug\\");
+#else
+	loadPlugFromPath("Plugins\\");
+#endif
 }
 
 uint32 CModelDataMgr::RegisterModel(const std::string& strFilename)
