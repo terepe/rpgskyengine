@@ -123,9 +123,9 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 		{
 			Matrix matTex=Matrix::UNIT;
 			float fTime = (float)GetGlobalTimer().GetTime();
-			matTex._14=fTime*material.vTexAnim.x;
-			matTex._24=fTime*material.vTexAnim.y;
-			setTextureMatrix(0, TTF_COUNT2, matTex);
+			matTex._13=fTime*material.vTexAnim.x;
+			matTex._23=fTime*material.vTexAnim.y;
+			setTextureMatrix(0, TTF_COUNT3, matTex);
 		}
 
 		Color32 cFactor = material.cEmissive;
@@ -217,9 +217,9 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			}
 			else if(material.uReflection)
 			{
-				cFactor.r*=(unsigned char)(cFactor.r*fOpacity);
-				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
-				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
+				cFactor.r=(unsigned char)(cFactor.r*fOpacity);
+				cFactor.g=(unsigned char)(cFactor.g*fOpacity);
+				cFactor.b=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
 				if (material.bBlend)
 				{
@@ -242,9 +242,9 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			}
 			else if (material.uEmissive)
 			{
-				cFactor.r*=(unsigned char)(cFactor.r*fOpacity);
-				cFactor.g*=(unsigned char)(cFactor.g*fOpacity);
-				cFactor.b*=(unsigned char)(cFactor.b*fOpacity);
+				cFactor.r=(unsigned char)(cFactor.r*fOpacity);
+				cFactor.g=(unsigned char)(cFactor.g*fOpacity);
+				cFactor.b=(unsigned char)(cFactor.b*fOpacity);
 				SetTextureFactor(cFactor);
 				if (material.bBlend)
 				{
