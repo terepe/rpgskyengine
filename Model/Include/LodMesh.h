@@ -63,45 +63,13 @@ public:
 	void draw()const;
 };
 
-struct VertexIndex
-{
-	uint16 p;
-	uint16 n;
-	uint16 c;
-	uint16 uv1;
-	uint16 uv2;
-	uint16 w;
-	uint16 b;
-	bool operator< (const VertexIndex& v) const
-	{
-		const uint8* p1=(const uint8*)this;
-		const uint8* p2=(const uint8*)&v;
-		for (size_t i=0;i<sizeof(VertexIndex);++i)
-		{
-			if (*p1!=*p2)
-			{
-				return *p1<*p2;
-			}
-			p1++;p2++;
-		}
-		return false;
-	}
-	bool operator== (const VertexIndex& v) const
-	{
-		return p==v.p&&n==v.n&&c==v.c&&uv1==v.uv1&&uv2==v.uv2&&w==v.w&&b==v.b;
-	}
-};
-
-class DLL_EXPORT CLodMesh:public iLodMesh
+class DLL_EXPORT CSubMesh:public iSubMesh
 {
 public:
-	CLodMesh();
-	~CLodMesh();
-public:
-	virtual void addFaceIndex(int nSubID, const FaceIndex& faceIndex);
-	virtual int getSubCount();
+	virtual size_t getVertexIndexCount();
+	virtual void addVertexIndex(const VertexIndex& faceIndex);
+	virtual bool getVertexIndex(size_t n, VertexIndex& faceIndex);
 
-	virtual const BBox& getBBox();
 	virtual size_t getPosCount();
 	virtual size_t getBoneCount();
 	virtual size_t getWeightCount();
@@ -112,6 +80,7 @@ public:
 	virtual void addBone(uint32 uBone);
 	virtual void addWeight(uint32 uWeight);
 	virtual void addNormal(const Vec3D& vNormal);
+	virtual void addColor(const Color32& clr);
 	virtual void addTexcoord(const Vec2D& vUV);
 
 	virtual void setPos(size_t n, const Vec3D& vPos);
@@ -126,7 +95,31 @@ public:
 	virtual void getNormal(size_t n, Vec3D& vNormal);
 	virtual void getTexcoord(size_t n, Vec2D& vUV);
 
-	void update();
+	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)const;
+
+	// Vertex Data
+	std::vector<Vec3D>	pos;
+	std::vector<uint32>	weight;
+	std::vector<uint32>	bone;
+	std::vector<Vec3D>	normal;
+	std::vector<Color32>color;
+	std::vector<Vec2D>	texcoord;
+	std::vector<Vec2D>	texcoord2;
+
+	std::vector<VertexIndex> m_setVertexIndex;
+};
+
+class DLL_EXPORT CLodMesh:public iLodMesh
+{
+public:
+	CLodMesh();
+	~CLodMesh();
+public:
+	virtual int getSubCount();
+	virtual iSubMesh& addSubMesh();
+	virtual iSubMesh* getSubMesh(size_t n);
+	virtual const BBox& getBBox();
+	virtual void update();
 
 	void Init();
 	uint32 GetSkinVertexSize();
@@ -144,17 +137,7 @@ public:
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
 protected:
 public:
-	// 原顶点数据
-	std::vector<Vec3D>	pos;
-	std::vector<Vec3D>	normal;
-	std::vector<uint32>	color;
-	std::vector<Vec2D>	texcoord;
-	std::vector<Vec2D>	texcoord2;
-	std::vector<uint32>	weight;
-	std::vector<uint32>	bone;
-
-	std::map<int,std::vector<FaceIndex>> m_mapFaceIndex;
-
+	std::vector<CSubMesh> m_setSubMesh;
 
 	CHardwareVertexBuffer*	m_pShareBuffer;	// Share Vertex Buffer
 	std::vector<ModelLod>	m_Lods;			// the lods

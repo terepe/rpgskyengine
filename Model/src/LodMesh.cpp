@@ -25,59 +25,52 @@ void CBoundMesh::draw()const
 	}
 }
 
-CLodMesh::CLodMesh():
-m_pShareBuffer(NULL),
-m_pVertexDeclHardware(NULL),
-m_uSkinVertexSize(0),
-m_uShareVertexSize(0),
-m_bSkinMesh(false),
-m_fRad(1.0f)
+size_t CSubMesh::getVertexIndexCount()
 {
+	return m_setVertexIndex.size();
 }
 
-CLodMesh::~CLodMesh()
+void CSubMesh::addVertexIndex(const VertexIndex& vertexIndex)
 {
-	S_DEL(m_pShareBuffer);
-	S_DEL(m_pVertexDeclHardware);
+	m_setVertexIndex.push_back(vertexIndex);
 }
 
-void CLodMesh::addFaceIndex(int nSubID, const FaceIndex& faceIndex)
+bool CSubMesh::getVertexIndex(size_t uIndex, VertexIndex& vertexIndex)
 {
-	m_mapFaceIndex[nSubID].push_back(faceIndex);
+	if (m_setVertexIndex.size()<=uIndex)
+	{
+		return false;
+	}
+	vertexIndex = m_setVertexIndex[uIndex];
+	return true;
 }
 
-int CLodMesh::getSubCount()
-{
-	return m_mapFaceIndex.size();
-}
-
-const BBox& CLodMesh::getBBox()
-{return m_bbox;}
-
-size_t CLodMesh::getPosCount()
+size_t CSubMesh::getPosCount()
 {return pos.size();}
 
-size_t CLodMesh::getBoneCount()
+size_t CSubMesh::getBoneCount()
 {return bone.size();}
 
-size_t CLodMesh::getWeightCount()
+size_t CSubMesh::getWeightCount()
 {return weight.size();}
 
-size_t CLodMesh::getNormalCount()
+size_t CSubMesh::getNormalCount()
 {return normal.size();}
 
-size_t CLodMesh::getTexcoordCount()
+size_t CSubMesh::getTexcoordCount()
 {return texcoord.size();}
 
-void CLodMesh::addPos(const Vec3D& vPos)
+void CSubMesh::addPos(const Vec3D& vPos)
 {pos.push_back(vPos);}
-void CLodMesh::addBone(uint32 uBone)
+void CSubMesh::addBone(uint32 uBone)
 {bone.push_back(uBone);}
-void CLodMesh::addWeight(uint32 uWeight)
+void CSubMesh::addWeight(uint32 uWeight)
 {weight.push_back(uWeight);}
-void CLodMesh::addNormal(const Vec3D& vNormal)
+void CSubMesh::addNormal(const Vec3D& vNormal)
 {normal.push_back(vNormal);}
-void CLodMesh::addTexcoord(const Vec2D& vUV)
+void CSubMesh::addColor(const Color32& clr)
+{color.push_back(clr);}
+void CSubMesh::addTexcoord(const Vec2D& vUV)
 {texcoord.push_back(vUV);}
 
 template <class _T>
@@ -90,23 +83,23 @@ void  setVectorValue(std::vector<_T>& vec, size_t pos, const _T& val)
 	vec.push_back(val);
 }
 
-void CLodMesh::setPos(size_t n, const Vec3D& vPos)
+void CSubMesh::setPos(size_t n, const Vec3D& vPos)
 {
 	setVectorValue(pos,n,vPos);
 }
-void CLodMesh::setBone(size_t n, uint32 uBone)
+void CSubMesh::setBone(size_t n, uint32 uBone)
 {
 	setVectorValue(bone,n,uBone);
 }
-void CLodMesh::setWeight(size_t n, uint32 uWeight)
+void CSubMesh::setWeight(size_t n, uint32 uWeight)
 {
 	setVectorValue(weight,n,uWeight);
 }
-void CLodMesh::setNormal(size_t n, const Vec3D& vNormal)
+void CSubMesh::setNormal(size_t n, const Vec3D& vNormal)
 {
 	setVectorValue(normal,n,vNormal);
 }
-void CLodMesh::setTexcoord(size_t n, const Vec2D& vUV)
+void CSubMesh::setTexcoord(size_t n, const Vec2D& vUV)
 {
 	setVectorValue(texcoord,n,vUV);
 }
@@ -120,27 +113,38 @@ void  getVectorValue(const std::vector<_T>& vec, size_t pos, _T& val)
 	}
 }
 
-void CLodMesh::getPos(size_t n, Vec3D& vPos)
+void CSubMesh::getPos(size_t n, Vec3D& vPos)
 {
 	getVectorValue(pos,n,vPos);
 }
-void CLodMesh::getBone(size_t n, uint32& uBone)
+void CSubMesh::getBone(size_t n, uint32& uBone)
 {
 	getVectorValue(bone,n,uBone);
 }
-void CLodMesh::getWeight(size_t n, uint32& uWeight)
+void CSubMesh::getWeight(size_t n, uint32& uWeight)
 {
 	getVectorValue(weight,n,uWeight);
 }
-void CLodMesh::getNormal(size_t n, Vec3D& vNormal)
+void CSubMesh::getNormal(size_t n, Vec3D& vNormal)
 {
 	getVectorValue(normal,n,vNormal);
 }
-void CLodMesh::getTexcoord(size_t n, Vec2D& vUV)
+void CSubMesh::getTexcoord(size_t n, Vec2D& vUV)
 {
 	getVectorValue(texcoord,n,vUV);
 }
-
+bool CSubMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)const
+{
+	size_t size=m_setVertexIndex.size()/3;
+	for(size_t i=0;i<size;++i)
+	{
+		if (IntersectTri(pos[m_setVertexIndex[i*3].p],pos[m_setVertexIndex[i*3+1].p],pos[m_setVertexIndex[i*3+2].p],vRayPos,vRayDir,vOut))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 template <class _T, class _T2>
 void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut, std::vector<_T2>& index)
 {
@@ -163,42 +167,68 @@ void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut,
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+CLodMesh::CLodMesh():
+m_pShareBuffer(NULL),
+m_pVertexDeclHardware(NULL),
+m_uSkinVertexSize(0),
+m_uShareVertexSize(0),
+m_bSkinMesh(false),
+m_fRad(1.0f)
+{
+}
+
+CLodMesh::~CLodMesh()
+{
+	S_DEL(m_pShareBuffer);
+	S_DEL(m_pVertexDeclHardware);
+}
+
+
+int CLodMesh::getSubCount()
+{
+	return m_setSubMesh.size();
+}
+iSubMesh& CLodMesh::addSubMesh()
+{
+	size_t size=m_setSubMesh.size();
+	m_setSubMesh.resize(size+1);
+	return m_setSubMesh[size];
+}
+
+iSubMesh* CLodMesh::getSubMesh(size_t n)
+{
+	if (m_setSubMesh.size()<=n)
+	{
+		return NULL;
+	}
+	return &m_setSubMesh[n];
+}
+
+const BBox& CLodMesh::getBBox()
+{return m_bbox;}
+
+
 void CLodMesh::Init()
 {
-	std::vector<VertexIndex> setVertexIndex;
-	if (m_mapFaceIndex.size()!=0)
+	size_t uVertexCount=0;
+	std::vector<std::vector<VertexIndex>> setVecVertexIndex;
+	if (m_setSubMesh.size()!=0)
 	{
+		setVecVertexIndex.resize(m_setSubMesh.size());
 		m_Lods.resize(1);
-		std::map<uint16,std::vector<VertexIndex>> mapSubs;
-		for (std::map<int,std::vector<FaceIndex>>::iterator it = m_mapFaceIndex.begin();
-			it != m_mapFaceIndex.end();it++)
-		{
-			for (size_t i=0; i<it->second.size(); ++i)
-			{
-				for (size_t n=0; n<3; ++n)
-				{
-					VertexIndex vertexIndex;
-					vertexIndex.p = it->second[i].v[n];
-					vertexIndex.n = it->second[i].n[n];
-					vertexIndex.c = it->second[i].c[n];
-					vertexIndex.uv1 = it->second[i].uv1[n];
-					vertexIndex.uv2 = it->second[i].uv2[n];
-					vertexIndex.w = it->second[i].w[n];
-					vertexIndex.b = it->second[i].b[n];
-					mapSubs[it->first].push_back(vertexIndex);
-				}
-			}
-		}
-
 		IndexedSubset subset;
 		std::vector<uint16> setIndex;
-		for (std::map<uint16,std::vector<VertexIndex>>::iterator itSub = mapSubs.begin();
-			itSub!=mapSubs.end(); itSub++)
+		for (size_t i=0;i<m_setSubMesh.size();++i)
 		{
-			transformRedundance(itSub->second,setVertexIndex,setIndex);
+			CSubMesh& subMesh = m_setSubMesh[i];
+			std::vector<VertexIndex>& setVertexIndex=setVecVertexIndex[i];
+			uVertexCount+=setVertexIndex.size();
+
+			transformRedundance(subMesh.m_setVertexIndex,setVertexIndex,setIndex);
 			subset.vstart += subset.vcount;
 			subset.istart += subset.icount;
-			subset.vcount = setVertexIndex.size()-subset.vstart;
+			subset.vcount = setVertexIndex.size();
 			subset.icount = setIndex.size()-subset.istart;
 			m_Lods[0].setSubset.push_back(subset);
 		}
@@ -206,7 +236,7 @@ void CLodMesh::Init()
 	}
 	else
 	{
-		for (size_t i=0; i<pos.size(); ++i)
+		/*for (size_t i=0; i<pos.size(); ++i)
 		{
 			VertexIndex vertexIndex;
 			if (i<pos.size())
@@ -238,26 +268,55 @@ void CLodMesh::Init()
 				vertexIndex.b=i;
 			}
 			setVertexIndex.push_back(vertexIndex);
-		}
+		}*/
 	}
 	if (m_bSkinMesh)
 	{
-		for (size_t i=0; i<setVertexIndex.size(); ++i)
+		for (size_t i=0;i<setVecVertexIndex.size();++i)
 		{
-			SkinVertex skinVertex;
-			skinVertex.p = pos[setVertexIndex[i].p];
-			skinVertex.n = normal[setVertexIndex[i].n];
-			skinVertex.w4 = weight[setVertexIndex[i].w];
-			skinVertex.b4 = bone[setVertexIndex[i].b];
-			m_setSkinVertex.push_back(skinVertex);
+			CSubMesh& subMesh=m_setSubMesh[i];
+			std::vector<VertexIndex>& setVertexIndex=setVecVertexIndex[i];
+			for (size_t n=0;n<setVertexIndex.size();++n)
+			{
+				VertexIndex& vertexIndex=setVertexIndex[n];
+				SkinVertex skinVertex;
+				skinVertex.p = subMesh.pos[vertexIndex.p];
+				skinVertex.n = subMesh.normal[vertexIndex.n];
+				skinVertex.w4 = subMesh.weight[vertexIndex.w];
+				skinVertex.b4 = subMesh.bone[vertexIndex.b];
+				m_setSkinVertex.push_back(skinVertex);
+			}
 		}
 	}
-
-	bool bPos		=	pos.size() > 0;
-	bool bNormal	=	normal.size() > 0;
-	bool bColor		=	color.size() > 0;
-	bool bTexCoord	=	texcoord.size() > 0;
-	bool bTexCoord2	=	texcoord2.size() > 0;
+	bool bPos		= false;
+	bool bNormal	= false;
+	bool bColor		= false;
+	bool bTexCoord	= false;
+	bool bTexCoord2	= false;
+	for (size_t i=0;i<m_setSubMesh.size();++i)
+	{
+		CSubMesh& subMesh=m_setSubMesh[i];
+		if (subMesh.pos.size()>0)
+		{
+			bPos=true;
+		}
+		if (subMesh.normal.size()>0)
+		{
+			bNormal=true;
+		}
+		if (subMesh.color.size()>0)
+		{
+			bColor=true;
+		}
+		if (subMesh.texcoord.size()>0)
+		{
+			bTexCoord=true;
+		}
+		if (subMesh.texcoord2.size()>0)
+		{
+			bTexCoord2=true;
+		}
+	}
 
 	m_pVertexDeclHardware = GetRenderSystem().CreateVertexDeclaration();
 
@@ -306,7 +365,6 @@ void CLodMesh::Init()
 	m_pVertexDeclHardware->EndElement();
 	m_uShareVertexSize = uOffset;
 
-	uint32 uVertexCount = setVertexIndex.size();
 	// 	m_dwFVF |= bColor?D3DFVF_DIFFUSE:0;
 	// 	m_dwFVF |= bTexCoord?D3DFVF_TEX1:0;
 
@@ -320,36 +378,46 @@ void CLodMesh::Init()
 			uint8* pBuffer = (uint8*)m_pShareBuffer->lock(CHardwareBuffer::HBL_NORMAL);
 			if (pBuffer)
 			{
+				for (size_t i=0;i<setVecVertexIndex.size();++i)
+				{
+					CSubMesh& subMesh=m_setSubMesh[i];
+					std::vector<VertexIndex>& setVertexIndex=setVecVertexIndex[i];
+					for (size_t n=0;n<setVertexIndex.size();++n)
+					{
+						VertexIndex& vertexIndex=setVertexIndex[n];
+							if (!m_bSkinMesh)
+						{
+							if (bPos)
+							{
+								*(Vec3D*)pBuffer = subMesh.pos[vertexIndex.p];
+								pBuffer += sizeof(Vec3D);
+							}
+							if (bNormal)
+							{
+								*(Vec3D*)pBuffer = subMesh.normal[vertexIndex.n];
+								pBuffer += sizeof(Vec3D);
+							}
+						}
+						if (bColor)
+						{
+							*(Color32*)pBuffer = subMesh.color[vertexIndex.c];
+							pBuffer += sizeof(Color32);
+						}
+						if (bTexCoord)
+						{
+							*(Vec2D*)pBuffer = subMesh.texcoord[vertexIndex.uv1];
+							pBuffer += sizeof(Vec2D);
+						}
+						if (bTexCoord2)
+						{
+							*(Vec2D*)pBuffer = subMesh.texcoord2[vertexIndex.uv2];
+							pBuffer += sizeof(Vec2D);
+						}
+					}
+				}
 				for (uint32 i=0; i<uVertexCount; i++)
 				{
-					if (!m_bSkinMesh)
-					{
-						if (bPos)
-						{
-							*(Vec3D*)pBuffer = pos[setVertexIndex[i].p];
-							pBuffer += sizeof(Vec3D);
-						}
-						if (bNormal)
-						{
-							*(Vec3D*)pBuffer = normal[setVertexIndex[i].n];
-							pBuffer += sizeof(Vec3D);
-						}
-					}
-					if (bColor)
-					{
-						*(Color32*)pBuffer = color[setVertexIndex[i].c];
-						pBuffer += sizeof(Color32);
-					}
-					if (bTexCoord)
-					{
-						*(Vec2D*)pBuffer = texcoord[setVertexIndex[i].uv1];
-						pBuffer += sizeof(Vec2D);
-					}
-					if (bTexCoord2)
-					{
-						*(Vec2D*)pBuffer = texcoord2[setVertexIndex[i].uv2];
-						pBuffer += sizeof(Vec2D);
-					}
+					
 				}
 			}
 			m_pShareBuffer->unlock();
@@ -499,13 +567,7 @@ void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bone
 
 void CLodMesh::Clear()
 {
-	pos.clear();
-	normal.clear();
-	color.clear();
-	texcoord.clear();
-	texcoord2.clear();
-	weight.clear();
-	bone.clear();
+	m_setSubMesh.clear();
 }
 
 void CLodMesh::update()
@@ -515,31 +577,45 @@ void CLodMesh::update()
 
 void CLodMesh::InitBBox()
 {
-	std::vector<Vec3D>::iterator it=pos.begin();
-	if (it!=pos.end())
+	if (m_setSubMesh.size()==0)
 	{
-		m_bbox.vMin = *it;
-		m_bbox.vMax = *it;
+		return;
 	}
-	for (;it!=pos.end(); it++)
 	{
-		m_bbox.vMin.x = min(it->x,m_bbox.vMin.x);
-		m_bbox.vMin.y = min(it->y,m_bbox.vMin.y);
-		m_bbox.vMin.z = min(it->z,m_bbox.vMin.z);
-
-		m_bbox.vMax.x = max(it->x,m_bbox.vMax.x);
-		m_bbox.vMax.y = max(it->y,m_bbox.vMax.y);
-		m_bbox.vMax.z = max(it->z,m_bbox.vMax.z);
-
+		std::vector<Vec3D>::iterator it=m_setSubMesh[0].pos.begin();
+		if (it!=m_setSubMesh[0].pos.end())
+		{
+			m_bbox.vMin = *it;
+			m_bbox.vMax = *it;
+		}
 	}
-	for (uint32 i=0; i<bone.size(); i++)
+
+	for(size_t i=0;i<m_setSubMesh.size();++i)
 	{
+		std::vector<Vec3D>& pos = m_setSubMesh[i].pos;
+		for (std::vector<Vec3D>::iterator it=pos.begin();it!=pos.end();++it)
+		{
+			m_bbox.vMin.x = min(it->x,m_bbox.vMin.x);
+			m_bbox.vMin.y = min(it->y,m_bbox.vMin.y);
+			m_bbox.vMin.z = min(it->z,m_bbox.vMin.z);
+
+			m_bbox.vMax.x = max(it->x,m_bbox.vMax.x);
+			m_bbox.vMax.y = max(it->y,m_bbox.vMax.y);
+			m_bbox.vMax.z = max(it->z,m_bbox.vMax.z);
+
+			//
+			float fLenSquared = it->lengthSquared();
+			if (fLenSquared > m_fRad)
+			{
+				m_fRad = fLenSquared;
+			}
+		}
 		if (false==m_bSkinMesh)
 		{
-			uint8* bones = (uint8*)&(bone[i]);
-			for (size_t b=0; b<4; b++)
+			std::vector<uint32>& bone = m_setSubMesh[i].bone;
+			for (std::vector<uint32>::iterator it=bone.begin();it!=bone.end();++it)
 			{
-				if (bones[b]>0)//have many bons!
+				if (*it>0)
 				{
 					m_bSkinMesh = true;
 					break;
@@ -548,59 +624,48 @@ void CLodMesh::InitBBox()
 		}
 	}
 
-	for (uint32 i=0; i<pos.size(); i++)
-	{
-		float fLenSquared = pos[i].lengthSquared();
-		if (fLenSquared > m_fRad)
-		{
-			m_fRad = fLenSquared;
-		}
-	}
 	if (!m_bSkinMesh)
 	{
-		weight.clear();
-		bone.clear();
+		//weight.clear();
+		//bone.clear();
 	}
 	m_fRad = sqrtf(m_fRad);
 }
 
 void CLodMesh::load(CLumpNode& lump)
 {
-	lump.getVector("pos",		pos);
-	lump.getVector("normal",	normal);
-	lump.getVector("color",		color);
-	lump.getVector("uv1",		texcoord);
-	lump.getVector("uv2",		texcoord2);
-	lump.getVector("weight",	weight);
-	lump.getVector("bone",		bone);
-	// error lump.getVector("face",		m_mapFaceIndex);
+	//lump.getVector("pos",		pos);
+//	lump.getVector("normal",	normal);
+//	lump.getVector("color",		color);
+//	lump.getVector("uv1",		texcoord);
+//	lump.getVector("uv2",		texcoord2);
+//	lump.getVector("weight",	weight);
+//	lump.getVector("bone",		bone);
+	// error lump.getVector("face",		m_mapVertexIndex);
 	update();
 	//m_Lods.resize(1);
 }
 
 void CLodMesh::save(CLumpNode& lump)
 {
-	lump.SetVector("pos",		pos);
-	lump.SetVector("normal",	normal);
-	lump.SetVector("color",		color);
-	lump.SetVector("uv1",		texcoord);
-	lump.SetVector("uv2",		texcoord2);
-	lump.SetVector("weight",	weight);
-	lump.SetVector("bone",		bone);
-	// error lump.SetVector("face",		m_setFaceIndex);
+//	lump.SetVector("pos",		pos);
+//	lump.SetVector("normal",	normal);
+//	lump.SetVector("color",		color);
+//	lump.SetVector("uv1",		texcoord);
+//	lump.SetVector("uv2",		texcoord2);
+//	lump.SetVector("weight",	weight);
+//	lump.SetVector("bone",		bone);
+	// error lump.SetVector("face",		m_setVertexIndex);
 }
 
-bool CLodMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const
+bool CLodMesh::intersect(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const
 {
-	for (std::map<int,std::vector<FaceIndex>>::const_iterator it = m_mapFaceIndex.begin();it != m_mapFaceIndex.end();it++)
+	for (size_t i=0;i<m_setSubMesh.size();++i)
 	{
-		for (std::vector<FaceIndex>::const_iterator itFaceIndex=it->second.begin(); itFaceIndex!=it->second.end(); itFaceIndex++)
+		if (m_setSubMesh[i].intersect(vRayPos,vRayDir,vOut))
 		{
-			if (IntersectTri(pos[itFaceIndex->v[0]],pos[itFaceIndex->v[1]],pos[itFaceIndex->v[2]],vRayPos,vRayDir,vOut))
-			{
-				nSubID = it->first;
-				return true;
-			}
+			nSubID = i;
+			return true;
 		}
 	}
 	return false;
@@ -645,69 +710,71 @@ CMeshCoordinate::~CMeshCoordinate()
 
 void CMeshCoordinate::init()
 {
+	m_setSubMesh.resize(3);
 	const size_t CIRCLE_LINE_COUNT=6;
 	Vec3D vPos = Vec3D(1,0,0);
-	pos.push_back(vPos);
-	for(size_t j=0; j<CIRCLE_LINE_COUNT; ++j)
+	m_setSubMesh[0].addPos(vPos);
+	for(size_t i=0; i<CIRCLE_LINE_COUNT; ++i)
 	{
-		float fRadian = PI*j*2/CIRCLE_LINE_COUNT;
+		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
 		Vec3D v(0.75f,sinf(fRadian)*0.05f,cosf(fRadian)*0.05f);
-		pos.push_back(v);
+		m_setSubMesh[0].addPos(v);
 	}
 
 	for (size_t i=0; i<=CIRCLE_LINE_COUNT; ++i)
 	{
-		Vec3D v=pos[i];
-		pos.push_back(Vec3D(v.z,v.x,v.y));
+		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
+		Vec3D v(cosf(fRadian)*0.05f,0.75f,sinf(fRadian)*0.05f);
+		m_setSubMesh[1].addPos(v);
 	}
 	for (size_t i=0; i<=CIRCLE_LINE_COUNT; ++i)
 	{
-		Vec3D v=pos[i];
-		pos.push_back(Vec3D(v.y,v.z,v.x));
-
+		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
+		Vec3D v(sinf(fRadian)*0.05f,cosf(fRadian)*0.05f,0.75f);
+		m_setSubMesh[2].addPos(v);
 	}
 	//
-	color.push_back(0xFFFF0000);
-	color.push_back(0xFF00FF00);
-	color.push_back(0xFF0000FF);
-	color.push_back(0xFF880000);
-	color.push_back(0xFF008800);
-	color.push_back(0xFF000088);
+	m_setSubMesh[0].addColor(0xFFFF0000);
+	m_setSubMesh[1].addColor(0xFF00FF00);
+	m_setSubMesh[2].addColor(0xFF0000FF);
+	m_setSubMesh[0].addColor(0xFF880000);
+	m_setSubMesh[1].addColor(0xFF008800);
+	m_setSubMesh[2].addColor(0xFF000088);
 	//
 	for (size_t i=0;i<3;++i)
 	{
 		size_t start = i*(CIRCLE_LINE_COUNT+1);
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-1;++j)
 		{
-			FaceIndex faceIndex;
-			faceIndex.v[0]=0+start;
-			faceIndex.v[1]=1+j+start;
-			faceIndex.v[2]=2+j+start;
-			faceIndex.c[0]=i;
-			faceIndex.c[1]=i;
-			faceIndex.c[2]=i;
-			m_mapFaceIndex[i].push_back(faceIndex);
+			VertexIndex vertexIndex;
+			vertexIndex.c=0;
+			vertexIndex.p=0+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=1+j+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=2+j+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
 		}
 		{
-			FaceIndex faceIndex;
-			faceIndex.v[0]=0+start;
-			faceIndex.v[1]=CIRCLE_LINE_COUNT+start;
-			faceIndex.v[2]=1+start;
-			faceIndex.c[0]=i;
-			faceIndex.c[1]=i;
-			faceIndex.c[2]=i;
-			m_mapFaceIndex[i].push_back(faceIndex);
+			VertexIndex vertexIndex;
+			vertexIndex.c=0;
+			vertexIndex.p=0+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=CIRCLE_LINE_COUNT+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=1+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
 		}
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-2;++j)
 		{
-			FaceIndex faceIndex;
-			faceIndex.v[0]=1+start;
-			faceIndex.v[1]=2+j+start;
-			faceIndex.v[2]=3+j+start;
-			faceIndex.c[0]=i+3;
-			faceIndex.c[1]=i+3;
-			faceIndex.c[2]=i+3;
-			m_mapFaceIndex[i].push_back(faceIndex);
+			VertexIndex vertexIndex;
+			vertexIndex.c=1;
+			vertexIndex.p=1+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=2+j+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			vertexIndex.p=3+j+start;
+			m_setSubMesh[i].addVertexIndex(vertexIndex);
 		}
 	}
 	//
@@ -807,7 +874,7 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 #include "Graphics.h"
 void CMeshCoordinate::render(const Vec3D& vCoordShow)
 {
-	if (pos.size()==0)
+	if (m_setSubMesh.size()==0)
 	{
 		init();
 	}
@@ -835,9 +902,6 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 	G.DrawLine3D(m_CoordLines[CLT_Z].vBegin,m_CoordLines[CLT_Z].vEnd,vCoordShow.z>0?0xFFFF00:0xFF0000FF);
 	G.DrawLine3D(m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
 	G.DrawLine3D(m_CoordLines[CLT_Z_Y].vBegin,m_CoordLines[CLT_Z_Y].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
-
-
-
 
 	R.SetBlendFunc(true);
 	R.SetTextureAlphaOP(0,TBOP_SOURCE1, TBS_DIFFUSE);
