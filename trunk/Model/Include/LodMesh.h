@@ -67,8 +67,8 @@ class DLL_EXPORT CSubMesh:public iSubMesh
 {
 public:
 	virtual size_t getVertexIndexCount();
-	virtual void addVertexIndex(const VertexIndex& faceIndex);
-	virtual bool getVertexIndex(size_t n, VertexIndex& faceIndex);
+	virtual void addVertexIndex(const VertexIndex& vertexIndex);
+	virtual bool getVertexIndex(size_t n, VertexIndex& vertexIndex);
 
 	virtual size_t getPosCount();
 	virtual size_t getBoneCount();
