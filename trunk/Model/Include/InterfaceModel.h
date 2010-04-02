@@ -4,28 +4,51 @@
 #include "Material.h"
 
 //////////////////////////////////////////////////////////////////////////
+struct VertexIndex
+{
+	uint16 p;
+	uint16 n;
+	uint16 c;
+	uint16 uv1;
+	uint16 uv2;
+	uint16 w;
+	uint16 b;
+	bool operator< (const VertexIndex& v) const
+	{
+		const uint8* p1=(const uint8*)this;
+		const uint8* p2=(const uint8*)&v;
+		for (size_t i=0;i<sizeof(VertexIndex);++i)
+		{
+			if (*p1!=*p2)
+			{
+				return *p1<*p2;
+			}
+			p1++;p2++;
+		}
+		return false;
+	}
+	bool operator== (const VertexIndex& v) const
+	{
+		return p==v.p&&n==v.n&&c==v.c&&uv1==v.uv1&&uv2==v.uv2&&w==v.w&&b==v.b;
+	}
+};
+
 struct FaceIndex
 {
 	FaceIndex()
 	{
 		memset(this,0,sizeof(*this));
 	}
-	uint16 v[3];
-	uint16 n[3];
-	uint16 c[3];
-	uint16 uv1[3];
-	uint16 uv2[3];
-	uint16 w[3];
-	uint16 b[3];
+	VertexIndex v[3];
 };
 
-class iLodMesh
+class iSubMesh
 {
 public:
-	virtual void addFaceIndex(int nSubID, const FaceIndex& faceIndex)=0;
-	virtual int getSubCount()=0;
+	virtual size_t getVertexIndexCount()=0;
+	virtual void addVertexIndex(const VertexIndex& faceIndex)=0;
+	virtual bool getVertexIndex(size_t n, VertexIndex& faceIndex)=0;
 
-	virtual const BBox& getBBox()=0;
 	virtual size_t getPosCount()=0;
 	virtual size_t getBoneCount()=0;
 	virtual size_t getWeightCount()=0;
@@ -36,6 +59,7 @@ public:
 	virtual void addBone(uint32 uBone)=0;
 	virtual void addWeight(uint32 uWeight)=0;
 	virtual void addNormal(const Vec3D& vNormal)=0;
+	virtual void addColor(const Color32& clr)=0;
 	virtual void addTexcoord(const Vec2D& vUV)=0;
 
 	virtual void setPos(size_t n, const Vec3D& vPos)=0;
@@ -49,7 +73,15 @@ public:
 	virtual void getWeight(size_t n, uint32& uWeight)=0;
 	virtual void getNormal(size_t n, Vec3D& vNormal)=0;
 	virtual void getTexcoord(size_t n, Vec2D& vUV)=0;
+};
 
+class iLodMesh
+{
+public:
+	virtual int getSubCount()=0;
+	virtual iSubMesh& addSubMesh()=0;
+	virtual iSubMesh* getSubMesh(size_t n)=0;
+	virtual const BBox& getBBox()=0;
 	virtual void update()=0;
 };
 
