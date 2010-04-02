@@ -46,8 +46,8 @@ class iSubMesh
 {
 public:
 	virtual size_t getVertexIndexCount()=0;
-	virtual void addVertexIndex(const VertexIndex& faceIndex)=0;
-	virtual bool getVertexIndex(size_t n, VertexIndex& faceIndex)=0;
+	virtual void addVertexIndex(const VertexIndex& vertexIndex)=0;
+	virtual bool getVertexIndex(size_t n, VertexIndex& vertexIndex)=0;
 
 	virtual size_t getPosCount()=0;
 	virtual size_t getBoneCount()=0;
