@@ -255,7 +255,7 @@ bool CModelData::initParticleMaterial()
 	{
 		for (size_t i=0;i<m_setParticleEmitter.size();++i)
 		{
-			std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".par"),i);
+			std::string strMaterialName = Format("%s%d",GetFilename(ChangeExtension(getItemName(),".par")).c_str(),i);
 			m_setParticleEmitter[i].m_strMaterialName = strMaterialName;
 		}
 	}
