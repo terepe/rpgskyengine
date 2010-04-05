@@ -21,7 +21,7 @@ CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer(CHardwareIndexBuffer::IndexTy
 		mD3DPool,
 		&mlpD3DBuffer,
 		NULL
-		), L"Cannot create D3D9 index buffer");
+		), L"Can't create D3D9 index buffer");
 }
 //---------------------------------------------------------------------
 CD3D9HardwareIndexBuffer::~CD3D9HardwareIndexBuffer()

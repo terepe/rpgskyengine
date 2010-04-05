@@ -223,14 +223,15 @@ void CLodMesh::Init()
 		{
 			CSubMesh& subMesh = m_setSubMesh[i];
 			std::vector<VertexIndex>& setVertexIndex=setVecVertexIndex[i];
-			uVertexCount+=setVertexIndex.size();
 
 			transformRedundance(subMesh.m_setVertexIndex,setVertexIndex,setIndex);
 			subset.vstart += subset.vcount;
+			subset.vbase = subset.vstart;
 			subset.istart += subset.icount;
 			subset.vcount = setVertexIndex.size();
 			subset.icount = setIndex.size()-subset.istart;
 			m_Lods[0].setSubset.push_back(subset);
+			uVertexCount+=setVertexIndex.size();
 		}
 		transformRedundance(setIndex,m_Lods[0].IndexLookup,m_Lods[0].Indices);
 	}
@@ -712,22 +713,22 @@ void CMeshCoordinate::init()
 {
 	m_setSubMesh.resize(3);
 	const size_t CIRCLE_LINE_COUNT=6;
-	Vec3D vPos = Vec3D(1,0,0);
-	m_setSubMesh[0].addPos(vPos);
+	m_setSubMesh[0].addPos(Vec3D(1,0,0));
 	for(size_t i=0; i<CIRCLE_LINE_COUNT; ++i)
 	{
 		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
 		Vec3D v(0.75f,sinf(fRadian)*0.05f,cosf(fRadian)*0.05f);
 		m_setSubMesh[0].addPos(v);
 	}
-
-	for (size_t i=0; i<=CIRCLE_LINE_COUNT; ++i)
+	m_setSubMesh[1].addPos(Vec3D(0,1,0));
+	for (size_t i=0; i<CIRCLE_LINE_COUNT; ++i)
 	{
 		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
 		Vec3D v(cosf(fRadian)*0.05f,0.75f,sinf(fRadian)*0.05f);
 		m_setSubMesh[1].addPos(v);
 	}
-	for (size_t i=0; i<=CIRCLE_LINE_COUNT; ++i)
+	m_setSubMesh[2].addPos(Vec3D(0,0,1));
+	for (size_t i=0; i<CIRCLE_LINE_COUNT; ++i)
 	{
 		float fRadian = PI*i*2/CIRCLE_LINE_COUNT;
 		Vec3D v(sinf(fRadian)*0.05f,cosf(fRadian)*0.05f,0.75f);
@@ -743,7 +744,7 @@ void CMeshCoordinate::init()
 	//
 	for (size_t i=0;i<3;++i)
 	{
-		size_t start = i*(CIRCLE_LINE_COUNT+1);
+		size_t start = 0;//i*(CIRCLE_LINE_COUNT+1);
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-1;++j)
 		{
 			VertexIndex vertexIndex;
