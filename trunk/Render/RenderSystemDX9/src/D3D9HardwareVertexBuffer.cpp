@@ -20,7 +20,7 @@ CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer(size_t vertexSize,
 		0, // No FVF here, thankyou
 		mD3DPool,
 		&mlpD3DBuffer,
-		NULL),L"Cannot create D3D9 vertex buffer");
+		NULL),L"Can't create D3D9 vertex buffer");
 }
 
 
