@@ -25,126 +25,6 @@ void CBoundMesh::draw()const
 	}
 }
 
-size_t CSubMesh::getVertexIndexCount()
-{
-	return m_setVertexIndex.size();
-}
-
-void CSubMesh::addVertexIndex(const VertexIndex& vertexIndex)
-{
-	m_setVertexIndex.push_back(vertexIndex);
-}
-
-bool CSubMesh::getVertexIndex(size_t uIndex, VertexIndex& vertexIndex)
-{
-	if (m_setVertexIndex.size()<=uIndex)
-	{
-		return false;
-	}
-	vertexIndex = m_setVertexIndex[uIndex];
-	return true;
-}
-
-size_t CSubMesh::getPosCount()
-{return pos.size();}
-
-size_t CSubMesh::getBoneCount()
-{return bone.size();}
-
-size_t CSubMesh::getWeightCount()
-{return weight.size();}
-
-size_t CSubMesh::getNormalCount()
-{return normal.size();}
-
-size_t CSubMesh::getTexcoordCount()
-{return texcoord.size();}
-
-void CSubMesh::addPos(const Vec3D& vPos)
-{pos.push_back(vPos);}
-void CSubMesh::addBone(uint32 uBone)
-{bone.push_back(uBone);}
-void CSubMesh::addWeight(uint32 uWeight)
-{weight.push_back(uWeight);}
-void CSubMesh::addNormal(const Vec3D& vNormal)
-{normal.push_back(vNormal);}
-void CSubMesh::addColor(const Color32& clr)
-{color.push_back(clr);}
-void CSubMesh::addTexcoord(const Vec2D& vUV)
-{texcoord.push_back(vUV);}
-
-template <class _T>
-void  setVectorValue(std::vector<_T>& vec, size_t pos, const _T& val)
-{
-	if (vec.size()<=pos)
-	{
-		vec.resize(pos+1);
-	}
-	vec.push_back(val);
-}
-
-void CSubMesh::setPos(size_t n, const Vec3D& vPos)
-{
-	setVectorValue(pos,n,vPos);
-}
-void CSubMesh::setBone(size_t n, uint32 uBone)
-{
-	setVectorValue(bone,n,uBone);
-}
-void CSubMesh::setWeight(size_t n, uint32 uWeight)
-{
-	setVectorValue(weight,n,uWeight);
-}
-void CSubMesh::setNormal(size_t n, const Vec3D& vNormal)
-{
-	setVectorValue(normal,n,vNormal);
-}
-void CSubMesh::setTexcoord(size_t n, const Vec2D& vUV)
-{
-	setVectorValue(texcoord,n,vUV);
-}
-
-template <class _T>
-void  getVectorValue(const std::vector<_T>& vec, size_t pos, _T& val)
-{
-	if (vec.size()>pos)
-	{
-		val=vec[pos];
-	}
-}
-
-void CSubMesh::getPos(size_t n, Vec3D& vPos)
-{
-	getVectorValue(pos,n,vPos);
-}
-void CSubMesh::getBone(size_t n, uint32& uBone)
-{
-	getVectorValue(bone,n,uBone);
-}
-void CSubMesh::getWeight(size_t n, uint32& uWeight)
-{
-	getVectorValue(weight,n,uWeight);
-}
-void CSubMesh::getNormal(size_t n, Vec3D& vNormal)
-{
-	getVectorValue(normal,n,vNormal);
-}
-void CSubMesh::getTexcoord(size_t n, Vec2D& vUV)
-{
-	getVectorValue(texcoord,n,vUV);
-}
-bool CSubMesh::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)const
-{
-	size_t size=m_setVertexIndex.size()/3;
-	for(size_t i=0;i<size;++i)
-	{
-		if (IntersectTri(pos[m_setVertexIndex[i*3].p],pos[m_setVertexIndex[i*3+1].p],pos[m_setVertexIndex[i*3+2].p],vRayPos,vRayDir,vOut))
-		{
-			return true;
-		}
-	}
-	return false;
-}
 template <class _T, class _T2>
 void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut, std::vector<_T2>& index)
 {
@@ -189,14 +69,14 @@ int CLodMesh::getSubCount()
 {
 	return m_setSubMesh.size();
 }
-iSubMesh& CLodMesh::addSubMesh()
+CSubMesh& CLodMesh::addSubMesh()
 {
 	size_t size=m_setSubMesh.size();
 	m_setSubMesh.resize(size+1);
 	return m_setSubMesh[size];
 }
 
-iSubMesh* CLodMesh::getSubMesh(size_t n)
+CSubMesh* CLodMesh::getSubMesh(size_t n)
 {
 	if (m_setSubMesh.size()<=n)
 	{
@@ -659,11 +539,25 @@ void CLodMesh::save(CLumpNode& lump)
 	// error lump.SetVector("face",		m_setVertexIndex);
 }
 
+
+bool SubMeshIntersect(const CSubMesh& subMesh,const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)
+{
+	size_t size=subMesh.m_setVertexIndex.size()/3;
+	for(size_t i=0;i<size;++i)
+	{
+		if (IntersectTri(subMesh.pos[subMesh.m_setVertexIndex[i*3].p],subMesh.pos[subMesh.m_setVertexIndex[i*3+1].p],subMesh.pos[subMesh.m_setVertexIndex[i*3+2].p],vRayPos,vRayDir,vOut))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool CLodMesh::intersect(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const
 {
 	for (size_t i=0;i<m_setSubMesh.size();++i)
 	{
-		if (m_setSubMesh[i].intersect(vRayPos,vRayDir,vOut))
+		if (SubMeshIntersect(m_setSubMesh[i],vRayPos,vRayDir,vOut))
 		{
 			nSubID = i;
 			return true;
@@ -750,32 +644,32 @@ void CMeshCoordinate::init()
 			VertexIndex vertexIndex;
 			vertexIndex.c=0;
 			vertexIndex.p=0+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=1+j+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=2+j+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 		}
 		{
 			VertexIndex vertexIndex;
 			vertexIndex.c=0;
 			vertexIndex.p=0+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=CIRCLE_LINE_COUNT+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=1+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 		}
 		for (size_t j=0;j<CIRCLE_LINE_COUNT-2;++j)
 		{
 			VertexIndex vertexIndex;
 			vertexIndex.c=1;
 			vertexIndex.p=1+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=2+j+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 			vertexIndex.p=3+j+start;
-			m_setSubMesh[i].addVertexIndex(vertexIndex);
+			m_setSubMesh[i].m_setVertexIndex.push_back(vertexIndex);
 		}
 	}
 	//

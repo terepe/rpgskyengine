@@ -63,52 +63,6 @@ public:
 	void draw()const;
 };
 
-class DLL_EXPORT CSubMesh:public iSubMesh
-{
-public:
-	virtual size_t getVertexIndexCount();
-	virtual void addVertexIndex(const VertexIndex& vertexIndex);
-	virtual bool getVertexIndex(size_t n, VertexIndex& vertexIndex);
-
-	virtual size_t getPosCount();
-	virtual size_t getBoneCount();
-	virtual size_t getWeightCount();
-	virtual size_t getNormalCount();
-	virtual size_t getTexcoordCount();
-
-	virtual void addPos(const Vec3D& vPos);
-	virtual void addBone(uint32 uBone);
-	virtual void addWeight(uint32 uWeight);
-	virtual void addNormal(const Vec3D& vNormal);
-	virtual void addColor(const Color32& clr);
-	virtual void addTexcoord(const Vec2D& vUV);
-
-	virtual void setPos(size_t n, const Vec3D& vPos);
-	virtual void setBone(size_t n, uint32 uBone);
-	virtual void setWeight(size_t n, uint32 uWeight);
-	virtual void setNormal(size_t n, const Vec3D& vNormal);
-	virtual void setTexcoord(size_t n, const Vec2D& vUV);
-
-	virtual void getPos(size_t n, Vec3D& vPos);
-	virtual void getBone(size_t n, uint32& uBone);
-	virtual void getWeight(size_t n, uint32& uWeight);
-	virtual void getNormal(size_t n, Vec3D& vNormal);
-	virtual void getTexcoord(size_t n, Vec2D& vUV);
-
-	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)const;
-
-	// Vertex Data
-	std::vector<Vec3D>	pos;
-	std::vector<uint32>	weight;
-	std::vector<uint32>	bone;
-	std::vector<Vec3D>	normal;
-	std::vector<Color32>color;
-	std::vector<Vec2D>	texcoord;
-	std::vector<Vec2D>	texcoord2;
-
-	std::vector<VertexIndex> m_setVertexIndex;
-};
-
 class DLL_EXPORT CLodMesh:public iLodMesh
 {
 public:
@@ -116,8 +70,8 @@ public:
 	~CLodMesh();
 public:
 	virtual int getSubCount();
-	virtual iSubMesh& addSubMesh();
-	virtual iSubMesh* getSubMesh(size_t n);
+	virtual CSubMesh& addSubMesh();
+	virtual CSubMesh* getSubMesh(size_t n);
 	virtual const BBox& getBBox();
 	virtual void update();
 
