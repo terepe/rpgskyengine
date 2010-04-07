@@ -13,6 +13,12 @@ struct VertexIndex
 	uint16 uv2;
 	uint16 w;
 	uint16 b;
+
+	VertexIndex()
+	{
+		memset(this,0,sizeof(*this));
+	}
+
 	bool operator< (const VertexIndex& v) const
 	{
 		const uint8* p1=(const uint8*)this;
@@ -33,54 +39,105 @@ struct VertexIndex
 	}
 };
 
-struct FaceIndex
-{
-	FaceIndex()
-	{
-		memset(this,0,sizeof(*this));
-	}
-	VertexIndex v[3];
-};
-
-class iSubMesh
+class CSubMesh
 {
 public:
-	virtual size_t getVertexIndexCount()=0;
-	virtual void addVertexIndex(const VertexIndex& vertexIndex)=0;
-	virtual bool getVertexIndex(size_t n, VertexIndex& vertexIndex)=0;
+	void addPos(const Vec3D& vPos)
+	{pos.push_back(vPos);}
+	void addBone(uint32 uBone)
+	{bone.push_back(uBone);}
+	void addWeight(uint32 uWeight)
+	{weight.push_back(uWeight);}
+	void addNormal(const Vec3D& vNormal)
+	{normal.push_back(vNormal);}
+	void addColor(const Color32& clr)
+	{color.push_back(clr);}
+	void addTexcoord(const Vec2D& vUV)
+	{texcoord.push_back(vUV);}
 
-	virtual size_t getPosCount()=0;
-	virtual size_t getBoneCount()=0;
-	virtual size_t getWeightCount()=0;
-	virtual size_t getNormalCount()=0;
-	virtual size_t getTexcoordCount()=0;
+	template <class _T>
+	void  setVectorValue(std::vector<_T>& vec, size_t pos, const _T& val)
+	{
+		if (vec.size()<=pos)
+		{
+			vec.resize(pos+1);
+		}
+		vec.push_back(val);
+	}
 
-	virtual void addPos(const Vec3D& vPos)=0;
-	virtual void addBone(uint32 uBone)=0;
-	virtual void addWeight(uint32 uWeight)=0;
-	virtual void addNormal(const Vec3D& vNormal)=0;
-	virtual void addColor(const Color32& clr)=0;
-	virtual void addTexcoord(const Vec2D& vUV)=0;
+	void setPos(size_t n, const Vec3D& vPos)
+	{
+		setVectorValue(pos,n,vPos);
+	}
+	void setBone(size_t n, uint32 uBone)
+	{
+		setVectorValue(bone,n,uBone);
+	}
+	void setWeight(size_t n, uint32 uWeight)
+	{
+		setVectorValue(weight,n,uWeight);
+	}
+	void setNormal(size_t n, const Vec3D& vNormal)
+	{
+		setVectorValue(normal,n,vNormal);
+	}
+	void setTexcoord(size_t n, const Vec2D& vUV)
+	{
+		setVectorValue(texcoord,n,vUV);
+	}
 
-	virtual void setPos(size_t n, const Vec3D& vPos)=0;
-	virtual void setBone(size_t n, uint32 uBone)=0;
-	virtual void setWeight(size_t n, uint32 uWeight)=0;
-	virtual void setNormal(size_t n, const Vec3D& vNormal)=0;
-	virtual void setTexcoord(size_t n, const Vec2D& vUV)=0;
+	template <class _T>
+	void  getVectorValue(const std::vector<_T>& vec, size_t pos, _T& val)
+	{
+		if (vec.size()>pos)
+		{
+			val=vec[pos];
+		}
+	}
 
-	virtual void getPos(size_t n, Vec3D& vPos)=0;
-	virtual void getBone(size_t n, uint32& uBone)=0;
-	virtual void getWeight(size_t n, uint32& uWeight)=0;
-	virtual void getNormal(size_t n, Vec3D& vNormal)=0;
-	virtual void getTexcoord(size_t n, Vec2D& vUV)=0;
+	void getVertexIndex(size_t n, VertexIndex& vertexIndex)
+	{
+		getVectorValue(m_setVertexIndex,n,vertexIndex);
+	}
+
+	void getPos(size_t n, Vec3D& vPos)
+	{
+		getVectorValue(pos,n,vPos);
+	}
+	void getBone(size_t n, uint32& uBone)
+	{
+		getVectorValue(bone,n,uBone);
+	}
+	void getWeight(size_t n, uint32& uWeight)
+	{
+		getVectorValue(weight,n,uWeight);
+	}
+	void getNormal(size_t n, Vec3D& vNormal)
+	{
+		getVectorValue(normal,n,vNormal);
+	}
+	void getTexcoord(size_t n, Vec2D& vUV)
+	{
+		getVectorValue(texcoord,n,vUV);
+	}
+
+	std::vector<Vec3D>	pos;
+	std::vector<uint32>	weight;
+	std::vector<uint32>	bone;
+	std::vector<Vec3D>	normal;
+	std::vector<Color32>color;
+	std::vector<Vec2D>	texcoord;
+	std::vector<Vec2D>	texcoord2;
+
+	std::vector<VertexIndex> m_setVertexIndex;
 };
 
 class iLodMesh
 {
 public:
 	virtual int getSubCount()=0;
-	virtual iSubMesh& addSubMesh()=0;
-	virtual iSubMesh* getSubMesh(size_t n)=0;
+	virtual CSubMesh& addSubMesh()=0;
+	virtual CSubMesh* getSubMesh(size_t n)=0;
 	virtual const BBox& getBBox()=0;
 	virtual void update()=0;
 };
