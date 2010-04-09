@@ -1,5 +1,6 @@
 #include "ModelDataMgr.h"
 #include "IORead.h"
+#include "FileSystem.h"
 
 CModelDataMgr::CModelDataMgr()
 {

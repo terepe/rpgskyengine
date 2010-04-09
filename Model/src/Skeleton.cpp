@@ -238,18 +238,18 @@ void CSkeleton::Render(const std::vector<CBone>& bones)const
 	//G.End();
 }
 
-CLumpNode* CSkeleton::Save(CLumpNode& lump, const char* name)
+CNodeData* CSkeleton::Save(CNodeData& lump, const char* name)
 {
 	if (0==m_BoneAnims.size())
 	{
 		return false;
 	}
-	CLumpNode* pNode = lump.SetInt(name,m_BoneAnims.size());
+	CNodeData* pNode = lump.SetInt(name,m_BoneAnims.size());
 	if (pNode)
 	{
 		for (uint32 i=0; i<m_BoneAnims.size(); ++i)
 		{
-			CLumpNode* pChild = pNode->AddNode(i);
+			CNodeData* pChild = pNode->AddNode(i);
 			if (pChild)
 			{
 				m_BoneAnims[i].trans.Save(*pChild,"trans");
@@ -267,16 +267,16 @@ CLumpNode* CSkeleton::Save(CLumpNode& lump, const char* name)
 	return pNode;
 }
 
-CLumpNode* CSkeleton::Load(CLumpNode& lump, const char* name)
+CNodeData* CSkeleton::Load(CNodeData& lump, const char* name)
 {
 	int nCount = 0;
-	CLumpNode* pNode = lump.GetInt(name, nCount);
+	CNodeData* pNode = lump.GetInt(name, nCount);
 	if (pNode)
 	{
 		m_BoneAnims.resize(nCount);
 		for (uint32 i=0; i<m_BoneAnims.size(); ++i)
 		{
-			CLumpNode* pChild = pNode->firstChild(i);
+			CNodeData* pChild = pNode->firstChild(i);
 			if (pChild)
 			{
 				m_BoneAnims[i].trans.Load(*pChild,"trans");

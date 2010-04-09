@@ -129,7 +129,7 @@ public:
 		}
 	}
 
-	void Save(CLumpNode& lump)
+	void Save(CNodeData& lump)
 	{
 		lump.SetInt("type", type);
 		lump.SetInt("seq", seq);
@@ -138,7 +138,7 @@ public:
 		lump.SetVector("Data", m_KeyData);
 	}
 
-	void Load(CLumpNode& lump)
+	void Load(CNodeData& lump)
 	{
 		lump.GetInt("type", type);
 		lump.GetInt("seq", seq);
@@ -147,9 +147,9 @@ public:
 		lump.getVector("Data", m_KeyData);
 	}
 
-	CLumpNode* Save(CLumpNode& lump, const char* name)
+	CNodeData* Save(CNodeData& lump, const char* name)
 	{
-		CLumpNode* pNode = lump.AddNode(name);
+		CNodeData* pNode = lump.AddNode(name);
 		if (pNode)
 		{
 			Save(*pNode);
@@ -157,9 +157,9 @@ public:
 		return pNode;
 	}
 
-	CLumpNode* Load(CLumpNode& lump, const char* name)
+	CNodeData* Load(CNodeData& lump, const char* name)
 	{
-		CLumpNode* pNode = lump.firstChild(name);
+		CNodeData* pNode = lump.firstChild(name);
 		if (pNode)
 		{
 			Load(*pNode);
