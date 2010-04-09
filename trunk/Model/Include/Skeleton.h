@@ -29,6 +29,6 @@ public:
 	//void GetBoneMatrix(int nBoneID, int time, bool bRotate=true);
 	void CalcBonesMatrix(int time, std::vector<CBone>& bones);
 	void Render(const std::vector<CBone>& bones)const;
-	CLumpNode* Save(CLumpNode& lump, const char* name);
-	CLumpNode* Load(CLumpNode& lump, const char* name);
+	CNodeData* Save(CNodeData& lump, const char* name);
+	CNodeData* Load(CNodeData& lump, const char* name);
 };

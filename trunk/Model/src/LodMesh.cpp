@@ -513,7 +513,7 @@ void CLodMesh::InitBBox()
 	m_fRad = sqrtf(m_fRad);
 }
 
-void CLodMesh::load(CLumpNode& lump)
+void CLodMesh::load(CNodeData& lump)
 {
 	//lump.getVector("pos",		pos);
 //	lump.getVector("normal",	normal);
@@ -527,7 +527,7 @@ void CLodMesh::load(CLumpNode& lump)
 	//m_Lods.resize(1);
 }
 
-void CLodMesh::save(CLumpNode& lump)
+void CLodMesh::save(CNodeData& lump)
 {
 //	lump.SetVector("pos",		pos);
 //	lump.SetVector("normal",	normal);

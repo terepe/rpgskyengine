@@ -1,6 +1,7 @@
 #include "ModelData.h"
 #include "RenderSystem.h"
 #include "ModelDataMgr.h"
+#include "FileSystem.h"
 
 int globalTime = 0;
 
@@ -139,14 +140,14 @@ bool CModelData::LoadFile(const std::string& strFilename)
 // 	}
 
 	// ÎÆÀíÍ¨µÀ
-	CLumpNode* pTexChannelsNode = lumpFile.firstChild("Texs");
+	CNodeData* pTexChannelsNode = lumpFile.firstChild("Texs");
 	if (pTexChannelsNode)
 	{
 		int subID = 0;
-		CLumpNode* pChannelNode = pTexChannelsNode->firstChild("Channel");
+		CNodeData* pChannelNode = pTexChannelsNode->firstChild("Channel");
 		while (pChannelNode)
 		{
-			CLumpNode* pFilenamelNode = pChannelNode->firstChild("file");
+			CNodeData* pFilenamelNode = pChannelNode->firstChild("file");
 			if (pFilenamelNode)
 			{
 				std::string strTexFileName;
@@ -173,13 +174,13 @@ bool CModelData::LoadFile(const std::string& strFilename)
 
 	// ColorAnim
 	int nColorAnimCount = 0;
-	CLumpNode* pColorAnimsNode = lumpFile.GetInt("ColorAnim", nColorAnimCount);
+	CNodeData* pColorAnimsNode = lumpFile.GetInt("ColorAnim", nColorAnimCount);
 	if (pColorAnimsNode)
 	{
 		m_ColorAnims.resize(nColorAnimCount);
 		for (uint32 i = 0; i < m_ColorAnims.size(); ++i)
 		{
-			CLumpNode* pNode = pColorAnimsNode->firstChild(i);
+			CNodeData* pNode = pColorAnimsNode->firstChild(i);
 			if (pNode)
 			{
 				m_ColorAnims[i].color.Load(*pNode, "color");
@@ -349,7 +350,7 @@ bool CModelData::SaveFile(const std::string& strFilename)
 	CLumpFile lumpFile;
 	lumpFile.SetName("model");
 	lumpFile.SetInt(1);
-	CLumpNode* pskinNode = lumpFile.SetBool("skin", true);
+	CNodeData* pskinNode = lumpFile.SetBool("skin", true);
 	{
 		//pNode->Set
 	}
@@ -376,12 +377,12 @@ bool CModelData::SaveFile(const std::string& strFilename)
 	}
 
 	// ColorAnim
-	CLumpNode* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
+	CNodeData* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
 	if (pColorAnimsNode)
 	{
 		for (uint32 i = 0; i < m_ColorAnims.size(); i++)
 		{
-			CLumpNode* pNode = pColorAnimsNode->AddNode(i);
+			CNodeData* pNode = pColorAnimsNode->AddNode(i);
 			if (pNode)
 			{
 				m_ColorAnims[i].color.Save(*pNode, "color");

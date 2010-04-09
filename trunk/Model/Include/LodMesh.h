@@ -41,13 +41,13 @@ struct ModelLod
 	std::vector<uint16>			Indices;		// indices
 	std::vector<IndexedSubset>	setSubset;		// 部件
 	int32						nLevel;			// LOD等级
-	void Load(CLumpNode& lump)
+	void Load(CNodeData& lump)
 	{
 		lump.getVector("IndexLookup",	IndexLookup);
 		lump.getVector("Indices",		Indices);
 		lump.getVector("Geoset",		setSubset);
 	}
-	void Save(CLumpNode& lump)
+	void Save(CNodeData& lump)
 	{
 		lump.SetVector("IndexLookup",	IndexLookup);
 		lump.SetVector("Indices",		Indices);
@@ -85,8 +85,8 @@ public:
 	void Clear();
 	size_t GetSkinVertexCount(){return m_setSkinVertex.size();}
 
-	void load(CLumpNode& lump);
-	void save(CLumpNode& lump);
+	void load(CNodeData& lump);
+	void save(CNodeData& lump);
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const;
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
 protected:
