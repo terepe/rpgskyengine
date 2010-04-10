@@ -199,7 +199,7 @@ void CScene::clearObjectResources()
 	m_ObjectInfo.clear();
 }
 
-void CScene::setObjectResources(uint32 uID,const std::string& strName,const std::string& strFilename)
+void CScene::setObjectResources(uint64 uID,const std::string& strName,const std::string& strFilename)
 {
 	ObjectInfo Info;
 	Info.uID				= uID;
@@ -294,7 +294,7 @@ void CScene::del3DMapEffect(C3DMapEffect* pEffect)
 	}
 }
 
-CMapObj* CScene::add3DMapSceneObj(uint32 uID,Vec3D vPos,Vec3D vRotate,float fScale)
+CMapObj* CScene::add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate,float fScale)
 {
 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
 	{
