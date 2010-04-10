@@ -10,7 +10,7 @@ class DLL_EXPORT CScene:public iScene
 public:
 	struct ObjectInfo
 	{
-		uint32		uID;
+		uint64		uID;
 		std::string	strName;
 		std::string strFilename;
 		//float		fScale;
@@ -18,7 +18,7 @@ public:
 		//bool		bHasShadow;
 	};
 
-	typedef std::map<uint32,ObjectInfo>  MAP_OBJECT_INFO;
+	typedef std::map<uint64,ObjectInfo>  MAP_OBJECT_INFO;
 	CScene();
 	~CScene();
 public:
@@ -33,7 +33,7 @@ public:
 
 	// load
 	virtual void clearObjectResources();
-	virtual void setObjectResources(uint32 uID,const std::string& strName,const std::string& strFilename);
+	virtual void setObjectResources(uint64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void createObjectTree(const BBox& box, size_t size);
 	virtual bool addMapObj(CMapObj* pObj);
 	virtual bool delMapObj(CMapObj* pObj);
@@ -42,7 +42,7 @@ public:
 	void del3DMapEffect(Vec3D vWorldPos);
 	void del3DMapEffect(C3DMapEffect* pEffect);
 
-	virtual CMapObj* add3DMapSceneObj(uint32 uID,Vec3D vPos,Vec3D vRotate, float fScale);
+	virtual CMapObj* add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate, float fScale);
 	virtual void removeAllObjects();
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject);
 	//
