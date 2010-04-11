@@ -304,6 +304,7 @@ CMapObj* CScene::add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate,float fSca
 		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(strBmdFilename,vPos,vRotate,fScale);
 		pObject->setObjectID(uID);
 		addMapObj(pObject);
+		return pObject;
 	}
 	return NULL;
 }
