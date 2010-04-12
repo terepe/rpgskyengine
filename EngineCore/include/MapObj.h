@@ -44,13 +44,13 @@ public:
 	virtual int  GetObjType()					{return m_nType;}
 	virtual void release()						{delete this;}
 
-	virtual void setPos(Vec3D vPos)			{m_vPos=vPos;}
-	virtual void setRotate(Vec3D vRotate)	{m_vRotate=vRotate;}
-	virtual void setScale(float fScale)		{m_fScale=fScale;}
+	virtual void setPos(const Vec3D& vPos)			{m_vPos=vPos;}
+	virtual void setRotate(const Vec3D& vRotate)	{m_vRotate=vRotate;}
+	virtual void setScale(const Vec3D& vScale)		{m_vScale=vScale;}
 
 	virtual const Vec3D& getPos()const			{return m_vPos;}
 	virtual const Vec3D& getRotate()const		{return m_vRotate;}
-	virtual float getScale()const				{return m_fScale;}
+	virtual const Vec3D& getScale()const		{return m_vScale;}
 
 	virtual bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax){return false;}
 	virtual BBox getBBox()const					{return BBox();}
@@ -65,12 +65,15 @@ public:
 
 	virtual void SetARGB(DWORD dwARGB)			{m_dwARGB = dwARGB;}
 	virtual DWORD GetARGB()						{return m_dwARGB;}
+	virtual int getOrder()						{return m_nOrder;}
+	virtual void setOrder(int nOrder)			{m_nOrder=nOrder;}
 public:
 	int		m_nType;
 	DWORD	m_dwARGB;
 	Vec3D	m_vPos;
 	Vec3D	m_vRotate;
-	float	m_fScale;
+	Vec3D	m_vScale;
+	int		m_nOrder;
 };
 #include <deque>
 typedef std::deque<CMapObj*>  DEQUE_MAPOBJ;

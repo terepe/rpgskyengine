@@ -4,7 +4,7 @@
 
 C3DMapObj::C3DMapObj()
 {
-	m_fScale=1;
+	m_vScale=Vec3D(1.0f,1.0f,1.0f);
 	m_pModelObject=NULL;
 }
 C3DMapObj::~C3DMapObj()
@@ -28,7 +28,7 @@ Matrix C3DMapObj::getWorldMatrix()const
 	Matrix mScale;
 	mTrans.translation(getPos());
 	mRotate.rotate(getRotate());
-	mScale.scale(Vec3D(getScale(),getScale(),getScale()));
+	mScale.scale(getScale());
 	return mTrans*mRotate*mScale;
 }
 
@@ -118,6 +118,15 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		}
 	}
 	return false;
+}
+
+int C3DMapObj::getOrder()
+{
+	if (m_pModelObject&&m_pModelObject->getModelData())
+	{
+		return m_pModelObject->getModelData()->GetOrder();
+	}
+	return CMapObj::getOrder();
 }
 
 bool C3DMapObj::isSkinMesh()

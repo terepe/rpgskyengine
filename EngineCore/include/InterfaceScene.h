@@ -250,7 +250,7 @@ public:
 	virtual void clearObjectResources()=0;
 	virtual void setObjectResources(uint64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void createObjectTree(const BBox& box, size_t size)=0;
-	virtual CMapObj* add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate, float fScale)=0;
+	virtual CMapObj* add3DMapSceneObj(uint64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
 	virtual void removeAllObjects()=0;
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject)=0;
 

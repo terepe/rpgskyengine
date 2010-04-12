@@ -95,7 +95,7 @@ BOOL CMapSound::IsFocus()
 }
 
 //-------------------------------------------------------------
-void CMapSound::setPos(Vec3D& vPos)
+void CMapSound::setPos(const Vec3D& vPos)
 {
 	m_vPos = vPos;
 //	if(m_pSound)
@@ -109,7 +109,7 @@ bool CMapSound::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3D& vCo
 	return false;
 }
 
-BOOL CMapSound::Create( Vec3D vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
+BOOL CMapSound::Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
 {
 	if(!pszFile)
 		return false;
@@ -125,7 +125,7 @@ BOOL CMapSound::Create( Vec3D vPos, int nRange, int nVolume, char* pszFile, DWOR
 	return true;
 }
 //-------------------------------------------------------------
-CMapSound* CMapSound::CreateNew( Vec3D vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
+CMapSound* CMapSound::CreateNew(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
 {
 	CMapSound* pSound = new CMapSound;
 	MYASSERT(pSound);

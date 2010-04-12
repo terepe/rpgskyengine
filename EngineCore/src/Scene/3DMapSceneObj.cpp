@@ -1,6 +1,6 @@
 #include "3DMapSceneObj.h"
 
-bool C3DMapSceneObj::Create(const string& strFilename,Vec3D vPos,Vec3D vRotate,float fScale)
+bool C3DMapSceneObj::Create(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
 	//if (!IOReadFile::Exists(strFilename))
 	//{
@@ -11,17 +11,17 @@ bool C3DMapSceneObj::Create(const string& strFilename,Vec3D vPos,Vec3D vRotate,f
 	m_pModelObject->Register(strFilename);
 	setPos(vPos);
 	setRotate(vRotate);
-	setScale(fScale);
+	setScale(vScale);
 	//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
 	//vColor.w=1.0f;
 	//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
 	return true;
 }
 
-C3DMapSceneObj* C3DMapSceneObj::CreateNew(const string& strFilename,Vec3D vPos,Vec3D vRotate,float fScale)
+C3DMapSceneObj* C3DMapSceneObj::CreateNew(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
 	C3DMapSceneObj* pObject = new C3DMapSceneObj;
-	if(!pObject->Create(strFilename,vPos,vRotate,fScale))
+	if(!pObject->Create(strFilename,vPos,vRotate,vScale))
 	{
 		S_DEL(pObject);
 		return NULL;

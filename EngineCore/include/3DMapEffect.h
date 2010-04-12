@@ -23,8 +23,8 @@ public:
 	virtual ~C3DMapEffect();
 
 public:
-	static  C3DMapEffect* CreateNew( Vec3D vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
-	BOOL Create( Vec3D vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
+	static  C3DMapEffect* CreateNew(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
+	BOOL Create(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
 
 public:
 	void SetRotate(float fHorizontal, float fVertical);

@@ -21,22 +21,20 @@ CScene::~CScene()
 	removeAllObjects();
 }
 static Vec3D vEyeForObjectSort;
-//bool sortObject(CMapObj* p1, CMapObj* p2)
-//{
-//	if (p1->m_pModel&&p2->m_pModel)
-//	{
-//		if (p1->m_pModel->GetOrder()!=p2->m_pModel->GetOrder())
-//		{
-//			return p1->m_pModel->GetOrder()>p2->m_pModel->GetOrder();
-//		}
-//	}
+bool sortObject(CMapObj* p1, CMapObj* p2)
+{
+	if (p1->getOrder()!=p2->getOrder())
+	{
+		return p1->getOrder()>p2->getOrder();
+	}
+	return p1>p2;
 //	//float fLength = (vEyeForObjectSort-p1->getPos()).lengthSquared()-(vEyeForObjectSort-p2->getPos()).lengthSquared();
 //	//if (fLength!=0)
 //	//{
 //	//	return fLength>0;
 //	//}
 //	return p1->getModelFilename()>p2->getModelFilename();
-//}
+}
 
 void CScene::GetRenderObject(const CFrustum& frustum, DEQUE_MAPOBJ& ObjectList)
 {
@@ -45,7 +43,7 @@ void CScene::GetRenderObject(const CFrustum& frustum, DEQUE_MAPOBJ& ObjectList)
 	if (bTest)
 	{
 		vEyeForObjectSort= frustum.getEyePoint();
-		//std::sort(ObjectList.begin(),ObjectList.end(), sortObject);
+		std::sort(ObjectList.begin(),ObjectList.end(), sortObject);
 
 		//f
 		//if ((*it)->GetObjType()==MAP_3DOBJ)
@@ -254,7 +252,7 @@ bool CScene::delMapObj(CMapObj* pObj)
 	return true;
 }
 
-C3DMapEffect* CScene::add3DMapEffect( Vec3D vWorldPos, char* pszIndex, BOOL bDelSelf)
+C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf)
 {
 	if (!pszIndex)
 		return NULL;
@@ -266,7 +264,7 @@ C3DMapEffect* CScene::add3DMapEffect( Vec3D vWorldPos, char* pszIndex, BOOL bDel
 	return pEffect;
 }
 
-void CScene::del3DMapEffect(Vec3D vWorldPos)
+void CScene::del3DMapEffect(const Vec3D& vWorldPos)
 {
 	DEQUE_MAPOBJ setObject;
 	m_ObjectTree.getObjectsByPos(vWorldPos,setObject);
@@ -294,14 +292,14 @@ void CScene::del3DMapEffect(C3DMapEffect* pEffect)
 	}
 }
 
-CMapObj* CScene::add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate,float fScale)
+CMapObj* CScene::add3DMapSceneObj(uint64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
 	{
 		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
 		std::string strBmdFilename = objectInfo.strFilename;
 
-		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(strBmdFilename,vPos,vRotate,fScale);
+		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(strBmdFilename,vPos,vRotate,vScale);
 		pObject->setObjectID(uID);
 		addMapObj(pObject);
 		return pObject;
