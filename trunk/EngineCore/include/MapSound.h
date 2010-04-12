@@ -29,11 +29,11 @@ public:
 	virtual void Process(void* pInfo);
 	virtual int  GetObjType(){return MAP_SOUND;}
 	virtual BOOL IsFocus();
-	virtual void setPos(Vec3D& vPos);
+	virtual void setPos(const Vec3D& vPos);
 
 	virtual bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3D& vCoord);
 	void   Play();
 
-	BOOL   Create(Vec3D vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval);
-	static CMapSound* CreateNew(Vec3D vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval);
+	BOOL   Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval);
+	static CMapSound* CreateNew(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval);
 };

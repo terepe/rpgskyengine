@@ -8,8 +8,8 @@ public:
 	uint64 getObjectID(){return m_ObjectID;}
 	void setObjectID(uint64 id){m_ObjectID = id;}
 	virtual int  GetObjType(){return MAP_3DSIMPLE;}
-	bool Create(const string& strFilename,Vec3D vPos,Vec3D vRotate,float fScale);
-	static C3DMapSceneObj* CreateNew(const string& strFilename,Vec3D vPos,Vec3D vRotate,float fScale);
+	bool Create(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
+	static C3DMapSceneObj* CreateNew(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	virtual void renderFocus()const;
 protected:
 	uint64	m_ObjectID;

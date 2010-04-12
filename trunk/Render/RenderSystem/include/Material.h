@@ -39,7 +39,7 @@ public:
 
 	E_MATERIAL_RENDER_TYPE getRenderType()
 	{
-		if (uDiffuse)
+		if (bAlphaTest)
 		{
 			return MATERIAL_RENDER_GEOMETRY;
 		}
@@ -47,11 +47,11 @@ public:
 		{
 			return MATERIAL_RENDER_BUMP;
 		}
-		else
+		else if (bBlend)
 		{
 			return MATERIAL_RENDER_GLOW;
 		}
-		return MATERIAL_RENDER_GLOW;
+		return MATERIAL_RENDER_GEOMETRY;
 	}
 
 	int	getOrder()
@@ -60,6 +60,14 @@ public:
 		if (m_fOpacity<1.0f)
 		{
 			nOrder--;
+		}
+		if (bAlphaTest&&bBlend)
+		{
+			nOrder--;
+		}
+		else if (bBlend)
+		{
+			nOrder-=2;
 		}
 		if (uDiffuse==0)
 		{

@@ -38,11 +38,11 @@ public:
 	virtual bool addMapObj(CMapObj* pObj);
 	virtual bool delMapObj(CMapObj* pObj);
 
-	C3DMapEffect* add3DMapEffect( Vec3D vWorldPos, char* pszIndex, BOOL bDelself = true);
-	void del3DMapEffect(Vec3D vWorldPos);
+	C3DMapEffect* add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelself = true);
+	void del3DMapEffect(const Vec3D& vWorldPos);
 	void del3DMapEffect(C3DMapEffect* pEffect);
 
-	virtual CMapObj* add3DMapSceneObj(uint64 uID,Vec3D vPos,Vec3D vRotate, float fScale);
+	virtual CMapObj* add3DMapSceneObj(uint64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	virtual void removeAllObjects();
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject);
 	//
@@ -77,7 +77,7 @@ public:
 	const Fog& getFog(){return m_Fog;}
 	void setLight(const DirectionalLight& light);
 	const DirectionalLight& getLight(){return m_Light;}
-	void setTargetPos(Vec3D vPos){m_vTargetPos = vPos;}
+	void setTargetPos(const Vec3D& vPos){m_vTargetPos = vPos;}
 	const Vec3D& getTargetPos()const{return m_vTargetPos;}
 public:
 	CTerrain*		m_pTerrain;

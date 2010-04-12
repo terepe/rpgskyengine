@@ -335,7 +335,7 @@ struct DirectionalLight
 	Vec4D vSpecular;
 	Vec3D vDirection;
 	DirectionalLight(){}
-	DirectionalLight(Vec4D ambient, Vec4D diffuse, Vec4D specular, Vec3D direction):
+	DirectionalLight(const Vec4D& ambient,const Vec4D& diffuse,const Vec4D& specular,const Vec3D& direction):
 	vAmbient(ambient),
 	vDiffuse(diffuse),
 	vSpecular(specular),

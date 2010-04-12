@@ -102,7 +102,7 @@ void C3DMapEffect::Process(void* pInfo)
 	//	*pbOver = false;
 }
 //-------------------------------------------------------------------
-C3DMapEffect* C3DMapEffect::CreateNew( Vec3D vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
+C3DMapEffect* C3DMapEffect::CreateNew(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
 {
 	if(!pszIndex)
 		return NULL;
@@ -117,7 +117,7 @@ C3DMapEffect* C3DMapEffect::CreateNew( Vec3D vWorldPos, char* pszIndex, BOOL bDe
 	return pEffect;
 }
 //-------------------------------------------------------------------
-BOOL C3DMapEffect::Create( Vec3D vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
+BOOL C3DMapEffect::Create(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
 {
 	if(!pszIndex)
 		return false;
