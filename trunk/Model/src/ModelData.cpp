@@ -156,7 +156,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),subID);
 				{
 					CMaterial& material = this->getMaterial(strMaterialName);
-					material.strDiffuse=strTexFileName;
+					material.setDiffuse(strTexFileName);
 					material.bAlphaTest=true;
 				}
 				setRenderPass(subID, subID, strMaterialName );
