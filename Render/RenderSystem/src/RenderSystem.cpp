@@ -70,31 +70,31 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	CTextureMgr& TM = GetTextureMgr();
 	if (material.uDiffuse==-1)
 	{
-		material.uDiffuse = TM.RegisterTexture(material.strDiffuse);
+		material.uDiffuse = TM.RegisterTexture(material.getDiffuse());
 	}
 	if (material.uEmissive==-1)
 	{
-		material.uEmissive = TM.RegisterTexture(material.strEmissive);
+		material.uEmissive = TM.RegisterTexture(material.getEmissive());
 	}
 	if (material.uSpecular==-1)
 	{
-		material.uSpecular = TM.RegisterTexture(material.strSpecular);
+		material.uSpecular = TM.RegisterTexture(material.getSpecular());
 	}
 	if (material.uNormal==-1)
 	{
-		material.uNormal = TM.RegisterTexture(material.strNormal);
+		material.uNormal = TM.RegisterTexture(material.getNormal());
 	}
 	if (material.uReflection==-1)
 	{
-		material.uReflection = TM.RegisterTexture(material.strReflection);
+		material.uReflection = TM.RegisterTexture(material.getReflection());
 	}
 	if (material.uLightMap==-1)
 	{
-		material.uLightMap = TM.RegisterTexture(material.strLightMap);
+		material.uLightMap = TM.RegisterTexture(material.getLightMap());
 	}
 	if (material.uShader==-1)
 	{
-		material.uShader = GetShaderMgr().registerItem(material.strShader);
+		material.uShader = GetShaderMgr().registerItem(material.getShader());
 	}
 	//SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
 	SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);

@@ -84,17 +84,72 @@ public:
 	{
 		cEmissive = color;
 	}
-/*
-	void setDiffuse(const std::string& strFilename);
-	void setEmissive(const std::string& strFilename);
-	void setSpecular(const std::string& strFilename);
-	void setBump(const std::string& strFilename);
-	void setReflection(const std::string& strFilename);
-	void setLightMap(const std::string& strFilename);
-	void setShader(const std::string& strFilename);*/
-
+	// Texture
+	void setDiffuse(const std::string& strFilename)
+	{
+		strDiffuse=strFilename;
+		uDiffuse=-1;
+	}
+	void setEmissive(const std::string& strFilename)
+	{
+		strEmissive=strFilename;
+		uEmissive=-1;
+	}
+	void setSpecular(const std::string& strFilename)
+	{
+		strSpecular=strFilename;
+		uSpecular=-1;
+	}
+	void setNormal(const std::string& strFilename)
+	{
+		strNormal=strFilename;
+		uNormal=-1;
+	}
+	void setReflection(const std::string& strFilename)
+	{
+		strReflection=strFilename;
+		uReflection=-1;
+	}
+	void setLightMap(const std::string& strFilename)
+	{
+		strLightMap=strFilename;
+		strLightMap=-1;
+	}
+	const std::string& getDiffuse()
+	{
+		return strDiffuse;
+	}
+	const std::string& getEmissive()
+	{
+		return strEmissive;
+	}
+	const std::string& getSpecular()
+	{
+		return strSpecular;
+	}
+	const std::string& getNormal()
+	{
+		return strNormal;
+	}
+	const std::string&  getReflection()
+	{
+		return strReflection;
+	}
+	const std::string&  getLightMap()
+	{
+		return strLightMap;
+	}
+	// Shader
+	void setShader(const std::string& strFilename)
+	{
+		strShader=strFilename;
+		uShader=-1;
+	}
+	const std::string& getShader()
+	{
+		return strShader;
+	}
 private:
-public:
 	std::string	strDiffuse;
 	std::string	strEmissive;
 	std::string	strSpecular;
