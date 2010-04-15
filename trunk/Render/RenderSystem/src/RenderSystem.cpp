@@ -99,7 +99,7 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	//SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
 	SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
 	SetBlendFunc(material.bBlend, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	SetDepthBufferFunc(material.bDepthWrite, true);
+	SetDepthBufferFunc(true,material.bDepthWrite);
 	switch(material.uCull)
 	{
 	case 0:
