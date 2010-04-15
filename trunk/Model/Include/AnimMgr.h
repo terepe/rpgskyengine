@@ -94,7 +94,7 @@ struct ListAnimNode:public AnimNode
 		timeEnd = setNodes.size();
 		if (setNodes.size()>uFrame)
 		{
-			uFrame+=setNodes[uFrame]->Tick(uElapsedTime*fSpeed);
+			uFrame+=setNodes[uFrame]->Tick(int(uElapsedTime*fSpeed));
 			if (uFrame >= timeEnd)
 			{
 				return next();
@@ -114,7 +114,7 @@ struct ParallelAnimNode:public AnimNode
 	{
 		for (size_t i=0;i<setNodes.size();++i)
 		{
-			setNodes[i]->Tick(uElapsedTime*fSpeed);
+			setNodes[i]->Tick(int(uElapsedTime*fSpeed));
 		}
 	}
 };
