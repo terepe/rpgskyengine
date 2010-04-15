@@ -43,7 +43,7 @@ public:
 		{
 			return MATERIAL_RENDER_GEOMETRY;
 		}
-		else if (uNormal)
+		else if (uDiffuse==0&&uNormal>0)
 		{
 			return MATERIAL_RENDER_BUMP;
 		}
