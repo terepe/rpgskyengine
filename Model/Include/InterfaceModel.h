@@ -1,4 +1,5 @@
 #pragma once
+#include "InterfaceDataPlugsBase.h"
 #include "Animated.h"
 #include "Frustum.h"
 #include "Material.h"
@@ -193,8 +194,7 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-typedef BOOL (WINAPI * PFN_Model_Plug_CreateObject)(void ** pobj);
-class CModelPlugBase
+class CModelPlugBase:public CDataPlugBase
 {
 public:
 	CModelPlugBase(){};
