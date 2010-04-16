@@ -1,4 +1,5 @@
 #pragma once
+#include "InterfaceDataPlugsBase.h"
 #include "Common.h"
 #include "Vec4D.h"
 #include "Vec2D.h"
@@ -270,9 +271,7 @@ enum E_SCENE_PLUGIN_TYPE
 	E_SCENE_PLUGIN_TOOL		= 3,
 };
 
-typedef BOOL (WINAPI * PFN_Scene_Plug_CreateObject)(void ** pobj);
-
-class CScenePlugBase
+class CScenePlugBase:public CDataPlugBase
 {
 public:
 	CScenePlugBase(){};

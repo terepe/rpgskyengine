@@ -46,6 +46,7 @@ struct AnimNode
 			CurLoop--;
 			return 0;
 		}
+		return 0;
 	}
 
 	virtual int prev()
@@ -61,6 +62,7 @@ struct AnimNode
 			CurLoop++;
 			return 0;
 		}
+		return 0;
 	}
 };
 
