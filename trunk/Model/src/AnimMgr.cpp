@@ -1,5 +1,80 @@
 #include "AnimMgr.h"
 
+AnimNode::AnimNode():CurLoop(-1),uFrame(0),timeStart(0),timeEnd(0),uTotalFrames(0),fSpeed(1.0f){}
+
+int AnimNode::next()
+{
+	uTotalFrames = timeEnd - timeStart;
+	uFrame -= uTotalFrames;
+	if (CurLoop==1)
+	{
+		return 1;
+	}
+	else if(CurLoop>1)
+	{
+		CurLoop--;
+		return 0;
+	}
+	return 0;
+}
+
+int AnimNode::prev()
+{
+	uTotalFrames = timeEnd - timeStart;
+	uFrame += uTotalFrames;
+	if (CurLoop==1)
+	{
+		return -1;
+	}
+	else if(CurLoop>1)
+	{
+		CurLoop++;
+		return 0;
+	}
+	return 0;
+}
+
+int SingleAnimNode::Tick(uint32 uElapsedTime)
+{
+	uFrame += uint32(uElapsedTime*fSpeed);
+	if (uFrame >= timeEnd)
+	{
+		return next();
+	}
+	else if (uFrame < timeStart)
+	{
+		return prev();
+	}
+	return 0;
+}
+
+int ListAnimNode::Tick(uint32 uElapsedTime)
+{
+	timeStart = 0;
+	timeEnd = setNodes.size();
+	if (setNodes.size()>uFrame)
+	{
+		uFrame+=setNodes[uFrame]->Tick(int(uElapsedTime*fSpeed));
+		if (uFrame >= timeEnd)
+		{
+			return next();
+		}
+		else if (uFrame < timeStart)
+		{
+			return prev();
+		}
+	}
+}
+
+int ParallelAnimNode::Tick(uint32 uElapsedTime)
+{
+	for (size_t i=0;i<setNodes.size();++i)
+	{
+		setNodes[i]->Tick(int(uElapsedTime*fSpeed));
+	}
+	return 0;
+}
+//////////////////////////////////////////////////////////////////////////
 AnimManager::AnimManager(ModelAnimation *anim) {
 	AnimIDSecondary = -1;
 	AnimIDMouth = -1;
