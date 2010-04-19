@@ -1,7 +1,6 @@
 #pragma once
 #include "3DMapObj.h"
 
-
 class DLL_EXPORT C3DMapSceneObj : public C3DMapObj
 {
 public:

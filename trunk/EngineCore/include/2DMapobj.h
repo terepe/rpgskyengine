@@ -1,6 +1,5 @@
 #pragma once
 #include "MapObj.h"
-#include "BaseFunc.h"
 
 class C2DMapObj : public CMapObj
 {
