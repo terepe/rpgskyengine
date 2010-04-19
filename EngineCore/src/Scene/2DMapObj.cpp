@@ -1,5 +1,4 @@
 #include "2DMapObj.h"
-#include "BaseFunc.h"
 
 C2DMapObj::C2DMapObj()
 {

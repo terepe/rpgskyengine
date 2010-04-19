@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "BaseFunc.h"
+#include "SharedBaseFunc.h"
 #include "Pos2D.h"
 #include "Vec3D.h"
 #include "Frustum.h"
