@@ -340,38 +340,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<Filter
-			Name="C3"
-			>
-			<File
-				RelativePath=".\C3_CORE\c3_common.h"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\c3_key.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\c3_key.h"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\c3_phy.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\c3_phy.h"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\C3Model.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\C3_CORE\C3Model.h"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath=".\src\SkyBox.cpp"
 			>
