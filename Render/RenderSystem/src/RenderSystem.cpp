@@ -140,39 +140,37 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 
 		if (material.uDiffuse)
 		{
+			SetTexture(0, material.uDiffuse);
 			cFactor.a=(unsigned char)(cFactor.a*fOpacity);
 			SetTextureFactor(cFactor);
 			SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
 			if(material.bBlend||material.m_fOpacity<1.0f)
 			{
 				SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
+			}
+
+			if (material.m_fOpacity<1.0f)
+			{
 				SetTextureAlphaOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
-				//SetDepthBufferFunc(true, false);
+			}
+			else if (material.bAlphaTest||material.bBlend)
+			{
+				SetTextureAlphaOP(0, TBOP_SOURCE1, TBS_TEXTURE);
 			}
 			else
 			{
-				if (material.bAlphaTest||material.bBlend)
-				{
-					SetTextureAlphaOP(0, TBOP_SOURCE1, TBS_TEXTURE);
-				}
-				else
-				{
-					SetTextureAlphaOP(0, TBOP_DISABLE);
-				}
+				SetTextureAlphaOP(0, TBOP_DISABLE);
 			}
-			SetTexture(0, material.uDiffuse);
+
 			//////////////////////////////////////////////////////////////////////////
 			if (material.uSpecular)
 			{
-				SetLightingEnabled(true);
-				SetTexture(0, material.uSpecular);
-				SetTexture(1, material.uDiffuse);
-				setResultARGToTemp(0,true);
-				SetTextureColorOP(0, TBOP_MODULATE_X2, TBS_TEXTURE, TBS_SPECULAR);
-				SetTextureColorOP(1, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
+				SetTexture(1, material.uSpecular);
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
+				setResultARGToTemp(1,true);
+				SetTextureColorOP(1, TBOP_MODULATE_X2, TBS_TEXTURE, TBS_SPECULAR);
 				SetTextureColorOP(2, TBOP_ADD, TBS_CURRENT, TBS_TEMP);
 
-				//SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
 				SetTexCoordIndex(0,0);
 				SetTexCoordIndex(1,0);
 				SetTexCoordIndex(2,0);
@@ -180,37 +178,30 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			else if (material.uReflection)
 			{
 				SetTextureColorOP(1, TBOP_MODULATE_X2, TBS_CURRENT, TBS_TEXTURE);
-				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
 				SetTexCoordIndex(1,TCI_CAMERASPACE_NORMAL|TCI_CAMERASPACE_POSITION);
 				SetTexture(1, material.uReflection);
 			}
 			else if (material.uLightMap)
 			{
 				SetTextureColorOP(1, TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
-				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
 				SetTexCoordIndex(1,1);
 				SetTexture(1, material.uLightMap);
 			}
 			else if (material.uEmissive)
 			{
 				SetTextureColorOP(1, TBOP_ADD, TBS_CURRENT, TBS_TEXTURE);
-				SetTextureAlphaOP(1, TBOP_SOURCE1, TBS_CURRENT);
 				SetTexture(1, material.uEmissive);
 			}
 			else if(!material.bBlend&&material.m_fOpacity>=1.0f)
 			{
-				SetLightingEnabled(true);
 				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
 			}
 		}
 		else
 		{
-			SetLightingEnabled(false);
 			SetTextureFactor(cFactor);
-			SetDepthBufferFunc(true, false);
 			if (material.uSpecular)
 			{
-				SetLightingEnabled(true);
 				//SetTexture(0, material.uSpecular);
 				SetTextureColorOP(0, TBOP_SOURCE1, TBS_SPECULAR);
 				SetTexCoordIndex(0,0);

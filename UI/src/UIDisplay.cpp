@@ -18,12 +18,14 @@ void CUIDisplay::OnFrameRender(double fTime, float fElapsedTime)
 
 CRect<int> CUIDisplay::getViewport()
 {
-	CRect<float> scale = m_Style.m_mapSquare[0].scale;
+	CRect<float> scale = m_Style.m_mapDefault[0].scale;
 
 	CRect<int> rcViewport = GetBoundingBox();
-	rcViewport.left+= rcViewport.getWidth()*0.5f*(1.0f-scale.left);
-	rcViewport.right-=rcViewport.getWidth()*0.5f*(1.0f-scale.right);
-	rcViewport.top+= rcViewport.getHeight()*0.5f*(1.0f-scale.top);
-	rcViewport.bottom-=rcViewport.getHeight()*0.5f*(1.0f-scale.bottom);
+	int nWidth = rcViewport.getWidth()*0.5f;
+	int nHeight = rcViewport.getHeight()*0.5f;
+	rcViewport.left		+= nWidth*(1.0f-scale.left);
+	rcViewport.right	-= nWidth*(1.0f-scale.right);
+	rcViewport.top		+= nHeight*(1.0f-scale.top);
+	rcViewport.bottom	-= nHeight*(1.0f-scale.bottom);
 	return rcViewport;
 }
