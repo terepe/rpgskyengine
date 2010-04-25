@@ -25,6 +25,7 @@ public:
 		uReflection(-1),
 		uLightMap(-1),
 		uShader(-1),
+		bLightingEnabled(false),
 		bDepthWrite(true),
 		bAlphaTest(false),
 		uAlphaTestValue(0x80),
@@ -168,6 +169,7 @@ public:
 	uint32	uShader;			// shader
 
 	// other
+	bool	bLightingEnabled;
 	unsigned char uCull;
 	bool	bDepthWrite;
 	bool	bBlend;

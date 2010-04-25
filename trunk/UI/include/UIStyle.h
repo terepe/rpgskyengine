@@ -137,6 +137,7 @@ public:
 	CUICyclostyle(){}
 	void Refresh();
 	void add(const CUICyclostyle& cyc);
+	std::vector<BaseCyclostyle> m_setDefault;
 	std::vector<CUISpriteCyclostyle> m_SpriteStyle;
 	std::vector<StyleBorder> m_setBorder;
 	std::vector<StyleSquare> m_setSquare;
@@ -154,10 +155,11 @@ public:
 	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
-	bool isHidden();
+	bool isVisible();
 
-	bool m_bHidden;
+	int m_nVisible;
 	std::string	m_strName;
+	std::map<int,StyleDrawData> m_mapDefault;
 	std::map<int,StyleDrawData> m_mapSprite;
 	std::map<int,StyleDrawData> m_mapBorder;
 	std::map<int,StyleDrawData> m_mapSquare;

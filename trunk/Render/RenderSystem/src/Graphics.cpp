@@ -634,18 +634,28 @@ void CGraphics::drawQuad(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const V
 
 void CGraphics::fillQuad(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color)
 {
-	VERTEX_XYZ_DIF v[4];
+	VERTEX_XYZ_DIF_TEX v[4];
 	v[0].p = v0;
 	v[1].p = v1;
 	v[2].p = v2;
 	v[3].p = v3;
+	//
+	v[0].t.x = 0.0f;
+	v[0].t.y = 0.0f;
+	v[1].t.x = 1.0f;
+	v[1].t.y = 0.0f;
+	v[2].t.x = 1.0f;
+	v[2].t.y = 1.0f;
+	v[3].t.x = 0.0f;
+	v[3].t.y = 1.0f;
+
 	v[0].c = color;
 	v[1].c = color;
 	v[2].c = color;
 	v[3].c = color;
 	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF));
+	R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
+	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
 }
 
 void CGraphics::DrawRect3D(const Vec3D& v0,const Vec3D& v1, Color32 color)

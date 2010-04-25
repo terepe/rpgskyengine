@@ -75,33 +75,30 @@ inline void StrToXY(const char* str, int& x, int& y)
 }
 
 CUIStyle::CUIStyle():
-m_bHidden(true)
+m_nVisible(0)
 {}
 
 
 template<typename T>
-inline void updateStyle(const std::vector<T>& setSrc, std::map<int,StyleDrawData>& setDest, bool& bHidden, const CRect<float>& rc, UINT iState, float fElapsedTime)
+inline void updateStyle(const std::vector<T>& setSrc, std::map<int,StyleDrawData>& setDest,const CRect<float>& rc, UINT iState, float fElapsedTime)
 {
 	for (uint32 i=0; i<setSrc.size(); i++)
 	{
 		setSrc[i].blend(setDest[i], iState, fElapsedTime);
 		setDest[i].updateRect(rc);
 		setSrc[i].updataRect(setDest[i].rc);
-		if (CONTROL_STATE_HIDDEN==iState&&setDest[i].color.w<0.01f)
-		{
-			bHidden = true;
-		}
 	}
 }
 
 void CUIStyle::Blend(const CRect<float>& rc, UINT iState, float fElapsedTime)
 {
-	m_bHidden = false;
+	m_nVisible = interpolate(1.0f - powf(0.8, 30 * fElapsedTime), m_nVisible, CONTROL_STATE_HIDDEN==iState?0:255);
 	const CUICyclostyle& style =  GetCyclostyle();
-	updateStyle(style.m_SpriteStyle,m_mapSprite,m_bHidden,rc,iState,fElapsedTime);
-	updateStyle(style.m_setBorder,m_mapBorder,m_bHidden,rc,iState,fElapsedTime);
-	updateStyle(style.m_setSquare,m_mapSquare,m_bHidden,rc,iState,fElapsedTime);
-	updateStyle(style.m_FontStyle,m_mapFont,m_bHidden,rc,iState,fElapsedTime);
+	updateStyle(style.m_setDefault,m_mapDefault,rc,iState,fElapsedTime);
+	updateStyle(style.m_SpriteStyle,m_mapSprite,rc,iState,fElapsedTime);
+	updateStyle(style.m_setBorder,m_mapBorder,rc,iState,fElapsedTime);
+	updateStyle(style.m_setSquare,m_mapSquare,rc,iState,fElapsedTime);
+	updateStyle(style.m_FontStyle,m_mapFont,rc,iState,fElapsedTime);
 }
 
 void CUIStyle::SetStyle(const std::string& strName)
@@ -160,9 +157,9 @@ void CUIStyle::Draw(const std::wstring& wstrText)
 	}
 }
 
-bool CUIStyle::isHidden()
+bool CUIStyle::isVisible()
 {
-	return m_bHidden;
+	return m_nVisible!=0;
 }
 
 void CUICyclostyle::Refresh()
@@ -173,6 +170,7 @@ void CUICyclostyle::Refresh()
 
 void CUICyclostyle::add(const CUICyclostyle& cyc)
 {
+	m_setDefault.insert(m_setDefault.end(), cyc.m_setDefault.begin(), cyc.m_setDefault.end()); 
 	m_SpriteStyle.insert(m_SpriteStyle.end(), cyc.m_SpriteStyle.begin(), cyc.m_SpriteStyle.end());   
 	m_setBorder.insert(m_setBorder.end(), cyc.m_setBorder.begin(), cyc.m_setBorder.end()); 
 	m_setSquare.insert(m_setSquare.end(), cyc.m_setSquare.begin(), cyc.m_setSquare.end()); 
@@ -527,7 +525,17 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 	{
 		// Style name
 		CUICyclostyle Cyclostyle;
-
+		//
+		{
+			TiXmlElement* pElement = pStyleElement->FirstChildElement("default");
+			while (pElement)
+			{
+				StyleBorder border;
+				border.XML(*pElement);
+				Cyclostyle.m_setDefault.push_back(border);
+				pElement = pElement->NextSiblingElement("default");
+			}
+		}
 		// Sprite Info
 		{
 			TiXmlElement* pSpriteElement = pStyleElement->FirstChildElement("texture");
