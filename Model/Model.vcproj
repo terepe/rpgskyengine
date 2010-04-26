@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName)d.lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName)d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -78,6 +78,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
 			/>
 		</Configuration>
 		<Configuration
@@ -120,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -136,6 +137,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
 			/>
 		</Configuration>
 	</Configurations>
