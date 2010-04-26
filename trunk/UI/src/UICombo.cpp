@@ -18,8 +18,6 @@
 #include "UIComboColor.h"
 #include "tinyxml.h"
 
-////double        CUICombo::s_fTimeRefresh = 0.0f;
-
 std::string g_strDialogResFilename;
 
 void UISetDialogRes(const std::string& strDialogRes)

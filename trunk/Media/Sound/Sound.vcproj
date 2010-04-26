@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -86,6 +86,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
 			/>
 		</Configuration>
 		<Configuration
@@ -143,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName)d.lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName)d.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -162,6 +163,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
 			/>
 		</Configuration>
 	</Configurations>

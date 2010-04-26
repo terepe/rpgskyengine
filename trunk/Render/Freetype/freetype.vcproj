@@ -70,7 +70,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -292,7 +292,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)\lib\$(ProjectName)d.lib"
+				OutputFile="$(SolutionDir)..\lib\$(ProjectName)d.lib"
 				AdditionalLibraryDirectories="$(ProjectPath)\include"
 				SuppressStartupBanner="true"
 			/>
