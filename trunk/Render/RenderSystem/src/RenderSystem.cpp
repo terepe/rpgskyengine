@@ -100,6 +100,7 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
 	SetBlendFunc(material.bBlend, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
 	SetDepthBufferFunc(true,material.bDepthWrite);
+	SetLightingEnabled(material.bLightingEnabled);
 	switch(material.uCull)
 	{
 	case 0:
@@ -143,7 +144,14 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			SetTexture(0, material.uDiffuse);
 			cFactor.a=(unsigned char)(cFactor.a*fOpacity);
 			SetTextureFactor(cFactor);
-			SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+			if (material.bLightingEnabled)
+			{
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_DIFFUSE);
+			}
+			else
+			{
+				SetTextureColorOP(0, TBOP_MODULATE, TBS_TEXTURE, TBS_TFACTOR);
+			}
 			if(material.bBlend||material.m_fOpacity<1.0f)
 			{
 				SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
