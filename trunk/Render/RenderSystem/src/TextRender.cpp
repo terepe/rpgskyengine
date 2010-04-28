@@ -43,6 +43,7 @@ CTextRender::CTextRender()
 	m_nTextTexWidth		= 1024;
 	m_nTextTexHeight	= 1024;
 	m_pTextTexture		= NULL;
+	m_Face				= NULL;
 
 	//Init("data\\Fonts\\DFPShaoNvW5-GB.ttf",24);
 	//Init("data\\Fonts\\simfang.ttf",12);
@@ -159,6 +160,10 @@ void CTextRender::Init(const std::wstring& wstrFontName, uint32 uSize)
 			pRead->Read(pBuf, pRead->GetSize());
 			if (FT_New_Memory_Face((FT_Library)m_library, (FT_Byte *)pBuf,pRead->GetSize(), 0, (FT_Face*)&m_Face)) 
 				throw std::runtime_error("FT_New_Face failed (there is probably a problem with your font file)"); 
+			if (NULL==m_Face)
+			{
+				MessageBoxA(NULL,"FT_New_Face failed (there is probably a problem with your font file)","",0);
+			}
 		}
 		IOReadBase::autoClose(pRead);
 	}
