@@ -181,6 +181,7 @@ public:
 	Vec2D	vUVScale; // for terrain's tile, temp
 };
 
+#include "InterfaceDataPlugsBase.h"
 class CMaterialDataPlugBase:public CDataPlugBase
 {
 public:
