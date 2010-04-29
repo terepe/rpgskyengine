@@ -156,14 +156,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\DataPlugsMgr.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Include\InterfaceDataPlugsBase.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Include\InterfaceModel.h"
 				>
 			</File>
@@ -209,10 +201,6 @@
 			>
 			<File
 				RelativePath=".\src\AnimMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\DataPlugsMgr.cpp"
 				>
 			</File>
 			<File

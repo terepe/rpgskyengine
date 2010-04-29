@@ -3,11 +3,6 @@
 #include "ModelData.h"
 #include "TSingleton.h"
 
-typedef struct{
-	CModelPlugBase * pObj;
-	HINSTANCE hIns;
-}MODEL_PLUG_ST, * LPMODEL_PLUG_ST;
-
 class CModelDataMgr: public CManager<CModelData>,public TSingleton<CModelDataMgr>
 {
 public:

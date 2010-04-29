@@ -180,3 +180,21 @@ public:
 	Color32 cEmissive;
 	Vec2D	vUVScale; // for terrain's tile, temp
 };
+
+class CMaterialDataPlugBase:public CDataPlugBase
+{
+public:
+	CMaterialDataPlugBase(){};
+	virtual ~CMaterialDataPlugBase(){};
+
+	virtual const char * GetTitle()		= 0;
+	virtual const char * GetFormat()	= 0;
+	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName) = 0;
+	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename)=0;
+	virtual bool exportData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename)=0;
+
+	virtual DWORD GetExportDataType() = 0;
+	virtual DWORD GetImportDataType() = 0;
+
+	virtual void Release() = 0;
+};
