@@ -119,7 +119,7 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 
 	if (0==material.uShader)
 	{
-		SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
+		//SetSamplerAddressUV(0,ADDRESS_WRAP,ADDRESS_WRAP);
 		if (material.vTexAnim.lengthSquared()>0.0f)
 		{
 			Matrix matTex=Matrix::UNIT;

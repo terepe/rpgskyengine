@@ -23,8 +23,6 @@ public:
 	void	setHeightRang(float fMin, float fMax);
 	float	getHeightMin()const;
 	float	getHeightMax()const;
-	void	SetRandiusTex(int nTexID){ m_nRandiusTexID = nTexID; }
-	void	SetHardnessTex(int nTexID){ m_nHardnessTexID = nTexID; }
 	void	setObjectMoveingClingToFloor(bool bObjectMoveingClingToFloor){m_bObjectMoveingClingToFloor = bObjectMoveingClingToFloor;}
 	bool	getObjectMoveingClingToFloor()const{return m_bObjectMoveingClingToFloor;}
 
@@ -48,8 +46,6 @@ public:
 	BrushHeightType	getBrushHeightType(){return m_eBrushHeightType;}
 
 protected:
-	int						m_nRandiusTexID;
-	int						m_nHardnessTexID;
 	Matrix					m_mRandiusTexTrans;
 	Matrix					m_mHardnessTexTrans;
 	float					m_fX, m_fY;
@@ -65,17 +61,4 @@ protected:
 	bool					m_bObjectMoveingClingToFloor;
 	float					m_fHeightMin;
 	float					m_fHeightMax;
-};
-
-class DLL_EXPORT CTerrainGridDecal: public CTerrainDecal
-{
-public:
-	CTerrainGridDecal();
-	virtual void SetPos(float fX, float fY);
-	virtual void Render();
-public:
-	virtual void CreateIB();
-	Matrix					m_mTexTrans;
-	float					m_fX, m_fY;
-	uint32					m_uBaseVertexIndex;
 };
