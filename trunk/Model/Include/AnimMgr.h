@@ -27,8 +27,6 @@ struct AnimNode
 {
 	AnimNode();
 	short	CurLoop;			// Current loop that we're upto.
-	uint32	timeStart;
-	uint32	timeEnd;
 	uint32	uFrame;
 	uint32	uTotalFrames;
 	float	fSpeed;

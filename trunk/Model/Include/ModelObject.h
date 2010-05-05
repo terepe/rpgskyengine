@@ -34,7 +34,7 @@ public:
 	//void setupAtt2(int id);
 
 	void Animate(const std::string& strAnimName);
-	void CalcBones(int time);
+	void CalcBones(const std::string& strAnim, int time);
 
 	bool isCreated();
 	void create();

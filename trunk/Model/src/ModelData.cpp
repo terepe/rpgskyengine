@@ -21,55 +21,6 @@ CModelData::~CModelData()
 	S_DELS(globalSequences);
 }
 
-size_t CModelData::getAnimationCount()
-{
-	return m_AnimList.size();
-}
-
-void CModelData::setAnimation(const std::string& strName, long timeStart, long timeEnd)
-{
-	ModelAnimation& animation=m_AnimList[strName];
-	animation.timeStart = timeStart;
-	animation.timeEnd = timeEnd;
-}
-
-bool CModelData::getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const
-{
-	std::map<std::string, ModelAnimation>::const_iterator it = m_AnimList.find(strName);
-	if (it==m_AnimList.end())
-	{
-		return false;
-	}
-	timeStart = it->second.timeStart;
-	timeEnd = it->second.timeEnd;
-	return true;
-}
-
-bool CModelData::getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const
-{
-	if (m_AnimList.size()<=index)
-	{
-		return false;
-	}
-	std::map<std::string, ModelAnimation>::const_iterator it = m_AnimList.begin();
-	advance(it,index);
-	strName = it->first;
-	timeStart = it->second.timeStart;
-	timeEnd = it->second.timeEnd;
-	return true;
-}
-
-bool CModelData::delAnimation(const std::string& strName)
-{
-	std::map<std::string, ModelAnimation>::iterator it=m_AnimList.find(strName);
-	if(it!=m_AnimList.end())
-	{
-		m_AnimList.erase(it);
-		return true;
-	}
-	return false;
-}
-
 size_t CModelData::getRenderPassCount()
 {
 	return m_mapPasses.size();
