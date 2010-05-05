@@ -144,42 +144,70 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
+struct BoneInfo
+{
+	BoneInfo():
+	parent(0xFF),
+	billboard(false)
+	{
+		mInvLocal.unit();
+	}
+	std::string				strName;
+	Matrix					mInvLocal;
+	Vec3D pivot;
+	uint8 parent;
+	bool billboard;
+};
+
 struct BoneAnim
 {
-public:
-	BoneAnim():
-	  parent(0xFF),
-		  billboard(false)
-	  {
-		  mSkin.unit();
-	  }
-	  std::string				strName;
-	  Animated<Vec3D>			trans;
-	  Animated<Quaternion>		rot;
-	  Animated<Vec3D>			scale;
-	  Matrix					mSkin;
-	  Vec3D pivot;
-	  uint8 parent;
-	  bool billboard;
+	Animated<Vec3D>			trans;
+	Animated<Quaternion>	rot;
+	Animated<Vec3D>			scale;
+	void transform(Matrix& m, unsigned int time)const
+	{
+		if (trans.isUsed())
+		{
+			Vec3D tr = trans.getValue(time);
+			m *= Matrix::newTranslation(tr);
+		}
+		if (rot.isUsed())
+		{
+			Quaternion q = rot.getValue(time);
+			m *= Matrix::newQuatRotate(q);
+		}
+		if (scale.isUsed())
+		{
+			Vec3D sc = scale.getValue(time);
+			m *= Matrix::newScale(sc);
+		}
+	}
+};
+
+struct SkeletonAnim
+{
+	std::vector<BoneAnim> setBonesAnim;
+	float fSpeed;
+	unsigned int uTotalFrames;
 };
 
 class iSkeleton
 {
 public:
-	std::vector<BoneAnim>			m_BoneAnims;	// 骨骼动画源
-	//std::vector<ModelAnimation>		m_AnimList;		// 动画配表源
+	std::vector<BoneInfo>				m_Bones;	// 骨骼
+	std::map<std::string,SkeletonAnim>	m_Anims;	// 动画
+	
+	virtual size_t getAnimationCount()=0;
+	//virtual void setAnimation(const std::string& strName, long timeCount)=0;
+	virtual bool getAnimation(const std::string& strName, long& timeCount)const=0;
+	virtual bool getAnimation(size_t index, std::string& strName, long& timeCount)const=0;
+	virtual bool delAnimation(const std::string& strName)=0;
 };
 
 class iModelData
 {
 public:
 	virtual const std::string& getItemName()=0;
-
-	virtual size_t getAnimationCount()=0;
-	virtual void setAnimation(const std::string& strName, long timeStart, long timeEnd)=0;
-	virtual bool getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const=0;
-	virtual bool getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const=0;
-	virtual bool delAnimation(const std::string& strName)=0;
 
 	virtual size_t getRenderPassCount()=0;
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;

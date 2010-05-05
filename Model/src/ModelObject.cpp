@@ -56,11 +56,11 @@ void CModelObject::create()
 		CLodMesh& mesh = m_pModelData->m_Mesh;
 		m_BBox	= mesh.getBBox();
 
-		if (m_pModelData->m_Skeleton.m_BoneAnims.size()>0)
+		if (m_pModelData->m_Skeleton.m_Bones.size()>0)
 		{
 			CSkeleton& skeleton = m_pModelData->m_Skeleton;
 			skeleton.CreateBones(m_Bones);
-			skeleton.CalcBonesMatrix(0,m_Bones);
+			skeleton.CalcBonesMatrix("",0,m_Bones);
 		}
 
 		// Particles
@@ -119,11 +119,11 @@ bool CModelObject::load(const std::string& strFilename)
 	return true;
 }
 
-void CModelObject::CalcBones(int time)
+void CModelObject::CalcBones(const std::string& strAnim, int time)
 {
 	if (m_pModelData)
 	{
-		m_pModelData->m_Skeleton.CalcBonesMatrix(time, m_Bones);
+		m_pModelData->m_Skeleton.CalcBonesMatrix(strAnim,time,m_Bones);
 	}
 	//// Character specific bone animation calculations.
 	//if (charModelDetails.isChar)
@@ -242,7 +242,7 @@ void CModelObject::Animate(const std::string& strAnimName)
 	// ¹Ç÷À¶¯»­
 	if ((m_Bones.size()>0)  && (m_nAnimTime != t || m_strAnimName != strAnimName))
 	{
-		CalcBones(t);
+		CalcBones(strAnimName, t);
 	}
 	m_nAnimTime = t;
 	m_strAnimName = strAnimName;
@@ -307,12 +307,11 @@ void CModelObject::SetAnim(const std::string& strAnimName)
 		{
 			m_strAnimName = strAnimName;
 
-			long timeStart, timeEnd;
-			if (m_pModelData->getAnimation(strAnimName,timeStart,timeEnd))
+			long timeCount;
+			if (m_pModelData->getSkeleton().getAnimation(strAnimName,timeCount))
 			{
-				m_AnimMgr.uFrame=timeStart;
-				m_AnimMgr.timeStart = timeStart;
-				m_AnimMgr.timeEnd = timeEnd;
+				m_AnimMgr.uFrame=0;
+				m_AnimMgr.uTotalFrames = timeCount;
 			}
 		}
 	}

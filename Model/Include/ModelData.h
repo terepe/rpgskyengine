@@ -125,12 +125,6 @@ public:
 	~CModelData();
 public:
 	virtual const std::string& getItemName(){return m_strModelFilename;}
-
-	virtual size_t getAnimationCount();
-	virtual void setAnimation(const std::string& strName, long timeStart, long timeEnd);
-	virtual bool getAnimation(const std::string& strName, long& timeStart, long& timeEnd)const;
-	virtual bool getAnimation(size_t index, std::string& strName, long& timeStart, long& timeEnd)const;
-	virtual bool delAnimation(const std::string& strName);
 	
 	virtual size_t getRenderPassCount();
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
