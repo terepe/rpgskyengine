@@ -360,25 +360,6 @@ bool CModelObject::Prepare()const
 	return m_pModelData->m_Mesh.SetMeshSource(m_uLodLevel,m_pVB);
 }
 
-//bool CModelObject::PrepareEdge()const
-//{
-//	CRenderSystem& R = GetRenderSystem();
-//	R.SetDepthBufferFunc(true, false);
-//	R.SetAlphaTestFunc(false);
-//	R.SetBlendFunc(true, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-//	//R.SetBlendFunc(true, BLENDOP_ADD, SBF_DEST_COLOUR, SBF_ZERO);
-//
-//	R.SetLightingEnabled(false);
-//	R.SetCullingMode(CULL_CLOCK_WISE);
-//
-//	R.SetTextureFactor(Color32(176,176,176,176));
-//	R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_TFACTOR);
-//	R.SetTextureAlphaOP(0,TBOP_DISABLE);
-//
-//	//R.SetShader(m_pModelData->m_nEdgeShaderID);
-//	return true;
-//}
-
 void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	if (NULL==m_pModelData)

@@ -204,6 +204,16 @@ void CUISlider::SetRange(int nMin, int nMax)
 	UpdateRects();
 }
 
+int CUISlider::GetPageSize()
+{
+	return m_nPageSize;
+}
+
+void CUISlider::SetPageSize(int nPageSize)
+{
+	m_nPageSize = __max(nPageSize, 1);
+}
+
 void CUISlider::SetValueInternal(int nValue)
 {
 	if (SetValue(nValue))
