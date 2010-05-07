@@ -2057,10 +2057,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-		</Filter>
-		<Filter
-			Name="include"
-			>
 			<File
 				RelativePath=".\include\freetype\internal\autohint.h"
 				>
