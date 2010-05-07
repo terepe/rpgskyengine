@@ -4,10 +4,9 @@
 #include "Graphics.h"
 #include "ParticleEmitter.h"
 
-void CParticleGroup::Init(CParticleEmitter* pEmitter, CBone* pBone)
+void CParticleGroup::Init(CParticleEmitter* pEmitter)
 {
 	m_pEmitter = pEmitter;
-	m_pBone = pBone;
 }
 
 void CParticleGroup::update(float fElapsedTime)

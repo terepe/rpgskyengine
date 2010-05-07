@@ -48,7 +48,7 @@ protected:
 public:												// All the anim data.
 	SingleAnimNode				m_AnimMgr;			// 动作管理器
 	CHardwareVertexBuffer*		m_pVB;				// 顶点缓冲
-	std::vector<CBone>			m_Bones;			// 骨骼
+	std::vector<Matrix>			m_setBonesMatrix;	// 骨骼矩阵
 	std::vector<CParticleGroup>	m_setParticleGroup;	// 粒子ID集合
 	std::string	m_strAnimName;						// Current Name Of Animate
 	int		m_nAnimTime;							// 动作时间帧

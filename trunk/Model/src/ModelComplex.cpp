@@ -18,7 +18,7 @@ void CModelComplex::OnFrameMove(float fElapsedTime)
 		{
 			if (pModelData->m_Mesh.m_bSkinMesh)
 			{
-				pModelData->m_Mesh.skinningMesh(it->second->m_pVB, m_Bones);
+				pModelData->m_Mesh.skinningMesh(it->second->m_pVB, m_setBonesMatrix);
 			}
 		}
 	}
