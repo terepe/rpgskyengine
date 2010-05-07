@@ -59,15 +59,15 @@ void CModelObject::create()
 		if (m_pModelData->m_Skeleton.m_Bones.size()>0)
 		{
 			CSkeleton& skeleton = m_pModelData->m_Skeleton;
-			skeleton.CreateBones(m_Bones);
-			skeleton.CalcBonesMatrix("",0,m_Bones);
+			m_setBonesMatrix.resize(skeleton.m_Bones.size());
+			skeleton.CalcBonesMatrix("",0,m_setBonesMatrix);
 		}
 
 		// Particles
 		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());
 		for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
 		{
-			m_setParticleGroup[i].Init(&m_pModelData->m_setParticleEmitter[i], NULL);
+			m_setParticleGroup[i].Init(&m_pModelData->m_setParticleEmitter[i]);
 		}
 
 		// 
@@ -123,7 +123,7 @@ void CModelObject::CalcBones(const std::string& strAnim, int time)
 {
 	if (m_pModelData)
 	{
-		m_pModelData->m_Skeleton.CalcBonesMatrix(strAnim,time,m_Bones);
+		m_pModelData->m_Skeleton.CalcBonesMatrix(strAnim,time,m_setBonesMatrix);
 	}
 	//// Character specific bone animation calculations.
 	//if (charModelDetails.isChar)
@@ -240,7 +240,7 @@ void CModelObject::Animate(const std::string& strAnimName)
 		t = m_AnimMgr.uFrame;
 
 	// 骨骼动画
-	if ((m_Bones.size()>0)  && (m_nAnimTime != t || m_strAnimName != strAnimName))
+	if ((m_setBonesMatrix.size()>0)  && (m_nAnimTime != t || m_strAnimName != strAnimName))
 	{
 		CalcBones(strAnimName, t);
 	}
@@ -250,14 +250,14 @@ void CModelObject::Animate(const std::string& strAnimName)
 	// 几何体动画
 	if (m_pModelData->m_Mesh.m_bSkinMesh)
 	{
-		m_pModelData->m_Mesh.skinningMesh(m_pVB, m_Bones);
+		m_pModelData->m_Mesh.skinningMesh(m_pVB, m_setBonesMatrix);
 	}
 
 	// 灯动画？
 	//for (size_t i=0; i<m_pModelData->m_LightAnims.size();; i++) {
 	//	if (m_LightAnims[i].parent>=0) {
-	//		m_LightAnims[i].tpos = m_Bones[lights[i].parent].m_mat * lights[i].pos;
-	//		m_LightAnims[i].tdir = m_Bones[lights[i].parent].m_mRot * lights[i].dir;
+	//		m_LightAnims[i].tpos = m_setBonesMatrix[lights[i].parent].m_mat * lights[i].pos;
+	//		m_LightAnims[i].tdir = m_setBonesMatrix[lights[i].parent].m_mRot * lights[i].dir;
 	//	}
 	//}
 
@@ -344,8 +344,8 @@ void CModelObject::updateEmitters(const Matrix& mWorld, float fElapsedTime)
 {
 	for (size_t i=0; i<m_setParticleGroup.size(); i++)
 	{
-		CBone* pBone = &m_Bones[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
-		m_pModelData->m_setParticleEmitter[i].update(mWorld*pBone->m_mat,m_setParticleGroup[i],fElapsedTime);
+		const Matrix& matBone = m_setBonesMatrix[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
+		m_pModelData->m_setParticleEmitter[i].update(mWorld*matBone,m_setParticleGroup[i],fElapsedTime);
 	}
 }
 
@@ -411,6 +411,6 @@ void CModelObject::drawSkeleton()const
 {
 	if (m_pModelData)
 	{
-		m_pModelData->m_Skeleton.Render(m_Bones);
+		m_pModelData->m_Skeleton.Render(m_setBonesMatrix);
 	}
 }

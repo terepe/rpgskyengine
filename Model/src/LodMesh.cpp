@@ -405,7 +405,7 @@ void CLodMesh::draw(size_t uLodLevel)const
 	}
 }
 
-void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bones)const
+void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& setBonesMatrix)const
 {
 	// ‘ÀÀ„∂•µ„
 	if (pVB)
@@ -434,8 +434,12 @@ void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<CBone>& bone
 					if (weight!=0)
 					{
 						float fWeight = weight / 255.0f;
-						v += bones[bone].m_mat*pSkinVertex->p*fWeight;
-						n += bones[bone].m_mRot*pSkinVertex->n*fWeight;
+						v += setBonesMatrix[bone]*pSkinVertex->p*fWeight;
+						Matrix mRot=setBonesMatrix[bone];
+						mRot._14=0;
+						mRot._24=0;
+						mRot._34=0;
+						n += mRot*pSkinVertex->n*fWeight;
 					}
 				}
 				pVOut->p = v;

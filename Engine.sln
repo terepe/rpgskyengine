@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "UI\UI.vcproj", "{F604143C-01E8-4DDC-A06D-C577F2CA7052}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render", "Render", "{8E656640-BCBD-4C6E-88CC-41A04EFCB31C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Freetype", "Render\Freetype\freetype.vcproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystemDX9", "Render\RenderSystemDX9\RenderSystemDX9.vcproj", "{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem", "Render\RenderSystem\RenderSystem.vcproj", "{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}"
 EndProject
@@ -51,18 +47,6 @@ Global
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release Singlethreaded|Win32.Build.0 = Release Singlethreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|Win32.ActiveCfg = Release|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|Win32.Build.0 = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Debug|Win32.Build.0 = Debug|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release Multithreaded|Win32.Build.0 = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release Singlethreaded|Win32.Build.0 = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release|Win32.ActiveCfg = Release|Win32
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}.Release|Win32.Build.0 = Release|Win32
 		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
 		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
 		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
@@ -114,10 +98,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {8E656640-BCBD-4C6E-88CC-41A04EFCB31C}
-		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C} = {8E656640-BCBD-4C6E-88CC-41A04EFCB31C}
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6} = {8E656640-BCBD-4C6E-88CC-41A04EFCB31C}
 	EndGlobalSection
 EndGlobal

@@ -3,90 +3,6 @@
 #include "Graphics.h"
 #include "TextRender.h"
 
-void CBone::CalcMatrix1(const BoneAnim& boneAnim,int time)
-{
-	m_bCalc = false;	// 重置所有骨骼为'false',说明骨骼的动画还没计算过！
-
-	//bool tr = m_pBoneAnim->rot.isUsed() || m_pBoneAnim->scale.isUsed() || m_pBoneAnim->trans.isUsed() || m_pBoneAnim->billboard;
-	//if (tr)
-	//m_mat.translation(boneInfo.pivot);
-	m_mat.unit();
-	boneAnim.transform(m_mat,time);
-}
-void CBone::CalcMatrix2()
-{
-	if (m_bCalc)
-	{
-		return;
-	}
-	m_bCalc = true;
-
-	// 找到父类的转换矩阵
-	if (m_pParent)
-	{
-		m_pParent->CalcMatrix2();
-		m_mat = m_pParent->m_mat * m_mat;
-		//m_mRot = m_pParent->m_mRot * m_mRot;
-	}
-}
-
-void CBone::CalcMatrix3(const BoneInfo& boneInfo)
-{
-	if (boneInfo.billboard)
-	{
-		Matrix mtrans;
-		GetRenderSystem().getViewMatrix(mtrans);
-		mtrans.transpose();
-		mtrans.Invert();
-		Vec3D camera = mtrans * Vec3D(0.0f,0.0f,0.0f);
-		Vec3D look = (camera - boneInfo.pivot).normalize();
-
-		Vec3D up = ((mtrans * Vec3D(0.0f,1.0f,0.0f)) - camera).normalize();
-		// these should be normalized by default but fp inaccuracy kicks in when looking down :(
-		Vec3D right = (up % look).normalize();
-		up = (look % right).normalize();
-
-		// calculate a billboard matrix
-		Matrix mbb=Matrix::UNIT;
-		//mbb.m[0][2] = right.x;
-		//mbb.m[1][2] = right.y;
-		//mbb.m[2][2] = right.z;
-		mbb.m[3][2] = 0.0f;
-		mbb.m[0][1] = up.x;
-		mbb.m[1][1] = up.y;
-		mbb.m[2][1] = up.z;
-		mbb.m[3][1] = 0.0f;
-		//mbb.m[0][0] = look.x;
-		//mbb.m[1][0] = look.y;
-		//mbb.m[2][0] = look.z;
-		mbb.m[3][0] = 0.0f;
-		/*
-		mbb.m[0][2] = right.x;
-		mbb.m[1][2] = right.y;
-		mbb.m[2][2] = right.z;
-		mbb.m[0][1] = up.x;
-		mbb.m[1][1] = up.y;
-		mbb.m[2][1] = up.z;
-		mbb.m[0][0] = look.x;
-		mbb.m[1][0] = look.y;
-		mbb.m[2][0] = look.z;
-		*/
-		m_mat *= mbb;
-	}
-
-	m_vTransPivot = m_mat * boneInfo.pivot;
-
-	//m_mat*=Matrix::newTranslation(boneInfo.pivot*-1.0f);
-	m_mat*=boneInfo.mInvLocal;
-	//m_mRot = Matrix::newQuatRotate(q);
-
-
-	m_mRot=m_mat;
-	m_mRot._14=0;
-	m_mRot._24=0;
-	m_mRot._34=0;
-}
-
 uint8 CSkeleton::getIDByName(const std::string& strName)
 {
 	for (size_t i=0;i<m_Bones.size();++i)
@@ -99,28 +15,24 @@ uint8 CSkeleton::getIDByName(const std::string& strName)
 	return 0xFF;
 }
 
-bool CSkeleton::CreateBones(std::vector<CBone>& bones)
+void CSkeleton::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,std::vector<bool>& setCalc)const
 {
-	if (m_Bones.size())
+	if (setCalc[nBoneID])
 	{
-		bones.resize(m_Bones.size());
-		for (uint32 i = 0; i < bones.size(); i++)
-		{
-			//bones[i].m_pBoneAnim = &m_BoneAnims[i];
-			if (m_Bones[i].parent<m_Bones.size())
-			{
-				bones[i].m_pParent = &bones[m_Bones[i].parent];
-			}
-			else
-			{
-				bones[i].m_pParent = NULL;
-			}
-		}
+		return;
 	}
-	return true;
+	setCalc[nBoneID] = true;
+
+	// 找到父类的转换矩阵
+	int nParent = m_Bones[nBoneID].parent;
+	if (nParent!=255)
+	{
+		calcBonesTree(nParent,setBonesMatrix,setCalc);
+		setBonesMatrix[nBoneID] = setBonesMatrix[nParent] * setBonesMatrix[nBoneID];
+	}
 }
 
-void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vector<CBone>& bones)
+void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vector<Matrix>& setBonesMatrix)
 {
 	// 默认的骨骼动画运算
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.find(strAnim);
@@ -129,21 +41,76 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 		return;
 	}
 	const std::vector<BoneAnim>& bonesAnim = it->second.setBonesAnim;
-	for (uint32 i = 0; i < bones.size(); i++)
+	for (size_t i=0;i<m_Bones.size();++i)
 	{
-		bones[i].CalcMatrix1(bonesAnim[i],time);
+		//bool tr = m_pBoneAnim->rot.isUsed() || m_pBoneAnim->scale.isUsed() || m_pBoneAnim->trans.isUsed() || m_pBoneAnim->billboard;
+		//if (tr)
+		//m_mat.translation(boneInfo.pivot);
+		setBonesMatrix[i].unit();
+		bonesAnim[i].transform(setBonesMatrix[i],time);
 	}
-	for (uint32 i = 0; i < bones.size(); i++)
+	std::vector<bool> setCalc(m_Bones.size(),false);// 重置所有骨骼为'false',说明骨骼的动画还没计算过！
+	
+	for (size_t i=0;i<m_Bones.size();++i)
 	{
-		bones[i].CalcMatrix2();
+		calcBonesTree(i,setBonesMatrix,setCalc);
 	}
-	for (uint32 i = 0; i < bones.size(); i++)
+	for (size_t i=0;i<m_Bones.size();++i)
 	{
-		bones[i].CalcMatrix3(m_Bones[i]);
+		if (m_Bones[i].billboard)
+		{
+			Matrix mtrans;
+			GetRenderSystem().getViewMatrix(mtrans);
+			mtrans.transpose();
+			mtrans.Invert();
+			Vec3D camera = mtrans * Vec3D(0.0f,0.0f,0.0f);
+			Vec3D look = (camera - m_Bones[i].pivot).normalize();
+
+			Vec3D up = ((mtrans * Vec3D(0.0f,1.0f,0.0f)) - camera).normalize();
+			// these should be normalized by default but fp inaccuracy kicks in when looking down :(
+			Vec3D right = (up % look).normalize();
+			up = (look % right).normalize();
+
+			// calculate a billboard matrix
+			Matrix mbb=Matrix::UNIT;
+			//mbb.m[0][2] = right.x;
+			//mbb.m[1][2] = right.y;
+			//mbb.m[2][2] = right.z;
+			mbb.m[3][2] = 0.0f;
+			mbb.m[0][1] = up.x;
+			mbb.m[1][1] = up.y;
+			mbb.m[2][1] = up.z;
+			mbb.m[3][1] = 0.0f;
+			//mbb.m[0][0] = look.x;
+			//mbb.m[1][0] = look.y;
+			//mbb.m[2][0] = look.z;
+			mbb.m[3][0] = 0.0f;
+			/*
+			mbb.m[0][2] = right.x;
+			mbb.m[1][2] = right.y;
+			mbb.m[2][2] = right.z;
+			mbb.m[0][1] = up.x;
+			mbb.m[1][1] = up.y;
+			mbb.m[2][1] = up.z;
+			mbb.m[0][0] = look.x;
+			mbb.m[1][0] = look.y;
+			mbb.m[2][0] = look.z;
+			*/
+			setBonesMatrix[i] *= mbb;
+		}
+
+		//m_mat*=Matrix::newTranslation(m_Bones[i].pivot*-1.0f);
+		setBonesMatrix[i]*=m_Bones[i].mInvLocal;
+		//m_mRot = Matrix::newQuatRotate(q);
+
+		/*setBonesMatrix[i].m_mRot=setBonesMatrix[i];
+		setBonesMatrix[i].m_mRot._14=0;
+		setBonesMatrix[i].m_mRot._24=0;
+		setBonesMatrix[i].m_mRot._34=0;*/
 	}
 }
 
-void CSkeleton::Render(const std::vector<CBone>& bones)const
+void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	CGraphics& G = GetGraphics();
@@ -154,25 +121,24 @@ void CSkeleton::Render(const std::vector<CBone>& bones)const
 	R.SetLightingEnabled(false);
 	R.SetTextureColorOP(0,TBOP_SOURCE2);
 	R.SetTextureAlphaOP(0,TBOP_DISABLE);
-
-	for (uint32 i=0; i < bones.size(); i++)
+	for (uint32 i=0; i < m_Bones.size(); i++)
 	{
-		if (bones[i].m_pParent)
+		if (m_Bones[i].parent!=255)
 		{
-			G.DrawLine3D(bones[i].m_pParent->m_vTransPivot,bones[i].m_vTransPivot,0xFFFFFFFF);
+			G.DrawLine3D(setBonesMatrix[m_Bones[i].parent]*Vec3D(0,0,0),setBonesMatrix[i]*Vec3D(0,0,0),0xFFFFFFFF);
 		}
 	}
+
 	R.SetBlendFunc(true);
 	R.SetTextureColorOP(0,TBOP_MODULATE);
 	R.SetTextureAlphaOP(0,TBOP_MODULATE);
-	for (uint32 i=0; i < bones.size(); i++)
+	for (uint32 i=0; i < m_Bones.size(); i++)
 	{
-		if (bones[i].m_pParent)
+		if (m_Bones[i].parent!=255)
 		{
 			Pos2D posScreen;
-			R.world2Screen(bones[i].m_vTransPivot,posScreen);
+			R.world2Screen(setBonesMatrix[i]*Vec3D(0,0,0),posScreen);
 			GetTextRender().drawText(s2ws(m_Bones[i].strName),posScreen.x,posScreen.y);
-			G.DrawLine3D(bones[i].m_pParent->m_vTransPivot,bones[i].m_vTransPivot,0xFFFFFFFF);
 		}
 	}
 }
