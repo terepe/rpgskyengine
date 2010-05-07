@@ -3,14 +3,35 @@
 #include "Graphics.h"
 #include "TextRender.h"
 
-void CBone::CalcMatrix1(const BoneInfo& boneInfo,const BoneAnim& boneAnim,int time)
+void CBone::CalcMatrix1(const BoneAnim& boneAnim,int time)
 {
 	m_bCalc = false;	// 重置所有骨骼为'false',说明骨骼的动画还没计算过！
 
 	//bool tr = m_pBoneAnim->rot.isUsed() || m_pBoneAnim->scale.isUsed() || m_pBoneAnim->trans.isUsed() || m_pBoneAnim->billboard;
 	//if (tr)
-	m_mat.translation(boneInfo.pivot);
+	//m_mat.translation(boneInfo.pivot);
+	m_mat.unit();
 	boneAnim.transform(m_mat,time);
+}
+void CBone::CalcMatrix2()
+{
+	if (m_bCalc)
+	{
+		return;
+	}
+	m_bCalc = true;
+
+	// 找到父类的转换矩阵
+	if (m_pParent)
+	{
+		m_pParent->CalcMatrix2();
+		m_mat = m_pParent->m_mat * m_mat;
+		//m_mRot = m_pParent->m_mRot * m_mRot;
+	}
+}
+
+void CBone::CalcMatrix3(const BoneInfo& boneInfo)
+{
 	if (boneInfo.billboard)
 	{
 		Matrix mtrans;
@@ -53,29 +74,12 @@ void CBone::CalcMatrix1(const BoneInfo& boneInfo,const BoneAnim& boneAnim,int ti
 		m_mat *= mbb;
 	}
 
-	m_mat*=Matrix::newTranslation(boneInfo.pivot*-1.0f);
-	//m_mat*=boneInfo.mInvLocal;
+	m_vTransPivot = m_mat * boneInfo.pivot;
 
+	//m_mat*=Matrix::newTranslation(boneInfo.pivot*-1.0f);
+	m_mat*=boneInfo.mInvLocal;
 	//m_mRot = Matrix::newQuatRotate(q);
-	m_vTransPivot = boneInfo.pivot;
-}
 
-void CBone::CalcMatrix2()
-{
-	if (m_bCalc)
-	{
-		return;
-	}
-	m_bCalc = true;
-	// 找到父类的转换矩阵
-	if (m_pParent)
-	{
-		m_pParent->CalcMatrix2();
-		m_mat = m_pParent->m_mat * m_mat;
-		//m_mRot = m_pParent->m_mRot * m_mRot;
-	}
-
-	m_vTransPivot = m_mat * m_vTransPivot;
 
 	m_mRot=m_mat;
 	m_mRot._14=0;
@@ -127,11 +131,15 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 	const std::vector<BoneAnim>& bonesAnim = it->second.setBonesAnim;
 	for (uint32 i = 0; i < bones.size(); i++)
 	{
-		bones[i].CalcMatrix1(m_Bones[i],bonesAnim[i],time);
+		bones[i].CalcMatrix1(bonesAnim[i],time);
 	}
 	for (uint32 i = 0; i < bones.size(); i++)
 	{
 		bones[i].CalcMatrix2();
+	}
+	for (uint32 i = 0; i < bones.size(); i++)
+	{
+		bones[i].CalcMatrix3(m_Bones[i]);
 	}
 }
 
@@ -152,7 +160,6 @@ void CSkeleton::Render(const std::vector<CBone>& bones)const
 		if (bones[i].m_pParent)
 		{
 			G.DrawLine3D(bones[i].m_pParent->m_vTransPivot,bones[i].m_vTransPivot,0xFFFFFFFF);
-			
 		}
 	}
 	R.SetBlendFunc(true);

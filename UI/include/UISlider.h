@@ -26,8 +26,8 @@ public:
 	int				getMax() const { return m_nMax; };
 	void			GetRange(int &nMin, int &nMax) const { nMin = m_nMin; nMax = m_nMax; }
 	void			SetRange(int nMin, int nMax);
-	int				GetPageSize() { return m_nPageSize; }
-	void			SetPageSize(int nPageSize){m_nPageSize = nPageSize;}
+	int				GetPageSize();
+	void			SetPageSize(int nPageSize);
 protected:
 	void			SetValueInternal(int nValue);
 	int				ValueFromPos(POINT pt); 

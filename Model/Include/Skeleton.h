@@ -16,8 +16,9 @@ public:
 	// 是否计算过了
 	bool m_bCalc;
 	// 计算动画帧矩阵
-	void CalcMatrix1(const BoneInfo& boneInfo,const BoneAnim& boneAnim,int time);
+	void CalcMatrix1(const BoneAnim& boneAnim,int time);
 	void CalcMatrix2();
+	void CalcMatrix3(const BoneInfo& boneInfo);
 };
 
 class CSkeleton:public iSkeleton
