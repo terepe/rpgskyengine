@@ -14,7 +14,10 @@ CHardwareVertexBuffer::CHardwareVertexBuffer(size_t vertexSize,
 
 CHardwareVertexBuffer::~CHardwareVertexBuffer()
 {
-	GetRenderSystem().GetHardwareBufferMgr()._notifyVertexBufferDestroyed(this);
+	if (m_pHardwareBufferMgr)
+	{
+		m_pHardwareBufferMgr->_notifyVertexBufferDestroyed(this);
+	}
 	//HardwareBufferManager* mgr = HardwareBufferManager::getSingletonPtr();
 	//if (mgr)
 	//{

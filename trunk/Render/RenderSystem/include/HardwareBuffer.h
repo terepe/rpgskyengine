@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 
+class CHardwareBufferMgr;
 class DLL_EXPORT CHardwareBuffer 
 {
 public:
@@ -32,6 +33,8 @@ protected:
 	bool mShadowUpdated;
 	bool mSuppressHardwareUpdate;
 
+	CHardwareBufferMgr* m_pHardwareBufferMgr;
+
 	virtual void* lockImpl(size_t offset, size_t length, LockOptions options = HBL_NORMAL) = 0;
 	virtual void unlockImpl(void) = 0;
 
@@ -40,11 +43,16 @@ public:
 		mUsage(usage),
 		mIsLocked(false),
 		mSystemMemory(systemMemory),
-
-		mSuppressHardwareUpdate(false) 
+		mSuppressHardwareUpdate(false),
+		m_pHardwareBufferMgr(NULL)
 	{
 	}
 	virtual ~CHardwareBuffer() {}
+
+	void setHardwareBufferMgr(CHardwareBufferMgr* pHardwareBufferMgr)
+	{
+		m_pHardwareBufferMgr=pHardwareBufferMgr;
+	}
 
 	virtual void* lock(size_t offset, size_t length, LockOptions options)
 	{
