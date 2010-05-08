@@ -21,7 +21,10 @@ CHardwareIndexBuffer::CHardwareIndexBuffer(IndexType idxType,
 //-----------------------------------------------------------------------------
 CHardwareIndexBuffer::~CHardwareIndexBuffer()
 {
-	GetRenderSystem().GetHardwareBufferMgr()._notifyIndexBufferDestroyed(this);
+	if (m_pHardwareBufferMgr)
+	{
+		m_pHardwareBufferMgr->_notifyIndexBufferDestroyed(this);
+	}
 	//HardwareBufferManager* mgr = HardwareBufferManager::getSingletonPtr();
 	//if (mgr)
 	//{

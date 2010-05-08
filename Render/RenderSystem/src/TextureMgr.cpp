@@ -14,6 +14,7 @@ CTexture* CTextureMgr::createTexture()
 	CTexture* pTex = newTexture();
 	if (pTex)
 	{
+		pTex->setTextureMgr(this);
 		m_setTextureList.insert(pTex);
 	}
 	return pTex;

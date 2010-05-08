@@ -49,6 +49,9 @@ protected:
 	void	reset();
 	void	load();
 	bool	isLoaded()	{return m_bLoaded;}
+
+	void	setTextureMgr(CTextureMgr* pTextureMgr);
+protected:
 	std::string			m_strFilename;
 	bool				m_bLoaded;
 	// 数据备份
@@ -61,4 +64,5 @@ protected:
 	TEX_TYPE			m_eTexType;
 	// texture wrapping
 	bool bSwrap, bTwrap;
+	CTextureMgr*		m_pTextureMgr;
 };

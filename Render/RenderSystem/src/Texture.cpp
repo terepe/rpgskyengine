@@ -258,13 +258,17 @@ m_bLoaded(false),
 m_nLevels(0),
 m_nWidth(0),
 m_nHeight(0),
-m_eTexType(TEX_TYPE_UNKNOWN)
+m_eTexType(TEX_TYPE_UNKNOWN),
+m_pTextureMgr(NULL)
 {
 }
 
 CTexture::~CTexture(void)
 {
-	GetRenderSystem().GetTextureMgr().remove(this);
+	if (m_pTextureMgr)
+	{
+		m_pTextureMgr->remove(this);
+	}
 }
 
 void CTexture::load()
@@ -274,6 +278,10 @@ void CTexture::load()
 		createTextureFromFile(m_strFilename,m_nLevels);
 		m_bLoaded = true;
 	}
+}
+void CTexture::setTextureMgr(CTextureMgr* pTextureMgr)
+{
+	m_pTextureMgr = pTextureMgr;
 }
 
 #include "FileSystem.h"
