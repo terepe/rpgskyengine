@@ -41,6 +41,7 @@ public:
 
 	virtual bool isCombo(){return true;}
 
+	virtual void loadString(const std::string& strFilename);
 	virtual void XMLParse(TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnChildSize(const CRect<int>& rc);
