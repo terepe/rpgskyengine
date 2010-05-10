@@ -203,6 +203,25 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 		pControlElement = pControlElement->NextSiblingElement("element");
 	}
 }
+
+#include "IniFile.h"
+void CUICombo::loadString(const std::string& strFilename)
+{
+	for(std::vector<CUIControl*>::iterator it=m_Controls.begin(); it != m_Controls.end(); it++)
+	{
+		std::string strText = IniGetStr(strFilename.c_str(),m_strID.c_str(),("TEXT_"+(*it)->GetID()).c_str());
+		if (strText.length()>0)
+		{
+			(*it)->SetText(s2ws(strText));
+		}
+		std::string strTip = IniGetStr(strFilename.c_str(),m_strID.c_str(),("TIP_"+(*it)->GetID()).c_str());
+		if (strTip.length()>0)
+		{
+			(*it)->SetTip(s2ws(strTip));
+		}
+	}
+}
+
 #include "IORead.h"
 bool CUICombo::LoadXml(const std::string& strFilename, const std::string& strDialog)
 {
