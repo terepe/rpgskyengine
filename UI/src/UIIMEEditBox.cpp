@@ -66,15 +66,15 @@ void CUIIMEEditBox::UpdateRects()
     // Temporary adjust m_width so that CUIEditBox can compute
     // the correct rects for its rendering since we need to make space
     // for the indicator button
-    int nWidth = m_width;
-    m_width -= m_nIndicatorWidth; // Make room for the indicator button
-    CUIEditBox::UpdateRects();
-    m_width = nWidth;  // Restore
+ //   int nWidth = m_width;
+ //   m_width -= m_nIndicatorWidth; // Make room for the indicator button
+	CUIEditBox::UpdateRects();
+ //   m_width = nWidth;  // Restore
 
     // Compute the indicator button rectangle
-    SetRect(&m_rcIndicator, m_rcBoundingBox.right, m_rcBoundingBox.top, m_x + m_width, m_rcBoundingBox.bottom);
+ //   SetRect(&m_rcIndicator, m_rcBoundingBox.right, m_rcBoundingBox.top, m_x + m_width, m_rcBoundingBox.bottom);
 //    InflateRect(&m_rcIndicator, -m_nBorder, -m_nBorder);
-    m_rcBoundingBox.right = m_rcBoundingBox.left + m_width;
+ //   m_rcBoundingBox.right = m_rcBoundingBox.left + m_width;
 }
 
 
@@ -783,27 +783,27 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     rc.set(CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y + m_rcBoundingBox.bottom - m_rcBoundingBox.top,
                   CIME::s_ptCompString.x + nXComp + nWidthRequired, CIME::s_ptCompString.y + m_rcBoundingBox.bottom - m_rcBoundingBox.top + nHeightRequired);
     // if the right edge is cut off, move it left.
-    if(rc.right > m_pParentDialog->GetWidth())
+   /* if(rc.right > m_pParentDialog->GetWidth())
     {
         rc.left -= rc.right - m_pParentDialog->GetWidth();
         rc.right = m_pParentDialog->GetWidth();
     }
     if(rc.bottom <= m_pParentDialog->GetHeight())
         bHasPosition = true;
-
+*/
     // Top
     if(!bHasPosition)
     {
         rc.set(CIME::s_ptCompString.x + nXComp, CIME::s_ptCompString.y - nHeightRequired,
                       CIME::s_ptCompString.x + nXComp + nWidthRequired, CIME::s_ptCompString.y);
         // if the right edge is cut off, move it left.
-        if(rc.right > m_pParentDialog->GetWidth())
+  /*      if(rc.right > m_pParentDialog->GetWidth())
         {
             rc.left -= rc.right - m_pParentDialog->GetWidth();
             rc.right = m_pParentDialog->GetWidth();
         }
         if(rc.top >= 0)
-            bHasPosition = true;
+            bHasPosition = true;*/
     }
 
     // Right
@@ -813,8 +813,8 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
         CIME::s_CompString.CPtoX(CIME::s_nCompCaret, TRUE, nXCompTrail);
         rc.set(CIME::s_ptCompString.x + nXCompTrail, 0,
                       CIME::s_ptCompString.x + nXCompTrail + nWidthRequired, nHeightRequired);
-        if(rc.right <= m_pParentDialog->GetWidth())
-            bHasPosition = true;
+       /* if(rc.right <= m_pParentDialog->GetWidth())
+            bHasPosition = true;*/
     }
 
     // Left
