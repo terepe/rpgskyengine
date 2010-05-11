@@ -52,8 +52,8 @@ void CUIGrid::UpdateRects()
 	m_rcText.InflateRect(-m_nMargin, 0);
 
 	// Update the scrollbar's rects
-	m_ScrollBar.SetLocation(m_rcBoundingBox.right - m_nSBWidth, m_rcBoundingBox.top);
-	m_ScrollBar.SetSize(m_nSBWidth, m_height);
+	//m_ScrollBar.SetLocation(m_rcBoundingBox.right - m_nSBWidth, m_rcBoundingBox.top);
+	//m_ScrollBar.SetSize(m_nSBWidth, m_height);
 	{
 		m_ScrollBar.SetPageSize(m_rcText.getHeight() / UIGraph::GetFontSize());
 

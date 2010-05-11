@@ -21,7 +21,7 @@ void UISetHWND(HWND hWnd);
 #define ALIGN_RIGHT						0x00000002
 #define ALIGN_VCENTER					0x00000004
 #define ALIGN_BOTTOM					0x00000008
-inline uint32 StrToAlign(std::string& strAlign);
+//inline uint32 StrToAlign(std::string& strAlign);
 
 #ifndef SPI_GETWHEELSCROLLLINES
 #define SPI_GETWHEELSCROLLLINES    0x0068
@@ -162,8 +162,8 @@ public:
 	void SetAlign(uint32 uAlign);
 	void setOffset(const CRect<int>& rc);
 
-	int GetWidth() { return m_width; }
-	int GetHeight() { return m_height; }
+	//int GetWidth() { return m_width; }
+	//int GetHeight() { return m_height; }
 
 	void SetHotkey(std::string& strHotkey);
 	void SetHotkey(UINT nHotkey) { m_nHotkey = nHotkey; }
@@ -194,12 +194,8 @@ public:
 	bool m_bIsDefault;              // Is the default control
 
 	// Size, scale, and positioning members
-	int m_x, m_y;
-	int m_width, m_height;
-
-	int m_nPercentWidth;
-	int m_nPercentHeight;
-	uint32 m_uAlign;
+	//int m_x, m_y;
+	//int m_width, m_height;
 
 	CUIStyle m_Style;
 
@@ -220,5 +216,6 @@ protected:
 	bool				m_bEnabled;			// Enabled/disabled flag
 
 	CRect<int>			m_rcBoundingBox;	// Rectangle defining the active region of the control
+	CRect<int>			m_rcScale;
 	CRect<int>			m_rcOffset;
 };
