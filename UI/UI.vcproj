@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\UIComboVec3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\UIControl.h"
 				>
 			</File>
@@ -313,6 +317,10 @@
 			</File>
 			<File
 				RelativePath=".\src\UIComboNumber.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\UIComboVec3D.cpp"
 				>
 			</File>
 			<File

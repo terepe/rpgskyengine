@@ -16,6 +16,7 @@
 #include "UIDisplay.h"
 #include "UIComboNumber.h"
 #include "UIComboColor.h"
+#include "UIComboVec3D.h"
 #include "tinyxml.h"
 
 std::string g_strDialogResFilename;
@@ -179,6 +180,10 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 			else if(strElement=="color")
 			{
 				pControl =  new CUIComboColor();
+			}
+			else if(strElement=="vec3d")
+			{
+				pControl =  new CUIComboVec3D();
 			}
 			else
 			{
