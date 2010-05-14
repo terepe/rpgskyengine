@@ -26,7 +26,7 @@ void ObjectTree::clearObjects()
 	m_setObjet.clear();
 	if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			pChild[i].clearObjects();
 		}
@@ -108,7 +108,7 @@ void ObjectTree::getObjectsByBBox(const BBox& box,const std::vector<CMapObj*>& s
 void ObjectTree::getObjects(DEQUE_MAPOBJ& setObject)
 {
 	setObject.insert(setObject.end(), m_setObjet.begin(), m_setObjet.end());
-	for (size_t i=0;i<2;++i)
+	for (size_t i=0;i<8;++i)
 	{
 		if(pChild != NULL)
 			pChild[i].getObjects(setObject);
@@ -125,7 +125,7 @@ void ObjectTree::getObjectsByPos(Vec3D vPos, DEQUE_MAPOBJ& setObject)
 	}
 	if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			pChild[i].getObjectsByPos(vPos,setObject);
 		}
@@ -144,7 +144,7 @@ void ObjectTree::getObjectsByCell(Pos2D posCell, DEQUE_MAPOBJ& setObject)
 	}
 	if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			pChild[i].getObjectsByCell(posCell,setObject);
 		}
@@ -170,7 +170,7 @@ void ObjectTree::getObjectsByFrustum(const CFrustum& frustum, DEQUE_MAPOBJ& setO
 		}
 		if (pChild)
 		{
-			for (size_t i=0;i<2;++i)
+			for (size_t i=0;i<8;++i)
 			{
 				pChild[i].getObjectsByFrustum(frustum, setObject);
 			}
@@ -185,7 +185,7 @@ bool ObjectTree::addObject(CMapObj* pObject)
 	{
 		if (pChild)
 		{
-			for (size_t i=0;i<2;++i)
+			for (size_t i=0;i<8;++i)
 			{
 				if (pChild[i].addObject(pObject))
 				{
@@ -219,7 +219,7 @@ bool ObjectTree::eraseObject(CMapObj* pObject)
 	}
 	else if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			if (pChild[i].eraseObject(pObject))
 			{
@@ -249,7 +249,7 @@ ObjectTree* ObjectTree::find(CMapObj* pObject)
 	}
 	else if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			ObjectTree* pParentObjectTree = pChild[i].find(pObject);
 			if (pParentObjectTree)
@@ -264,28 +264,52 @@ ObjectTree* ObjectTree::find(CMapObj* pObject)
 void ObjectTree::create(const BBox& box, size_t size)
 {
 	bbox = box;
-	int nWidth = int((bbox.vMax.x-bbox.vMin.x)/size);
-	int nHeight = int((bbox.vMax.z-bbox.vMin.z)/size);
-	if (1<nWidth||1<nHeight)
+	if (size>0)
 	{
-		S_DELS(pChild)
-			pChild = new ObjectTree[2];
-		BBox box1 = bbox;
-		BBox box2 = bbox;
-		if (nWidth>=nHeight)
+		size--;
+		S_DELS(pChild);
+		pChild = new ObjectTree[8];
+		BBox childBoxs[8];
+		for (size_t i=0;i<8;++i)
 		{
-			float fX = bbox.vMin.x+(int(nWidth/2))*size;
-			box1.vMax.x = fX;
-			box2.vMin.x = fX;
+			childBoxs[i] = bbox;
 		}
-		else
+		Vec3D vMiddle = (box.vMax+box.vMin)*0.5f;
+		childBoxs[0].vMin.z=vMiddle.z;
+		childBoxs[1].vMin.z=vMiddle.z;
+		childBoxs[2].vMin.z=vMiddle.z;
+		childBoxs[3].vMin.z=vMiddle.z;
+
+		childBoxs[4].vMax.z=vMiddle.z;
+		childBoxs[5].vMax.z=vMiddle.z;
+		childBoxs[6].vMax.z=vMiddle.z;
+		childBoxs[7].vMax.z=vMiddle.z;
+
+		childBoxs[0].vMin.z=vMiddle.y;
+		childBoxs[1].vMin.z=vMiddle.y;
+		childBoxs[4].vMin.z=vMiddle.y;
+		childBoxs[5].vMin.z=vMiddle.y;
+
+		childBoxs[2].vMax.z=vMiddle.y;
+		childBoxs[3].vMax.z=vMiddle.y;
+		childBoxs[6].vMax.z=vMiddle.y;
+		childBoxs[7].vMax.z=vMiddle.y;
+
+
+		childBoxs[0].vMin.z=vMiddle.x;
+		childBoxs[2].vMin.z=vMiddle.x;
+		childBoxs[5].vMin.z=vMiddle.x;
+		childBoxs[7].vMin.z=vMiddle.x;
+
+		childBoxs[1].vMax.z=vMiddle.x;
+		childBoxs[3].vMax.z=vMiddle.x;
+		childBoxs[5].vMax.z=vMiddle.x;
+		childBoxs[6].vMax.z=vMiddle.x;
+
+		for (size_t i=0;i<8;++i)
 		{
-			float fZ = bbox.vMin.z+(int(nHeight/2))*size;
-			box1.vMax.z = fZ;
-			box2.vMin.z = fZ;
+			pChild[i].create(childBoxs[i], size);
 		}
-		pChild[0].create(box1, size);
-		pChild[1].create(box2, size);
 	}
 }
 
@@ -297,7 +321,7 @@ void ObjectTree::process()
 	}
 	if (pChild)
 	{
-		for (size_t i=0;i<2;++i)
+		for (size_t i=0;i<8;++i)
 		{
 			pChild[i].process();
 		}
