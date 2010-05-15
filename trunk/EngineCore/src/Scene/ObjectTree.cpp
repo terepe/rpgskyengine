@@ -285,26 +285,26 @@ void ObjectTree::create(const BBox& box, size_t size)
 		childBoxs[6].vMax.z=vMiddle.z;
 		childBoxs[7].vMax.z=vMiddle.z;
 
-		childBoxs[0].vMin.z=vMiddle.y;
-		childBoxs[1].vMin.z=vMiddle.y;
-		childBoxs[4].vMin.z=vMiddle.y;
-		childBoxs[5].vMin.z=vMiddle.y;
+		childBoxs[0].vMin.y=vMiddle.y;
+		childBoxs[1].vMin.y=vMiddle.y;
+		childBoxs[4].vMin.y=vMiddle.y;
+		childBoxs[5].vMin.y=vMiddle.y;
 
-		childBoxs[2].vMax.z=vMiddle.y;
-		childBoxs[3].vMax.z=vMiddle.y;
-		childBoxs[6].vMax.z=vMiddle.y;
-		childBoxs[7].vMax.z=vMiddle.y;
+		childBoxs[2].vMax.y=vMiddle.y;
+		childBoxs[3].vMax.y=vMiddle.y;
+		childBoxs[6].vMax.y=vMiddle.y;
+		childBoxs[7].vMax.y=vMiddle.y;
 
 
-		childBoxs[0].vMin.z=vMiddle.x;
-		childBoxs[2].vMin.z=vMiddle.x;
-		childBoxs[5].vMin.z=vMiddle.x;
-		childBoxs[7].vMin.z=vMiddle.x;
+		childBoxs[0].vMin.x=vMiddle.x;
+		childBoxs[2].vMin.x=vMiddle.x;
+		childBoxs[4].vMin.x=vMiddle.x;
+		childBoxs[6].vMin.x=vMiddle.x;
 
-		childBoxs[1].vMax.z=vMiddle.x;
-		childBoxs[3].vMax.z=vMiddle.x;
-		childBoxs[5].vMax.z=vMiddle.x;
-		childBoxs[6].vMax.z=vMiddle.x;
+		childBoxs[1].vMax.x=vMiddle.x;
+		childBoxs[3].vMax.x=vMiddle.x;
+		childBoxs[5].vMax.x=vMiddle.x;
+		childBoxs[7].vMax.x=vMiddle.x;
 
 		for (size_t i=0;i<8;++i)
 		{
