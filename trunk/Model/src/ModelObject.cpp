@@ -61,7 +61,11 @@ void CModelObject::create()
 			CSkeleton& skeleton = m_pModelData->m_Skeleton;
 			m_setBonesMatrix.resize(skeleton.m_Bones.size());
 			skeleton.CalcBonesMatrix("",0,m_setBonesMatrix);
+			long timeCount;
+			skeleton.getAnimation(0,m_strAnimName,timeCount);
 		}
+
+		
 
 		// Particles
 		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());

@@ -101,6 +101,10 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 	SetBlendFunc(material.bBlend, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
 	SetDepthBufferFunc(true,material.bDepthWrite);
 	SetLightingEnabled(material.bLightingEnabled);
+	if (material.bLightingEnabled)
+	{
+		SetMaterial(material.vAmbient,material.vDiffuse);
+	}
 	switch(material.uCull)
 	{
 	case 0:

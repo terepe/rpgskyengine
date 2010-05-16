@@ -110,6 +110,17 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 	}
 }
 
+void CSkeleton::calcBonesPoint(const std::vector<Matrix>& setBonesMatrix, std::vector<Vec3D>& setBonesPoint)const
+{
+	setBonesPoint.resize(setBonesMatrix.size());
+	for (uint32 i=0; i < m_Bones.size(); i++)
+	{
+		Matrix	mInvLocal = m_Bones[i].mInvLocal;
+		mInvLocal.Invert();
+		setBonesPoint[i]=setBonesMatrix[i]*mInvLocal*Vec3D(0,0,0);
+	}
+}
+
 void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 {
 	CRenderSystem& R = GetRenderSystem();
@@ -121,11 +132,14 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 	R.SetLightingEnabled(false);
 	R.SetTextureColorOP(0,TBOP_SOURCE2);
 	R.SetTextureAlphaOP(0,TBOP_DISABLE);
+
+	std::vector<Vec3D> setBonesPoint;
+	calcBonesPoint(setBonesMatrix, setBonesPoint);
 	for (uint32 i=0; i < m_Bones.size(); i++)
 	{
 		if (m_Bones[i].parent!=255)
 		{
-			G.DrawLine3D(setBonesMatrix[m_Bones[i].parent]*Vec3D(0,0,0),setBonesMatrix[i]*Vec3D(0,0,0),0xFFFFFFFF);
+			G.DrawLine3D(setBonesPoint[m_Bones[i].parent],setBonesPoint[i],0xFFFFFFFF);
 		}
 	}
 
@@ -137,7 +151,7 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 		if (m_Bones[i].parent!=255)
 		{
 			Pos2D posScreen;
-			R.world2Screen(setBonesMatrix[i]*Vec3D(0,0,0),posScreen);
+			R.world2Screen(setBonesPoint[i],posScreen);
 			GetTextRender().drawText(s2ws(m_Bones[i].strName),posScreen.x,posScreen.y);
 		}
 	}
