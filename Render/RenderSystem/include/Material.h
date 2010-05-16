@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Color.h"
 #include "Vec2D.h"
+#include "Vec4D.h"
 
 enum E_MATERIAL_RENDER_TYPE
 {
@@ -26,6 +27,8 @@ public:
 		uLightMap(-1),
 		uShader(-1),
 		bLightingEnabled(false),
+		vAmbient(0.6f,0.6f,0.6f,0.6f),
+		vDiffuse(0.6f,0.6f,0.6f,0.6f),
 		bDepthWrite(true),
 		bAlphaTest(false),
 		uAlphaTestValue(0x80),
@@ -167,6 +170,10 @@ public:
 	uint32	uReflection;		// nTexEnvironment
 	uint32	uLightMap;
 	uint32	uShader;			// shader
+
+	// color
+	Vec4D	vAmbient;
+	Vec4D	vDiffuse;
 
 	// other
 	bool	bLightingEnabled;

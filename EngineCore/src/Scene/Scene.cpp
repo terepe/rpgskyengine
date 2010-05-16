@@ -154,11 +154,15 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 					{
 						Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D((*it)->getPos().x,(*it)->getPos().z));
 						vColor.w=1.0f;
-						GetRenderSystem().SetMaterial(vColor*0.5f,vColor+0.3f);
+
+					
+						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+							GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					else
 					{
-						GetRenderSystem().SetMaterial(Vec4D(0.3f,0.3f,0.3f,1.0f),Vec4D(0.6f,0.6f,0.6f,1.0f));
+						DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+						GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					(*it)->render(MATERIAL_RENDER_GEOMETRY);
 				}
@@ -167,7 +171,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 				return;
 			}
 		}
-		GetRenderSystem().SetMaterial(Vec4D(0.3f,0.3f,0.3f,1.0f),Vec4D(0.6f,0.6f,0.6f,1.0f));
+		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+		GetRenderSystem().SetDirectionalLight(0,light);
 		if (m_pObjectFocus)
 		{
 			m_pObjectFocus->renderFocus();
