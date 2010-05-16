@@ -273,7 +273,16 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 			}
 			else
 			{
-				return false;
+				R.SetTextureColorOP(0,TBOP_SOURCE2);
+				if (material.bBlend)
+				{
+					R.SetTextureAlphaOP(0,TBOP_SOURCE2);
+				}
+				else
+				{
+					R.SetTextureAlphaOP(0,TBOP_DISABLE);
+				}
+				//return false;
 			}
 		}
 	}
