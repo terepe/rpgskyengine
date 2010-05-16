@@ -8,20 +8,15 @@ void CBoundMesh::draw()const
 	if (indices.size())
 	{
 		CRenderSystem& R = GetRenderSystem();
-		R.SetAlphaTestFunc(false);
-		R.SetBlendFunc(false);
-		R.SetDepthBufferFunc(true, true);
-		R.SetLightingEnabled(false);
-
-		R.SetTextureFactor(0xFFFFFFFF);
-		R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_TFACTOR);
-		R.SetTextureAlphaOP(0,TBOP_DISABLE);
-
-		R.SetFillMode(FILL_WIREFRAME);
-		R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST,
-			0, indices.size(), indices.size()/3,
-			&indices[0], &pos[0], sizeof(Vec3D));
-		R.SetFillMode(FILL_SOLID);
+		if (R.prepareMaterial("BoundMesh"))
+		{
+			R.SetFillMode(FILL_WIREFRAME);
+			R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST,
+				0, indices.size(), indices.size()/3,
+				&indices[0], &pos[0], sizeof(Vec3D));
+			R.SetFillMode(FILL_SOLID);
+			R.finishMaterial();
+		}
 	}
 }
 
@@ -778,43 +773,44 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 		init();
 	}
 	CRenderSystem& R = GetRenderSystem();
+	CGraphics& G=GetGraphics();
 
 	R.setWorldMatrix(getWorldMatrix());
-	R.SetDepthBufferFunc(true,true);
-	R.SetAlphaTestFunc(false);
-	R.SetBlendFunc(false);
-	R.SetLightingEnabled(false);
-	R.SetTextureColorOP(0,TBOP_SOURCE1, TBS_DIFFUSE);
-	R.SetTextureAlphaOP(0,TBOP_DISABLE);
-	SetMeshSource();
-	draw();
 
-	CGraphics& G=GetGraphics();
-	G.DrawLine3D(m_CoordLines[CLT_X].vBegin,m_CoordLines[CLT_X].vEnd,vCoordShow.x>0?0xFFFF00:0xFFFF0000);
-	G.DrawLine3D(m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFFFF0000);
-	G.DrawLine3D(m_CoordLines[CLT_X_Z].vBegin,m_CoordLines[CLT_X_Z].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFFFF0000);
-
-	G.DrawLine3D(m_CoordLines[CLT_Y].vBegin,m_CoordLines[CLT_Y].vEnd,vCoordShow.y>0?0xFFFF00:0xFF00FF00);
-	G.DrawLine3D(m_CoordLines[CLT_Y_X].vBegin,m_CoordLines[CLT_Y_X].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFF00FF00);
-	G.DrawLine3D(m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF00FF00);
-
-	G.DrawLine3D(m_CoordLines[CLT_Z].vBegin,m_CoordLines[CLT_Z].vEnd,vCoordShow.z>0?0xFFFF00:0xFF0000FF);
-	G.DrawLine3D(m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
-	G.DrawLine3D(m_CoordLines[CLT_Z_Y].vBegin,m_CoordLines[CLT_Z_Y].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
-
-	R.SetBlendFunc(true);
-	R.SetTextureAlphaOP(0,TBOP_SOURCE1, TBS_DIFFUSE);
-	if (vCoordShow.x>0&&vCoordShow.y>0)
+	if (R.prepareMaterial("Coordinate1"))
 	{
-		G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,m_CoordLines[CLT_Y_X].vBegin,0x44FFFF00);
+		SetMeshSource();
+		draw();
+
+		G.DrawLine3D(m_CoordLines[CLT_X].vBegin,m_CoordLines[CLT_X].vEnd,vCoordShow.x>0?0xFFFF00:0xFFFF0000);
+		G.DrawLine3D(m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFFFF0000);
+		G.DrawLine3D(m_CoordLines[CLT_X_Z].vBegin,m_CoordLines[CLT_X_Z].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFFFF0000);
+
+		G.DrawLine3D(m_CoordLines[CLT_Y].vBegin,m_CoordLines[CLT_Y].vEnd,vCoordShow.y>0?0xFFFF00:0xFF00FF00);
+		G.DrawLine3D(m_CoordLines[CLT_Y_X].vBegin,m_CoordLines[CLT_Y_X].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFF00FF00);
+		G.DrawLine3D(m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF00FF00);
+
+		G.DrawLine3D(m_CoordLines[CLT_Z].vBegin,m_CoordLines[CLT_Z].vEnd,vCoordShow.z>0?0xFFFF00:0xFF0000FF);
+		G.DrawLine3D(m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
+		G.DrawLine3D(m_CoordLines[CLT_Z_Y].vBegin,m_CoordLines[CLT_Z_Y].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
+
+		R.finishMaterial();
 	}
-	if (vCoordShow.y>0&&vCoordShow.z>0)
+	if (R.prepareMaterial("Coordinate2"))
 	{
-		G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,m_CoordLines[CLT_Z_Y].vBegin,0x44FFFF00);
-	}
-	if (vCoordShow.z>0&&vCoordShow.x>0)
-	{
-		G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,m_CoordLines[CLT_X_Z].vBegin,0x44FFFF00);
+		if (vCoordShow.x>0&&vCoordShow.y>0)
+		{
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,m_CoordLines[CLT_Y_X].vBegin,0x44FFFF00);
+		}
+		if (vCoordShow.y>0&&vCoordShow.z>0)
+		{
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,m_CoordLines[CLT_Z_Y].vBegin,0x44FFFF00);
+		}
+		if (vCoordShow.z>0&&vCoordShow.x>0)
+		{
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,m_CoordLines[CLT_X_Z].vBegin,0x44FFFF00);
+		}
+		R.finishMaterial();
 	}
 }
 

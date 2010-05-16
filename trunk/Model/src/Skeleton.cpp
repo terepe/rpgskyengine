@@ -126,21 +126,19 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 	CRenderSystem& R = GetRenderSystem();
 	CGraphics& G = GetGraphics();
 
-	R.SetAlphaTestFunc(false);
-	R.SetBlendFunc(false);
-	R.SetDepthBufferFunc(false, false);
-	R.SetLightingEnabled(false);
-	R.SetTextureColorOP(0,TBOP_SOURCE2);
-	R.SetTextureAlphaOP(0,TBOP_DISABLE);
-
 	std::vector<Vec3D> setBonesPoint;
 	calcBonesPoint(setBonesMatrix, setBonesPoint);
-	for (uint32 i=0; i < m_Bones.size(); i++)
+
+	if (R.prepareMaterial("Skeleton"))
 	{
-		if (m_Bones[i].parent!=255)
+		for (uint32 i=0; i < m_Bones.size(); i++)
 		{
-			G.DrawLine3D(setBonesPoint[m_Bones[i].parent],setBonesPoint[i],0xFFFFFFFF);
+			if (m_Bones[i].parent!=255)
+			{
+				G.DrawLine3D(setBonesPoint[m_Bones[i].parent],setBonesPoint[i],0xFFFFFFFF);
+			}
 		}
+		R.finishMaterial();
 	}
 
 	R.SetBlendFunc(true);
