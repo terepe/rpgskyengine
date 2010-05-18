@@ -47,6 +47,8 @@ void CSceneEffect::clearTextures()
 void CSceneEffect::Reset(const CRect<int>& rc)
 {
 	clearTextures();
+
+	m_Rect = rc;
 	int nWidth = rc.getWidth();
 	int nHeight = rc.getHeight();
 
@@ -58,62 +60,44 @@ void CSceneEffect::Reset(const CRect<int>& rc)
 
 	m_pGlowRenderTarget = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
 
-	m_pSceneTexture = R.GetTextureMgr().CreateRenderTarget(nWidth*2,nHeight*2);
+	m_pSceneTexture = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
+	m_pTextureScene1 = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
 
 	m_pSceneCopyTexture = R.GetTextureMgr().CreateRenderTarget(nWidth,nHeight);
 
 	//m_pExposureTexture = R.GetTextureMgr().CreateRenderTarget(1,1);
-	//m_pBackTexture = R.GetTextureMgr().CreateRenderTarget(512, 512);//.CreateDynamicTexture(512,512);
+	m_pBackTexture = R.GetTextureMgr().CreateRenderTarget(512, 512);//.CreateDynamicTexture(512,512);
 
-	m_QuadVB[0].p = Vec4D(-0.5f,				(float)nHeight-0.5f,	0.0f, 1.0f);
-	m_QuadVB[1].p = Vec4D(-0.5f,				-0.5f,					0.0f, 1.0f);
-	m_QuadVB[2].p = Vec4D((float)nWidth-0.5f,	(float)nHeight-0.5f,	0.0f, 1.0f);
-	m_QuadVB[3].p = Vec4D((float)nWidth-0.5f,	- 0.5f,					0.0f, 1.0f);
-	//
-	m_BloomClearVB[0].p = Vec4D((float)nWidth,		(float)nHeight,		0.0f, 1.0f);
-	m_BloomClearVB[1].p = Vec4D(0.0f,				(float)nHeight,		0.0f, 1.0f);
-	m_BloomClearVB[2].p = Vec4D(0.0f,				(float)nHeight*2.0f,0.0f, 1.0f);
-	m_BloomClearVB[3].p = Vec4D((float)nWidth*2.0f,	(float)nHeight*2,	0.0f, 1.0f);
-	m_BloomClearVB[4].p = Vec4D((float)nWidth*2.0f,	0.0f,				0.0f, 1.0f);
-	m_BloomClearVB[5].p = Vec4D((float)nWidth,		0.0f,				0.0f, 1.0f);
-	m_BloomClearVB[0].c = 0;
-	m_BloomClearVB[1].c = 0;
-	m_BloomClearVB[2].c = 0;
-	m_BloomClearVB[3].c = 0;
-	m_BloomClearVB[4].c = 0;
-	m_BloomClearVB[5].c = 0;
 
 	float fU0 = 0.0f;
 	float fV0 = 0.0f;
-	float fU1 = 0.5f;
-	float fV1 = 0.5f;
+	float fU1 = 1.0f;
+	float fV1 = 1.0f;
 
 	float fX0 = - 0.5f;
 	float fY0 = - 0.5f;
 	float fX1 =(float)nWidth - 0.5f;
 	float fY1 =(float)nHeight - 0.5f;
-	float fOffset = 1;
+
+	m_QuadVB[0].t = Vec2D(fU0, fV1);
+	m_QuadVB[1].t = Vec2D(fU0, fV0);
+	m_QuadVB[2].t = Vec2D(fU1, fV1);
+	m_QuadVB[3].t = Vec2D(fU1, fV0);
+
+	m_QuadVB[0].p = Vec4D(fX0, fY1, 0.0f, 1.0f);
+	m_QuadVB[1].p = Vec4D(fX0, fY0, 0.0f, 1.0f);
+	m_QuadVB[2].p = Vec4D(fX1, fY1, 0.0f, 1.0f);
+	m_QuadVB[3].p = Vec4D(fX1, fY0, 0.0f, 1.0f);
+
+	m_FloodLumVB[0].t = Vec2D(fU0, fV1);
+	m_FloodLumVB[1].t = Vec2D(fU0, fV0);
+	m_FloodLumVB[2].t = Vec2D(fU1, fV1);
+	m_FloodLumVB[3].t = Vec2D(fU1, fV0);
 
 	m_FloodLumVB[0].p = Vec4D(fX0, fY1, 0.0f, 1.0f);
 	m_FloodLumVB[1].p = Vec4D(fX0, fY0, 0.0f, 1.0f);
 	m_FloodLumVB[2].p = Vec4D(fX1, fY1, 0.0f, 1.0f);
 	m_FloodLumVB[3].p = Vec4D(fX1, fY0, 0.0f, 1.0f);
-
-	m_BloomVB[0].t = Vec2D(fU0, fV1);
-	m_BloomVB[1].t = Vec2D(fU0, fV0);
-	m_BloomVB[2].t = Vec2D(fU1, fV1);
-	m_BloomVB[3].t = Vec2D(fU1, fV0);
-
-	m_BloomVB[0].p = Vec4D(fX0, fY1, 0.0f, 1.0f);
-	m_BloomVB[1].p = Vec4D(fX0, fY0, 0.0f, 1.0f);
-	m_BloomVB[2].p = Vec4D(fX1, fY1, 0.0f, 1.0f);
-	m_BloomVB[3].p = Vec4D(fX1, fY0, 0.0f, 1.0f);
-
-	DWORD color = (51<<24)+0x808080;
-	m_BloomVB[0].c = color;
-	m_BloomVB[1].c = color;
-	m_BloomVB[2].c = color;
-	m_BloomVB[3].c = color;
 
 	DWORD BloomWeights[7] = 
 	{
@@ -128,177 +112,96 @@ void CSceneEffect::Reset(const CRect<int>& rc)
 
 	float fBloomWeights[7] = 
 	{
-		0.199471f,
+		0.8f,
+		0.08f,
+		0.04f,
+		0.03f,
+		0.026f,
+		0.018f,
+		0.013f
+		/*0.199471f,
 		0.176033f,
 		0.120985f,
 		0.064759f,
 		0.026995f,
 		0.008764f,
-		0.002216f,
+		0.002216f,*/
 	};
 
+	for (size_t i=0;i<13;++i)
+	{
+		int nBaseID = i*6;
+
+		m_BloomHVB[nBaseID+0].t = Vec2D(fU0, fV1);
+		m_BloomHVB[nBaseID+1].t = Vec2D(fU0, fV0);
+		m_BloomHVB[nBaseID+2].t = Vec2D(fU1, fV0);
+		m_BloomHVB[nBaseID+3].t = Vec2D(fU0, fV1);
+		m_BloomHVB[nBaseID+4].t = Vec2D(fU1, fV0);
+		m_BloomHVB[nBaseID+5].t = Vec2D(fU1, fV1);
+
+		m_BloomVVB[nBaseID+0].t = Vec2D(fU0, fV1);
+		m_BloomVVB[nBaseID+1].t = Vec2D(fU0, fV0);
+		m_BloomVVB[nBaseID+2].t = Vec2D(fU1, fV0);
+		m_BloomVVB[nBaseID+3].t = Vec2D(fU0, fV1);
+		m_BloomVVB[nBaseID+4].t = Vec2D(fU1, fV0);
+		m_BloomVVB[nBaseID+5].t = Vec2D(fU1, fV1);
+
+		m_BloomHVB[nBaseID+0].p = Vec4D(fX0,  fY1, 0.0f, 1.0f);
+		m_BloomHVB[nBaseID+1].p = Vec4D(fX0,  fY0, 0.0f, 1.0f);
+		m_BloomHVB[nBaseID+2].p = Vec4D(fX1,  fY0, 0.0f, 1.0f);
+		m_BloomHVB[nBaseID+3].p = Vec4D(fX0,  fY1, 0.0f, 1.0f);
+		m_BloomHVB[nBaseID+4].p = Vec4D(fX1,  fY0, 0.0f, 1.0f);
+		m_BloomHVB[nBaseID+5].p = Vec4D(fX1,  fY1, 0.0f, 1.0f);
+
+		m_BloomVVB[nBaseID+0].p = Vec4D(fX0,  fY1, 0.0f, 1.0f);
+		m_BloomVVB[nBaseID+1].p = Vec4D(fX0,  fY0, 0.0f, 1.0f);
+		m_BloomVVB[nBaseID+2].p = Vec4D(fX1,  fY0, 0.0f, 1.0f);
+		m_BloomVVB[nBaseID+3].p = Vec4D(fX0,  fY1, 0.0f, 1.0f);
+		m_BloomVVB[nBaseID+4].p = Vec4D(fX1,  fY0, 0.0f, 1.0f);
+		m_BloomVVB[nBaseID+5].p = Vec4D(fX1,  fY1, 0.0f, 1.0f);
+	}
 	int nBaseID = 0;
+	float fOffset = 1;
 	for(int i = 0; i < 7; i++)
 	{
 		DWORD Alpha =254.0f*fBloomWeights[i]+1;
 		DWORD color = (255<<24)+(Alpha<<16)+(Alpha<<8)+Alpha;
 		if (i == 0)
 		{
-
 			for (int n = 0; n < 6; n++)
 			{
 				m_BloomHVB[nBaseID+n].c = color;
 				m_BloomVVB[nBaseID+n].c = color;
 			}
-
-			fU0 = 0.0;
-			fV0 = 0.0;
-			fU1 = 0.5;
-			fV1 = 0.5;
-
-			m_BloomHVB[nBaseID+0].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+1].t = Vec2D(fU0, fV0);
-			m_BloomHVB[nBaseID+2].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+3].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+4].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+5].t = Vec2D(fU1, fV1);
-
-			fU0 = 0.5;
-			fV0 = 0.0;
-			fU1 = 1.0;
-			fV1 = 0.5;
-
-			m_BloomVVB[nBaseID+0].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+1].t = Vec2D(fU0, fV0);
-			m_BloomVVB[nBaseID+2].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+3].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+4].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+5].t = Vec2D(fU1, fV1);
-
-			fX0 = nWidth - 0.5f;
-			fY0 = - 0.5f;
-			fX1 = nWidth*2 - 0.5f;
-			fY1 = nHeight - 0.5f;
-
-			m_BloomHVB[nBaseID+0].p = Vec4D(fX0-fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+1].p = Vec4D(fX0-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+2].p = Vec4D(fX1-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+3].p = Vec4D(fX0-fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+4].p = Vec4D(fX1-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+5].p = Vec4D(fX1-fOffset*i,  fY1, 0.0f, 1.0f);
-
-			fX0 = - 0.5f;
-			fY0 = (float)nHeight - 0.5f;
-			fX1 = (float)nWidth - 0.5f;
-			fY1 = (float)nHeight*2.0f - 0.5f;
-
-			m_BloomVVB[nBaseID+0].p = Vec4D(fX0,  fY1-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+1].p = Vec4D(fX0,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+2].p = Vec4D(fX1,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+3].p = Vec4D(fX0,  fY1-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+4].p = Vec4D(fX1,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+5].p = Vec4D(fX1,  fY1-fOffset*i, 0.0f, 1.0f);
-
 			nBaseID += 6;
 		}
 		else
 		{
-
 			for (int n = 0; n < 12; n++)
 			{
 				m_BloomHVB[nBaseID+n].c = color;
 				m_BloomVVB[nBaseID+n].c = color;
 			}
-			fU0 = 0.0;
-			fV0 = 0.0;
-			fU1 = 0.5;
-			fV1 = 0.5;
-
-			m_BloomHVB[nBaseID+0].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+1].t = Vec2D(fU0, fV0);
-			m_BloomHVB[nBaseID+2].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+3].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+4].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+5].t = Vec2D(fU1, fV1);
-			m_BloomHVB[nBaseID+6].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+7].t = Vec2D(fU0, fV0);
-			m_BloomHVB[nBaseID+8].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+9].t = Vec2D(fU0, fV1);
-			m_BloomHVB[nBaseID+10].t = Vec2D(fU1, fV0);
-			m_BloomHVB[nBaseID+11].t = Vec2D(fU1, fV1);
-
-			fU0 = 0.5;
-			fV0 = 0.0;
-			fU1 = 1.0;
-			fV1 = 0.5;
-
-			m_BloomVVB[nBaseID+0].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+1].t = Vec2D(fU0, fV0);
-			m_BloomVVB[nBaseID+2].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+3].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+4].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+5].t = Vec2D(fU1, fV1);
-			m_BloomVVB[nBaseID+6].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+7].t = Vec2D(fU0, fV0);
-			m_BloomVVB[nBaseID+8].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+9].t = Vec2D(fU0, fV1);
-			m_BloomVVB[nBaseID+10].t = Vec2D(fU1, fV0);
-			m_BloomVVB[nBaseID+11].t = Vec2D(fU1, fV1);
-
-			fX0 = (float)nWidth - 0.5f;
-			fY0 = - 0.5f;
-			fX1 = (float)nWidth*2.0f - 0.5f;
-			fY1 = (float)nHeight - 0.5f;
-
-			m_BloomHVB[nBaseID+0].p = Vec4D(fX0-fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+1].p = Vec4D(fX0-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+2].p = Vec4D(fX1-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+3].p = Vec4D(fX0-fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+4].p = Vec4D(fX1-fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+5].p = Vec4D(fX1-fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+6].p = Vec4D(fX0+fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+7].p = Vec4D(fX0+fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+8].p = Vec4D(fX1+fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+9].p = Vec4D(fX0+fOffset*i,  fY1, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+10].p = Vec4D(fX1+fOffset*i,  fY0, 0.0f, 1.0f);
-			m_BloomHVB[nBaseID+11].p = Vec4D(fX1+fOffset*i,  fY1, 0.0f, 1.0f);
-
-			fX0 = - 0.5f;
-			fY0 = (float)nHeight - 0.5f;
-			fX1 = (float)nWidth - 0.5f;
-			fY1 = (float)nHeight*2 - 0.5f;
-
-			m_BloomVVB[nBaseID+0].p = Vec4D(fX0,  fY1-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+1].p = Vec4D(fX0,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+2].p = Vec4D(fX1,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+3].p = Vec4D(fX0,  fY1-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+4].p = Vec4D(fX1,  fY0-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+5].p = Vec4D(fX1,  fY1-fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+6].p = Vec4D(fX0,  fY1+fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+7].p = Vec4D(fX0,  fY0+fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+8].p = Vec4D(fX1,  fY0+fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+9].p = Vec4D(fX0,  fY1+fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+10].p = Vec4D(fX1,  fY0+fOffset*i, 0.0f, 1.0f);
-			m_BloomVVB[nBaseID+11].p = Vec4D(fX1,  fY1+fOffset*i, 0.0f, 1.0f);
-
+			for(size_t n=0;n<6;++n)
+			{
+				m_BloomHVB[nBaseID+n].p.x -= fOffset*i;
+			}
+			for(size_t n=6;n<12;++n)
+			{
+				m_BloomHVB[nBaseID+n].p.x += fOffset*i;
+			}
+			for(size_t n=0;n<6;++n)
+			{
+				m_BloomVVB[nBaseID+n].p.y -= fOffset*i;
+			}
+			for(size_t n=6;n<12;++n)
+			{
+				m_BloomVVB[nBaseID+n].p.y += fOffset*i;
+			}
 			nBaseID += 12;
 		}
 	}
 
-	fU0 = 0.0;
-	fV0 = 0.5;
-	fU1 = 0.5;
-	fV1 = 1.0;
-
-	m_QuadVB[0].t = Vec2D(fU0, fV1);
-	m_QuadVB[1].t = Vec2D(fU0, fV0);
-	m_QuadVB[2].t = Vec2D(fU1, fV1);
-	m_QuadVB[3].t = Vec2D(fU1, fV0);
-
-	m_FloodLumVB[0].t = Vec2D(fU0, fV1);
-	m_FloodLumVB[1].t = Vec2D(fU0, fV0);
-	m_FloodLumVB[2].t = Vec2D(fU1, fV1);
-	m_FloodLumVB[3].t = Vec2D(fU1, fV0);
 	m_bInitialized = true;
 }
 
@@ -401,9 +304,10 @@ void CSceneEffect::RenderBloom()
 {
 	CRenderSystem& R = GetRenderSystem();
 
+	
 	renderTargetBegin();
-	R.ClearBuffer(true, true, 0xFFFFFFFF);
-	renderTargetGlow();
+	//R.ClearBuffer(true, true, 0xFFFFFFFF);
+	//renderTargetGlow();
 	renderTargetBloom();
 	renderTargetEnd();
 	compose();
@@ -456,11 +360,10 @@ void CSceneEffect::renderTargetBegin()
 {
 	CRenderSystem& R = GetRenderSystem();
 	m_pRenderSystemTarget = R.GetRenderTarget();
-	R.SetRenderTarget(m_pSceneTexture);
 
-	R.SetCullingMode(CULL_NONE);
-	R.SetLightingEnabled(false);
-	R.SetDepthBufferFunc(false,false);
+	//CRect<int> rect(0,0,m_nWidth,m_nHeight);
+	//R.StretchRect(m_pRenderSystemTarget,&m_Rect,m_pSceneTexture,&rect, TEXF_POINT);
+	R.SetRenderTarget(m_pSceneTexture);
 }
 
 void CSceneEffect::renderTargetGlow()// not good
@@ -490,7 +393,7 @@ void CSceneEffect::renderTargetGlow()// not good
 		// Increase the contrast
 		//R.SetTextureColorOP(0,TBOP_DOTPRODUCT3,TBS_TEXTURE,TBS_DIFFUSE);
 		R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_TEXTURE);
-		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_BloomVB, sizeof(SceneBloomVertex));
+		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(SceneBloomVertex));
 
 		{
 			int nInvExposure= (int)(m_fAdaptedLum * m_fAdaptedLum * 255.0f);
@@ -500,7 +403,7 @@ void CSceneEffect::renderTargetGlow()// not good
 
 		// To reduce the brightness
 		R.SetTextureColorOP(0,TBOP_SUBTRACT,TBS_TEXTURE,TBS_TFACTOR);
-		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_BloomVB, sizeof(SceneBloomVertex));
+		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(SceneBloomVertex));
 
 
 		//R.SetBlendFunc(true,BLENDOP_ADD,SBF_ONE,SBF_ONE);
@@ -515,23 +418,27 @@ void CSceneEffect::renderTargetGlow()// not good
 void CSceneEffect::renderTargetBloom()
 {
 	CRenderSystem& R = GetRenderSystem();
-	R.SetBlendFunc(false);
-
-	R.SetTexture(0, m_pSceneTexture);
+	R.SetBlendFunc(true,BLENDOP_ADD,SBF_ONE,SBF_ONE);
+	R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_DIFFUSE);
+	R.SetTextureAlphaOP(0,TBOP_DISABLE);
 	R.SetFVF(SceneBloomVertex::FVF);
 
-	// 清楚不干净的地方
-	R.SetTextureColorOP(0,TBOP_SOURCE2,TBS_TEXTURE,TBS_DIFFUSE);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 4, m_BloomClearVB, sizeof(SceneBloomVertex));
-
+	R.SetCullingMode(CULL_NONE);
+	R.SetLightingEnabled(false);
+	R.SetDepthBufferFunc(false,false);
 	// 第三步：生成光晕-纵横模糊
 	for (int nBloomCount = 0; nBloomCount<1; nBloomCount++)
 	{
-		R.SetBlendFunc(true,BLENDOP_ADD,SBF_ONE,SBF_ONE);
-		R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_DIFFUSE);
-		R.SetTextureAlphaOP(0,TBOP_DISABLE);
-
+		// 横模糊
+		R.SetRenderTarget(m_pTextureScene1);
+		R.ClearBuffer(false,true,0x0);
+		R.SetTexture(0, m_pSceneTexture);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_LIST, 26, m_BloomHVB, sizeof(SceneBloomVertex));
+
+		// 纵模糊
+		R.SetRenderTarget(m_pSceneTexture);
+		R.ClearBuffer(false,true,0x0);
+		R.SetTexture(0, m_pTextureScene1);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_LIST, 26, m_BloomVVB, sizeof(SceneBloomVertex));
 	}
 }
@@ -597,7 +504,7 @@ void CSceneEffect::compose()
 		}
 
 		// 添加光晕
-		R.SetBlendFunc(bcan,BLENDOP_ADD,SBF_ONE,SBF_ONE);
+		R.SetBlendFunc(false,BLENDOP_ADD,SBF_ONE,SBF_ONE);
 		R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TEXTURE);
 		R.SetTextureAlphaOP(0,TBOP_DISABLE);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(QuadVertex));

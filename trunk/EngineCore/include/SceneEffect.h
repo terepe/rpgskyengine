@@ -21,6 +21,7 @@ struct SceneBloomVertex
 	Vec2D		t;
 };
 
+#define BLOOM_MODEL 1
 class DLL_EXPORT CSceneEffect
 {
 public:
@@ -45,6 +46,7 @@ public:
 	// new
 	CTexture* getSceneTexture();
 protected:
+	CRect<int> m_Rect;
 	int	m_nWidth;
 	int m_nHeight;
 	CTexture*	m_pGlowRenderTarget;
@@ -52,6 +54,8 @@ protected:
 	CTexture*	m_pDepthRenderTarget;
 	// ·º¹âäÖÈ¾µ½ÌùÍ¼
 	CTexture*	m_pSceneTexture;
+	CTexture*	m_pTextureScene1;
+
 	CTexture*	m_pExposureTexture;
 	CTexture*	m_pExposureTexture2;
 
@@ -72,9 +76,6 @@ protected:
 	float m_fHDRKey;
 	// ·ºÀÄÁÁ¶È
 	SceneBloomVertex m_FloodLumVB[4];
-	//
-	SceneBloomVertex m_BloomVB[4];
-	SceneBloomVertex m_BloomClearVB[6];
 	// ºá×ÝÄ£ºý
 	SceneBloomVertex m_BloomHVB[78];
 	SceneBloomVertex m_BloomVVB[78];
