@@ -766,6 +766,12 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 }
 #include "TextRender.h"
 #include "Graphics.h"
+
+#define COORD_X_COLOR 0xFFFF0000
+#define COORD_Y_COLOR 0xFF00FF00
+#define COORD_Z_COLOR 0xFF0000FF
+#define COORD_SELECT_COLOR 0xFFFFFF00
+#define COORD_PLANE_COLOR 0x44FFFF00
 void CMeshCoordinate::render(const Vec3D& vCoordShow)
 {
 	if (m_setSubMesh.size()==0)
@@ -782,17 +788,17 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 		SetMeshSource();
 		draw();
 
-		G.DrawLine3D(m_CoordLines[CLT_X].vBegin,m_CoordLines[CLT_X].vEnd,vCoordShow.x>0?0xFFFF00:0xFFFF0000);
-		G.DrawLine3D(m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFFFF0000);
-		G.DrawLine3D(m_CoordLines[CLT_X_Z].vBegin,m_CoordLines[CLT_X_Z].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFFFF0000);
+		G.DrawLine3D(m_CoordLines[CLT_X].vBegin,m_CoordLines[CLT_X].vEnd,vCoordShow.x>0?COORD_SELECT_COLOR:COORD_X_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?COORD_SELECT_COLOR:COORD_X_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_X_Z].vBegin,m_CoordLines[CLT_X_Z].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?COORD_SELECT_COLOR:COORD_X_COLOR);
 
-		G.DrawLine3D(m_CoordLines[CLT_Y].vBegin,m_CoordLines[CLT_Y].vEnd,vCoordShow.y>0?0xFFFF00:0xFF00FF00);
-		G.DrawLine3D(m_CoordLines[CLT_Y_X].vBegin,m_CoordLines[CLT_Y_X].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?0xFFFF00:0xFF00FF00);
-		G.DrawLine3D(m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF00FF00);
+		G.DrawLine3D(m_CoordLines[CLT_Y].vBegin,m_CoordLines[CLT_Y].vEnd,vCoordShow.y>0?COORD_SELECT_COLOR:COORD_Y_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_Y_X].vBegin,m_CoordLines[CLT_Y_X].vEnd,(vCoordShow.x>0&&vCoordShow.y>0)?COORD_SELECT_COLOR:COORD_Y_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?COORD_SELECT_COLOR:COORD_Y_COLOR);
 
-		G.DrawLine3D(m_CoordLines[CLT_Z].vBegin,m_CoordLines[CLT_Z].vEnd,vCoordShow.z>0?0xFFFF00:0xFF0000FF);
-		G.DrawLine3D(m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
-		G.DrawLine3D(m_CoordLines[CLT_Z_Y].vBegin,m_CoordLines[CLT_Z_Y].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?0xFFFF00:0xFF0000FF);
+		G.DrawLine3D(m_CoordLines[CLT_Z].vBegin,m_CoordLines[CLT_Z].vEnd,vCoordShow.z>0?COORD_SELECT_COLOR:COORD_Z_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,(vCoordShow.x>0&&vCoordShow.z>0)?COORD_SELECT_COLOR:COORD_Z_COLOR);
+		G.DrawLine3D(m_CoordLines[CLT_Z_Y].vBegin,m_CoordLines[CLT_Z_Y].vEnd,(vCoordShow.y>0&&vCoordShow.z>0)?COORD_SELECT_COLOR:COORD_Z_COLOR);
 
 		R.finishMaterial();
 	}
@@ -800,15 +806,15 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 	{
 		if (vCoordShow.x>0&&vCoordShow.y>0)
 		{
-			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,m_CoordLines[CLT_Y_X].vBegin,0x44FFFF00);
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_X_Y].vBegin,m_CoordLines[CLT_X_Y].vEnd,m_CoordLines[CLT_Y_X].vBegin,COORD_PLANE_COLOR);
 		}
 		if (vCoordShow.y>0&&vCoordShow.z>0)
 		{
-			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,m_CoordLines[CLT_Z_Y].vBegin,0x44FFFF00);
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Y_Z].vBegin,m_CoordLines[CLT_Y_Z].vEnd,m_CoordLines[CLT_Z_Y].vBegin,COORD_PLANE_COLOR);
 		}
 		if (vCoordShow.z>0&&vCoordShow.x>0)
 		{
-			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,m_CoordLines[CLT_X_Z].vBegin,0x44FFFF00);
+			G.fillQuad(Vec3D(0,0,0),m_CoordLines[CLT_Z_X].vBegin,m_CoordLines[CLT_Z_X].vEnd,m_CoordLines[CLT_X_Z].vBegin,COORD_PLANE_COLOR);
 		}
 		R.finishMaterial();
 	}
@@ -817,15 +823,16 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 	R.SetTextureColorOP(0,TBOP_MODULATE);
 	R.SetTextureAlphaOP(0,TBOP_MODULATE);
 
+	int nFontHeight = GetTextRender().GetCharHeight();
 	Pos2D posScreen;
-	R.world2Screen(m_CoordLines[CLT_X].vBegin,posScreen);
-	GetTextRender().drawText(L"X",posScreen.x,posScreen.y);
+	R.world2Screen(getWorldMatrix()*Vec3D(1.0f,0.0f,0.0f),posScreen);
+	GetTextRender().drawText(L"X",posScreen.x,posScreen.y-nFontHeight,COORD_X_COLOR);
 
-	R.world2Screen(m_CoordLines[CLT_Y].vBegin,posScreen);
-	GetTextRender().drawText(L"Y",posScreen.x,posScreen.y);
+	R.world2Screen(getWorldMatrix()*Vec3D(0.0f,1.0f,0.0f),posScreen);
+	GetTextRender().drawText(L"Y",posScreen.x,posScreen.y-nFontHeight,COORD_Y_COLOR);
 
-	R.world2Screen(m_CoordLines[CLT_Z].vBegin,posScreen);
-	GetTextRender().drawText(L"Z",posScreen.x,posScreen.y);
+	R.world2Screen(getWorldMatrix()*Vec3D(0.0f,0.0f,1.0f),posScreen);
+	GetTextRender().drawText(L"Z",posScreen.x,posScreen.y-nFontHeight,COORD_Z_COLOR);
 }
 
 Matrix CMeshCoordinate::getWorldMatrix()const
