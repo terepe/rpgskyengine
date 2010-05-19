@@ -764,7 +764,7 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 	}
 	return false;
 }
-
+#include "TextRender.h"
 #include "Graphics.h"
 void CMeshCoordinate::render(const Vec3D& vCoordShow)
 {
@@ -812,6 +812,20 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 		}
 		R.finishMaterial();
 	}
+
+	R.SetBlendFunc(true);
+	R.SetTextureColorOP(0,TBOP_MODULATE);
+	R.SetTextureAlphaOP(0,TBOP_MODULATE);
+
+	Pos2D posScreen;
+	R.world2Screen(m_CoordLines[CLT_X].vBegin,posScreen);
+	GetTextRender().drawText(L"X",posScreen.x,posScreen.y);
+
+	R.world2Screen(m_CoordLines[CLT_Y].vBegin,posScreen);
+	GetTextRender().drawText(L"Y",posScreen.x,posScreen.y);
+
+	R.world2Screen(m_CoordLines[CLT_Z].vBegin,posScreen);
+	GetTextRender().drawText(L"Z",posScreen.x,posScreen.y);
 }
 
 Matrix CMeshCoordinate::getWorldMatrix()const
