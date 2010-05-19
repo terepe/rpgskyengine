@@ -41,7 +41,7 @@ public:
 	void renderTargetGlow();
 	void renderTargetBloom();
 	void renderTargetEnd();
-	void compose();
+	void compose(const CRect<int>& rcDest);
 
 	// new
 	CTexture* getSceneTexture();

@@ -310,7 +310,7 @@ void CSceneEffect::RenderBloom()
 	//renderTargetGlow();
 	renderTargetBloom();
 	renderTargetEnd();
-	compose();
+//	compose();
 	// test
 	//R.SetRenderTarget(m_pDepthRenderTarget);
 	//if (R.BeginFrame())
@@ -360,9 +360,6 @@ void CSceneEffect::renderTargetBegin()
 {
 	CRenderSystem& R = GetRenderSystem();
 	m_pRenderSystemTarget = R.GetRenderTarget();
-
-	//CRect<int> rect(0,0,m_nWidth,m_nHeight);
-	//R.StretchRect(m_pRenderSystemTarget,&m_Rect,m_pSceneTexture,&rect, TEXF_POINT);
 	R.SetRenderTarget(m_pSceneTexture);
 }
 
@@ -451,8 +448,29 @@ void CSceneEffect::renderTargetEnd()
 	S_DEL(m_pRenderSystemTarget);
 }
 
-void CSceneEffect::compose()
+void CSceneEffect::compose(const CRect<int>& rcDest)
 {
+	QuadVertex QuadVB[4];
+	float fU0 = 0.0f;
+	float fV0 = 0.0f;
+	float fU1 = 1.0f;
+	float fV1 = 1.0f;
+
+	float fX0 = (float)rcDest.left - 0.5f;
+	float fY0 = (float)rcDest.top - 0.5f;
+	float fX1 = (float)rcDest.right - 0.5f;
+	float fY1 = (float)rcDest.bottom - 0.5f;
+
+	QuadVB[0].t = Vec2D(fU0, fV1);
+	QuadVB[1].t = Vec2D(fU0, fV0);
+	QuadVB[2].t = Vec2D(fU1, fV1);
+	QuadVB[3].t = Vec2D(fU1, fV0);
+
+	QuadVB[0].p = Vec4D(fX0, fY1, 0.0f, 1.0f);
+	QuadVB[1].p = Vec4D(fX0, fY0, 0.0f, 1.0f);
+	QuadVB[2].p = Vec4D(fX1, fY1, 0.0f, 1.0f);
+	QuadVB[3].p = Vec4D(fX1, fY0, 0.0f, 1.0f);
+
 	CRenderSystem& R = GetRenderSystem();
 	static bool bcan = true;
 	R.SetCullingMode(CULL_NONE);
@@ -488,7 +506,7 @@ void CSceneEffect::compose()
 				R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
 				R.SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TFACTOR);
 
-				R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(QuadVertex));
+				R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, QuadVB, sizeof(QuadVertex));
 			}
 			else// ¼õ°µÆÁÄ»²Ù×÷
 			{
@@ -499,7 +517,7 @@ void CSceneEffect::compose()
 
 				R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
 				R.SetTextureAlphaOP(0,TBOP_DISABLE);
-				R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(QuadVertex));
+				R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, QuadVB, sizeof(QuadVertex));
 			}
 		}
 
@@ -507,7 +525,7 @@ void CSceneEffect::compose()
 		R.SetBlendFunc(false,BLENDOP_ADD,SBF_ONE,SBF_ONE);
 		R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TEXTURE);
 		R.SetTextureAlphaOP(0,TBOP_DISABLE);
-		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(QuadVertex));
+		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, QuadVB, sizeof(QuadVertex));
 		//	R.EndFrame();
 	}
 }
