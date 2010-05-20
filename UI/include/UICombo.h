@@ -108,7 +108,6 @@ public:
 	void RemoveAllControls();
 
 	// Sets the callback used to notify the app of control events
-	void EnableNonUserEvents(bool bEnable) { m_bNonUserEvents = bEnable; }
 	void EnableKeyboardInput(bool bEnable) { m_bKeyboardInput = bEnable; }
 	bool IsKeyboardInputEnabled() const { return m_bKeyboardInput; }
 
@@ -137,20 +136,12 @@ public:
 
 	void FocusDefaultControl();
 
-	bool m_bNonUserEvents;
 	bool m_bKeyboardInput;
-//protected:
-	struct EVENTMAP_ENTRY
-	{
-		std::string strID;
-		uint32 uEvent;	// ui event
-		PEVENT pfn;		// routine to call (or special value)
-	};
+
 	void RegisterControlEvent(const std::string& strID, PEVENT pfn, uint32 uEvent=EVENT_DEFAULT);
 	void RegisterEvent(std::string strEvent, PEVENT pfn);
 	void RegisterEvent(uint32 uEvent, PEVENT pfn);
 protected:
-	std::vector<EVENTMAP_ENTRY>		m_EventMapEntry;
 	std::map<std::string,PEVENT>	m_mapStrEvent;
 	std::map<uint32,PEVENT>			m_mapEvent;
 

@@ -14,15 +14,6 @@ void UISetHWND(HWND hWnd);
 
 #define UITRACE	(__noop)
 
-// Align
-#define ALIGN_TOP						0x00000000
-#define ALIGN_LEFT						0x00000000
-#define ALIGN_CENTER					0x00000001
-#define ALIGN_RIGHT						0x00000002
-#define ALIGN_VCENTER					0x00000004
-#define ALIGN_BOTTOM					0x00000008
-//inline uint32 StrToAlign(std::string& strAlign);
-
 #ifndef SPI_GETWHEELSCROLLLINES
 #define SPI_GETWHEELSCROLLLINES    0x0068
 #endif
@@ -157,13 +148,11 @@ public:
 
 	virtual void OnMove(int x, int y);
 	virtual void OnSize(const CRect<int>& rc);
-	void SetLocation(int x, int y);
-	void SetSize(int nWidth, int nHeight, bool bPercentWidth = false, bool bPercentHeight = false);
-	void SetAlign(uint32 uAlign);
-	void setOffset(const CRect<int>& rc);
 
-	//int GetWidth() { return m_width; }
-	//int GetHeight() { return m_height; }
+	const CRect<int>& getOffset();
+	const CRect<int>& getScale();
+	void setOffset(const CRect<int>& rc);
+	void setScale(const CRect<int>& rc);
 
 	void SetHotkey(std::string& strHotkey);
 	void SetHotkey(UINT nHotkey) { m_nHotkey = nHotkey; }
@@ -175,9 +164,6 @@ public:
 	void SetDefault(bool bIsDefault) { m_bIsDefault = bIsDefault; }
 	bool IsDefault() const { return m_bIsDefault; }
 
-	//virtual void SetTextColor(D3DCOLOR Color);
-	//CUIStyle* GetStyle(UINT iElement);
-
 	CRect<int>& GetBoundingBox(){return m_rcBoundingBox;}
 
 	virtual bool IsPressed(){return this==s_pControlPressed;}
@@ -185,19 +171,10 @@ public:
 	virtual bool IsFocus(){return this==s_pControlFocus;}
 	static void ClearFocus();
 	static void clearFocus();
+
 	static CUIControl* s_pControlFocus;        // The control which has focus
 	static CUIControl* s_pControlPressed;      // The control currently pressed
 	static CUIControl* s_pControlMouseOver;    // The control which is hovered over
-
-	bool m_bVisible;                // Shown/hidden flag
-	bool m_bMouseOver;              // Mouse pointer is above control
-	bool m_bIsDefault;              // Is the default control
-
-	// Size, scale, and positioning members
-	//int m_x, m_y;
-	//int m_width, m_height;
-
-	CUIStyle m_Style;
 
 	virtual void ClientToScreen(RECT& rc);
 	virtual void ScreenToClient(RECT& rc);
@@ -205,6 +182,12 @@ public:
 protected:
 	virtual CONTROL_STATE GetState();
 protected:
+	bool m_bVisible;                // Shown/hidden flag
+	bool m_bMouseOver;              // Mouse pointer is above control
+	bool m_bIsDefault;              // Is the default control
+
+	CUIStyle m_Style;
+
 	CUICombo*			m_pParentDialog;    // Parent container
 
 	std::string			m_strID;			// ID string

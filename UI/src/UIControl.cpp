@@ -20,37 +20,6 @@ void UISetHWND(HWND hWnd)
 	g_hWndUI = hWnd;
 }
 
-// uint32 StrToAlign(std::string& strAlign)
-// {
-// 	uint32 uAlign = 0;
-// 	if (strAlign.find("TOP") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_TOP;
-// 	}
-// 	else if (strAlign.find("VCENTER") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_VCENTER;
-// 	}
-// 	else if (strAlign.find("BOTTOM") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_BOTTOM;
-// 	}
-// 
-// 	if (strAlign.find("LEFT") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_LEFT;
-// 	}
-// 	else if (strAlign.find("UCENTER") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_CENTER;
-// 	}
-// 	else if (strAlign.find("RIGHT") != std::string::npos)
-// 	{
-// 		uAlign |= ALIGN_RIGHT;
-// 	}
-// 	return uAlign;
-// }
-
 CUIControl::CUIControl()
 {
 	m_Type = UI_CONTROL_BUTTON;
@@ -69,7 +38,6 @@ CUIControl::CUIControl()
 	ZeroMemory(&m_rcBoundingBox, sizeof(m_rcBoundingBox));
 	ZeroMemory(&m_rcOffset, sizeof(m_rcOffset));
 }
-
 
 CUIControl::~CUIControl()
 {
@@ -175,12 +143,6 @@ void CUIControl::OnMove(int x, int y)
 	UpdateRects();
 }
 
-void CUIControl::SetLocation(int x, int y)
-{
-	//m_x = x; m_y = y;
-	UpdateRects();
-}
-
 void CUIControl::OnSize(const CRect<int>& rc)
 {
 	m_rcBoundingBox.left	= rc.left+rc.getWidth()*m_rcScale.left/100;
@@ -192,18 +154,24 @@ void CUIControl::OnSize(const CRect<int>& rc)
 	UpdateRects();
 }
 
-void CUIControl::SetSize(int nWidth, int nHeight, bool bPercentWidth, bool bPercentHeight)
+const CRect<int>& CUIControl::getOffset()
 {
-
+	return m_rcOffset;
 }
 
-void CUIControl::SetAlign(uint32 uAlign)
+const CRect<int>& CUIControl::getScale()
 {
+	return m_rcScale;
 }
 
 void CUIControl::setOffset(const CRect<int>& rc)
 {
 	m_rcOffset = rc;
+}
+
+void CUIControl::setScale(const CRect<int>& rc)
+{
+	m_rcScale = rc;
 }
 
 void CUIControl::SetHotkey(std::string& strHotkey)

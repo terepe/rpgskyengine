@@ -826,13 +826,13 @@ void CMeshCoordinate::render(const Vec3D& vCoordShow)
 	int nFontHeight = GetTextRender().GetCharHeight();
 	Pos2D posScreen;
 	R.world2Screen(getWorldMatrix()*Vec3D(1.0f,0.0f,0.0f),posScreen);
-	GetTextRender().drawText(L"X",posScreen.x,posScreen.y-nFontHeight,COORD_X_COLOR);
+	GetTextRender().drawText(L"X",posScreen.x,posScreen.y-nFontHeight,vCoordShow.x>0?COORD_SELECT_COLOR:COORD_X_COLOR);
 
 	R.world2Screen(getWorldMatrix()*Vec3D(0.0f,1.0f,0.0f),posScreen);
-	GetTextRender().drawText(L"Y",posScreen.x,posScreen.y-nFontHeight,COORD_Y_COLOR);
+	GetTextRender().drawText(L"Y",posScreen.x,posScreen.y-nFontHeight,vCoordShow.y>0?COORD_SELECT_COLOR:COORD_Y_COLOR);
 
 	R.world2Screen(getWorldMatrix()*Vec3D(0.0f,0.0f,1.0f),posScreen);
-	GetTextRender().drawText(L"Z",posScreen.x,posScreen.y-nFontHeight,COORD_Z_COLOR);
+	GetTextRender().drawText(L"Z",posScreen.x,posScreen.y-nFontHeight,vCoordShow.z>0?COORD_SELECT_COLOR:COORD_Z_COLOR);
 }
 
 Matrix CMeshCoordinate::getWorldMatrix()const

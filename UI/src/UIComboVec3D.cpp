@@ -23,9 +23,9 @@ void CUIComboVec3D::OnControlRegister()
 	RegisterControl("IDC_NUM_Y",m_NumY);
 	RegisterControl("IDC_NUM_Z",m_NumZ);
 
-	RegisterControlEvent("IDC_SLIDER_R",(PEVENT)&CUIComboVec3D::OnNumChanged);
-	RegisterControlEvent("IDC_SLIDER_G",(PEVENT)&CUIComboVec3D::OnNumChanged);
-	RegisterControlEvent("IDC_SLIDER_B",(PEVENT)&CUIComboVec3D::OnNumChanged);
+	RegisterControlEvent("IDC_NUM_X",(PEVENT)&CUIComboVec3D::OnNumChanged);
+	RegisterControlEvent("IDC_NUM_Y",(PEVENT)&CUIComboVec3D::OnNumChanged);
+	RegisterControlEvent("IDC_NUM_Z",(PEVENT)&CUIComboVec3D::OnNumChanged);
 
 	setExtentSize(0.01f);
 }

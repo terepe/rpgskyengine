@@ -13,7 +13,6 @@ void CUIComboNumber::OnControlRegister()
 {
 	CUICombo::OnControlRegister();
 
-	RegisterControl("IDC_STATIC_NAME",m_StaticName);
 	RegisterControl("IDC_BTN_UP",m_BtnUp);
 	RegisterControl("IDC_BTN_DOWN",m_BtnDown);
 	RegisterControl("IDC_EDIT_BOX",m_EditBox);
@@ -25,7 +24,7 @@ void CUIComboNumber::OnControlRegister()
 
 void CUIComboNumber::SetText(const std::wstring& wstrText)
 {
-	m_StaticName.SetText(wstrText);
+	m_EditBox.SetText(wstrText);
 }
 
 float CUIComboNumber::getFloat()

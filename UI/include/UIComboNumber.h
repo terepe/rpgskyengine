@@ -19,7 +19,6 @@ public:
 	void setFloat(float fValue);
 	void setExtentSize(float fExtentSize);
 private:
-	CUIStatic	m_StaticName;
 	CUIButton	m_BtnUp;
 	CUIButton	m_BtnDown;
 	CUIEditBox	m_EditBox;
