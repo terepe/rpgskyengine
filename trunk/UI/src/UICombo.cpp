@@ -39,7 +39,6 @@ CUICombo::CUICombo()
 
 	m_pParentDialog = NULL;
 
-	m_bNonUserEvents = false;
 	m_bKeyboardInput = false;
 }
 
@@ -207,6 +206,25 @@ void CUICombo::XMLParseControls(TiXmlElement* pElement)
 		}
 		pControlElement = pControlElement->NextSiblingElement("element");
 	}
+	// Check all the controls are initialized.
+	for(std::vector<CUIControl*>::iterator it=m_Controls.begin(); it != m_Controls.end(); it++)
+	{
+		const CRect<int>& rcOffset = (*it)->getOffset();
+		const CRect<int>& rcScale = (*it)->getScale();
+		if(0==rcOffset.left&&0==rcOffset.right&&0==rcOffset.top&&0==rcOffset.bottom&&
+			0==rcScale.left&&0==rcScale.right&&0==rcScale.top&&0==rcScale.bottom)
+		{
+			MessageBoxW(NULL,s2ws("ID="+(*it)->GetID()+" ParentID="+GetID()).c_str(),L"This control is not initialized!",0);
+		}
+	}
+	// Check all the events.
+	/*for (std::vector<EVENTMAP_ENTRY>::iterator it=m_EventMapEntry.begin();it!=m_EventMapEntry.end();it++)
+	{
+		if(GetControl(it->strID)==NULL)
+		{
+			MessageBoxW(NULL,s2ws("EventID="+it->strID+" ParentID="+GetID()).c_str(),L"Can't find the control of this event!",0);
+		}
+	}*/
 }
 
 #include "IniFile.h"
@@ -382,19 +400,8 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 
 void CUICombo::progressEvent(uint32 uEvent, CUIControl* pControl)
 {
-	// Discard events triggered programatically if these types of events haven't been
-	// enabled
-	//if(! && !m_bNonUserEvents)
-	//	return;
-	for (uint32 i = 0; i < m_EventMapEntry.size(); i++)
-	{
-		const EVENTMAP_ENTRY& eventMapEntry = m_EventMapEntry[i];
-		if (eventMapEntry.uEvent == uEvent && eventMapEntry.strID == pControl->GetID())
-		{
-			(this->*(eventMapEntry.pfn))(); // 类成员函数指针
-			break;
-		}
-	}
+	std::string strEvent=pControl->GetID()+Format("_%d",uEvent);
+	CUICombo::postMsg(strEvent);
 }
 
 bool CUICombo::postMsg(const std::string& strMsg)
@@ -767,19 +774,8 @@ void CUICombo::OnFocusOut()
 
 void CUICombo::RegisterControlEvent(const std::string& strID, PEVENT pfn, uint32 uEvent)
 {
-	EVENTMAP_ENTRY eventMapEntry;
-	eventMapEntry.strID		= strID;
-	eventMapEntry.uEvent	= uEvent;
-	eventMapEntry.pfn		= pfn;
-	for (std::vector<EVENTMAP_ENTRY>::iterator it=m_EventMapEntry.begin();it!=m_EventMapEntry.end();it++)
-	{
-		if (it->strID==strID&&it->uEvent==uEvent)
-		{
-			std::wstring wstrInfo = FormatW(L"The same control events!\nDialog:%s; Control:%s; Event:%d;\nCheck the dialog functions::OnControlRegister(), to sure that not have the same events!",s2ws(m_strID).c_str(),s2ws(strID).c_str(),uEvent);
-			MessageBoxW(NULL,wstrInfo.c_str(),L"Register Control Event Warn!",0);
-		}
-	}
-	m_EventMapEntry.push_back(eventMapEntry);
+	std::string strEvent=strID+Format("_%d",uEvent);
+	RegisterEvent(strEvent,pfn);
 }
 
 void CUICombo::RegisterEvent(std::string strEvent, PEVENT pfn)
