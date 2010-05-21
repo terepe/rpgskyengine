@@ -87,7 +87,7 @@ void CUIListBox::RemoveItem(int nIndex)
 	if(m_nSelected >= (int)m_Items.size())
 		m_nSelected = m_Items.size() - 1;
 
-	SendEvent(EVENT_LISTBOX_SELECTION, this);
+	SendEvent(EVENT_LISTBOX_SELECTION);
 }
 
 void CUIListBox::RemoveItemByText(WCHAR *wszText)
@@ -223,7 +223,7 @@ bool CUIListBox::SelectItem(int nNewIndex)
 		// Adjust scroll bar
 		m_ScrollBar.ShowItem(m_nSelected);
 	}
-	SendEvent(EVENT_LISTBOX_SELECTION, this);
+	SendEvent(EVENT_LISTBOX_SELECTION);
 	return true;
 }
 
@@ -346,7 +346,7 @@ bool CUIListBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					// Send notification
 
-					SendEvent(EVENT_LISTBOX_SELECTION, this);
+					SendEvent(EVENT_LISTBOX_SELECTION);
 				}
 				return true;
 			}
@@ -354,7 +354,7 @@ bool CUIListBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// Space is the hotkey for double-clicking an item.
 			//
 		case VK_SPACE:
-			SendEvent(EVENT_LISTBOX_ITEM_DBLCLK, this);
+			SendEvent(EVENT_LISTBOX_ITEM_DBLCLK);
 			return true;
 		}
 		break;
@@ -387,20 +387,21 @@ void CUIListBox::OnMouseMove(POINT point)
 			nItem < m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
 		{
 			m_nSelected = nItem;
-			SendEvent(EVENT_LISTBOX_SELECTION, this);
+			SendEvent(EVENT_LISTBOX_SELECTION);
 		}
 		else if(nItem < (int)m_ScrollBar.GetTrackPos())
 		{
 			// User drags the mouse above window top
 			m_ScrollBar.Scroll(-1);
 			m_nSelected = m_ScrollBar.GetTrackPos();
-			SendEvent(EVENT_LISTBOX_SELECTION, this);
+			SendEvent(EVENT_LISTBOX_SELECTION);
 		}
 		else if(nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
 		{
 			// User drags the mouse below window bottom
 			m_ScrollBar.Scroll(1);
-			m_nSelected = __min((int)m_Items.size(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize()) - 1;					SendEvent(EVENT_LISTBOX_SELECTION, this);
+			m_nSelected = __min((int)m_Items.size(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize()) - 1;
+			SendEvent(EVENT_LISTBOX_SELECTION);
 		}
 	}
 }
@@ -450,7 +451,7 @@ void CUIListBox::OnLButtonDblClk(POINT point)
 	if (nClicked!=-1)
 	{
 		m_nSelected = nClicked;
-		SendEvent(EVENT_LISTBOX_ITEM_DBLCLK, this);
+		SendEvent(EVENT_LISTBOX_ITEM_DBLCLK);
 	}
 }
 
@@ -557,7 +558,7 @@ void CUIListBox::OnLButtonDown(POINT point)
 				}
 			}*/  // End of multi-selection case
 
-			SendEvent(EVENT_LISTBOX_SELECTION, this);
+			SendEvent(EVENT_LISTBOX_SELECTION);
 	}
 }
 
@@ -586,9 +587,9 @@ void CUIListBox::OnLButtonUp(POINT point)
 		// the user has dragged the mouse to make a selection.
 		// Notify the application of this.
 		if(m_nSelStart != m_nSelected)
-			SendEvent(EVENT_LISTBOX_SELECTION, this);
+			SendEvent(EVENT_LISTBOX_SELECTION);
 
-		SendEvent(EVENT_LISTBOX_SELECTION_END, this);
+		SendEvent(EVENT_LISTBOX_SELECTION_END);
 	}
 }
 

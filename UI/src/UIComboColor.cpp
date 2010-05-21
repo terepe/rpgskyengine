@@ -61,5 +61,5 @@ void CUIComboColor::setColor(Vec4D vColor)
 
 void CUIComboColor::OnSliderChanged()
 {
-	SendEvent(EVENT_DEFAULT, this);
+	SendEvent(EVENT_DEFAULT);
 }

@@ -121,12 +121,12 @@ public:
 
 	virtual bool CanHaveFocus() { return false; }
 	virtual void SetFocus(bool bFocus=true);
-	virtual void OnFocusIn() { SendEvent(EVENT_SETFOCUS, this);}
-	virtual void OnFocusOut() { SendEvent(EVENT_KILLFOCUS, this); }
+	virtual void OnFocusIn() { SendEvent(EVENT_SETFOCUS);}
+	virtual void OnFocusOut() { SendEvent(EVENT_KILLFOCUS); }
 	virtual void OnMouseEnter() { m_bMouseOver = true; }
 	virtual void OnMouseLeave() { m_bMouseOver = false; }
 	virtual void OnHotkey() {}
-	virtual void SendEvent(uint32 uEvent, CUIControl* pControl);
+	virtual void SendEvent(uint32 uEvent);
 
 	virtual bool ContainsPoint(POINT pt);
 
