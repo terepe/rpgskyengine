@@ -18,14 +18,17 @@ public:
 	//
 	void Brush(float fPosX, float fPosY);
 	//
-	void showLayer0(bool bShowLayer0){m_bShowLayer0 = bShowLayer0;}
-	void showLayer1(bool bShowLayer1){m_bShowLayer1 = bShowLayer1;}
-	void showAttribute(bool bShowAttribute){m_bShowAttribute = bShowAttribute;}
-	void showGrid(bool bShowGrid){m_bShowGrid = bShowGrid;}
+	void showLayer0(bool bShow){m_bShowLayer0 = bShow;}
+	void showLayer1(bool bShow){m_bShowLayer1 = bShow;}
+	void showAttribute(bool bShow){m_bShowAttribute = bShow;}
+	void showGrid(bool bShow){m_bShowGrid = bShow;}
+	void showBrushDecal(bool bShow){m_bShowBrushDecal = bShow;}
+	
 	bool isShowLayer0(){return m_bShowLayer0;}
 	bool isShowLayer1(){return m_bShowLayer1;}
 	bool isShowAttribute(){return m_bShowAttribute;}
 	bool isShowGrid(){return m_bShowGrid;}
+	bool isShowBrushDecal(){return m_bShowBrushDecal;}
 
 	void	CreateIB();
 	void	updateIB();
@@ -36,6 +39,7 @@ protected:
 	bool m_bShowLayer1;
 	bool m_bShowAttribute;
 	bool m_bShowGrid;
+	bool m_bShowBrushDecal;
 	// ±ÊË¢Ìù»¨
 	CTerrainBrush	m_BrushDecal;
 	std::map<uint8,TerrainSub>	m_mapRenderAttributeSubs;
