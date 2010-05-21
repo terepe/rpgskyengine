@@ -693,7 +693,7 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 	transformRay(vNewRayPos,vNewRayDir,getWorldMatrix());
 
 	float fMin,fMax;
-	float fR = 0.05f*m_fScale;
+	float fR = 0.05f;
 	if(LineCapsuleIntersector(vNewRayPos,vNewRayDir,m_CoordLines[CLT_X].vBegin,m_CoordLines[CLT_X].vEnd,fR,fMin,fMax)>0)
 	{
 		vCoord = Vec3D(1,0,0);

@@ -178,22 +178,33 @@ void ObjectTree::getObjectsByFrustum(const CFrustum& frustum, DEQUE_MAPOBJ& setO
 	}
 }
 
-bool ObjectTree::addObject(CMapObj* pObject)
+ObjectTree* ObjectTree::getNodeByAABB(const BBox& box)
 {
-	CrossRet crossRet = bbox.checkAABBVisible(pObject->getBBox());
+	CrossRet crossRet = bbox.checkAABBVisible(box);
 	if (cross_include == crossRet)
 	{
 		if (pChild)
 		{
 			for (size_t i=0;i<8;++i)
 			{
-				if (pChild[i].addObject(pObject))
+				ObjectTree* pNode = pChild[i].getNodeByAABB(bbox);
+				if (pNode)
 				{
-					return true;
+					return pNode;
 				}
 			}
 		}
-		m_setObjet.push_back(pObject);
+		return this;
+	}
+	return NULL;
+}
+
+bool ObjectTree::addObject(CMapObj* pObject)
+{
+	ObjectTree* pNode = getNodeByAABB(pObject->getBBox());
+	if (pNode)
+	{
+		pNode->m_setObjet.push_back(pObject);
 		return true;
 	}
 	return false;

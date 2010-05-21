@@ -19,6 +19,7 @@ public:
 	void getObjectsByPos(Vec3D vPos, DEQUE_MAPOBJ& setObject);
 	void getObjectsByCell(Pos2D posCell, DEQUE_MAPOBJ& setObject);
 	void getObjectsByFrustum(const CFrustum& frustum, DEQUE_MAPOBJ& setObject);
+	ObjectTree* getNodeByAABB(const BBox& box);
 	bool addObject(CMapObj* pObject);
 	bool delObject(CMapObj* pObject);
 	bool eraseObject(CMapObj* pObject);
