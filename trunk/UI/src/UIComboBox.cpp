@@ -25,7 +25,7 @@ void CUIComboBox::OnSelectionChanged()
 	{
 		m_ListBox.SetVisible(false);
 	}
-	SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
+	SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED);
 }
 
 bool CUIComboBox::ContainsPoint(POINT pt) 
@@ -63,7 +63,7 @@ bool CUIComboBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					//if(m_iSelected != m_iFocused)
 					//{
 					//	m_iSelected = m_iFocused;
-					//	SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
+					//	SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED);
 					//}
 					m_ListBox.SetVisible(false);
 					SetFocus(false);
@@ -79,7 +79,7 @@ bool CUIComboBox::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				m_ListBox.SetVisible(!m_ListBox.IsVisible());
 				if(!m_ListBox.IsVisible())
 				{
-					SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED, this);
+					SendEvent(EVENT_COMBOBOX_SELECTION_CHANGED);
 					SetFocus(false);
 				}
 				return true;

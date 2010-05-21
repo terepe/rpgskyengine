@@ -58,6 +58,9 @@ public:
 	virtual bool postMsg(WPARAM wParam, LPARAM lParam);
 	virtual bool MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+	// Methods called by controls
+	void progressEvent(const std::string& strMsg);
+
 	// Control creation
 	void AddControl(CUIControl* pControl);
 	void RegisterControl(const std::string& strID, CUIControl& control);
@@ -89,9 +92,6 @@ public:
 	virtual void SetVisible(bool bVisible);
 
 	void ClearRadioButtonGroup(uint32 nGroup);
-
-	// Methods called by controls
-	void progressEvent(uint32 uEvent, CUIControl* pControl);
 
 	virtual void ClientToScreen(RECT& rc);
 	virtual void ScreenToClient(RECT& rc);

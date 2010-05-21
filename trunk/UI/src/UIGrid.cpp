@@ -198,7 +198,7 @@ void CUIGrid::Clear()
 //	if(m_nSelected >= (int)m_Items.size())
 //		m_nSelected = m_Items.size() - 1;
 //
-//	SendEvent(EVENT_LISTBOX_SELECTION, this);
+//	SendEvent(EVENT_LISTBOX_SELECTION);
 //}
 
 
@@ -263,7 +263,7 @@ int CUIGrid::GetSelectedIndex(int nPreviousSelected)
 //		m_ScrollBar.ShowItem(m_nSelected);
 //	}
 //
-//	SendEvent(EVENT_LISTBOX_SELECTION, this);
+//	SendEvent(EVENT_LISTBOX_SELECTION);
 //}
 
 
@@ -320,7 +320,7 @@ bool CUIGrid::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					m_ScrollBar.ShowItem(m_nSelected);
 
 					// Send notification
-					SendEvent(EVENT_LISTBOX_SELECTION, this);
+					SendEvent(EVENT_LISTBOX_SELECTION);
 				}
 				return true;
 			}
@@ -328,7 +328,7 @@ bool CUIGrid::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// Space is the hotkey for double-clicking an item.
 			//
 		case VK_SPACE:
-			SendEvent(EVENT_LISTBOX_ITEM_DBLCLK, this);
+			SendEvent(EVENT_LISTBOX_ITEM_DBLCLK);
 			return true;
 		}
 		break;
@@ -385,12 +385,12 @@ bool CUIGrid::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 				// updating.
 				if(uMsg == WM_LBUTTONDBLCLK)
 				{
-					SendEvent(EVENT_LISTBOX_ITEM_DBLCLK, this);
+					SendEvent(EVENT_LISTBOX_ITEM_DBLCLK);
 					return true;
 				}
 				m_nSelected = nClicked;
 
-				SendEvent(EVENT_LISTBOX_SELECTION, this);
+				SendEvent(EVENT_LISTBOX_SELECTION);
 
 				//m_EditBox.SetText(m_Items[m_nSelected]->GetValString());
 			}
@@ -406,7 +406,7 @@ bool CUIGrid::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 
 			if(m_nSelected != -1)
 			{
-				SendEvent(EVENT_LISTBOX_SELECTION_END, this);
+				SendEvent(EVENT_LISTBOX_SELECTION_END);
 			}
 			return false;
 		}
@@ -429,21 +429,21 @@ bool CUIGrid::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 				nItem < m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
 			{
 				m_nSelected = nItem;
-				SendEvent(EVENT_LISTBOX_SELECTION, this);
+				SendEvent(EVENT_LISTBOX_SELECTION);
 			}
 			else if(nItem < (int)m_ScrollBar.GetTrackPos())
 			{
 				// User drags the mouse above window top
 				m_ScrollBar.Scroll(-1);
 				m_nSelected = m_ScrollBar.GetTrackPos();
-				SendEvent(EVENT_LISTBOX_SELECTION, this);
+				SendEvent(EVENT_LISTBOX_SELECTION);
 			}
 			else if(nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize())
 			{
 				// User drags the mouse below window bottom
 				m_ScrollBar.Scroll(1);
 				m_nSelected = __min((int)GetLineCount(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize()) - 1;
-				SendEvent(EVENT_LISTBOX_SELECTION, this);
+				SendEvent(EVENT_LISTBOX_SELECTION);
 			}
 		}
 		break;

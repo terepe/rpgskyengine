@@ -398,10 +398,14 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 	}
 }
 
-void CUICombo::progressEvent(uint32 uEvent, CUIControl* pControl)
+void CUICombo::progressEvent(const std::string& strMsg)
 {
-	std::string strEvent=pControl->GetID()+Format("_%d",uEvent);
-	CUICombo::postMsg(strEvent);
+	std::map<std::string,PEVENT>::iterator it = m_mapStrEvent.find(strMsg);
+	if (it!=m_mapStrEvent.end())
+	{
+		(this->*(it->second))(); // 类成员函数指针
+		return;
+	}
 }
 
 bool CUICombo::postMsg(const std::string& strMsg)
