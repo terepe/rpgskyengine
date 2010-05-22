@@ -7,8 +7,6 @@ CScene::CScene():
 m_bShowStaticObject(true),
 m_bShowAnimObject(true),
 m_bShowObjectBBox(false),
-m_pObjectFocus(NULL),
-m_pShaderFocus(NULL),
 m_Fog(32.0f,48.0f,0.01f,0xFF223344),
 m_Light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,-1.0f))
 {
@@ -120,13 +118,20 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			(*it)->renderDebug();
 		}
 	}
-	if (m_pObjectFocus)
+	if (m_setFocusObjects.size()>0)
 	{
-		m_pObjectFocus->renderDebug();
-		ObjectTree* pParentObjectTree = m_ObjectTree.find(m_pObjectFocus);
-		if (pParentObjectTree)
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
 		{
-			GetGraphics().drawBBox(pParentObjectTree->getBBox(),0xFF00FF44);
+			m_setFocusObjects[i]->renderDebug();
+		}
+		// The octree boxs of focus objects.
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			ObjectTree* pParentObjectTree = m_ObjectTree.find(m_setFocusObjects[i]);
+			if (pParentObjectTree)
+			{
+				GetGraphics().drawBBox(pParentObjectTree->getBBox(),0xFF00FF44);
+			}
 		}
 	}
 	//
@@ -173,9 +178,10 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		}
 		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
 		GetRenderSystem().SetDirectionalLight(0,light);
-		if (m_pObjectFocus)
+
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
 		{
-			m_pObjectFocus->renderFocus();
+			m_setFocusObjects[i]->renderFocus();
 		}
 		Fog fogForGlow;
 		fogForGlow = m_Fog;
@@ -250,10 +256,8 @@ bool CScene::delMapObj(CMapObj* pObj)
 	{
 		m_bNeedUpdate = true;
 	}
-	if (pObj==m_pObjectFocus)
-	{
-		m_pObjectFocus = NULL;
-	}
+
+	delFocusObject(pObj);
 	return true;
 }
 
@@ -312,14 +316,133 @@ CMapObj* CScene::add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRota
 	return NULL;
 }
 
-void CScene::setObjectFocus(CMapObj* pObject)
+bool CScene::findFocusObject(CMapObj* pObject)
 {
-	m_pObjectFocus=pObject;
+	DEQUE_MAPOBJ::iterator it = std::find( m_setFocusObjects.begin( ), m_setFocusObjects.end( ), pObject );
+	if(it!=m_setFocusObjects.end())
+	{
+		return true;
+	}
+	return false;
 }
 
-CMapObj* CScene::getObjectFocus()
+void CScene::addFocusObject(CMapObj* pObject)
 {
-	return m_pObjectFocus;
+	if(findFocusObject(pObject)==false)
+	{
+		m_setFocusObjects.push_back(pObject);
+	}
+}
+
+bool CScene::delFocusObject(CMapObj* pObject)
+{
+	DEQUE_MAPOBJ::iterator it = std::find( m_setFocusObjects.begin( ), m_setFocusObjects.end( ), pObject );
+	if(it!=m_setFocusObjects.end())
+	{
+		m_setFocusObjects.erase(it);
+		return true;
+	}
+	return false;
+}
+
+void CScene::clearFocusObjects()
+{
+	m_setFocusObjects.clear();
+}
+
+bool CScene::delMapObjsByFocusObjects()
+{
+	for(size_t i=0;i<m_setFocusObjects.size();++i)
+	{
+		delMapObj(m_setFocusObjects[i]);
+	}
+	clearFocusObjects();
+	return true;
+}
+
+std::deque<CMapObj*>& CScene::getFocusObjects()
+{
+	return m_setFocusObjects;
+}
+
+Vec3D CScene::getFocusObjectsPos()
+{
+	Vec3D vPos(0.0f,0.0f,0.0f);
+	for(size_t i=0;i<m_setFocusObjects.size();++i)
+	{
+		vPos+=m_setFocusObjects[i]->getPos();
+	}
+	vPos/=m_setFocusObjects.size();
+	return vPos;
+}
+
+void CScene::setFocusObjectsPos(const Vec3D& vPos)
+{
+	Vec3D vMidPos = getFocusObjectsPos();
+	for(size_t i=0;i<m_setFocusObjects.size();++i)
+	{
+		Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
+		vObjectPos+=vPos-vMidPos;
+		m_setFocusObjects[i]->setPos(vObjectPos);
+		updateMapObj(m_setFocusObjects[i]);
+	}
+}
+
+Vec3D CScene::getFocusObjectsRotate()
+{
+	if(m_setFocusObjects.size()==1)
+	{
+		return m_setFocusObjects[0]->getRotate();
+	}
+	return Vec3D(0.0f,0.0f,0.0f);
+}
+
+void CScene::setFocusObjectsRotate(const Vec3D& vRotate)
+{
+	if(m_setFocusObjects.size()==1)
+	{
+		m_setFocusObjects[0]->setRotate(vRotate);
+		updateMapObj(m_setFocusObjects[0]);
+	}
+	else
+	{
+		//Vec3D vMidPos = getFocusObjectsRotate();
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			//Vec3D vObjectPos = m_setFocusObjects[i]->getPos()+vMidPos-vPos;
+			//m_setFocusObjects[i]->setPos(vObjectPos);
+			updateMapObj(m_setFocusObjects[i]);
+		}
+	}
+}
+
+Vec3D CScene::getFocusObjectsScale()
+{
+	if(m_setFocusObjects.size()==1)
+	{
+		return m_setFocusObjects[0]->getScale();
+	}
+	return Vec3D(1.0f,1.0f,1.0f);
+}
+
+void CScene::setFocusObjectsScale(const Vec3D& vScale)
+{
+	if(m_setFocusObjects.size()==1)
+	{
+		m_setFocusObjects[0]->setScale(vScale);
+		updateMapObj(m_setFocusObjects[0]);
+	}
+	else
+	{
+		Vec3D vMidPos = getFocusObjectsScale();
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
+			vObjectPos += (vMidPos-vObjectPos)*vScale;
+			m_setFocusObjects[i]->setPos(vObjectPos);
+			updateMapObj(m_setFocusObjects[i]);
+		}
+	}
 }
 
 #include "float.h"
@@ -347,7 +470,7 @@ CMapObj* CScene::pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir)
 
 void CScene::removeAllObjects()
 {
-	m_pObjectFocus = NULL;
+	clearFocusObjects();
 	m_bNeedUpdate = true;
 	m_setRenderSceneObj.clear();
 	m_ObjectTree.clearObjects();

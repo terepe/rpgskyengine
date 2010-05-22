@@ -84,6 +84,7 @@ public:
 
 	// ªÊ÷∆3D÷±œﬂ
 	void DrawLine3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
+	void drawCross3D(const Vec3D& vPos,float fLength, Color32 color);
 	// Quadrilateral
 	void drawQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
 	void fillQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);

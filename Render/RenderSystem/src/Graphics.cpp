@@ -613,6 +613,13 @@ void CGraphics::DrawLine3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
 	R.DrawPrimitiveUP(VROT_LINE_STRIP, 1, v, sizeof(VERTEX_XYZ_DIF));
 }
 
+void CGraphics::drawCross3D(const Vec3D& vPos,float fLength, Color32 color)
+{
+	DrawLine3D(vPos+Vec3D(-fLength,0.0f,0.0f),vPos+Vec3D(fLength,0.0f,0.0f),color);
+	DrawLine3D(vPos+Vec3D(0.0f,-fLength,0.0f),vPos+Vec3D(0.0f,fLength,0.0f),color);
+	DrawLine3D(vPos+Vec3D(0.0f,0.0f,-fLength),vPos+Vec3D(0.0f,0.0f,fLength),color);
+}
+
 void CGraphics::drawQuad(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color)
 {
 	VERTEX_XYZ_DIF v[5];
