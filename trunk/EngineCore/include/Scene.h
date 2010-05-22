@@ -45,10 +45,22 @@ public:
 	virtual CMapObj* add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	virtual void removeAllObjects();
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject);
-	//
-	void setObjectFocus(CMapObj* pObject);
-	CMapObj* getObjectFocus();
+	// Focus Objects
+	bool findFocusObject(CMapObj* pObject);
+	void addFocusObject(CMapObj* pObject);
+	bool delFocusObject(CMapObj* pObject);
+	void clearFocusObjects();
+	bool delMapObjsByFocusObjects();
+	std::deque<CMapObj*>& getFocusObjects();
+	Vec3D getFocusObjectsPos();
+	void setFocusObjectsPos(const Vec3D& vPos);
+	Vec3D getFocusObjectsRotate();
+	void setFocusObjectsRotate(const Vec3D& vRotate);
+	Vec3D getFocusObjectsScale();
+	void setFocusObjectsScale(const Vec3D& vScale);
 
+
+	// 
 	CMapObj* pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir);
 
 	//void ResetAnim();
@@ -71,8 +83,6 @@ public:
 	bool isShowAnimObject(){return m_bShowAnimObject;}
 	bool isShowObjectBBox(){return m_bShowObjectBBox;}
 
-	CMapObj* getFocusObject(){return m_pObjectFocus;}
-
 	void setFog(const Fog& fog);
 	const Fog& getFog(){return m_Fog;}
 	void setLight(const DirectionalLight& light);
@@ -87,14 +97,11 @@ public:
 	MAP_OBJECT_INFO	m_ObjectInfo;
 	bool			m_bNeedUpdate;
 protected:
-	CShader* m_pShaderFocus;
-	CMapObj* m_pObjectFocus;        // The object which has focus
+	std::deque<CMapObj*> m_setFocusObjects;        // The object which has focus
 	bool m_bShowStaticObject;
 	bool m_bShowAnimObject;
 	bool m_bShowObjectBBox;
 	bool m_bShowObjectTreeBox;
-
-
 
 	Fog					m_Fog;
 	DirectionalLight	m_Light;
