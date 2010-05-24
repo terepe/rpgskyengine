@@ -2,6 +2,7 @@
 
 CUIComboVec3D::CUIComboVec3D()
 {
+	setExtentSize(0.01f);
 }
 
 CUIComboVec3D::~CUIComboVec3D()
@@ -26,8 +27,6 @@ void CUIComboVec3D::OnControlRegister()
 	RegisterControlEvent("IDC_NUM_X",(PEVENT)&CUIComboVec3D::OnNumChanged);
 	RegisterControlEvent("IDC_NUM_Y",(PEVENT)&CUIComboVec3D::OnNumChanged);
 	RegisterControlEvent("IDC_NUM_Z",(PEVENT)&CUIComboVec3D::OnNumChanged);
-
-	setExtentSize(0.01f);
 }
 
 Vec3D CUIComboVec3D::getVec3D()
