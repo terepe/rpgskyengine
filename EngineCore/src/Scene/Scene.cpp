@@ -328,6 +328,10 @@ bool CScene::findFocusObject(CMapObj* pObject)
 
 void CScene::addFocusObject(CMapObj* pObject)
 {
+	if (pObject==NULL)
+	{
+		return;
+	}
 	if(findFocusObject(pObject)==false)
 	{
 		m_setFocusObjects.push_back(pObject);
