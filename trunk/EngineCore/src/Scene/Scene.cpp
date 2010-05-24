@@ -410,11 +410,22 @@ void CScene::setFocusObjectsRotate(const Vec3D& vRotate)
 	}
 	else
 	{
+		Vec3D vMidPos = getFocusObjectsPos();
 		//Vec3D vMidPos = getFocusObjectsRotate();
+		Matrix mRotate;
+		mRotate.rotate(vRotate);
 		for(size_t i=0;i<m_setFocusObjects.size();++i)
 		{
-			//Vec3D vObjectPos = m_setFocusObjects[i]->getPos()+vMidPos-vPos;
-			//m_setFocusObjects[i]->setPos(vObjectPos);
+			{
+				Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
+				vObjectPos = vMidPos+mRotate*(vObjectPos-vMidPos);
+				m_setFocusObjects[i]->setPos(vObjectPos);
+			}
+			{
+				Vec3D vObjectRotate = m_setFocusObjects[i]->getRotate();
+				vObjectRotate += vRotate;
+				m_setFocusObjects[i]->setRotate(vObjectRotate);
+			}
 			updateMapObj(m_setFocusObjects[i]);
 		}
 	}
@@ -422,30 +433,32 @@ void CScene::setFocusObjectsRotate(const Vec3D& vRotate)
 
 Vec3D CScene::getFocusObjectsScale()
 {
-	if(m_setFocusObjects.size()==1)
+	Vec3D vScale(0.0f,0.0f,0.0f);
+	for(size_t i=0;i<m_setFocusObjects.size();++i)
 	{
-		return m_setFocusObjects[0]->getScale();
+		vScale+=m_setFocusObjects[i]->getScale();
 	}
-	return Vec3D(1.0f,1.0f,1.0f);
+	vScale/=m_setFocusObjects.size();
+	return vScale;
 }
 
 void CScene::setFocusObjectsScale(const Vec3D& vScale)
 {
-	if(m_setFocusObjects.size()==1)
+	Vec3D vMidPos = getFocusObjectsPos();
+	Vec3D vMidScale = getFocusObjectsScale();
+	for(size_t i=0;i<m_setFocusObjects.size();++i)
 	{
-		m_setFocusObjects[0]->setScale(vScale);
-		updateMapObj(m_setFocusObjects[0]);
-	}
-	else
-	{
-		Vec3D vMidPos = getFocusObjectsScale();
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
 		{
 			Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
-			vObjectPos += (vMidPos-vObjectPos)*vScale;
+			vObjectPos = vMidPos-(vMidPos-vObjectPos)*vScale/vMidScale;
 			m_setFocusObjects[i]->setPos(vObjectPos);
-			updateMapObj(m_setFocusObjects[i]);
 		}
+		{
+			Vec3D vObjectScale = m_setFocusObjects[i]->getScale();
+			vObjectScale*=vScale/vMidScale;
+			m_setFocusObjects[i]->setScale(vObjectScale);
+		}
+		updateMapObj(m_setFocusObjects[i]);
 	}
 }
 
