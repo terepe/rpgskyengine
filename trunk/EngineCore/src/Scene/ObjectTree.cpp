@@ -187,7 +187,7 @@ ObjectTree* ObjectTree::getNodeByAABB(const BBox& box)
 		{
 			for (size_t i=0;i<8;++i)
 			{
-				ObjectTree* pNode = pChild[i].getNodeByAABB(bbox);
+				ObjectTree* pNode = pChild[i].getNodeByAABB(box);
 				if (pNode)
 				{
 					return pNode;
