@@ -39,6 +39,7 @@ public:
 
 	void renderTargetBegin();
 	void renderTargetGlow();
+	void renderGammaCorrection();
 	void renderTargetBloom();
 	void renderTargetEnd();
 	void compose(const CRect<int>& rcDest);

@@ -412,6 +412,24 @@ void CSceneEffect::renderTargetGlow()// not good
 	}
 }
 
+void CSceneEffect::renderGammaCorrection()
+{
+	CRenderSystem& R = GetRenderSystem();
+	R.SetRenderTarget(m_pSceneTexture);
+	//R.ClearBuffer(false,true,0x0);
+	R.GetShaderMgr().getSharedShader()->setTexture("g_texScene",m_pSceneTexture);
+	//R.SetTexture(0, m_pSceneTexture);
+
+	if(R.prepareMaterial("GammaCorrection"))
+	{
+		CRenderSystem& R = GetRenderSystem();
+		//R.SetTexture(0,g_samScene) ;
+		R.SetFVF(QuadVertex::FVF);
+		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_QuadVB, sizeof(QuadVertex));
+		R.finishMaterial();
+	}
+}
+
 void CSceneEffect::renderTargetBloom()
 {
 	CRenderSystem& R = GetRenderSystem();
@@ -521,11 +539,13 @@ void CSceneEffect::compose(const CRect<int>& rcDest)
 			}
 		}
 
+		R.SetSamplerFilter(0, TEXF_POINT, TEXF_POINT, TEXF_POINT);
 		// ÃÌº”π‚‘Œ
 		R.SetBlendFunc(false,BLENDOP_ADD,SBF_ONE,SBF_ONE);
 		R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TEXTURE);
 		R.SetTextureAlphaOP(0,TBOP_DISABLE);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, QuadVB, sizeof(QuadVertex));
+		R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 		//	R.EndFrame();
 	}
 }
