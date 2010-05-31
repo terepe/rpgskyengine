@@ -1,7 +1,10 @@
 #pragma once
 #include "Terrain.h"
 #include "TerrainBrush.h"
-
+struct EditLog
+{
+	int type,x,y,value;
+};
 class DLL_EXPORT CTerrainEditor : public CTerrain
 {
 public:
