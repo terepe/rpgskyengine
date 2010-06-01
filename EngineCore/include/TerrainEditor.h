@@ -9,10 +9,7 @@ struct EditValue
 		float fHeight;
 		uint8 uAtt;
 		unsigned long color;
-		struct {
-			byte id;
-			byte layer;
-		} tile;
+		int nTileID;
 	};
 };
 
@@ -64,6 +61,11 @@ public:
 	void doEdit(std::vector<MAP_EDIT_RECORD>& mapEditRecordIn,std::vector<MAP_EDIT_RECORD>& mapEditRecordOut);
 	void rebackEdit();
 	void redoEdit();
+	//
+	void brushATT(float fPosX, float fPosY, byte uAtt, float fRadius);
+	void brushTile(float fPosX, float fPosY, int nTileID , int nLayer, float fRadius);
+	void brushAlpha(float fPosX, float fPosY, float fRadius, float fHardness, float fStrength);
+	void brushHeight(float fPosX, float fPosY, float fRadius, float fHardness, float fStrength, float fMin, float fMax, bool bSmooth);
 	void Brush(float fPosX, float fPosY);
 	//
 	void showLayer0(bool bShow){m_bShowLayer0 = bShow;}

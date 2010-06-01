@@ -16,21 +16,18 @@ public:
 	float	GetStrength()const{return m_fStrength;}
 	void	SetTileID(int nTileID);
 	int		GetTileID(int nX = 0, int nY = 0)const;
-	void	SetTileLayer(int nTileLayer);
-	int		GetTileLayer()const;
 	void	SetAtt(uint8 uAtt);
 	uint8	GetAtt()const;
 	void	setHeightRang(float fMin, float fMax);
 	float	getHeightMin()const;
 	float	getHeightMax()const;
-	void	setObjectMoveingClingToFloor(bool bObjectMoveingClingToFloor){m_bObjectMoveingClingToFloor = bObjectMoveingClingToFloor;}
-	bool	getObjectMoveingClingToFloor()const{return m_bObjectMoveingClingToFloor;}
 
 	enum BrushType
 	{
 		BRUSH_TYPE_TERRAIN_HEIGHT,
 		BRUSH_TYPE_TERRAIN_ATT,
-		BRUSH_TYPE_TERRAIN_TEXTURE_PAINT,
+		BRUSH_TYPE_TERRAIN_TILE_LAYER1,
+		BRUSH_TYPE_TERRAIN_TILE_LAYER2,
 		BRUSH_TYPE_TERRAIN_TEXTURE_ALPHA_PAINT,
 		BRUSH_TYPE_SCENE_OBJECT,
 		BRUSH_TYPE_MAX,
@@ -44,7 +41,6 @@ public:
 	BrushType	GetBrushType(){return m_eBrushType;}
 	void			setBrushHeightType(BrushHeightType eBrushHeightType){m_eBrushHeightType=eBrushHeightType;}
 	BrushHeightType	getBrushHeightType(){return m_eBrushHeightType;}
-
 protected:
 	Matrix					m_mRandiusTexTrans;
 	Matrix					m_mHardnessTexTrans;
@@ -56,9 +52,7 @@ protected:
 	BrushType				m_eBrushType;
 	BrushHeightType			m_eBrushHeightType;
 	int						m_nTileID;
-	int						m_nTileLayer;
 	uint8					m_uAtt;
-	bool					m_bObjectMoveingClingToFloor;
 	float					m_fHeightMin;
 	float					m_fHeightMax;
 };
