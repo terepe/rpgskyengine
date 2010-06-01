@@ -142,7 +142,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	}
 	// AnimList
 	//lumpFile.getVector("AnimList", m_AnimList);
-	if (m_AnimList.size()==0)
+	if (m_AnimList.empty())
 	{
 		ModelAnimation anim;
 		anim.animID = 0;
@@ -357,7 +357,7 @@ bool CModelData::SaveFile(const std::string& strFilename)
 void CModelData::Init()
 {
 	m_Mesh.Init();
-	if (m_mapPasses.size()==0)
+	if (m_mapPasses.empty())
 	{
 		if (m_Mesh.m_Lods.size()>0)
 		{

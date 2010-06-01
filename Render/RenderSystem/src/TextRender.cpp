@@ -779,7 +779,7 @@ void CUBB::ParseTag(const std::wstring& wstrTag)
 			{
 			case TAG_TYPE_BOLD:
 				{
-					if (setParameters.size()==0)
+					if (setParameters.empty())
 					{
 						m_nBold = 1;
 					}
@@ -792,7 +792,7 @@ void CUBB::ParseTag(const std::wstring& wstrTag)
 				break;
 			case TAG_TYPE_ITALIC:
 				{
-					if (setParameters.size()==0)
+					if (setParameters.empty())
 					{
 						m_nItalic = 3;
 					}

@@ -65,7 +65,7 @@ void CUIGrid::UpdateRects()
 
 uint32 CUIGrid::GetLineCount()
 {
-	if (m_Row.size()==0)
+	if (m_Row.empty())
 	{
 		return 0;
 	}

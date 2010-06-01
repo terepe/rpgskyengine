@@ -843,7 +843,7 @@ CUIControl* CUICombo::getFirstControl()
 {
 	if (m_Controls.size()>0)
 	{
-		return m_Controls[0];
+		return m_Controls.front();
 	}
 	return NULL;
 }
@@ -852,7 +852,7 @@ CUIControl* CUICombo::getLastControl()
 {
 	if (m_Controls.size()>0)
 	{
-		return m_Controls[m_Controls.size()-1];
+		return m_Controls.back();
 	}
 	return NULL;
 }
