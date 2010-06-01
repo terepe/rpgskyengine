@@ -78,7 +78,7 @@ public:
 				//range = m_FrameRanges[anim];
 				range.begin = 0;
 				range.end = uint32(m_KeyData.size()-1);
-				time %= m_KeyTimes[m_KeyTimes.size()-1]; // I think this might not be necessary?
+				time %= m_KeyTimes.back(); // I think this might not be necessary?
 			}
 
  			if (range.begin != range.end)

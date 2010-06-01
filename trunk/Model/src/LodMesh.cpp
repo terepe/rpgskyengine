@@ -457,7 +457,7 @@ void CLodMesh::update()
 
 void CLodMesh::InitBBox()
 {
-	if (m_setSubMesh.size()==0)
+	if (m_setSubMesh.empty())
 	{
 		return;
 	}
@@ -774,7 +774,7 @@ bool CMeshCoordinate::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3
 #define COORD_PLANE_COLOR 0x44FFFF00
 void CMeshCoordinate::render(const Vec3D& vCoordShow)
 {
-	if (m_setSubMesh.size()==0)
+	if (m_setSubMesh.empty())
 	{
 		init();
 	}

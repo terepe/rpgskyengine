@@ -1,10 +1,49 @@
 #pragma once
 #include "Terrain.h"
 #include "TerrainBrush.h"
-struct EditLog
+
+struct EditValue
 {
-	int type,x,y,value;
+	union 
+	{
+		float fHeight;
+		uint8 uAtt;
+		unsigned long color;
+		struct {
+			byte id;
+			byte layer;
+		} tile;
+	};
 };
+
+struct EditTarget
+{
+	int type;
+	Pos2D pos;
+	bool operator< (const EditTarget &et) const
+	{
+		if(type!=et.type)
+		{
+			return type<et.type;
+		}
+		if(pos.y!=et.pos.y)
+		{
+			return pos.y<et.pos.y;
+		}
+		if(pos.x!=et.pos.x)
+		{
+			return pos.x<et.pos.x;
+		}
+		return false;
+	}
+};
+
+struct EditRecord
+{
+	std::map<EditTarget,EditValue> mapItem;
+};
+typedef std::map<EditTarget,EditValue>  MAP_EDIT_RECORD;
+
 class DLL_EXPORT CTerrainEditor : public CTerrain
 {
 public:
@@ -19,6 +58,12 @@ public:
 	//
 	CTerrainBrush& GetBrushDecal(){return m_BrushDecal;}
 	//
+	void markEdit();
+	void doEdit(MAP_EDIT_RECORD& mapEditRecordIn,MAP_EDIT_RECORD& mapEditRecordOut);
+	void doEdit(MAP_EDIT_RECORD& mapEditRecordIn);
+	void doEdit(std::vector<MAP_EDIT_RECORD>& mapEditRecordIn,std::vector<MAP_EDIT_RECORD>& mapEditRecordOut);
+	void rebackEdit();
+	void redoEdit();
 	void Brush(float fPosX, float fPosY);
 	//
 	void showLayer0(bool bShow){m_bShowLayer0 = bShow;}
@@ -46,4 +91,8 @@ protected:
 	// ±ÊË¢Ìù»¨
 	CTerrainBrush	m_BrushDecal;
 	std::map<uint8,TerrainSub>	m_mapRenderAttributeSubs;
+
+	std::vector<MAP_EDIT_RECORD> m_setReback;
+	std::vector<MAP_EDIT_RECORD> m_setRedo;
+
 };
