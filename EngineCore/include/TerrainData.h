@@ -54,7 +54,7 @@ public:
 	float	getVertexHeight(const Pos2D& posCell)const;
 	void	setVertexHeight(const Pos2D& posCell, float fHeight);
 	//
-	Vec3D	GetCellNormal(const Pos2D& posCell)const;
+	Vec3D	getVertexNormal(const Pos2D& posCell)const;
 	//
 	uint8	getCellAttribute(const Pos2D& posCell)const;
 	void	setCellAttribute(const Pos2D& posCell, uint8 uAtt);
