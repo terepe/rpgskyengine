@@ -21,6 +21,8 @@ public:
 	void	setHeightRang(float fMin, float fMax);
 	float	getHeightMin()const;
 	float	getHeightMax()const;
+	Color32 getColor()const;
+	void	setColor(Color32 color);
 
 	enum BrushType
 	{
@@ -28,7 +30,7 @@ public:
 		BRUSH_TYPE_TERRAIN_ATT,
 		BRUSH_TYPE_TERRAIN_TILE_LAYER1,
 		BRUSH_TYPE_TERRAIN_TILE_LAYER2,
-		BRUSH_TYPE_TERRAIN_TEXTURE_ALPHA_PAINT,
+		BRUSH_TYPE_TERRAIN_COLOR,
 		BRUSH_TYPE_SCENE_OBJECT,
 		BRUSH_TYPE_MAX,
 	};
@@ -55,4 +57,5 @@ protected:
 	uint8					m_uAtt;
 	float					m_fHeightMin;
 	float					m_fHeightMax;
+	Color32					m_color;
 };

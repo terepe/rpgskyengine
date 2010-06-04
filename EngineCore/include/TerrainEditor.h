@@ -63,8 +63,9 @@ public:
 	void redoEdit();
 	//
 	void brushATT(float fPosX, float fPosY, byte uAtt, float fRadius);
-	void brushTile(float fPosX, float fPosY, int nTileID, float fRadius);
-	void brushAlpha(float fPosX, float fPosY, int nTileID, float fRadius, float fHardness, float fStrength);
+	void brushTileLayer1(float fPosX, float fPosY, int nTileID, float fRadius);
+	void brushTileLayer2(float fPosX, float fPosY, int nTileID, float fRadius, float fHardness, float fStrength);
+	void brushColor(float fPosX, float fPosY, Color32 colorPaint, float fRadius, float fHardness, float fStrength);
 	void brushHeight(float fPosX, float fPosY, float fRadius, float fHardness, float fStrength, float fMin, float fMax, bool bSmooth);
 	void Brush(float fPosX, float fPosY);
 	//
