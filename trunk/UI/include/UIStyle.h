@@ -59,17 +59,17 @@ struct StyleDrawData
 	CRect<float> rc;
 	void updateRect(CRect<float> rect)
 	{
-		rc = rect+offset;
-		rc.left		+= rc.getWidth()*0.5f*(1.0f-scale.left);
-		rc.right	-= rc.getWidth()*0.5f*(1.0f-scale.right);
-		rc.top		+= rc.getHeight()*0.5f*(1.0f-scale.top);
-		rc.bottom	-= rc.getHeight()*0.5f*(1.0f-scale.bottom);
+		rc.left		= rect.left+rect.getWidth()*scale.left;
+		rc.right	= rect.left+rect.getWidth()*scale.right;
+		rc.top		= rect.top+rect.getHeight()*scale.top;
+		rc.bottom	= rect.top+rect.getHeight()*scale.bottom;
+		rc+= offset;
 	}
 };
 
-struct ControlBlendColor
+struct StyleStateBlend
 {
-	ControlBlendColor()
+	StyleStateBlend()
 	{
 		memset(this,0,sizeof(*this));
 	}
@@ -80,7 +80,7 @@ struct ControlBlendColor
 		sdd.offset		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.offset, setOffset[iState]);
 		sdd.scale		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.scale,	setScale[iState]);
 	}
-	void XMLState(TiXmlElement& element);
+	void XMLParse(TiXmlElement& element);
 
 	float			setBlendRate[CONTROL_STATE_MAX];
 	Vec4D			setColor[CONTROL_STATE_MAX];
@@ -88,24 +88,10 @@ struct ControlBlendColor
 	CRect<float>	setScale[CONTROL_STATE_MAX];
 };
 
-struct BaseCyclostyle: public ControlBlendColor
-{
-	BaseCyclostyle()
-	{
-		uFormat = 0;
-		memset(&rcOffset,0,sizeof(rcOffset));
-	}
-	CRect<float> rcOffset;
-	uint32 uFormat;// The format argument to DrawText or Texture
-	virtual void XML(TiXmlElement& element);
-	virtual void updataRect(CRect<float>& rc)const;
-};
-
-class CUISpriteCyclostyle: public BaseCyclostyle
+class CUISpriteCyclostyle: public StyleStateBlend
 {
 public:
-	virtual void XML(TiXmlElement& element);
-	virtual void updataRect(CRect<float>& rc)const;
+	virtual void XMLParse(TiXmlElement& element);
 	void		draw(const CRect<float>& rc,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
@@ -114,19 +100,20 @@ public:
 	RECT		m_rcCenter;
 };
 
-class CUITextCyclostyle: public BaseCyclostyle
+class CUITextCyclostyle: public StyleStateBlend
 {
 public:
-	virtual void updataRect(CRect<float>& rc)const;
+	uint32 uFormat;// The format argument to DrawText or Texture
+	virtual void XMLParse(TiXmlElement& element);
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
-struct  StyleBorder: public BaseCyclostyle
+struct  StyleBorder: public StyleStateBlend
 {
 	void draw(const CRect<float>& rc,const Color32& color)const;
 };
 
-struct  StyleSquare: public BaseCyclostyle
+struct  StyleSquare: public StyleStateBlend
 {
 	void draw(const CRect<float>& rc,const Color32& color)const;
 };
@@ -137,7 +124,7 @@ public:
 	CUICyclostyle(){}
 	void Refresh();
 	void add(const CUICyclostyle& cyc);
-	std::vector<BaseCyclostyle> m_setDefault;
+	std::vector<StyleStateBlend> m_setDefault;
 	std::vector<CUISpriteCyclostyle> m_SpriteStyle;
 	std::vector<StyleBorder> m_setBorder;
 	std::vector<StyleSquare> m_setSquare;

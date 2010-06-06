@@ -72,7 +72,8 @@ public:
 	enum STYLE { MULTISELECTION = 1 };
 
 protected:
-	CUIStyle m_StyleItem;
+	CUIStyle m_StyleItem1;
+	CUIStyle m_StyleItem2;
 	CUIStyle m_StyleSelected;
 	CRect<int> 	m_rcText;      // Text rendering bound
 	CRect<int> 	m_rcSelection; // Selection box bound
