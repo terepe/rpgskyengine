@@ -4,11 +4,11 @@
 CUIListBox::CUIListBox()
 {
 	m_dwStyle = 0;
-	m_nSBWidth = 17;
+	m_nSBWidth = 7;
 	m_nSelected = -1;
 	m_nSelStart = 0;
-	m_nBorder = 6;
-	m_nMargin = 5;
+	m_nBorder = 1;
+	m_nMargin = 0;
 	m_nTextHeight = 0;
 }
 
@@ -26,7 +26,8 @@ void CUIListBox::OnControlRegister()
 void CUIListBox::SetStyle(const std::string& strStyleName)
 {
 	m_Style.SetStyle(strStyleName);
-	m_StyleItem.SetStyle(strStyleName+".item");
+	m_StyleItem1.SetStyle(strStyleName+".item1");
+	m_StyleItem2.SetStyle(strStyleName+".item2");
 	m_StyleSelected.SetStyle(strStyleName+".selected");
 }
 
@@ -604,10 +605,10 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 	{
 		// Find out the height of a single line of text
 		CRect<int> rc = m_rcText;
-		rc.bottom = rc.top+UIGraph::GetFontSize();
-
 		// Update the line height formation
-		m_nTextHeight = rc.bottom - rc.top;
+		m_nTextHeight = UIGraph::GetFontSize()*1.5f;
+
+		rc.bottom = rc.top+m_nTextHeight;
 
 		static bool bSBInit;
 		if(!bSBInit)
@@ -652,7 +653,14 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 				}
 				else
 				{
-					m_StyleItem.draw(rc, pItem->wstrText,iState, fElapsedTime);
+					if (i%2==0)
+					{
+						m_StyleItem1.draw(rc, pItem->wstrText,iState, fElapsedTime);
+					}
+					else
+					{
+						m_StyleItem2.draw(rc, pItem->wstrText,iState, fElapsedTime);
+					}
 				}
 				rc.offset(0, m_nTextHeight);
 		}

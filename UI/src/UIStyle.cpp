@@ -86,7 +86,6 @@ inline void updateStyle(const std::vector<T>& setSrc, std::map<int,StyleDrawData
 	{
 		setSrc[i].blend(setDest[i], iState, fElapsedTime);
 		setDest[i].updateRect(rc);
-		setSrc[i].updataRect(setDest[i].rc);
 	}
 }
 
@@ -181,7 +180,7 @@ CUIStyleMgr::CUIStyleMgr()
 {
 }
 
-void ControlBlendColor::XMLState(TiXmlElement& element)
+void StyleStateBlend::XMLParse(TiXmlElement& element)
 {
 	{
 		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
@@ -274,7 +273,7 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 	{
 		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 		{
-			setScale[i].set(1.0f,1.0f,1.0f,1.0f);
+			setScale[i].set(0.0f,0.0f,1.0f,1.0f);
 		}
 		TiXmlElement *pElement = element.FirstChildElement("scale");
 		if (pElement)
@@ -302,90 +301,10 @@ void ControlBlendColor::XMLState(TiXmlElement& element)
 
 }
 
-void BaseCyclostyle::XML(TiXmlElement& element)
-{
-	if (element.Attribute("format"))
-	{
-		uFormat = StrToTextFormat(element.Attribute("format"));
-	}
-	if (element.Attribute("offset"))
-	{
-		StrToRect(element.Attribute("offset"), rcOffset);
-	}
-	ControlBlendColor::XMLState(element);
-}
-
-void BaseCyclostyle::updataRect(CRect<float>& rc)const
-{
-	if (uFormat&DTL_LEFT)
-	{
-		rc.right = rc.left;
-	}
-	else if (uFormat&DTL_CENTER)
-	{
-		rc.left = (rc.right+rc.left)/2;
-		rc.right = rc.left;
-	}
-	else if (uFormat&DTL_RIGHT)
-	{
-		rc.left = rc.right;
-	}
-	if (uFormat&DTL_TOP)
-	{
-		rc.bottom = rc.top;
-	}
-	else if (uFormat&DTL_VCENTER)
-	{
-		rc.top = (rc.bottom+rc.top)/2;
-		rc.bottom = rc.top;
-	}
-	else if (uFormat&DTL_BOTTOM)
-	{
-		rc.top = rc.bottom;
-	}
-	rc+=rcOffset;
-}
-
-void CUISpriteCyclostyle::updataRect(CRect<float>& rc)const
-{
-	if (uFormat&DTL_TOP)
-	{
-		rc.bottom = rc.top+(m_rcBorder.bottom-m_rcBorder.top);
-	}
-	else if (uFormat&DTL_VCENTER)
-	{
-		rc.top = (rc.bottom+rc.top-(m_rcBorder.bottom-m_rcBorder.top))/2;
-		rc.bottom = rc.top+(m_rcBorder.bottom-m_rcBorder.top);
-	}
-	else if (uFormat&DTL_BOTTOM)
-	{
-		rc.top = rc.bottom-(m_rcBorder.bottom-m_rcBorder.top);
-	}
-	if (uFormat&DTL_LEFT)
-	{
-		rc.right = rc.left+(m_rcBorder.right-m_rcBorder.left);
-	}
-	else if (uFormat&DTL_CENTER)
-	{
-		rc.left = (rc.right+rc.left-(m_rcBorder.right-m_rcBorder.left))/2;
-		rc.right = rc.left+(m_rcBorder.right-m_rcBorder.left);
-	}
-	else if (uFormat&DTL_RIGHT)
-	{
-		rc.left = rc.right-(m_rcBorder.right-m_rcBorder.left);
-	}
-	rc+=rcOffset;
-}
-
-void CUITextCyclostyle::updataRect(CRect<float>& rc)const
-{
-	rc+=rcOffset;
-}
-
-void CUISpriteCyclostyle::XML(TiXmlElement& element)
+void CUISpriteCyclostyle::XMLParse(TiXmlElement& element)
 {
 	//
-	BaseCyclostyle::XML(element);
+	StyleStateBlend::XMLParse(element);
 	if (element.Attribute("filename"))
 	{
 		m_nTexture =  GetRenderSystem().GetTextureMgr().RegisterTexture(element.Attribute("filename"));
@@ -431,6 +350,17 @@ void CUISpriteCyclostyle::XML(TiXmlElement& element)
 		{
 			m_bDecolor = true;
 		}
+	}
+}
+
+void CUITextCyclostyle::XMLParse(TiXmlElement& element)
+{
+	//
+	StyleStateBlend::XMLParse(element);
+	uFormat = 0;
+	if (element.Attribute("format"))
+	{
+		uFormat = StrToTextFormat(element.Attribute("format"));
 	}
 }
 
@@ -531,7 +461,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			while (pElement)
 			{
 				StyleBorder border;
-				border.XML(*pElement);
+				border.XMLParse(*pElement);
 				Cyclostyle.m_setDefault.push_back(border);
 				pElement = pElement->NextSiblingElement("default");
 			}
@@ -542,7 +472,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			while (pSpriteElement)
 			{
 				CUISpriteCyclostyle SpriteCyclostyle;
-				SpriteCyclostyle.XML(*pSpriteElement);
+				SpriteCyclostyle.XMLParse(*pSpriteElement);
 				Cyclostyle.m_SpriteStyle.push_back(SpriteCyclostyle);
 				pSpriteElement = pSpriteElement->NextSiblingElement("texture");
 			}
@@ -554,7 +484,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			while (pElement)
 			{
 				StyleBorder border;
-				border.XML(*pElement);
+				border.XMLParse(*pElement);
 				Cyclostyle.m_setBorder.push_back(border);
 				pElement = pElement->NextSiblingElement("border");
 			}
@@ -564,7 +494,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			while (pElement)
 			{
 				StyleSquare backgroundColor;
-				backgroundColor.XML(*pElement);
+				backgroundColor.XMLParse(*pElement);
 				Cyclostyle.m_setSquare.push_back(backgroundColor);
 				pElement = pElement->NextSiblingElement("square");
 			}
@@ -576,7 +506,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			while (pFontElement)
 			{
 				CUITextCyclostyle FontStyle;
-				FontStyle.XML(*pFontElement);
+				FontStyle.XMLParse(*pFontElement);
 				Cyclostyle.m_FontStyle.push_back(FontStyle);
 				pFontElement = pFontElement->NextSiblingElement("font");
 			}
