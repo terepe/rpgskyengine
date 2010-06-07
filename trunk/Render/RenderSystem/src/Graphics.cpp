@@ -476,6 +476,16 @@ void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCen
 			rcDest.right + (rcCenterSrc.right - rcSrc.right),
 			rcDest.bottom + (rcCenterSrc.bottom - rcSrc.bottom));
 
+		if(rcCenterDest.left>rcCenterDest.right)
+		{
+			rcCenterDest.left=(rcDest.left+rcDest.right)*0.5f;
+			rcCenterDest.right=(rcDest.left+rcDest.right)*0.5f;
+		}
+		if(rcCenterDest.top>rcCenterDest.bottom)
+		{
+			rcCenterDest.top==(rcDest.top+rcDest.bottom)*0.5f;
+			rcCenterDest.bottom=(rcDest.top+rcDest.bottom)*0.5f;
+		}
 		VERTEX_XYZW_DIF_TEX vertex[4*4];
 		for (int i = 0; i<16; i++)
 		{
