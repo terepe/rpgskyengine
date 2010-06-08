@@ -503,7 +503,7 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 				rcVal.left = rc.left+nWidth*x;
 				rcVal.right = rcVal.left+nWidth;
 
-				UIGraph::DrawText(m_Row[x], m_Style, 0, rcVal.getRECT());
+//				UIGraph::DrawText(m_Row[x], m_Style, 0, rcVal.getRECT());
 			}
 			rc.InflateRect(0, m_nTextHeight);
 		}
@@ -534,7 +534,7 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 				Cell* pCell = GetCell(x, y);
 				if(pCell)
 				{
-					UIGraph::DrawText(pCell->wstrText, m_Style, nTextStyle, rcVal.getRECT());
+//					UIGraph::DrawText(pCell->wstrText, m_Style, nTextStyle, rcVal.getRECT());
 				}
 			}
 			rc.InflateRect(0, m_nTextHeight);

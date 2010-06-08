@@ -855,9 +855,9 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
             if(CIME::s_CandList.dwSelection == i)
             {
                 UIGraph::FillRect(rc, clrSelBkColor);
-                m_Style.m_mapFont[1].color = clrSelTextColor;
+  ///              m_Style.m_mapFont[1].color = clrSelTextColor;
             } else
-                m_Style.m_mapFont[1].color = clrTextColor;
+   ///             m_Style.m_mapFont[1].color = clrTextColor;
 
             UIGraph::DrawText(CIME::s_CandList.awszCandidate[i], m_Style, 1, rc);
 
@@ -866,7 +866,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
     } else
     {
         // Horizontal candidate window
-        m_Style.m_mapFont[1].color = clrTextColor;
+///		m_Style.m_mapFont[1].color = clrTextColor;
         if(bReading)
             UIGraph::DrawText(CIME::s_wstrReadingString, m_Style, 1, rc);
         else
@@ -882,7 +882,7 @@ void CUIIMEEditBox::RenderCandidateReadingWindow(float fElapsedTime, bool bReadi
             rc.right = rc.left + nXRight;
             rc.left += nXLeft;
             UIGraph::FillRect(rc, clrSelBkColor);
-            m_Style.m_mapFont[1].color = clrSelTextColor;
+ ///           m_Style.m_mapFont[1].color = clrSelTextColor;
             UIGraph::DrawText(CIME::s_CandList.HoriCand.GetBuffer() + CIME::s_CandList.nFirstSelected,
                                 m_Style, 1, rc, false, CIME::s_CandList.nHoriSelectedLen);
         }
@@ -918,7 +918,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
     Color32 TextColor = m_CompColor;
     // Render the window and string.
     // If the string is too long, we must wrap the line.
-    m_Style.m_mapFont[1].color = TextColor;
+ ///   m_Style.m_mapFont[1].color = TextColor;
     const WCHAR *pwszComp = CIME::s_CompString.GetBuffer();
     int nCharLeft = CIME::s_CompString.GetTextSize();
     for(; ;)
@@ -953,7 +953,7 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
         }
 
         // Draw the text
-        m_Style.m_mapFont[1].color = TextColor;
+///        m_Style.m_mapFont[1].color = TextColor;
         UIGraph::DrawText(pwszComp, m_Style, 1, rc, false, nNumCharToDraw);
 
         // Advance pointer and counter
@@ -1011,13 +1011,13 @@ void CUIIMEEditBox::RenderComposition(float fElapsedTime)
         // Set up color based on the character attribute
         if(*pAttr == ATTR_TARGET_CONVERTED)
         {
-            m_Style.m_mapFont[1].color = m_CompTargetColor;
+ ///           m_Style.m_mapFont[1].color = m_CompTargetColor;
             bkColor = m_CompTargetBkColor;
         }
         else
         if(*pAttr == ATTR_TARGET_NOTCONVERTED)
         {
-            m_Style.m_mapFont[1].color = m_CompTargetNonColor;
+///            m_Style.m_mapFont[1].color = m_CompTargetNonColor;
             bkColor = m_CompTargetNonBkColor;
         }
         else
@@ -1057,7 +1057,7 @@ void CUIIMEEditBox::RenderIndicator(float fElapsedTime)
 
     //UIGraph::DrawSprite(m_Style, 1, m_rcIndicator);?????????????????????????????????????????ÎÒ×¢ÊÍµô
     RECT rc = m_rcIndicator;
-    m_Style.m_mapFont[1].color = CIME::s_ImeState == CIME::IMEUI_STATE_ON && CIME::s_bEnableImeSystem ? m_IndicatorImeColor : m_IndicatorEngColor;
+///    m_Style.m_mapFont[1].color = CIME::s_ImeState == CIME::IMEUI_STATE_ON && CIME::s_bEnableImeSystem ? m_IndicatorImeColor : m_IndicatorEngColor;
     CRect<float> rcCalc;
 	rcCalc.set( 0, 0, 0, 0 );
     // If IME system is off, draw English indicator.

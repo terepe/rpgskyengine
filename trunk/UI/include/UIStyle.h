@@ -108,6 +108,12 @@ public:
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
+class CUIUBBCyclostyle: public StyleStateBlend
+{
+public:
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+};
+
 struct  StyleBorder: public StyleStateBlend
 {
 	void draw(const CRect<float>& rc,const Color32& color)const;
@@ -129,6 +135,10 @@ public:
 	std::vector<StyleBorder> m_setBorder;
 	std::vector<StyleSquare> m_setSquare;
 	std::vector<CUITextCyclostyle> m_FontStyle;
+	std::vector<CUIUBBCyclostyle> m_UBBStyle;
+
+	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
+	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 };
 
 class DLL_EXPORT CUIStyle
@@ -143,14 +153,11 @@ public:
 	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
 	bool isVisible();
+	CRect<float>& getTextRect();
 
 	int m_nVisible;
 	std::string	m_strName;
-	std::map<int,StyleDrawData> m_mapDefault;
-	std::map<int,StyleDrawData> m_mapSprite;
-	std::map<int,StyleDrawData> m_mapBorder;
-	std::map<int,StyleDrawData> m_mapSquare;
-	std::map<int,StyleDrawData> m_mapFont;
+	std::map<int,StyleDrawData> m_mapStyleDrawData;
 };
 
 class CUIStyleMgr

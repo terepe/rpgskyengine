@@ -121,17 +121,18 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 	//	MessageBoxW(NULL,wstrInfo.c_str(),L"Register Control Warn!",0);
 	}
 	// text
-	if (pControlElement->Attribute("text"))
+	if (pControlElement->GetText()||pControlElement->Attribute("text"))
 	{
-		WCHAR strText[256]={0};
-		MultiByteToWideChar(CP_UTF8,0,pControlElement->Attribute("text"),-1,strText,256);
-		SetText(strText);
-	}
-	else if(pControlElement->GetText())
-	{
-		WCHAR strText[256]={0};
-		MultiByteToWideChar(CP_UTF8,0,pControlElement->GetText(),-1,strText,256);
-		SetText(strText);
+		const char* pText = pControlElement->GetText();
+		if(pText==NULL)
+		{
+			pText = pControlElement->Attribute("text");
+		}
+		int nLength = strlen(pText)+1;
+		WCHAR* pTextBuffer = new WCHAR[nLength];
+		MultiByteToWideChar(CP_UTF8,0,pText,-1,pTextBuffer,nLength);
+		SetText(pTextBuffer);
+		delete pTextBuffer;
 	}
 }
 
@@ -192,25 +193,6 @@ void CUIControl::SetHotkey(std::string& strHotkey)
 		}
 	}
 }
-
-
-// void CUIControl::SetTextColor(D3DCOLOR Color)
-// {
-// 	CUIStyle* pStyle = GetStyle(0);
-// 
-// 	if(pStyle)
-// 		pStyle->m_FontColor.States[CONTROL_STATE_NORMAL] = Color;
-// }
-
-// CUIStyle* CUIControl::GetStyle(UINT iElement)
-// {
-// // 	if (0 <= iElement && m_UIStyleIndices.size() > iElement)
-// // 	{
-// // 		return GetStyleMgr().GetStyleByID(m_UIStyleIndices[iElement]);
-// // 	}
-// 	return NULL;
-// }
-
 
 void CUIControl::SetStyle(const std::string& strStyleName)
 {
