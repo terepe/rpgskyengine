@@ -18,6 +18,6 @@ void CUIDisplay::OnFrameRender(double fTime, float fElapsedTime)
 
 CRect<int> CUIDisplay::getViewport()
 {
-	m_Style.m_mapDefault[0].updateRect(GetBoundingBox().getRECT());
-	return m_Style.m_mapDefault[0].rc.getRECT();
+	m_Style.m_mapStyleDrawData[0].updateRect(GetBoundingBox().getRECT());
+	return m_Style.m_mapStyleDrawData[0].rc.getRECT();
 }

@@ -585,10 +585,10 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 				{
 					rcSel.top = rc.top; rcSel.bottom = rc.bottom;
 	//				UIGraph::DrawSprite(m_Style, 1, rcSel);
-					UIGraph::DrawText(pPage->wstrName, m_Style, 1, rc.getRECT());
+//					UIGraph::DrawText(pPage->wstrName, m_Style, 1, rc.getRECT());
 				}
 				else
-					UIGraph::DrawText(pPage->wstrName, m_Style, 0, rc.getRECT());
+//					UIGraph::DrawText(pPage->wstrName, m_Style, 0, rc.getRECT());
 
 				rc.offset(0, m_nTextHeight);
 		}

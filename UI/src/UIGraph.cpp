@@ -127,8 +127,8 @@ void UIGraph::CalcTextRect(const std::wstring& wstrText, CRect<float>& rcDest)
 
 void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex,const CRect<float>& rcDest, bool bShadow, int nCount)
 {
-	Color32 color = style.m_mapFont[nIndex].color.getColor();
-	uint32 uFormat =  style.GetCyclostyle().m_FontStyle[nIndex].uFormat;
+	Color32 color = 0xFFFFFFFF;//style.m_mapFont[nIndex].color.getColor();
+	uint32 uFormat =  0;//style.GetCyclostyle().m_FontStyle[nIndex].uFormat;
 	// No need to draw fully transparent layers
 	if(color.a == 0)
 		return;
