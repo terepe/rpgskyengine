@@ -67,9 +67,9 @@ struct StyleDrawData
 	}
 };
 
-struct StyleStateBlend
+struct StyleElement
 {
-	StyleStateBlend()
+	StyleElement()
 	{
 		memset(this,0,sizeof(*this));
 	}
@@ -80,7 +80,8 @@ struct StyleStateBlend
 		sdd.offset		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.offset, setOffset[iState]);
 		sdd.scale		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.scale,	setScale[iState]);
 	}
-	void XMLParse(TiXmlElement& element);
+	void XMLParse(const TiXmlElement& element);
+	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const{}
 
 	float			setBlendRate[CONTROL_STATE_MAX];
 	Vec4D			setColor[CONTROL_STATE_MAX];
@@ -88,11 +89,11 @@ struct StyleStateBlend
 	CRect<float>	setScale[CONTROL_STATE_MAX];
 };
 
-class CUISpriteCyclostyle: public StyleStateBlend
+class StyleSprite: public StyleElement
 {
 public:
-	virtual void XMLParse(TiXmlElement& element);
-	void		draw(const CRect<float>& rc,const Color32& color)const;
+	virtual void XMLParse(const TiXmlElement& element);
+	void		draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
@@ -100,55 +101,53 @@ public:
 	RECT		m_rcCenter;
 };
 
-class CUITextCyclostyle: public StyleStateBlend
+struct  StyleBorder: public StyleElement
 {
-public:
-	uint32 uFormat;// The format argument to DrawText or Texture
-	virtual void XMLParse(TiXmlElement& element);
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
-class CUIUBBCyclostyle: public StyleStateBlend
+struct  StyleSquare: public StyleElement
+{
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+};
+
+class StyleText: public StyleElement
+{
+public:
+	virtual void XMLParse(const TiXmlElement& element);
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	uint32 uFormat;
+};
+
+class StyleUBB: public StyleElement
 {
 public:
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
-struct  StyleBorder: public StyleStateBlend
-{
-	void draw(const CRect<float>& rc,const Color32& color)const;
-};
-
-struct  StyleSquare: public StyleStateBlend
-{
-	void draw(const CRect<float>& rc,const Color32& color)const;
-};
-
-class DLL_EXPORT CUICyclostyle
+class CUIStyleData
 {
 public:
-	CUICyclostyle(){}
+	CUIStyleData(){}
+	~CUIStyleData();
+	void clear();
 	void Refresh();
-	void add(const CUICyclostyle& cyc);
-	std::vector<StyleStateBlend> m_setDefault;
-	std::vector<CUISpriteCyclostyle> m_SpriteStyle;
-	std::vector<StyleBorder> m_setBorder;
-	std::vector<StyleSquare> m_setSquare;
-	std::vector<CUITextCyclostyle> m_FontStyle;
-	std::vector<CUIUBBCyclostyle> m_UBBStyle;
+	void add(const std::vector<StyleElement*>& setStyleElement);
 
 	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
+
+	std::vector<StyleElement*> m_setStyleElement;
 };
 
-class DLL_EXPORT CUIStyle
+class CUIStyle
 {
 public:
 	CUIStyle();
 	~CUIStyle(){};
 	void Blend(const CRect<float>& rc, UINT iState, float fElapsedTime);
 	void SetStyle(const std::string& strName);
-	const CUICyclostyle& GetCyclostyle();
+	const CUIStyleData& getStyleData();
 	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void Draw(const std::wstring& wstrText);
@@ -162,13 +161,13 @@ public:
 
 class CUIStyleMgr
 {
-	std::map<std::string, CUICyclostyle> m_CyclostyleList;
+	std::map<std::string, CUIStyleData> m_mapStyleData;
 	std::string m_strFilename;
 public:
 	CUIStyleMgr();
 	bool Create(const std::string& strFilename);
 	const std::string& getFilename(){return m_strFilename;}
-	const CUICyclostyle& GetCyclostyle(const std::string& strName);
+	const CUIStyleData& getStyleData(const std::string& strName);
 };
 
 CUIStyleMgr& GetStyleMgr();

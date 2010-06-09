@@ -81,8 +81,8 @@ m_nVisible(0)
 void CUIStyle::Blend(const CRect<float>& rc, UINT iState, float fElapsedTime)
 {
 	m_nVisible = interpolate(1.0f - powf(0.8, 30 * fElapsedTime), m_nVisible, CONTROL_STATE_HIDDEN==iState?0:255);
-	const CUICyclostyle& style =  GetCyclostyle();
-	style.blend(rc,iState,fElapsedTime,m_mapStyleDrawData);
+	const CUIStyleData& styleData = getStyleData();
+	styleData.blend(rc,iState,fElapsedTime,m_mapStyleDrawData);
 }
 
 void CUIStyle::SetStyle(const std::string& strName)
@@ -92,106 +92,41 @@ void CUIStyle::SetStyle(const std::string& strName)
 	Blend(rc,CONTROL_STATE_HIDDEN,100);
 }
 
-const CUICyclostyle& CUIStyle::GetCyclostyle()
+const CUIStyleData& CUIStyle::getStyleData()
 {
-	return GetStyleMgr().GetCyclostyle(m_strName);
+	return GetStyleMgr().getStyleData(m_strName);
 }
 void CUIStyle::draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
 	Blend(rc, state, fElapsedTime);
-	GetCyclostyle().draw(wstrText,m_mapStyleDrawData);
+	getStyleData().draw(wstrText,m_mapStyleDrawData);
 }
 
 void CUIStyle::draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
 	Blend(rc.getRECT(), state, fElapsedTime);
-	GetCyclostyle().draw(wstrText,m_mapStyleDrawData);
+	getStyleData().draw(wstrText,m_mapStyleDrawData);
 }
 
-void CUICyclostyle::blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const
+void CUIStyleData::blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const
 {
-	int nStyleDrawDataID = 0;
-	for (size_t i=0; i<m_setDefault.size(); ++i)
+	for (size_t i=0; i<m_setStyleElement.size(); ++i)
 	{
-		m_setDefault[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
+		m_setStyleElement[i]->blend(mapStyleDrawData[i], iState, fElapsedTime);
 	}
-	for (size_t i=0; i<m_SpriteStyle.size(); ++i)
-	{
-		m_SpriteStyle[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_setSquare.size(); ++i)
-	{
-		m_setSquare[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_setBorder.size(); ++i)
-	{
-		m_setBorder[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_FontStyle.size(); ++i)
-	{
-		m_FontStyle[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_UBBStyle.size(); ++i)
-	{
-		m_UBBStyle[i].blend(mapStyleDrawData[nStyleDrawDataID], iState, fElapsedTime);
-		nStyleDrawDataID++;
-	}
-
 	for(std::map<int,StyleDrawData>::iterator it=mapStyleDrawData.begin();it!=mapStyleDrawData.end();++it)
 	{
 		it->second.updateRect(rc);
 	}
 }
 
-void CUICyclostyle::draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
+void CUIStyleData::draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
 {
-	int nStyleDrawDataID = 0;
 	GetRenderSystem().SetDepthBufferFunc(false,false);
-	for (size_t i=0; i<m_setDefault.size(); ++i)
+
+	for (size_t i=0; i<m_setStyleElement.size(); ++i)
 	{
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_SpriteStyle.size(); ++i)
-	{
-		m_SpriteStyle[i].draw(mapStyleDrawData[nStyleDrawDataID].rc,mapStyleDrawData[nStyleDrawDataID].color.getColor());
-		nStyleDrawDataID++;
-	}
-	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
-	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
-	for (size_t i=0; i<m_setSquare.size(); ++i)
-	{
-		Color32 color = mapStyleDrawData[nStyleDrawDataID].color.getColor();
-		if(color.a!=0)
-		{
-			GetGraphics().FillRect(mapStyleDrawData[nStyleDrawDataID].rc, color);
-		}
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_setBorder.size(); ++i)
-	{
-		Color32 color = mapStyleDrawData[nStyleDrawDataID].color.getColor();
-		if(color.a!=0)
-		{
-			GetGraphics().DrawRect(mapStyleDrawData[nStyleDrawDataID].rc, color);
-		}
-		nStyleDrawDataID++;
-	}
-	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
-	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
-	for (size_t i=0; i<m_FontStyle.size(); ++i)
-	{
-		m_FontStyle[0].draw(wstrText,mapStyleDrawData[nStyleDrawDataID].rc,mapStyleDrawData[nStyleDrawDataID].color.getColor());
-		nStyleDrawDataID++;
-	}
-	for (size_t i=0; i<m_UBBStyle.size(); ++i)
-	{
-		m_UBBStyle[0].draw(wstrText,mapStyleDrawData[nStyleDrawDataID].rc,mapStyleDrawData[nStyleDrawDataID].color.getColor());
-		nStyleDrawDataID++;
+		m_setStyleElement[i]->draw(wstrText,mapStyleDrawData[i].rc,mapStyleDrawData[i].color.getColor());
 	}
 }
 
@@ -205,34 +140,44 @@ CRect<float>& CUIStyle::getTextRect()
 	return m_mapStyleDrawData[m_mapStyleDrawData.size()-1].rc;
 }
 
-void CUICyclostyle::Refresh()
+CUIStyleData::~CUIStyleData()
+{
+	clear();
+}
+
+void CUIStyleData::clear()
+{
+	for (size_t i=0; i<m_setStyleElement.size(); ++i)
+	{
+		delete m_setStyleElement[i];
+		m_setStyleElement[i] = NULL;
+	}
+	m_setStyleElement.clear();
+}
+
+void CUIStyleData::Refresh()
 {
 	//m_SpriteColor.Current = m_TextureColor.States[ CONTROL_STATE_HIDDEN ];
 	//m_FontColor.Current = m_FontColor.States[ CONTROL_STATE_HIDDEN ];
 }
 
-void CUICyclostyle::add(const CUICyclostyle& cyc)
+void CUIStyleData::add(const std::vector<StyleElement*>& setStyleElement)
 {
-	m_setDefault.insert(m_setDefault.end(), cyc.m_setDefault.begin(), cyc.m_setDefault.end()); 
-	m_SpriteStyle.insert(m_SpriteStyle.end(), cyc.m_SpriteStyle.begin(), cyc.m_SpriteStyle.end());   
-	m_setBorder.insert(m_setBorder.end(), cyc.m_setBorder.begin(), cyc.m_setBorder.end()); 
-	m_setSquare.insert(m_setSquare.end(), cyc.m_setSquare.begin(), cyc.m_setSquare.end()); 
-	m_FontStyle.insert(m_FontStyle.end(), cyc.m_FontStyle.begin(), cyc.m_FontStyle.end()); 
-	m_UBBStyle.insert(m_UBBStyle.end(), cyc.m_UBBStyle.begin(), cyc.m_UBBStyle.end()); 
+	m_setStyleElement.insert(m_setStyleElement.end(), setStyleElement.begin(), setStyleElement.end()); 
 }
 
 CUIStyleMgr::CUIStyleMgr()
 {
 }
 
-void StyleStateBlend::XMLParse(TiXmlElement& element)
+void StyleElement::XMLParse(const TiXmlElement& element)
 {
 	{
 		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 		{
 			setColor[i].set(0.0f,0.0f,0.0f,0.0f);
 		}
-		TiXmlElement *pElement = element.FirstChildElement("color");
+		const TiXmlElement *pElement = element.FirstChildElement("color");
 		if (pElement)
 		{
 			const char* pszText = pElement->GetText();
@@ -264,7 +209,7 @@ void StyleStateBlend::XMLParse(TiXmlElement& element)
 		{
 			setBlendRate[i]=0.8f;
 		}
-		TiXmlElement *pElement = element.FirstChildElement("blend");
+		const TiXmlElement *pElement = element.FirstChildElement("blend");
 		if (pElement)
 		{
 			const char* pszText = pElement->GetText();
@@ -291,7 +236,7 @@ void StyleStateBlend::XMLParse(TiXmlElement& element)
 		{
 			setOffset[i].set(0.0f,0.0f,0.0f,0.0f);
 		}
-		TiXmlElement *pElement = element.FirstChildElement("offset");
+		const TiXmlElement *pElement = element.FirstChildElement("offset");
 		if (pElement)
 		{
 			const char* pszText = pElement->GetText();
@@ -320,7 +265,7 @@ void StyleStateBlend::XMLParse(TiXmlElement& element)
 		{
 			setScale[i].set(0.0f,0.0f,1.0f,1.0f);
 		}
-		TiXmlElement *pElement = element.FirstChildElement("scale");
+		const TiXmlElement *pElement = element.FirstChildElement("scale");
 		if (pElement)
 		{
 			const char* pszText = pElement->GetText();
@@ -343,13 +288,12 @@ void StyleStateBlend::XMLParse(TiXmlElement& element)
 			}
 		}
 	}
-
 }
 
-void CUISpriteCyclostyle::XMLParse(TiXmlElement& element)
+void StyleSprite::XMLParse(const TiXmlElement& element)
 {
 	//
-	StyleStateBlend::XMLParse(element);
+	StyleElement::XMLParse(element);
 	if (element.Attribute("filename"))
 	{
 		m_nTexture =  GetRenderSystem().GetTextureMgr().RegisterTexture(element.Attribute("filename"));
@@ -398,10 +342,10 @@ void CUISpriteCyclostyle::XMLParse(TiXmlElement& element)
 	}
 }
 
-void CUITextCyclostyle::XMLParse(TiXmlElement& element)
+void StyleText::XMLParse(const TiXmlElement& element)
 {
 	//
-	StyleStateBlend::XMLParse(element);
+	StyleElement::XMLParse(element);
 	uFormat = 0;
 	if (element.Attribute("format"))
 	{
@@ -409,25 +353,29 @@ void CUITextCyclostyle::XMLParse(TiXmlElement& element)
 	}
 }
 
-void CUITextCyclostyle::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
+void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
 		return;
 	}
+	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 	GetTextRender().drawText(wstrText,-1,rc,uFormat,color);
 }
 
-void CUIUBBCyclostyle::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
+void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
 		return;
 	}
+	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 	GetTextRender().DrawUBB(wstrText,rc.getRECT());
 }
 
-void CUISpriteCyclostyle::draw(const CRect<float>& rc,const Color32& color)const
+void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
@@ -462,20 +410,33 @@ void CUISpriteCyclostyle::draw(const CRect<float>& rc,const Color32& color)const
 	}
 }
 
-void StyleBorder::draw(const CRect<float>& rc,const Color32& color)const
+void StyleBorder::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
 		return;
 	}
+	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
 	GetGraphics().DrawRect(rc, color);
+}
+
+void StyleSquare::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
+{
+	if(color.a==0)
+	{
+		return;
+	}
+	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
+	GetGraphics().FillRect(rc, color);
 }
 
 #include "IORead.h"
 bool CUIStyleMgr::Create(const std::string& strFilename)
 {
 	m_strFilename = strFilename;
-	m_CyclostyleList.clear();
+	m_mapStyleData.clear();
 	TiXmlDocument myDocument;
 	{
 		IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
@@ -508,97 +469,61 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 	while (pStyleElement)
 	{
 		// Style name
-		CUICyclostyle Cyclostyle;
-		//
+		if (pStyleElement->Attribute("name"))
 		{
-			TiXmlElement* pElement = pStyleElement->FirstChildElement("default");
-			while (pElement)
+			std::vector<std::string> setTokenizer;
+			Tokenizer(pStyleElement->Attribute("name"),setTokenizer);
+			for (size_t i=0; i<setTokenizer.size(); ++i)
 			{
-				StyleBorder border;
-				border.XMLParse(*pElement);
-				Cyclostyle.m_setDefault.push_back(border);
-				pElement = pElement->NextSiblingElement("default");
-			}
-		}
-		// Sprite Info
-		{
-			TiXmlElement* pSpriteElement = pStyleElement->FirstChildElement("texture");
-			while (pSpriteElement)
-			{
-				CUISpriteCyclostyle SpriteCyclostyle;
-				SpriteCyclostyle.XMLParse(*pSpriteElement);
-				Cyclostyle.m_SpriteStyle.push_back(SpriteCyclostyle);
-				pSpriteElement = pSpriteElement->NextSiblingElement("texture");
-			}
-		}
-
-		//
-		{
-			TiXmlElement* pElement = pStyleElement->FirstChildElement("border");
-			while (pElement)
-			{
-				StyleBorder border;
-				border.XMLParse(*pElement);
-				Cyclostyle.m_setBorder.push_back(border);
-				pElement = pElement->NextSiblingElement("border");
-			}
-		}
-		{
-			TiXmlElement* pElement = pStyleElement->FirstChildElement("square");
-			while (pElement)
-			{
-				StyleSquare backgroundColor;
-				backgroundColor.XMLParse(*pElement);
-				Cyclostyle.m_setSquare.push_back(backgroundColor);
-				pElement = pElement->NextSiblingElement("square");
-			}
-		}
-
-		// font Info
-		{
-			TiXmlElement *pFontElement = pStyleElement->FirstChildElement("font");
-			while (pFontElement)
-			{
-				CUITextCyclostyle FontStyle;
-				FontStyle.XMLParse(*pFontElement);
-				Cyclostyle.m_FontStyle.push_back(FontStyle);
-				pFontElement = pFontElement->NextSiblingElement("font");
-			}
-		}
-		{
-			TiXmlElement *pFontElement = pStyleElement->FirstChildElement("ubb");
-			while (pFontElement)
-			{
-				CUIUBBCyclostyle UBBStyle;
-				UBBStyle.XMLParse(*pFontElement);
-				Cyclostyle.m_UBBStyle.push_back(UBBStyle);
-				pFontElement = pFontElement->NextSiblingElement("ubb");
-			}
-		}
-		{
-			if (pStyleElement->Attribute("name"))
-			{
-				std::vector<std::string> setTokenizer;
-				Tokenizer(pStyleElement->Attribute("name"),setTokenizer);
-				for (size_t i=0; i<setTokenizer.size(); ++i)
+				CUIStyleData& StyleData = m_mapStyleData[setTokenizer[i]];//.add(StyleData);
 				{
-					m_CyclostyleList[setTokenizer[i]].add(Cyclostyle);
+					const TiXmlElement* pElement = pStyleElement->FirstChildElement();
+					while (pElement)
+					{
+						StyleElement* pNewStyleElement = NULL;
+						if (pElement->ValueStr() == "texture")
+						{
+							pNewStyleElement = new StyleSprite;
+						}
+						else if (pElement->ValueStr() == "border")
+						{
+							pNewStyleElement = new StyleBorder;
+						}
+						else if (pElement->ValueStr() == "square")
+						{
+							pNewStyleElement = new StyleSquare;
+						}
+						else if (pElement->ValueStr() == "font")
+						{
+							pNewStyleElement = new StyleText;
+						}
+						else if (pElement->ValueStr() == "ubb")
+						{
+							pNewStyleElement = new StyleUBB;
+						}
+						else
+						{
+							pNewStyleElement = new StyleElement;
+						}
+						pNewStyleElement->XMLParse(*pElement);
+						StyleData.m_setStyleElement.push_back(pNewStyleElement);
+						pElement = pElement->NextSiblingElement();
+					}
 				}
 			}
 		}
-
 		// 查找下一个
 		pStyleElement = pStyleElement->NextSiblingElement("element");
 	}
 	return true;
 }
 
-const CUICyclostyle& CUIStyleMgr::GetCyclostyle(const std::string& strName)
+const CUIStyleData& CUIStyleMgr::getStyleData(const std::string& strName)
 {
-	if (m_CyclostyleList.find(strName)!=m_CyclostyleList.end())
+	if (m_mapStyleData.find(strName)!=m_mapStyleData.end())
 	{
-		return m_CyclostyleList[strName];
+		return m_mapStyleData[strName];
 	}
-	static CUICyclostyle s_Cyclostyle;
-	return s_Cyclostyle;
+	static CUIStyleData s_StyleData;
+	return s_StyleData;
 }
