@@ -436,7 +436,6 @@ void CTextRender::DrawTextVB(int nVertexCount, void* pVB)
 	R.SetTexture(0, m_pTextTexture);
 	R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
 	R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, nVertexCount, nVertexCount/2, &s_DrawTextIB, pVB, sizeof(VERTEX_XYZW_DIF_TEX));
-	R.SetTexture(0, (CTexture*)NULL);
 }
 
 void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<float>& rcDest,UINT format,Color32 dwColor,CRect<float>* prcRet)

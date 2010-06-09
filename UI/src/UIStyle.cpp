@@ -243,7 +243,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 			if(pszText)
 			{
 				CRect<float> rc;
-				StrToRect(pszText, rc);
+				rc.strToRect(pszText);
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
 					setOffset[i] = rc;
@@ -254,7 +254,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					StrToRect(pszText, setOffset[i]);
+					setOffset[i].strToRect(pszText);
 				}
 			}
 		}
@@ -272,7 +272,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 			if(pszText)
 			{
 				CRect<float> rc;
-				StrToRect(pszText, rc);
+				rc.strToRect(pszText);
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
 					setScale[i] = rc;
@@ -283,7 +283,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					StrToRect(pszText, setScale[i]);
+					setScale[i].strToRect(pszText);
 				}
 			}
 		}
@@ -305,22 +305,18 @@ void StyleSprite::XMLParse(const TiXmlElement& element)
 	if (element.Attribute("rect"))
 	{
 		const char* strRect = element.Attribute("rect");
-		RECT rc;
-		StrToRect(strRect, rc);
-		rc.right	+= rc.left;
-		rc.bottom	+= rc.top;
-		m_rcBorder=rc;
+		m_rcBorder.strToRect(strRect);
+		m_rcBorder.right	+= m_rcBorder.left;
+		m_rcBorder.bottom	+= m_rcBorder.top;
 		if (element.Attribute("center_rect"))
 		{
 			m_nSpriteLayoutType = SPRITE_LAYOUT_3X3GRID;//SPRITE_LAYOUT_3X3GRID_WRAP
 			const char* strCenterRect = element.Attribute("center_rect");
-			RECT rcrCenter;
-			StrToRect(strCenterRect, rcrCenter);
-			rcrCenter.left		+= rc.left;
-			rcrCenter.top		+= rc.top;
-			rcrCenter.right		+= rcrCenter.left;
-			rcrCenter.bottom	+= rcrCenter.top;
-			m_rcCenter=rcrCenter;
+			m_rcCenter.strToRect(strCenterRect);
+			m_rcCenter.left		+= m_rcBorder.left;
+			m_rcCenter.top		+= m_rcBorder.top;
+			m_rcCenter.right	+= m_rcCenter.left;
+			m_rcCenter.bottom	+= m_rcCenter.top;
 		}
 		else
 		{
@@ -351,6 +347,10 @@ void StyleText::XMLParse(const TiXmlElement& element)
 	{
 		uFormat = StrToTextFormat(element.Attribute("format"));
 	}
+}
+
+void StyleElement::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
+{
 }
 
 void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
@@ -475,7 +475,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			Tokenizer(pStyleElement->Attribute("name"),setTokenizer);
 			for (size_t i=0; i<setTokenizer.size(); ++i)
 			{
-				CUIStyleData& StyleData = m_mapStyleData[setTokenizer[i]];//.add(StyleData);
+				std::vector<StyleElement*>& setStyleElement = m_mapStyleData[setTokenizer[i]].m_setStyleElement;//.add(StyleData);
 				{
 					const TiXmlElement* pElement = pStyleElement->FirstChildElement();
 					while (pElement)
@@ -503,10 +503,10 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 						}
 						else
 						{
-							pNewStyleElement = new StyleElement;
+							pNewStyleElement = new StyleBorder;
 						}
 						pNewStyleElement->XMLParse(*pElement);
-						StyleData.m_setStyleElement.push_back(pNewStyleElement);
+						setStyleElement.push_back(pNewStyleElement);
 						pElement = pElement->NextSiblingElement();
 					}
 				}
