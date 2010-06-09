@@ -11,18 +11,6 @@
 
 class TiXmlElement;
 
-template<typename T>
-inline void StrToRect(const char* str, T& rect)
-{
-	sscanf(str, "%d,%d,%d,%d", &rect.left, &rect.top, &rect.right, &rect.bottom);
-}
-
-template<>
-inline void StrToRect<CRect<float>>(const char* str, CRect<float>& rect)
-{
-	sscanf(str, "%f,%f,%f,%f", &rect.left, &rect.top, &rect.right, &rect.bottom);
-}
-
 void StrToXY(const char* str, int& x, int& y);
 
 enum CONTROL_STATE
@@ -67,8 +55,9 @@ struct StyleDrawData
 	}
 };
 
-struct StyleElement
+class StyleElement
 {
+public:
 	StyleElement()
 	{
 		memset(this,0,sizeof(*this));
@@ -80,8 +69,8 @@ struct StyleElement
 		sdd.offset		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.offset, setOffset[iState]);
 		sdd.scale		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.scale,	setScale[iState]);
 	}
-	void XMLParse(const TiXmlElement& element);
-	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const{}
+	virtual void XMLParse(const TiXmlElement& element);
+	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 
 	float			setBlendRate[CONTROL_STATE_MAX];
 	Vec4D			setColor[CONTROL_STATE_MAX];
@@ -97,17 +86,19 @@ public:
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
-	RECT		m_rcBorder;
-	RECT		m_rcCenter;
+	CRect<float>m_rcBorder;
+	CRect<float>m_rcCenter;
 };
 
-struct  StyleBorder: public StyleElement
+class  StyleBorder: public StyleElement
 {
+public:
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
-struct  StyleSquare: public StyleElement
+class  StyleSquare: public StyleElement
 {
+public:
 	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 

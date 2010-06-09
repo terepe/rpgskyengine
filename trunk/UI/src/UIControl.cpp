@@ -71,18 +71,18 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 	{
 		if (pControlElement->Attribute("scale"))
 		{
-			StrToRect(pControlElement->Attribute("scale"),m_rcScale);
+			m_rcScale.strToRect(pControlElement->Attribute("scale"));
 		}
 
 		if (pControlElement->Attribute("rect"))
 		{
-			StrToRect(pControlElement->Attribute("rect"),m_rcOffset);
+			m_rcOffset.strToRect(pControlElement->Attribute("rect"));
 			m_rcOffset.right+=m_rcOffset.left;
 			m_rcOffset.bottom+=m_rcOffset.top;
 		}
 		else if (pControlElement->Attribute("offset"))
 		{
-			StrToRect(pControlElement->Attribute("offset"),m_rcOffset);
+			m_rcOffset.strToRect(pControlElement->Attribute("offset"));
 		}
 	}
 	// Tip
