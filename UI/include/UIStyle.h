@@ -141,7 +141,6 @@ public:
 	const CUIStyleData& getStyleData();
 	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
-	void Draw(const std::wstring& wstrText);
 	bool isVisible();
 	CRect<float>& getTextRect();
 
