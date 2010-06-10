@@ -366,9 +366,6 @@ void CUBB::UpdateTextLine()
 	m_nLineEnd = m_VB.size();
 	if (m_nLineBegin < m_nLineEnd)
 	{
-		// 文本高度设置
-		m_nMaxHeight += int(m_nLineHeight*1.5f);
-		m_nLineHeight = 0;
 		int nOffsetX = m_nShowLeft;
 		// 文本对其设置
 		if (m_nAlignType == ALIGN_TYPE_CENTER)
@@ -382,10 +379,13 @@ void CUBB::UpdateTextLine()
 		for (int i = m_nLineBegin; i < m_nLineEnd; i++)
 		{
 			m_VB[i].p.x += nOffsetX;
-			m_VB[i].p.y += m_nMaxHeight+m_nShowTop;
+			m_VB[i].p.y += m_nMaxHeight+m_nLineHeight+m_nShowTop;
 		}
+		// 文本高度设置
+		m_nMaxHeight += int(m_nLineHeight*1.5f);
 		// 下一行为行宽度为0
 		m_nLineWidth = 0;
+		m_nLineHeight = 0;
 		// begin重置
 		m_nLineBegin = m_nLineEnd;
 	}

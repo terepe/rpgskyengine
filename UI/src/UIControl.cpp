@@ -88,9 +88,12 @@ void CUIControl::XMLParse(TiXmlElement* pControlElement)
 	// Tip
 	if(pControlElement->Attribute("tip"))
 	{
-		WCHAR strText[256]={0};
-		MultiByteToWideChar(CP_UTF8,0,pControlElement->Attribute("tip"),-1,strText,256);
-		SetTip(strText);
+		const char* pText = pControlElement->Attribute("tip");
+		int nLength = strlen(pText)+1;
+		WCHAR* pTextBuffer = new WCHAR[nLength];
+		MultiByteToWideChar(CP_UTF8,0,pText,-1,pTextBuffer,nLength);
+		SetTip(pTextBuffer);
+		delete pTextBuffer;
 	}
 	// hotkey
 	if (pControlElement->Attribute("hotkey"))
