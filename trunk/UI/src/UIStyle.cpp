@@ -140,6 +140,10 @@ CRect<float>& CUIStyle::getTextRect()
 	return m_mapStyleDrawData[m_mapStyleDrawData.size()-1].rc;
 }
 
+CUIStyleData::CUIStyleData():m_pFontStyleElement(NULL)
+{
+}
+
 CUIStyleData::~CUIStyleData()
 {
 	clear();
@@ -147,6 +151,7 @@ CUIStyleData::~CUIStyleData()
 
 void CUIStyleData::clear()
 {
+	m_pFontStyleElement = NULL;
 	for (size_t i=0; i<m_setStyleElement.size(); ++i)
 	{
 		delete m_setStyleElement[i];
@@ -164,6 +169,11 @@ void CUIStyleData::Refresh()
 void CUIStyleData::add(const std::vector<StyleElement*>& setStyleElement)
 {
 	m_setStyleElement.insert(m_setStyleElement.end(), setStyleElement.begin(), setStyleElement.end()); 
+}
+
+const StyleElement* CUIStyleData::getFontStyleElement()const
+{
+	return m_pFontStyleElement;
 }
 
 CUIStyleMgr::CUIStyleMgr()
@@ -475,7 +485,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			Tokenizer(pStyleElement->Attribute("name"),setTokenizer);
 			for (size_t i=0; i<setTokenizer.size(); ++i)
 			{
-				std::vector<StyleElement*>& setStyleElement = m_mapStyleData[setTokenizer[i]].m_setStyleElement;//.add(StyleData);
+				CUIStyleData& styleData = m_mapStyleData[setTokenizer[i]];//.add(StyleData);
 				{
 					const TiXmlElement* pElement = pStyleElement->FirstChildElement();
 					while (pElement)
@@ -496,17 +506,19 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 						else if (pElement->ValueStr() == "font")
 						{
 							pNewStyleElement = new StyleText;
+							styleData.m_pFontStyleElement = pNewStyleElement;
 						}
 						else if (pElement->ValueStr() == "ubb")
 						{
 							pNewStyleElement = new StyleUBB;
+							styleData.m_pFontStyleElement = pNewStyleElement;
 						}
 						else
 						{
 							pNewStyleElement = new StyleBorder;
 						}
 						pNewStyleElement->XMLParse(*pElement);
-						setStyleElement.push_back(pNewStyleElement);
+						styleData.m_setStyleElement.push_back(pNewStyleElement);
 						pElement = pElement->NextSiblingElement();
 					}
 				}

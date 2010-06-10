@@ -126,10 +126,10 @@ protected:
 	int		m_nShowWidth;
 	int		m_nShowHeight;
 
-	int		m_nTextHeight;
+	int		m_nMaxWidth;
+	int		m_nMaxHeight;
 
 	int		m_nLineWidth;
-	int		m_nMaxLineWidth;
 	int		m_nLineHeight;
 
 	int		m_nLineBegin;

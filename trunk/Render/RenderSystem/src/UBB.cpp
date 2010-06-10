@@ -46,10 +46,10 @@ void CUBB::Init(const RECT& rc, int nFontSize)
 	m_nShowWidth = rc.right - rc.left;
 	m_nShowHeight = rc.bottom - rc.top;
 
-	m_nTextHeight = 0;
+	m_nMaxWidth = 0;
+	m_nMaxHeight = 0;
 
 	m_nLineWidth = 0;
-	m_nMaxLineWidth = 0;
 	m_nLineHeight = 0;
 
 	m_nLineBegin = 0;
@@ -313,7 +313,6 @@ void CUBB::AddChar(TexCharInfo* charInfo)
 	{
 		if (m_nLineWidth + fCharWidth > m_nShowWidth)
 		{
-			m_nMaxLineWidth = max(m_nMaxLineWidth,m_nLineWidth);
 			// 进入换行移位啦！
 			UpdateTextLine();
 		}
@@ -359,6 +358,7 @@ void CUBB::AddChar(TexCharInfo* charInfo)
 		m_VB.push_back(v[0]);m_VB.push_back(v[1]);m_VB.push_back(v[2]);m_VB.push_back(v[3]);
 	}
 	m_nLineWidth += charInfo->nAdvX*fScaling;
+	m_nMaxWidth = max(m_nMaxWidth,m_nLineWidth);
 }
 
 void CUBB::UpdateTextLine()
@@ -367,7 +367,7 @@ void CUBB::UpdateTextLine()
 	if (m_nLineBegin < m_nLineEnd)
 	{
 		// 文本高度设置
-		m_nTextHeight += int(m_nLineHeight*1.5f);
+		m_nMaxHeight += int(m_nLineHeight*1.5f);
 		m_nLineHeight = 0;
 		int nOffsetX = m_nShowLeft;
 		// 文本对其设置
@@ -382,7 +382,7 @@ void CUBB::UpdateTextLine()
 		for (int i = m_nLineBegin; i < m_nLineEnd; i++)
 		{
 			m_VB[i].p.x += nOffsetX;
-			m_VB[i].p.y += m_nTextHeight+m_nShowTop;
+			m_VB[i].p.y += m_nMaxHeight+m_nShowTop;
 		}
 		// 下一行为行宽度为0
 		m_nLineWidth = 0;
@@ -396,7 +396,7 @@ RECT CUBB::getRect()
 	RECT rc;
 	rc.left = m_nShowLeft;
 	rc.top = m_nShowTop;
-	rc.right = rc.left+m_nMaxLineWidth;
-	rc.bottom = rc.top+m_nLineHeight;
+	rc.right = rc.left+m_nMaxWidth;
+	rc.bottom = rc.top+m_nMaxHeight;
 	return rc;
 }
