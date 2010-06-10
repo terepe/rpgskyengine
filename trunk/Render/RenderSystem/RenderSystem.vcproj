@@ -204,10 +204,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\jpeg.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Material.h"
 				>
 			</File>
@@ -237,10 +233,6 @@
 			</File>
 			<File
 				RelativePath=".\include\ShaderMgr.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TextRender.h"
 				>
 			</File>
 			<File
@@ -281,10 +273,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\jpeg.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Material.cpp"
 				>
 			</File>
@@ -309,10 +297,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\TextRender.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Texture.cpp"
 				>
 			</File>
@@ -322,6 +306,26 @@
 			</File>
 			<File
 				RelativePath=".\src\VertexDeclaration.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="TextRender"
+			>
+			<File
+				RelativePath=".\src\TextRender.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\TextRender.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\UBB.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\UBB.h"
 				>
 			</File>
 		</Filter>
