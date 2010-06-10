@@ -613,3 +613,19 @@ void CTextRender::DrawUBB(const std::wstring& strText, const RECT& rc)
 	BuildUBB(&ubb, strText, rc);
 	DrawUBB(&ubb);
 }
+
+RECT CTextRender::CalcUBBRect(const std::wstring& strText, const RECT& rc)
+{
+	CUBB ubb;
+	BuildUBB(&ubb, strText, rc);
+	if(ubb.m_VB.empty())
+	{
+		return rc;
+	}
+	RECT rcRet;
+	rcRet.left = ubb.m_VB.front().p.x;
+	rcRet.top = ubb.m_VB.front().p.y;
+	rcRet.left = ubb.m_VB.back().p.x;
+	rcRet.top = ubb.m_VB.back().p.y;
+	return rc;
+}

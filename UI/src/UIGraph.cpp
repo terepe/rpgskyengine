@@ -122,7 +122,19 @@ void UIGraph::DrawSprite(const CRect<float>& rcDest, UINT TextureID, Color32 col
 
 void UIGraph::CalcTextRect(const std::wstring& wstrText, CRect<float>& rcDest)
 {
-	GetTextRender().drawText(wstrText, -1, rcDest,DTL_CALCRECT,0,&rcDest);
+	if(wstrText.empty())
+	{
+		return;
+	}
+	if(wstrText[0]==L'[')
+	{
+		RECT rect=GetTextRender().CalcUBBRect(wstrText, rcDest.getRECT());
+		rcDest = rect;
+	}
+	else
+	{
+		GetTextRender().drawText(wstrText, -1, rcDest,DTL_CALCRECT,0,&rcDest);
+	}
 }
 
 void UIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex,const CRect<float>& rcDest, bool bShadow, int nCount)

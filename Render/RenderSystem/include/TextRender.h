@@ -29,7 +29,7 @@ public:
 	void BuildUBB(CUBB* pUBB, const std::wstring& strText, const RECT& rc);
 	void DrawUBB(CUBB* pUBB);
 	void DrawUBB(const std::wstring& strText, const RECT& rc);
-
+	RECT CalcUBBRect(const std::wstring& strText, const RECT& rc);
 	//
 	int GetCharHeight() const;
 
