@@ -228,42 +228,48 @@ void CUIControl::drawTip(const CRect<int>& rc, double fTime, float fElapsedTime)
 	}
 	CRect<float> rect(0.0f,0.0f,1000.0f,1000.0f);
 	UIGraph::CalcTextRect(m_wstrTip, rect);// 计算文本框大小
-	rect.right	+=5;
-	rect.bottom	+=5;
 
-	if (rc.right<m_rcBoundingBox.left+rect.right)
+	const StyleElement* pFontStyleElement = CUIControl::s_TipStyle.getStyleData().getFontStyleElement();
+	if(pFontStyleElement)
 	{
-		rect.left	= rc.right-rect.right;
+		rect -= pFontStyleElement->setOffset[CONTROL_STATE_NORMAL];
+	}
+	int nTipWidth = rect.getWidth();
+	int nTipHeight = rect.getHeight();
+
+	if (rc.right<m_rcBoundingBox.left+nTipWidth)
+	{
+		rect.left	= rc.right-nTipWidth;
 		rect.right	= rc.right;
 	}
 	else if (rc.left>m_rcBoundingBox.left)
 	{
+		rect.right	= rc.left+nTipWidth;
 		rect.left	= rc.left;
-		rect.right	= rc.left+rect.right;
 	}
 	else
 	{
+		rect.right	= m_rcBoundingBox.left+nTipWidth;
 		rect.left	= m_rcBoundingBox.left;
-		rect.right	= m_rcBoundingBox.left+rect.right;
 	}
 
-	if (rc.bottom<m_rcBoundingBox.bottom+rect.bottom)
+	if (rc.bottom<m_rcBoundingBox.bottom+nTipHeight)
 	{
-		if (m_rcBoundingBox.top<rect.bottom)
+		if (m_rcBoundingBox.top<nTipHeight)
 		{
-			rect.top	= rc.bottom-rect.bottom;
+			rect.top	= rc.bottom-nTipHeight;
 			rect.bottom	= rc.bottom;
 		}
 		else
 		{
-			rect.top	= m_rcBoundingBox.top-rect.bottom;
+			rect.top	= m_rcBoundingBox.top-nTipHeight;
 			rect.bottom	= m_rcBoundingBox.top;
 		}
 	}
 	else
 	{
 		rect.top	= m_rcBoundingBox.bottom;
-		rect.bottom	= m_rcBoundingBox.bottom+rect.bottom;
+		rect.bottom	= m_rcBoundingBox.bottom+nTipHeight;
 	}
 
 	CUIControl::s_TipStyle.draw(rect,m_wstrTip,CONTROL_STATE_NORMAL, fElapsedTime);

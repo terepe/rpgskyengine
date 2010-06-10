@@ -119,7 +119,7 @@ public:
 class CUIStyleData
 {
 public:
-	CUIStyleData(){}
+	CUIStyleData();
 	~CUIStyleData();
 	void clear();
 	void Refresh();
@@ -127,8 +127,10 @@ public:
 
 	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
+	const StyleElement* getFontStyleElement()const;
 
-	std::vector<StyleElement*> m_setStyleElement;
+	std::vector<StyleElement*>	m_setStyleElement;
+	StyleElement*				m_pFontStyleElement;
 };
 
 class CUIStyle
