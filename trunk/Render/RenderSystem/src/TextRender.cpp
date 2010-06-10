@@ -622,10 +622,5 @@ RECT CTextRender::CalcUBBRect(const std::wstring& strText, const RECT& rc)
 	{
 		return rc;
 	}
-	RECT rcRet;
-	rcRet.left = ubb.m_VB.front().p.x;
-	rcRet.top = ubb.m_VB.front().p.y;
-	rcRet.left = ubb.m_VB.back().p.x;
-	rcRet.top = ubb.m_VB.back().p.y;
-	return rc;
+	return ubb.getRect();
 }

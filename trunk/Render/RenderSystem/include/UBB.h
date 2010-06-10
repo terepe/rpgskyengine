@@ -102,6 +102,7 @@ public:
 	void	ParseTag(const std::wstring& wstrTagt);
 	void	AddChar(TexCharInfo* charInfo);
 	void	UpdateTextLine();
+	RECT	getRect();
 public: 
 	std::vector<VERTEX_XYZW_DIF_TEX> m_VB;
 	std::vector<WORD> m_IB;
@@ -128,6 +129,7 @@ protected:
 	int		m_nTextHeight;
 
 	int		m_nLineWidth;
+	int		m_nMaxLineWidth;
 	int		m_nLineHeight;
 
 	int		m_nLineBegin;
