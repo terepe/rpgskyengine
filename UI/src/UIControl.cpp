@@ -226,7 +226,7 @@ void CUIControl::drawTip(const CRect<int>& rc, double fTime, float fElapsedTime)
 	{
 		return;
 	}
-	CRect<float> rect(0.0f,0.0f,0.0f,0.0f);
+	CRect<float> rect(0.0f,0.0f,1000.0f,1000.0f);
 	UIGraph::CalcTextRect(m_wstrTip, rect);// 计算文本框大小
 	rect.right	+=5;
 	rect.bottom	+=5;

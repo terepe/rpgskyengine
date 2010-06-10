@@ -49,6 +49,7 @@ void CUBB::Init(const RECT& rc, int nFontSize)
 	m_nTextHeight = 0;
 
 	m_nLineWidth = 0;
+	m_nMaxLineWidth = 0;
 	m_nLineHeight = 0;
 
 	m_nLineBegin = 0;
@@ -312,6 +313,7 @@ void CUBB::AddChar(TexCharInfo* charInfo)
 	{
 		if (m_nLineWidth + fCharWidth > m_nShowWidth)
 		{
+			m_nMaxLineWidth = max(m_nMaxLineWidth,m_nLineWidth);
 			// 进入换行移位啦！
 			UpdateTextLine();
 		}
@@ -387,4 +389,14 @@ void CUBB::UpdateTextLine()
 		// begin重置
 		m_nLineBegin = m_nLineEnd;
 	}
+}
+
+RECT CUBB::getRect()
+{
+	RECT rc;
+	rc.left = m_nShowLeft;
+	rc.top = m_nShowTop;
+	rc.right = rc.left+m_nMaxLineWidth;
+	rc.bottom = rc.top+m_nLineHeight;
+	return rc;
 }
