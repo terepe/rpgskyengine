@@ -233,12 +233,12 @@ void CUICombo::loadString(const std::string& strFilename)
 	for(std::vector<CUIControl*>::iterator it=m_Controls.begin(); it != m_Controls.end(); it++)
 	{
 		std::string strText = IniGetStr(strFilename.c_str(),m_strID.c_str(),("TEXT_"+(*it)->GetID()).c_str());
-		if (strText.length()>0)
+		if (!strText.empty())
 		{
 			(*it)->SetText(s2ws(strText));
 		}
 		std::string strTip = IniGetStr(strFilename.c_str(),m_strID.c_str(),("TIP_"+(*it)->GetID()).c_str());
-		if (strTip.length()>0)
+		if (!strTip.empty())
 		{
 			(*it)->SetTip(s2ws(strTip));
 		}

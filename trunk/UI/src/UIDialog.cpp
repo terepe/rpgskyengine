@@ -85,7 +85,10 @@ void CUIDialog::loadString(const std::string& strFilename)
 {
 	CUICombo::loadString(strFilename);
 	std::string strCaption = IniGetStr(strFilename.c_str(),m_strID.c_str(),"CAPTION");
-	SetCaptionText(s2ws(strCaption));
+	if (!strCaption.empty())
+	{
+		SetCaptionText(s2ws(strCaption));
+	}
 	for(std::vector<CUIDialog*>::iterator it=m_Dialogs.begin(); it != m_Dialogs.end(); it++)
 	{
 		(*it)->loadString(strFilename);
