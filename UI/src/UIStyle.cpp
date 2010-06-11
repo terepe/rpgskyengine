@@ -369,8 +369,6 @@ void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc,const C
 	{
 		return;
 	}
-	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
-	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 	GetTextRender().drawText(wstrText,-1,rc,uFormat,color);
 }
 
@@ -380,8 +378,6 @@ void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc,const Co
 	{
 		return;
 	}
-	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
-	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 	GetTextRender().DrawUBB(wstrText,rc.getRECT());
 }
 
@@ -429,6 +425,8 @@ void StyleBorder::draw(const std::wstring& wstrText,const CRect<float>& rc,const
 	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
 	GetGraphics().DrawRect(rc, color);
+	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 }
 
 void StyleSquare::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
@@ -440,6 +438,8 @@ void StyleSquare::draw(const std::wstring& wstrText,const CRect<float>& rc,const
 	GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE2);
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE2);
 	GetGraphics().FillRect(rc, color);
+	GetRenderSystem().SetTextureColorOP(0,TBOP_MODULATE);
+	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 }
 
 #include "IORead.h"

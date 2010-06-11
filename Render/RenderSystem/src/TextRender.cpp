@@ -585,6 +585,9 @@ void CTextRender::BuildUBB(CUBB* pUBB, const std::wstring& strText, const RECT& 
 			n=pos;
 			pUBB->ParseTag(wstrTag);
 		}
+		else if(strText[n]==10)
+		{
+		}
 		else // ´¦Àí×Ö
 		{
 			TexCharInfo* charInfo = GetCharInfo(strText[n]);
