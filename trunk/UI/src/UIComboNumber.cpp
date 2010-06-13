@@ -1,4 +1,5 @@
 #include "UIComboNumber.h"
+#include "tinyxml.h"
 
 CUIComboNumber::CUIComboNumber():
 m_fExtentSize(0.1f)
@@ -7,6 +8,15 @@ m_fExtentSize(0.1f)
 
 CUIComboNumber::~CUIComboNumber()
 {	
+}
+
+void CUIComboNumber::XMLParse(const TiXmlElement* pControlElement)
+{
+	CUICombo::XMLParse(pControlElement);
+	if (pControlElement->Attribute("extent"))
+	{
+		pControlElement->Attribute("extent",&m_fExtentSize);
+	}
 }
 
 void CUIComboNumber::OnControlRegister()

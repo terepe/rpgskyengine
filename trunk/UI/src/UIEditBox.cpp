@@ -31,7 +31,7 @@ CUIEditBox::~CUIEditBox()
 {
 }
 
-void CUIEditBox::XMLParse(TiXmlElement* pControlElement)
+void CUIEditBox::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 }

@@ -1,4 +1,5 @@
 #include "UIComboVec3D.h"
+#include "tinyxml.h"
 
 CUIComboVec3D::CUIComboVec3D()
 {
@@ -7,6 +8,17 @@ CUIComboVec3D::CUIComboVec3D()
 
 CUIComboVec3D::~CUIComboVec3D()
 {	
+}
+
+void CUIComboVec3D::XMLParse(const TiXmlElement* pControlElement)
+{
+	CUICombo::XMLParse(pControlElement);
+	if (pControlElement->Attribute("extent"))
+	{
+		float fExtentSize=0.0f;
+		pControlElement->Attribute("extent",&fExtentSize);
+		setExtentSize(fExtentSize);
+	}
 }
 
 void CUIComboVec3D::setExtentSize(float fExtentSize)

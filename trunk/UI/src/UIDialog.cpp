@@ -95,7 +95,7 @@ void CUIDialog::loadString(const std::string& strFilename)
 	}
 }
 
-void CUIDialog::XMLParse(TiXmlElement* pElement)
+void CUIDialog::XMLParse(const TiXmlElement* pElement)
 {
 	// canmove
 	if (pElement->Attribute("canmove"))
@@ -108,7 +108,7 @@ void CUIDialog::XMLParse(TiXmlElement* pElement)
 	}
 	// caption
 	{
-		TiXmlElement *pCaptionElement = pElement->FirstChildElement("caption");
+		const TiXmlElement *pCaptionElement = pElement->FirstChildElement("caption");
 		if (pCaptionElement)
 		{
 			if(pCaptionElement->GetText())

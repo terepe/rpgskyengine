@@ -42,12 +42,12 @@ public:
 	virtual bool isCombo(){return true;}
 
 	virtual void loadString(const std::string& strFilename);
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnChildSize(const CRect<int>& rc);
 	virtual void OnSize(const CRect<int>& rc);
 	virtual void UpdateRects();
-	void XMLParseControls(TiXmlElement* pElement);
+	void XMLParseControls(const TiXmlElement* pElement);
 	bool LoadXml(const std::string& strFilename, const std::string& strDialog);
 
 	// my message

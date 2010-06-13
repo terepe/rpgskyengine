@@ -236,7 +236,7 @@ struct UIGridItem
 	}
 };
 
-class DLL_EXPORT CUIGrid : public CUIControl
+class CUIGrid : public CUIControl
 {
 	struct Cell 
 	{
@@ -247,7 +247,7 @@ public:
 	CUIGrid();
 	virtual ~CUIGrid();
 	virtual void	SetParent(CUICombo *pControl);
-	virtual void	XMLParse(TiXmlElement* pControlElement);
+	virtual void	XMLParse(const TiXmlElement* pControlElement);
 	virtual bool    CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	virtual bool    HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool    HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam);

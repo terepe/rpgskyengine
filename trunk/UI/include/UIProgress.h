@@ -5,7 +5,7 @@ class DLL_EXPORT CUIProgress : public CUIControl
 {
 public:
 	CUIProgress();
-	virtual void	XMLParse(TiXmlElement* pControlElement);
+	virtual void	XMLParse(const TiXmlElement* pControlElement);
 	virtual void	UpdateRects(); 
 	virtual void	OnFrameRender(double fTime, float fElapsedTime);
 	bool			SetValue(int nValue);

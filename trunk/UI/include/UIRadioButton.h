@@ -9,7 +9,7 @@ class DLL_EXPORT CUIRadioButton : public CUICheckBox
 {
 public:
 	CUIRadioButton();
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void OnPressUp();
 	void SetChecked(bool bChecked) {m_bChecked = bChecked;}
 	void SetButtonGroup(uint32 uButtonGroup) { m_uButtonGroup = uButtonGroup; }

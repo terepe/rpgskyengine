@@ -78,7 +78,7 @@ void CUICombo::OnControlRegister()
 {
 }
 
-void CUICombo::XMLParse(TiXmlElement* pElement)
+void CUICombo::XMLParse(const TiXmlElement* pElement)
 {
 	CUIControl::XMLParse(pElement);
 	// control
@@ -95,9 +95,9 @@ void CUICombo::UpdateRects()
 	CUIControl::UpdateRects();
 }
 
-void CUICombo::XMLParseControls(TiXmlElement* pElement)
+void CUICombo::XMLParseControls(const TiXmlElement* pElement)
 {
-	TiXmlElement *pControlElement = pElement->FirstChildElement("element");
+	const TiXmlElement *pControlElement = pElement->FirstChildElement("element");
 	while (pControlElement)
 	{
 		CUIControl* pControl = NULL;

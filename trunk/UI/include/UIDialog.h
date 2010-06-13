@@ -11,7 +11,7 @@ public:
 	virtual bool Create(const std::string& strID, CUICombo* pParent=NULL);
 
 	virtual void loadString(const std::string& strFilename);
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnChildSize(const CRect<int>& rc);
 	virtual void OnSize(const CRect<int>& rc);

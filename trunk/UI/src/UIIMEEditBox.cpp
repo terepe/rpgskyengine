@@ -1067,7 +1067,7 @@ void CUIIMEEditBox::RenderIndicator(float fElapsedTime)
     UIGraph::DrawText(pwszIndicator,m_Style, 1, rc);
 }
 
-void CUIIMEEditBox::XMLParse(TiXmlElement* pControlElement)
+void CUIIMEEditBox::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIEditBox::XMLParse(pControlElement);
 }

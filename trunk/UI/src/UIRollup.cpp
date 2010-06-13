@@ -25,7 +25,7 @@ void CUIRollup::SetParent(CUICombo *pControl)
 	m_ScrollBar.SetParent(pControl);
 }
 
-void CUIRollup::XMLParse(TiXmlElement* pControlElement)
+void CUIRollup::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 	//

@@ -9,6 +9,7 @@ public:
 	CUIComboNumber();
 	~CUIComboNumber();
 public:
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void OnControlRegister();
 	virtual void SetText(const std::wstring& wstrText);
 	void OnBtnUp();

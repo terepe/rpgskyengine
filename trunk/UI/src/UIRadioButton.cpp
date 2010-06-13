@@ -7,7 +7,7 @@ CUIRadioButton::CUIRadioButton()
 	m_uButtonGroup = 0;
 }
 
-void CUIRadioButton::XMLParse(TiXmlElement* pControlElement)
+void CUIRadioButton::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUICheckBox::XMLParse(pControlElement);
 	// group
