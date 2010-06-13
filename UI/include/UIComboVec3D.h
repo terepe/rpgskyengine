@@ -7,6 +7,7 @@ public:
 	CUIComboVec3D();
 	~CUIComboVec3D();
 public:
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	void setExtentSize(float fExtentSize);
 	virtual void OnControlRegister();
 	Vec3D	getVec3D();

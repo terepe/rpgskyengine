@@ -5,7 +5,7 @@ class DLL_EXPORT CUICheckBox : public CUIButton
 {
 public:
 	CUICheckBox();
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnPressUp();
 	virtual void OnFrameRender(double fTime, float fElapsedTime);

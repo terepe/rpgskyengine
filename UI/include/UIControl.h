@@ -92,7 +92,7 @@ public:
 
 	virtual bool isCombo(){return false;}
 
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void SetText(const std::wstring& wstrText){}
 
 	virtual void OnInit() { }

@@ -7,7 +7,7 @@ CUICheckBox::CUICheckBox()
 	m_bChecked = false;
 }
 
-void CUICheckBox::XMLParse(TiXmlElement* pControlElement)
+void CUICheckBox::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIButton::XMLParse(pControlElement);
 	// Checked

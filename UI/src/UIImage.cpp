@@ -11,7 +11,7 @@ CUIImage::CUIImage()
 	SetRect(&m_rcTex, 0, 0, -1, -1);
 	m_dwColor = 0xFFFFFFFF;
 }
-void CUIImage::XMLParse(TiXmlElement* pControlElement)
+void CUIImage::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 	//

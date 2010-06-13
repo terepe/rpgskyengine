@@ -11,7 +11,7 @@ public:
     CUIIMEEditBox();
     virtual ~CUIIMEEditBox();
 
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
     virtual void OnFrameRender(double fTime, float fElapsedTime);
     virtual bool MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
     virtual void OnLButtonDown(POINT point);

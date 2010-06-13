@@ -378,7 +378,12 @@ void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc,const Co
 	{
 		return;
 	}
+	GetRenderSystem().SetTextureFactor(color);
+	GetRenderSystem().SetTextureColorOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
+	GetRenderSystem().SetTextureAlphaOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
 	GetTextRender().DrawUBB(wstrText,rc.getRECT());
+	GetRenderSystem().SetTextureColorOP(1,TBOP_DISABLE);
+	GetRenderSystem().SetTextureAlphaOP(1,TBOP_DISABLE);
 }
 
 void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const

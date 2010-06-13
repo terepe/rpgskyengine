@@ -9,7 +9,7 @@ CUIProgress::CUIProgress()
 	m_nValue = 50;
 }
 
-void CUIProgress::XMLParse(TiXmlElement* pControlElement)
+void CUIProgress::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 }

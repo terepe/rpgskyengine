@@ -6,7 +6,7 @@ CUIDisplay::CUIDisplay()
 	m_Type = UI_CONTROL_DISPLAY;
 }
 
-void CUIDisplay::XMLParse(TiXmlElement* pControlElement)
+void CUIDisplay::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 }

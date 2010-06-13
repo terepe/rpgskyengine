@@ -60,7 +60,7 @@ void CUIControl::SetParent(CUICombo* pControl)
 	}
 }
 
-void CUIControl::XMLParse(TiXmlElement* pControlElement)
+void CUIControl::XMLParse(const TiXmlElement* pControlElement)
 {
 	// control name
 	if (pControlElement->Attribute("id"))

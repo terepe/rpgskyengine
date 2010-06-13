@@ -9,7 +9,7 @@ class DLL_EXPORT CUIImage : public CUIControl
 {
 public:
 	CUIImage();
-	virtual void XMLParse(TiXmlElement* pControlElement);
+	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void OnFrameRender(double fTime, float fElapsedTime);
 
 	std::string& GetFilename() { return m_strFilename; }

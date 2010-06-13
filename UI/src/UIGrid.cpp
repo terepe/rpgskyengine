@@ -25,7 +25,7 @@ void CUIGrid::SetParent(CUICombo *pControl)
 	//m_EditBox.SetParent(pControl);
 }
 
-void CUIGrid::XMLParse(TiXmlElement* pControlElement)
+void CUIGrid::XMLParse(const TiXmlElement* pControlElement)
 {
 	CUIControl::XMLParse(pControlElement);
 	// style
