@@ -164,8 +164,12 @@ void CUIEditBox::DeleteSelectionText()
 void CUIEditBox::UpdateRects()
 {
 	CUIControl::UpdateRects();
+	const StyleElement* pStyleElement = m_Style.getStyleData().getFontStyleElement();
+	if(pStyleElement)
+	{
+		m_rcText = m_rcBoundingBox+CRect<int>(pStyleElement->setOffset[CONTROL_STATE_NORMAL].getRECT());
+	}	 
 }
-
 
 void CUIEditBox::CopyToClipboard()
 {
@@ -575,7 +579,7 @@ void CUIEditBox::OnFrameRender(double fTime, float fElapsedTime)
 	}
 
 	m_Style.draw(m_rcBoundingBox,m_Buffer.GetBuffer() + m_nFirstVisible,GetState(),fElapsedTime);
-	m_rcText = m_Style.getTextRect().getRECT();
+
 
 	// Compute the X coordinates of the first visible character.
 	//
