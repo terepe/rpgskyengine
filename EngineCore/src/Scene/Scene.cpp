@@ -356,11 +356,11 @@ void CScene::clearFocusObjects()
 
 bool CScene::delMapObjsByFocusObjects()
 {
-	for(size_t i=0;i<m_setFocusObjects.size();++i)
+	std::deque<CMapObj*> setFocusObjects=m_setFocusObjects;
+	for(size_t i=0;i<setFocusObjects.size();++i)
 	{
-		delMapObj(m_setFocusObjects[i]);
+		delMapObj(setFocusObjects[i]);
 	}
-	clearFocusObjects();
 	return true;
 }
 
