@@ -180,6 +180,14 @@ CUIStyleMgr::CUIStyleMgr()
 {
 }
 
+void StyleElement::blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const
+{
+	float fRate = 1.0f - powf(setBlendRate[iState], 30 * fElapsedTime);
+	sdd.color		= interpolate(fRate, sdd.color,		setColor[iState]);
+	sdd.offset		= interpolate(fRate, sdd.offset,	setOffset[iState]);
+	sdd.scale		= interpolate(fRate, sdd.scale,		setScale[iState]);
+}
+
 void StyleElement::XMLParse(const TiXmlElement& element)
 {
 	{
