@@ -63,12 +63,7 @@ public:
 		memset(this,0,sizeof(*this));
 	}
 
-	void blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const
-	{
-		sdd.color		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.color,	setColor[iState]);
-		sdd.offset		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.offset, setOffset[iState]);
-		sdd.scale		= interpolate(1.0f - powf(setBlendRate[iState], 30 * fElapsedTime), sdd.scale,	setScale[iState]);
-	}
+	void blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const;
 	virtual void XMLParse(const TiXmlElement& element);
 	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 
