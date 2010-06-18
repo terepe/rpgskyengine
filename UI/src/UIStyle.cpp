@@ -10,19 +10,6 @@ CUIStyleMgr& GetStyleMgr()
 	return g_UIStyleMgr;
 }
 
-const char* szLayoutCell[]=
-{
-	"upper_left",
-	"upper_middle",
-	"upper_right",
-	"middle_left",
-	"center",
-	"middle_right",
-	"lower_left",
-	"lower_middle",
-	"lower_right",
-};
-
 const char* szControlState[]=
 {
 	"normal",
@@ -32,7 +19,6 @@ const char* szControlState[]=
 	"mouseover",
 	"pressed",
 };
-
 
 inline uint32 StrToTextFormat(const std::string& str)
 {
@@ -69,11 +55,6 @@ inline uint32 StrToTextFormat(const std::string& str)
 	return uFormat;
 }
 
-inline void StrToXY(const char* str, int& x, int& y)
-{
-	sscanf(str, "%d,%d", &x, &y);
-}
-
 CUIStyle::CUIStyle():
 m_nVisible(0)
 {}
@@ -96,6 +77,7 @@ const CUIStyleData& CUIStyle::getStyleData()
 {
 	return GetStyleMgr().getStyleData(m_strName);
 }
+
 void CUIStyle::draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
 	Blend(rc, state, fElapsedTime);
@@ -417,8 +399,6 @@ void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc,const
 		break;
 	case SPRITE_LAYOUT_3X3GRID_WRAP:
 		UIGraph::DrawSprite3x3GridWrap(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
-		break;
-	case SPRITE_LAYOUT_DISPERSE_3X3GRID:
 		break;
 	default:
 		break;

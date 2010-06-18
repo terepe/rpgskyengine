@@ -20,11 +20,6 @@ CGraphics::CGraphics(void)
 	m_nVBBatchSize = 0;
 	m_nCount = 0;
 
-	m_vRectTex3D[0].t.x = 0;	m_vRectTex3D[0].t.y = 0;
-	m_vRectTex3D[1].t.x = 0;	m_vRectTex3D[1].t.y = 1;
-	m_vRectTex3D[2].t.x = 1;	m_vRectTex3D[2].t.y = 0;
-	m_vRectTex3D[3].t.x = 1;	m_vRectTex3D[3].t.y = 1;
-
 	m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(MAX_VBSIZE, sizeof(VERTEX_XYZ_DIF_TEX),
 		CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY);
 
@@ -747,42 +742,47 @@ void CGraphics::drawBBox(const BBox& bbox, Color32 color)
 	R.DrawIndexedPrimitiveUP(VROT_LINE_LIST, 0, 8, 12, idx, vtx, sizeof(VERTEX_XYZ_DIF));
 }
 
-void CGraphics::DrawTex2D(const Vec2D& v0,const Vec2D& v1, float fZ, Color32 color, int nTexID)
+void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
-	VERTEX_XYZW_DIF_TEX v[4];
-	v[0].p = Vec4D(v0.x, v0.y, fZ, 1);
-	v[1].p = Vec4D(v1.x, v0.y, fZ, 1);
-	v[2].p = Vec4D(v0.x, v1.y, fZ, 1);
-	v[3].p = Vec4D(v1.x, v1.y, fZ, 1);
-	v[0].t.x = 0;	v[0].t.y = 0;
-	v[1].t.x = 1;	v[1].t.y = 0;
-	v[2].t.x = 0;	v[2].t.y = 1;
-	v[3].t.x = 1;	v[3].t.y = 1;
-	v[0].c = color;
-	v[1].c = color;
-	v[2].c = color;
-	v[3].c = color;
 	CRenderSystem& R = GetRenderSystem();
-	R.SetTexture(0, nTexID);
-	R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
+	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
+	if (pTex)
+	{
+		R.SetTexture(0, nTexID);
+	//	DrawQuad(rcSrc, rcDest, (float)pTex->GetWidth(), (float)pTex->GetHeight(), color);
 
-	R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, v, sizeof(VERTEX_XYZW_DIF_TEX));
-}
+		float fWidth = (float)pTex->GetWidth();
+		float fHeight = (float)pTex->GetHeight();
+		CRenderSystem& R = GetRenderSystem();
+		float u0 = (rcSrc.left+0.5f)/ fWidth;
+		float v0 = (rcSrc.top+0.5f)	/ fHeight;
+		float u1 = (rcSrc.right)	/ fWidth;
+		float v1 = (rcSrc.bottom)	/ fHeight;
 
-void CGraphics::DrawTex3D(const Vec3D& v0,const Vec3D& v1, Color32 color, int nTexID)
-{
-	m_vRectTex3D[0].p = v0;
-	m_vRectTex3D[1].p = Vec3D(v1.x, v0.y, v0.z);
-	m_vRectTex3D[2].p = Vec3D(v0.x, v1.y, v1.z);
-	m_vRectTex3D[3].p = v1;
-
-	m_vRectTex3D[0].c = color;
-	m_vRectTex3D[1].c = color;
-	m_vRectTex3D[2].c = color;
-	m_vRectTex3D[3].c = color;
-	CRenderSystem& R = GetRenderSystem();
-	R.SetTexture(0, nTexID);
-	R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
-
-	R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, m_vRectTex3D, sizeof(VERTEX_XYZ_DIF_TEX));
+		CRect<int> rcViewport;
+		R.getViewport(rcViewport);
+		CRect<int> rcNewDest;
+		rcNewDest.left = 0;//rcDest.left/rcViewport.right*2.0f-1.0f;
+		rcNewDest.right = 1;//rcDest.right/rcViewport.right*2.0f-1.0f;
+		rcNewDest.top = 0;//1.0f-rcDest.top/rcViewport.bottom*2.0f;
+		rcNewDest.bottom = 1;//1.0f-rcDest.bottom/rcViewport.bottom*2.0f;
+		VERTEX_XYZ_DIF_TEX v[4]=
+		{
+			Vec3D( rcNewDest.left,	rcNewDest.top,		1.0f), color, Vec2D(u0, v0),
+			Vec3D( rcNewDest.right,	rcNewDest.top,		1.0f), color, Vec2D(u1, v0),
+			Vec3D( rcNewDest.right,	rcNewDest.bottom,	1.0f), color, Vec2D(u1, v1),
+			Vec3D( rcNewDest.left,	rcNewDest.bottom,	1.0f), color, Vec2D(u0, v1),
+		};
+		Matrix mWorld;
+		mWorld.unit();
+		R.setWorldMatrix(mWorld);
+		Matrix mView;
+		mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
+		R.setViewMatrix(mView);
+		Matrix mProjection;
+		mProjection.MatrixPerspectiveFovLH(PI/4,rcViewport.right/rcViewport.bottom,-0.1f,100);
+		R.setProjectionMatrix(mProjection);
+		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
+		R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
+	}
 }

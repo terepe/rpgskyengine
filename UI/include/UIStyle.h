@@ -11,8 +11,6 @@
 
 class TiXmlElement;
 
-void StrToXY(const char* str, int& x, int& y);
-
 enum CONTROL_STATE
 {
 	CONTROL_STATE_NORMAL,
@@ -31,7 +29,6 @@ enum SPRITE_LAYOUT_TYPE
 	SPRITE_LAYOUT_SIMPLE,
 	SPRITE_LAYOUT_3X3GRID,
 	SPRITE_LAYOUT_3X3GRID_WRAP,
-	SPRITE_LAYOUT_DISPERSE_3X3GRID,
 };
 
 struct StyleDrawData
