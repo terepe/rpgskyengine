@@ -741,7 +741,7 @@ void CGraphics::drawBBox(const BBox& bbox, Color32 color)
 	R.SetFVF(VERTEX_XYZ_DIF::FVF);
 	R.DrawIndexedPrimitiveUP(VROT_LINE_LIST, 0, 8, 12, idx, vtx, sizeof(VERTEX_XYZ_DIF));
 }
-
+#include "Timer.h"
 void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
@@ -749,7 +749,7 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 	if (pTex)
 	{
 		R.SetTexture(0, nTexID);
-	//	DrawQuad(rcSrc, rcDest, (float)pTex->GetWidth(), (float)pTex->GetHeight(), color);
+		//DrawQuad(rcSrc, rcDest, (float)pTex->GetWidth(), (float)pTex->GetHeight(), color);
 
 		float fWidth = (float)pTex->GetWidth();
 		float fHeight = (float)pTex->GetHeight();
@@ -761,26 +761,27 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 
 		CRect<int> rcViewport;
 		R.getViewport(rcViewport);
-		CRect<int> rcNewDest;
-		rcNewDest.left = 0;//rcDest.left/rcViewport.right*2.0f-1.0f;
-		rcNewDest.right = 1;//rcDest.right/rcViewport.right*2.0f-1.0f;
-		rcNewDest.top = 0;//1.0f-rcDest.top/rcViewport.bottom*2.0f;
-		rcNewDest.bottom = 1;//1.0f-rcDest.bottom/rcViewport.bottom*2.0f;
+		CRect<float> rcNewDest;
+		rcNewDest.left = rcDest.left/(float)rcViewport.right*2.0f-1.0f;
+		rcNewDest.right = rcDest.right/(float)rcViewport.right*2.0f-1.0f;
+		rcNewDest.top = 1.0f-rcDest.top/(float)rcViewport.bottom*2.0f;
+		rcNewDest.bottom = 1.0f-rcDest.bottom/(float)rcViewport.bottom*2.0f;
 		VERTEX_XYZ_DIF_TEX v[4]=
 		{
-			Vec3D( rcNewDest.left,	rcNewDest.top,		1.0f), color, Vec2D(u0, v0),
-			Vec3D( rcNewDest.right,	rcNewDest.top,		1.0f), color, Vec2D(u1, v0),
-			Vec3D( rcNewDest.right,	rcNewDest.bottom,	1.0f), color, Vec2D(u1, v1),
-			Vec3D( rcNewDest.left,	rcNewDest.bottom,	1.0f), color, Vec2D(u0, v1),
+			Vec3D( rcNewDest.left,	rcNewDest.top,		2.0f), color, Vec2D(u0, v0),
+			Vec3D( rcNewDest.right,	rcNewDest.top,		2.0f), color, Vec2D(u1, v0),
+			Vec3D( rcNewDest.right,	rcNewDest.bottom,	2.0f), color, Vec2D(u1, v1),
+			Vec3D( rcNewDest.left,	rcNewDest.bottom,	2.0f), color, Vec2D(u0, v1),
 		};
 		Matrix mWorld;
 		mWorld.unit();
+		//mWorld.rotate_axis(Vec3D(0,1,0),GetGlobalTimer().GetTime()*100);
 		R.setWorldMatrix(mWorld);
 		Matrix mView;
 		mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
 		R.setViewMatrix(mView);
 		Matrix mProjection;
-		mProjection.MatrixPerspectiveFovLH(PI/4,rcViewport.right/rcViewport.bottom,0.1f,100);
+		mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,1.0f,100);
 		R.setProjectionMatrix(mProjection);
 		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
