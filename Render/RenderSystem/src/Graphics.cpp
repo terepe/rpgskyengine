@@ -780,7 +780,7 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 		mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
 		R.setViewMatrix(mView);
 		Matrix mProjection;
-		mProjection.MatrixPerspectiveFovLH(PI/4,rcViewport.right/rcViewport.bottom,-0.1f,100);
+		mProjection.MatrixPerspectiveFovLH(PI/4,rcViewport.right/rcViewport.bottom,0.1f,100);
 		R.setProjectionMatrix(mProjection);
 		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
