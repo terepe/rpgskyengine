@@ -773,9 +773,12 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 			Vec3D( rcNewDest.right,	rcNewDest.bottom,	2.0f), color, Vec2D(u1, v1),
 			Vec3D( rcNewDest.left,	rcNewDest.bottom,	2.0f), color, Vec2D(u0, v1),
 		};
+		Matrix mRotate;
+		mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*10,0));
+
 		Matrix mWorld;
 		mWorld.unit();
-		//mWorld.rotate_axis(Vec3D(0,1,0),GetGlobalTimer().GetTime()*100);
+		mWorld=Matrix::newTranslation(Vec3D(-rcNewDest.left,-rcNewDest.top,2.0f))*mRotate*Matrix::newTranslation(Vec3D(rcNewDest.left,rcNewDest.top,2.0f));
 		R.setWorldMatrix(mWorld);
 		Matrix mView;
 		mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
