@@ -43,22 +43,21 @@ public:
 	void Vertex3fv	(const float *v);
 	//
 	void End();
-	/// 2D几何绘制
+
+	//////////////////////////////////////////////////////////////////////////
+	// 2D几何绘制
 	// 直线
 	void DrawLine	(float x0, float y0, float x1, float y1, Color32 color);
-	// 矩形框
+	// 矩形
 	void DrawRect	(float x0, float y0, float x1, float y1, Color32 color);
 	void DrawRect	(const CRect<float>& rcDest, Color32 color);
-	// 矩形填充
 	void FillRect	(float x0, float y0, float x1, float y1, Color32 color);
 	void FillRect	(float x0, float y0, float x1, float y1, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
 	void FillRect	(const CRect<float>& rcDest, Color32 color);
 	void FillRect	(const CRect<float>& rcDest, Color32 color, Color32 color0, Color32 color1, Color32 color2, Color32 color3);
 	// 椭圆形
-	void DrawCircle	(float x0, float y0, float x1, float y1, Color32 color);
-	// 椭圆形填充
-	void FillCircle	(float x0, float y0, float x1, float y1, Color32 color);
-
+	void DrawCircle	(const CRect<float>& rcDest, Color32 color);
+	void FillCircle	(const CRect<float>& rcDest, Color32 color);
 	//
 	void DrawQuad	(const CRect<float>& rcSrc, const CRect<float>& rcDest, float fWidth, float fHeight, Color32 color);
 	void DrawTex	(float destX, float destY, int nTexID, Color32 color);
@@ -73,35 +72,33 @@ public:
 	//
 	void Draw3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 
-	// 绘制2D线
+	// 2D线
 	void Line2DBegin();
 	void Line2DTo	(const Vec2D& v);
 	void Line2DEnd	();
-	// 绘制3D线
+	// 3D线
 	void Line3DBegin();
 	void Line3DTo	(const Vec3D& v);
 	void Line3DEnd	();
 
-	// 绘制3D直线
+	//////////////////////////////////////////////////////////////////////////
+	// 3D绘制
+	// 3D直线
 	void DrawLine3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	void drawCross3D(const Vec3D& vPos,float fLength, Color32 color);
 	// Quadrilateral
 	void drawQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
 	void fillQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
-	// 绘制3D矩形
+	// 3D矩形
 	void DrawRect3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	void FillRect3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
-	// 绘制3D椭圆形
+	// 3D椭圆形
 	void DrawCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	void FillCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
-	// 绘制包围盒
+	// 包围盒
 	void drawBBox	(const BBox& bbox, Color32 color);
-
-	/// 纹理
-	// 绘制2D纹理
-	void DrawTex2D	(const Vec2D& v0,const Vec2D& v1, float fZ, Color32 color, int nTexID);
-	// 绘制3D纹理
-	void DrawTex3D	(const Vec3D& v0,const Vec3D& v1, Color32 color, int nTexID);
+	// 3D纹理
+	void DrawTex3D	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 protected:
 	CHardwareVertexBuffer*		m_pVB;			// 顶点缓冲
 	CHardwareIndexBuffer*		m_pIB;			// 索引缓冲

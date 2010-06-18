@@ -110,7 +110,7 @@ void UIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, 
 {
 	if(color.a == 0)
 		return;
-	GetGraphics().DrawTex(rcSrc, rcDest, TextureID, color);
+	GetGraphics().DrawTex3D(rcSrc, rcDest, TextureID, color);
 }
 
 void UIGraph::DrawSprite(const CRect<float>& rcDest, UINT TextureID, Color32 color)
