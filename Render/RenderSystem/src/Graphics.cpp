@@ -741,7 +741,7 @@ void CGraphics::drawBBox(const BBox& bbox, Color32 color)
 	R.SetFVF(VERTEX_XYZ_DIF::FVF);
 	R.DrawIndexedPrimitiveUP(VROT_LINE_LIST, 0, 8, 12, idx, vtx, sizeof(VERTEX_XYZ_DIF));
 }
-#include "Timer.h"
+
 void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
@@ -759,34 +759,107 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 		float u1 = (rcSrc.right)	/ fWidth;
 		float v1 = (rcSrc.bottom)	/ fHeight;
 
-		CRect<int> rcViewport;
-		R.getViewport(rcViewport);
-		CRect<float> rcNewDest;
-		rcNewDest.left = rcDest.left/(float)rcViewport.right*2.0f-1.0f;
-		rcNewDest.right = rcDest.right/(float)rcViewport.right*2.0f-1.0f;
-		rcNewDest.top = 1.0f-rcDest.top/(float)rcViewport.bottom*2.0f;
-		rcNewDest.bottom = 1.0f-rcDest.bottom/(float)rcViewport.bottom*2.0f;
 		VERTEX_XYZ_DIF_TEX v[4]=
 		{
-			Vec3D( rcNewDest.left,	rcNewDest.top,		2.0f), color, Vec2D(u0, v0),
-			Vec3D( rcNewDest.right,	rcNewDest.top,		2.0f), color, Vec2D(u1, v0),
-			Vec3D( rcNewDest.right,	rcNewDest.bottom,	2.0f), color, Vec2D(u1, v1),
-			Vec3D( rcNewDest.left,	rcNewDest.bottom,	2.0f), color, Vec2D(u0, v1),
+			Vec3D( rcDest.left,		rcDest.top,		0.0f), color, Vec2D(u0, v0),
+			Vec3D( rcDest.right,	rcDest.top,		0.0f), color, Vec2D(u1, v0),
+			Vec3D( rcDest.right,	rcDest.bottom,	0.0f), color, Vec2D(u1, v1),
+			Vec3D( rcDest.left,		rcDest.bottom,	0.0f), color, Vec2D(u0, v1),
 		};
-		Matrix mRotate;
-		mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*10,0));
-
-		Matrix mWorld;
-		mWorld.unit();
-		mWorld=Matrix::newTranslation(Vec3D(-rcNewDest.left,-rcNewDest.top,2.0f))*mRotate*Matrix::newTranslation(Vec3D(rcNewDest.left,rcNewDest.top,2.0f));
-		R.setWorldMatrix(mWorld);
-		Matrix mView;
-		mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
-		R.setViewMatrix(mView);
-		Matrix mProjection;
-		mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,1.0f,100);
-		R.setProjectionMatrix(mProjection);
 		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
 		R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
+	}
+}
+
+void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, const CRect<float>& rcDest2, int nTexID, Color32 color)
+{
+	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
+	if (pTex)
+	{
+		CRect<float> rcCenterDest(
+			rcDest.left + (rcCenterSrc.left - rcSrc.left),
+			rcDest.top + (rcCenterSrc.top - rcSrc.top),
+			rcDest.right + (rcCenterSrc.right - rcSrc.right),
+			rcDest.bottom + (rcCenterSrc.bottom - rcSrc.bottom));
+
+		if(rcCenterDest.left>rcCenterDest.right)
+		{
+			rcCenterDest.left=(rcDest.left+rcDest.right)*0.5f;
+			rcCenterDest.right=(rcDest.left+rcDest.right)*0.5f;
+		}
+		if(rcCenterDest.top>rcCenterDest.bottom)
+		{
+			rcCenterDest.top==(rcDest.top+rcDest.bottom)*0.5f;
+			rcCenterDest.bottom=(rcDest.top+rcDest.bottom)*0.5f;
+		}
+		VERTEX_XYZ_DIF_TEX vertex[4*4];
+		for (int i = 0; i<16; i++)
+		{
+			vertex[i].p.z = 0.0f;
+			vertex[i].c = color;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		float X[4] =
+		{
+			rcDest2.left,
+			rcDest2.left/rcDest.left*rcCenterDest.left,
+			rcDest2.right/rcDest.right*rcCenterDest.right,
+			rcDest2.right,
+		};
+		float U[4] =
+		{
+			(rcSrc.left+0.5f)/pTex->GetWidth(),
+			(rcCenterSrc.left+0.5f)/pTex->GetWidth(),
+			(rcCenterSrc.right+0.5f)/pTex->GetWidth(),
+			(rcSrc.right+0.5f)/pTex->GetWidth(),
+		};
+		for (int i = 0; i<4; i++)
+		{
+			for (int n = 0; n < 4; n ++)
+			{
+				int index = i*4+n;
+				vertex[index].p.x = X[n];
+				vertex[index].t.x = U[n];
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		float Y[4] =
+		{
+			rcDest2.top,
+			rcDest2.top/rcDest.top*rcCenterDest.top,
+			rcDest2.bottom/rcDest.bottom*rcCenterDest.bottom,
+			rcDest2.bottom,
+		};
+		float V[4] =
+		{
+			(rcSrc.top+0.5f)/pTex->GetHeight(),
+			(rcCenterSrc.top+0.5f)/pTex->GetHeight(),
+			(rcCenterSrc.bottom+0.5f)/pTex->GetHeight(),
+			(rcSrc.bottom+0.5f)/pTex->GetHeight(),
+		};
+		for (int i = 0; i<4; i++)
+		{
+			for (int n = 0; n < 4; n ++)
+			{
+				int index = i+n*4;
+				vertex[index].p.y = Y[n];
+				vertex[index].t.y = V[n];
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		const static uint16 index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
+			1,1+1,1+5,		1,1+5,1+4,
+			2,2+1,2+5,		2,2+5,2+4,
+			4,4+1,4+5,		4,4+5,4+4,
+			5,5+1,5+5,		5,5+5,5+4,
+			6,6+1,6+5,		6,6+5,6+4,
+			8,8+1,8+5,		8,8+5,8+4,
+			9,9+1,9+5,		9,9+5,9+4,
+			10,10+1,10+5,	10,10+5,10+4};
+
+		CRenderSystem& R = GetRenderSystem();
+		R.SetTexture(0, nTexID);
+		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
+		R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, 4*4, 3*3*2, index, vertex, sizeof(VERTEX_XYZ_DIF_TEX));
 	}
 }

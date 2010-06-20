@@ -62,7 +62,7 @@ public:
 
 	void blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const;
 	virtual void XMLParse(const TiXmlElement& element);
-	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 
 	float			setBlendRate[CONTROL_STATE_MAX];
 	Vec4D			setColor[CONTROL_STATE_MAX];
@@ -74,7 +74,7 @@ class StyleSprite: public StyleElement
 {
 public:
 	virtual void XMLParse(const TiXmlElement& element);
-	void		draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	void		draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
@@ -85,27 +85,27 @@ public:
 class  StyleBorder: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 };
 
 class  StyleSquare: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 };
 
 class StyleText: public StyleElement
 {
 public:
 	virtual void XMLParse(const TiXmlElement& element);
-	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 	uint32 uFormat;
 };
 
 class StyleUBB: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
 };
 
 class CUIStyleData
