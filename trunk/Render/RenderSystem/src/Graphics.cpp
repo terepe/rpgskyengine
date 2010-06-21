@@ -826,8 +826,8 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 		float Y[4] =
 		{
 			rcDest.top,
-			rcDest.top*rcCenterDest.top,
-			rcDest.bottom*rcCenterDest.bottom,
+			rcCenterDest.top,
+			rcCenterDest.bottom,
 			rcDest.bottom,
 		};
 		float V[4] =

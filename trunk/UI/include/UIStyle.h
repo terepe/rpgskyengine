@@ -112,7 +112,7 @@ public:
 	void add(const std::vector<StyleElement*>& setStyleElement);
 
 	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
-	void draw(const Matrix& mTransform, const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
+	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	const StyleElement* getFontStyleElement()const;
 
 	std::vector<StyleElement*>	m_setStyleElement;

@@ -91,20 +91,33 @@ const CUIStyleData& CUIStyle::getStyleData()
 void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
 	CRect<float> rcNew;
-	rcNew.left = -0.5f*rc.getWidth();
-	rcNew.right = 0.5f*rc.getWidth();
-	rcNew.top = -0.5f*rc.getHeight();
-	rcNew.bottom = 0.5f*rc.getHeight();
+	rcNew.left =0;// -0.5f*rc.getWidth();
+	rcNew.right = rc.getWidth();//0.5f*rc.getWidth();
+	rcNew.top =0;// -0.5f*rc.getHeight();
+	rcNew.bottom = rc.getHeight();//0.5f*rc.getHeight();
 	Blend(rcNew, state, fElapsedTime);
 
+
+	CRenderSystem& R = GetRenderSystem();
+	R.SetDepthBufferFunc(false,false);
+	//////////////////////////////////////////////////////////////////////////
+	CRect<int> rcViewport;
+	R.getViewport(rcViewport);
+	Matrix mView;
+	//mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
+	mView.unit();
+	R.setViewMatrix(mView);
+	Matrix mProjection;
+	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
+	R.setProjectionMatrix(mProjection);
 	//////////////////////////////////////////////////////////////////////////
 	//Matrix mRotate;
 	//mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*2,0));
-	mWorld=Matrix::newTranslation(Vec3D(rc.left+0.5f*rc.getWidth(),rc.top+0.5f*rc.getHeight(),0));//*mRotate;
-	mWorld = mTransform*mWorld;
+	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left,rc.top,0));//*mRotate;
 	GetRenderSystem().setWorldMatrix(mWorld);
+	//////////////////////////////////////////////////////////////////////////
 
-	getStyleData().draw(mTransform,wstrText,m_mapStyleDrawData);
+	getStyleData().draw(wstrText,m_mapStyleDrawData);
 }
 
 void CUIStyle::draw(const Matrix& mTransform, const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
@@ -125,21 +138,8 @@ void CUIStyleData::blend(const CRect<float>& rc, UINT iState, float fElapsedTime
 	}
 }
 
-void CUIStyleData::draw(const Matrix& mTransform, const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
+void CUIStyleData::draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
 {
-	CRenderSystem& R = GetRenderSystem();
-	R.SetDepthBufferFunc(false,false);
-	//////////////////////////////////////////////////////////////////////////
-	CRect<int> rcViewport;
-	R.getViewport(rcViewport);
-	Matrix mView;
-	//mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
-	mView.unit();
-	R.setViewMatrix(mView);
-	Matrix mProjection;
-	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
-	R.setProjectionMatrix(mProjection);
-	//////////////////////////////////////////////////////////////////////////
 	for (size_t i=0; i<m_setStyleElement.size(); ++i)
 	{
 		m_setStyleElement[i]->draw(wstrText,mapStyleDrawData[i].rc,mapStyleDrawData[i].color.getColor());
