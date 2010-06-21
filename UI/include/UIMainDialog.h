@@ -7,7 +7,7 @@ public:
 	CUIMainDialog();
 	~CUIMainDialog();
 	virtual	bool OnInitDialog();
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	virtual bool MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void OnMouseMove(POINT point);
 	virtual void OnLButtonUp(POINT point);

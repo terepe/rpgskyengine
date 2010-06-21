@@ -23,7 +23,7 @@ void CUIImage::XMLParse(const TiXmlElement* pControlElement)
 	}
 }
 
-void CUIImage::OnFrameRender(double fTime, float fElapsedTime)
+void CUIImage::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {    
 	if(m_bVisible == false)
 		return;

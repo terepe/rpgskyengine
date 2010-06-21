@@ -87,7 +87,7 @@ void CUIScrollBar::OnLButtonUp(POINT point)
 	m_Arrow = CLEAR;
 }
 
-void CUIScrollBar::OnFrameRender(double fTime, float fElapsedTime)
+void CUIScrollBar::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	// Check if the arrow button has been held for a while.
 	// If so, update the thumb position to simulate repeated
@@ -135,7 +135,7 @@ void CUIScrollBar::OnFrameRender(double fTime, float fElapsedTime)
 		}
 	}
 
-	CUICombo::OnFrameRender(fTime,fElapsedTime);
+	CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
 }
 
 void CUIScrollBar::SetTrackRange(int nStart, int nEnd)

@@ -48,7 +48,7 @@ public:
 
 	// Device state notification
 	virtual void OnFrameMove(double fTime, float fElapsedTime);
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 
 	//  Û±ÍœÏ”¶
 	virtual void OnMouseMove(POINT pt);

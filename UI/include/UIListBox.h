@@ -32,7 +32,7 @@ public:
 	virtual void	OnLButtonDown(POINT point);
 	virtual void	OnLButtonUp(POINT point);
 
-	virtual void    OnFrameRender(double fTime, float fElapsedTime);
+	virtual void    OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 
 	virtual void    UpdateRects();
 

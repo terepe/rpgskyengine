@@ -8,6 +8,7 @@
 #include "Vec4D.h"
 #include "interpolation.h"
 #include "Rect.h"
+#include "Matrix.h"
 
 class TiXmlElement;
 
@@ -42,14 +43,7 @@ struct StyleDrawData
 	CRect<float> scale;
 	CRect<float> offset;
 	CRect<float> rc;
-	void updateRect(CRect<float> rect)
-	{
-		rc.left		= rect.left+rect.getWidth()*scale.left;
-		rc.right	= rect.left+rect.getWidth()*scale.right;
-		rc.top		= rect.top+rect.getHeight()*scale.top;
-		rc.bottom	= rect.top+rect.getHeight()*scale.bottom;
-		rc+= offset;
-	}
+	void updateRect(CRect<float> rect);
 };
 
 class StyleElement
@@ -62,7 +56,7 @@ public:
 
 	void blend(StyleDrawData& sdd,UINT iState,float fElapsedTime)const;
 	virtual void XMLParse(const TiXmlElement& element);
-	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	virtual void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 
 	float			setBlendRate[CONTROL_STATE_MAX];
 	Vec4D			setColor[CONTROL_STATE_MAX];
@@ -74,7 +68,7 @@ class StyleSprite: public StyleElement
 {
 public:
 	virtual void XMLParse(const TiXmlElement& element);
-	void		draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	void		draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 	int			m_nTexture;
 	bool		m_bDecolor;
 	int			m_nSpriteLayoutType;
@@ -85,27 +79,27 @@ public:
 class  StyleBorder: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
 class  StyleSquare: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
 class StyleText: public StyleElement
 {
 public:
 	virtual void XMLParse(const TiXmlElement& element);
-	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 	uint32 uFormat;
 };
 
 class StyleUBB: public StyleElement
 {
 public:
-	void draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const;
+	void draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const;
 };
 
 class CUIStyleData
@@ -118,7 +112,7 @@ public:
 	void add(const std::vector<StyleElement*>& setStyleElement);
 
 	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
-	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
+	void draw(const Matrix& mTransform, const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	const StyleElement* getFontStyleElement()const;
 
 	std::vector<StyleElement*>	m_setStyleElement;
@@ -133,14 +127,15 @@ public:
 	void Blend(const CRect<float>& rc, UINT iState, float fElapsedTime);
 	void SetStyle(const std::string& strName);
 	const CUIStyleData& getStyleData();
-	void draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
-	void draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
+	void draw(const Matrix& mTransform, const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
+	void draw(const Matrix& mTransform, const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime);
 	bool isVisible();
 	CRect<float>& getTextRect();
 
 	int m_nVisible;
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapStyleDrawData;
+	Matrix			mWorld;
 };
 
 class CUIStyleMgr

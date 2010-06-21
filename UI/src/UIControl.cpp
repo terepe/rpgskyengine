@@ -155,6 +155,9 @@ void CUIControl::OnSize(const CRect<int>& rc)
 	m_rcBoundingBox.bottom	= rc.top+rc.getHeight()*m_rcScale.bottom/100;
 
 	m_rcBoundingBox+= m_rcOffset;
+
+	m_rcRelativeBox = m_rcBoundingBox;
+	m_rcRelativeBox.offset(-rc.left,-rc.top);
 	UpdateRects();
 }
 
@@ -223,7 +226,7 @@ void CUIControl::SendEvent(uint32 uEvent)
 	}
 }
 
-void CUIControl::drawTip(const CRect<int>& rc, double fTime, float fElapsedTime)
+void CUIControl::drawTip(const Matrix& mTransform,const CRect<int>& rc, double fTime, float fElapsedTime)
 {
 	if (m_wstrTip.length()<=0)
 	{
@@ -275,7 +278,7 @@ void CUIControl::drawTip(const CRect<int>& rc, double fTime, float fElapsedTime)
 		rect.bottom	= m_rcBoundingBox.bottom+nTipHeight;
 	}
 
-	CUIControl::s_TipStyle.draw(rect,m_wstrTip,CONTROL_STATE_NORMAL, fElapsedTime);
+	CUIControl::s_TipStyle.draw(mTransform,rect,m_wstrTip,CONTROL_STATE_NORMAL, fElapsedTime);
 }
 
 void CUIControl::SetFocus(bool bFocus)
@@ -331,8 +334,17 @@ void CUIControl::ClientToScreen(RECT& rc)
 // 	rc.bottom	= int((rc.bottom-m_height/2)*fScale+m_y+m_height/2);
 }
 
-void CUIControl::ScreenToClient(RECT& rc)
+CRect<int> CUIControl::screenToClient(const CRect<int>& rc)
 {
+	CUICombo* pParent = GetParentDialog();
+	if(pParent)
+	{
+		CRect<int> ret;
+		ret = rc;
+		ret.offset(-pParent->GetBoundingBox().left,-pParent->GetBoundingBox().top);
+		return ret;
+	}
+	return rc;
 }
 
 void CUIControl::UpdateRects()

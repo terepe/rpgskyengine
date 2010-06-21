@@ -8,7 +8,7 @@ public:
 	virtual void XMLParse(const TiXmlElement* pControlElement);
 	virtual void SetStyle(const std::string& strStyleName);
 	virtual void OnPressUp();
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 
 	bool IsChecked() { return m_bChecked!=0; }
 	void SetChecked(bool bChecked) { m_bChecked= bChecked; }

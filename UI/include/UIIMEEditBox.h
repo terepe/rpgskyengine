@@ -12,7 +12,7 @@ public:
     virtual ~CUIIMEEditBox();
 
 	virtual void XMLParse(const TiXmlElement* pControlElement);
-    virtual void OnFrameRender(double fTime, float fElapsedTime);
+    virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
     virtual bool MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
     virtual void OnLButtonDown(POINT point);
     virtual void UpdateRects();

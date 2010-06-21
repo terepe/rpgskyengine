@@ -11,9 +11,9 @@ void CUIDisplay::XMLParse(const TiXmlElement* pControlElement)
 	CUIControl::XMLParse(pControlElement);
 }
 
-void CUIDisplay::OnFrameRender(double fTime, float fElapsedTime)
+void CUIDisplay::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	m_Style.draw(m_rcBoundingBox,L"",GetState(),fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox,L"",GetState(),fElapsedTime);
 }
 
 CRect<int> CUIDisplay::getViewport()

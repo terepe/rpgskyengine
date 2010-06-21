@@ -187,9 +187,9 @@ void CUIComboBox::OnHotkey()
 	}
 }
 
-void CUIComboBox::OnFrameRender(double fTime, float fElapsedTime)
+void CUIComboBox::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUICombo::OnFrameRender(fTime, fElapsedTime);
+	CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
 
 	CONTROL_STATE iState = GetState();
 	if(m_ListBox.IsVisible())
@@ -198,7 +198,7 @@ void CUIComboBox::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	// Main text box
 	GetText(); // For Temp
-	m_Style.draw(m_rcBoundingBox,m_wstrText,iState, fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox,m_wstrText,iState, fElapsedTime);
 }
 
 bool CUIComboBox::AddItem(const std::wstring& wstrText, void* pData)

@@ -99,7 +99,7 @@ public:
 	void drawBBox	(const BBox& bbox, Color32 color);
 	// 3DÎÆÀí
 	void DrawTex3D	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
-	void Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, const CRect<float>& rcDest2, int nTexID, Color32 color);
+	void Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 protected:
 	CHardwareVertexBuffer*		m_pVB;			// ¶¥µã»º³å
 	CHardwareIndexBuffer*		m_pIB;			// Ë÷Òý»º³å

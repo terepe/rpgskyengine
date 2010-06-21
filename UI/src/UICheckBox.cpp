@@ -33,9 +33,9 @@ void CUICheckBox::OnPressUp()
 	SendEvent(EVENT_CHECKBOX_CHANGED); 
 }
 
-void CUICheckBox::OnFrameRender(double fTime, float fElapsedTime)
+void CUICheckBox::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	CONTROL_STATE iState = GetState();
-	m_Style.draw(m_rcBoundingBox,m_wstrText,m_bChecked?CONTROL_STATE_HIDDEN:iState,fElapsedTime);
-	m_StyleChecked.draw(m_rcBoundingBox,m_wstrText,m_bChecked?iState:CONTROL_STATE_HIDDEN,fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox,m_wstrText,m_bChecked?CONTROL_STATE_HIDDEN:iState,fElapsedTime);
+	m_StyleChecked.draw(mTransform,m_rcRelativeBox,m_wstrText,m_bChecked?iState:CONTROL_STATE_HIDDEN,fElapsedTime);
 }

@@ -463,7 +463,7 @@ bool CUIGrid::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 
 
 
-void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
+void CUIGrid::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	if(m_bVisible == false)
 		return;
@@ -543,5 +543,5 @@ void CUIGrid::OnFrameRender(double fTime, float fElapsedTime)
 
 	// Render the scroll bar
 
-	m_ScrollBar.OnFrameRender(fTime, fElapsedTime);
+	m_ScrollBar.OnFrameRender(mTransform,fTime,fElapsedTime);
 }

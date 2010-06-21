@@ -359,7 +359,7 @@ void CUICombo::OnFrameMove(double fTime, float fElapsedTime)
 	}
 }
 
-void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
+void CUICombo::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	// If this assert triggers, you need to call CUIComboResMgr::On*Device() from inside
 	// the application's device callbacks.  See the SDK samples for an example of how to do this.
@@ -374,7 +374,7 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 
 	// For invisible dialog, out now.
 
-	m_Style.draw(m_rcBoundingBox, L"",GetState(), fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox, L"",GetState(), fElapsedTime);
 
 	// render controls
 	for(uint32 i=0; i < m_Controls.size(); i++)
@@ -385,7 +385,7 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			continue;
 		}
-		pControl->OnFrameRender(fTime, fElapsedTime);
+		pControl->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
 	}
 	for(uint32 i=0; i < m_Controls.size(); i++)
 	{
@@ -393,7 +393,7 @@ void CUICombo::OnFrameRender(double fTime, float fElapsedTime)
 
 		if (pControl->IsFocus())
 		{
-			pControl->OnFrameRender(fTime, fElapsedTime);
+			pControl->OnFrameRender(m_Style.mWorld,fTime, fElapsedTime);
 		}
 	}
 }

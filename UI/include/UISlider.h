@@ -19,7 +19,7 @@ public:
 	virtual void OnLButtonUp(POINT point);
 	//
 	virtual void	UpdateRects(); 
-	virtual void	OnFrameRender(double fTime, float fElapsedTime);
+	virtual void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	bool			SetValue(int nValue);
 	int				GetValue() const { return m_nValue; };
 	int				getMin() const { return m_nMin; };

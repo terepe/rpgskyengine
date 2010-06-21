@@ -771,7 +771,7 @@ void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest,
 	}
 }
 
-void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, const CRect<float>& rcDest2, int nTexID, Color32 color)
+void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
 	if (pTex)
@@ -801,10 +801,10 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 		//////////////////////////////////////////////////////////////////////////
 		float X[4] =
 		{
-			rcDest2.left,
-			rcDest2.left/rcDest.left*rcCenterDest.left,
-			rcDest2.right/rcDest.right*rcCenterDest.right,
-			rcDest2.right,
+			rcDest.left,
+			rcCenterDest.left,
+			rcCenterDest.right,
+			rcDest.right,
 		};
 		float U[4] =
 		{
@@ -825,10 +825,10 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 		//////////////////////////////////////////////////////////////////////////
 		float Y[4] =
 		{
-			rcDest2.top,
-			rcDest2.top/rcDest.top*rcCenterDest.top,
-			rcDest2.bottom/rcDest.bottom*rcCenterDest.bottom,
-			rcDest2.bottom,
+			rcDest.top,
+			rcDest.top*rcCenterDest.top,
+			rcDest.bottom*rcCenterDest.bottom,
+			rcDest.bottom,
 		};
 		float V[4] =
 		{

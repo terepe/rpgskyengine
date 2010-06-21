@@ -22,7 +22,7 @@ public:
 
 	virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	virtual void OnFocusOut();
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 
 	bool	AddItem(const std::wstring& wstrText, void *pData=NULL);
 	//void    SetDropHeight(UINT nHeight) { m_nDropHeight = nHeight; UpdateRects(); }
