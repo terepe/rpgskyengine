@@ -3,6 +3,7 @@
 #include "Graphics.h"
 //#include <vector>
 
+#define _3D_TEXT
 struct TexCharInfo
 {
 	int nLeft;
@@ -103,8 +104,12 @@ public:
 	void	AddChar(TexCharInfo* charInfo);
 	void	UpdateTextLine();
 	RECT	getRect();
-public: 
+public:
+#ifdef _3D_TEXT
+	std::vector<VERTEX_XYZ_DIF_TEX> m_VB;
+#else
 	std::vector<VERTEX_XYZW_DIF_TEX> m_VB;
+#endif
 	std::vector<WORD> m_IB;
 protected:
 	std::vector<int>	m_TagTypeRecords[TAG_TYPE_MAX];

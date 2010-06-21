@@ -348,6 +348,15 @@ void CUBB::AddChar(TexCharInfo* charInfo)
 			v0 = charInfo->fV0;
 			v1 = charInfo->fV1;
 		}
+#ifdef _3D_TEXT
+		VERTEX_XYZ_DIF_TEX v[4]=
+		{
+			Vec3D(fX0+(float)m_nItalic,fY0, 0.0f), m_dwColor, Vec2D(u0, v0),
+			Vec3D(fX1+(float)m_nItalic,fY0, 0.0f), m_dwColor, Vec2D(u1, v0),
+			Vec3D(fX1,			fY1, 0.0f), m_dwColor, Vec2D(u1, v1),
+			Vec3D(fX0,			fY1, 0.0f), m_dwColor, Vec2D(u0, v1),
+		};
+#else
 		VERTEX_XYZW_DIF_TEX v[4]=
 		{
 			Vec4D(fX0+(float)m_nItalic,fY0, 0.5f, 1.0f), m_dwColor, Vec2D(u0, v0),
@@ -355,6 +364,7 @@ void CUBB::AddChar(TexCharInfo* charInfo)
 			Vec4D(fX1,			fY1, 0.5f, 1.0f), m_dwColor, Vec2D(u1, v1),
 			Vec4D(fX0,			fY1, 0.5f, 1.0f), m_dwColor, Vec2D(u0, v1),
 		};
+#endif
 		m_VB.push_back(v[0]);m_VB.push_back(v[1]);m_VB.push_back(v[2]);m_VB.push_back(v[3]);
 	}
 	m_nLineWidth += charInfo->nAdvX*fScaling;

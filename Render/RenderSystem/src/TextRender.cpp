@@ -434,15 +434,24 @@ void CTextRender::DrawTextVB(int nVertexCount, void* pVB)
 {
 	CRenderSystem& R = GetRenderSystem();
 	R.SetTexture(0, m_pTextTexture);
+#ifdef _3D_TEXT
+	R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
+	R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, nVertexCount, nVertexCount/2, &s_DrawTextIB, pVB, sizeof(VERTEX_XYZ_DIF_TEX));
+#else
 	R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
 	R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, nVertexCount, nVertexCount/2, &s_DrawTextIB, pVB, sizeof(VERTEX_XYZW_DIF_TEX));
+#endif
 }
 
 void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<float>& rcDest,UINT format,Color32 dwColor,CRect<float>* prcRet)
 {
 	bool bVisible = !(format & DTL_CALCRECT);
 	int nX = rcDest.left;
+#ifdef _3D_TEXT
+	std::vector<VERTEX_XYZ_DIF_TEX> vb;
+#else
 	std::vector<VERTEX_XYZW_DIF_TEX> vb;
+#endif
 	size_t uTextLength = strText.length();
 	if (cchText > 0)
 	{
@@ -481,6 +490,15 @@ void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<f
 				//	vb.push_back(v11[0]);vb.push_back(v11[1]);vb.push_back(v11[2]);vb.push_back(v11[3]);
 				//}
 
+#ifdef _3D_TEXT
+				VERTEX_XYZ_DIF_TEX v[4]=
+				{
+					Vec3D((float)nX,	(float)nY0, 0.0f), dwColor, Vec2D(charInfo->fU0, charInfo->fV0),
+					Vec3D((float)nX1,	(float)nY0, 0.0f), dwColor, Vec2D(fSecondU, charInfo->fV0),
+					Vec3D((float)nX1,	(float)nY1, 0.0f), dwColor, Vec2D(fSecondU, charInfo->fV1),
+					Vec3D((float)nX,	(float)nY1, 0.0f), dwColor, Vec2D(charInfo->fU0, charInfo->fV1),
+				};
+#else
 				VERTEX_XYZW_DIF_TEX v[4]=
 				{
 					Vec4D((float)nX,	(float)nY0, 0.5f, 1.0f), dwColor, Vec2D(charInfo->fU0, charInfo->fV0),
@@ -488,6 +506,8 @@ void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<f
 					Vec4D((float)nX1,	(float)nY1, 0.5f, 1.0f), dwColor, Vec2D(fSecondU, charInfo->fV1),
 					Vec4D((float)nX,	(float)nY1, 0.5f, 1.0f), dwColor, Vec2D(charInfo->fU0, charInfo->fV1),
 				};
+#endif
+
 				vb.push_back(v[0]);vb.push_back(v[1]);vb.push_back(v[2]);vb.push_back(v[3]);
 			}
 			nX += charInfo->nAdvX-charInfo->nOffsetX;
@@ -534,7 +554,11 @@ void CTextRender::drawText(const std::wstring& strText,int cchText,const CRect<f
 				nOffsetY = rcDest.bottom - rcDest.top - m_nH;
 			}
 			// update
+#ifdef _3D_TEXT
+			for (std::vector<VERTEX_XYZ_DIF_TEX>::iterator it = vb.begin(); it != vb.end(); ++it)
+#else
 			for (std::vector<VERTEX_XYZW_DIF_TEX>::iterator it = vb.begin(); it != vb.end(); ++it)
+#endif
 			{
 				it->p.x += nOffsetX;
 				it->p.y += nOffsetY;

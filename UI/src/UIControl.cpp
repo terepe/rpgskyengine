@@ -141,9 +141,8 @@ void CUIControl::XMLParse(const TiXmlElement* pControlElement)
 
 void CUIControl::OnMove(int x, int y)
 {
-	int w = m_rcBoundingBox.getWidth();
-	int h = m_rcBoundingBox.getHeight();
-	m_rcBoundingBox.set(x,y,x+w,y+h);
+	m_rcRelativeBox.offset(x-m_rcBoundingBox.left,y-m_rcBoundingBox.top);
+	m_rcBoundingBox.offset(x-m_rcBoundingBox.left,y-m_rcBoundingBox.top);
 	UpdateRects();
 }
 
