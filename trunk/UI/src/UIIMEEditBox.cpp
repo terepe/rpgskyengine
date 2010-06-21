@@ -1072,7 +1072,7 @@ void CUIIMEEditBox::XMLParse(const TiXmlElement* pControlElement)
 	CUIEditBox::XMLParse(pControlElement);
 }
 
-void CUIIMEEditBox::OnFrameRender(double fTime, float fElapsedTime)
+void CUIIMEEditBox::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
     // If we have not computed the indicator symbol width,
     // do it.
@@ -1090,7 +1090,7 @@ void CUIIMEEditBox::OnFrameRender(double fTime, float fElapsedTime)
     }
 
     // Let the parent render first (edit control)
-    CUIEditBox::OnFrameRender(fTime, fElapsedTime);
+    CUIEditBox::OnFrameRender(mTransform,fTime,fElapsedTime);
 
     //
     // Now render the IME elements

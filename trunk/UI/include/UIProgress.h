@@ -7,7 +7,7 @@ public:
 	CUIProgress();
 	virtual void	XMLParse(const TiXmlElement* pControlElement);
 	virtual void	UpdateRects(); 
-	virtual void	OnFrameRender(double fTime, float fElapsedTime);
+	virtual void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	bool			SetValue(int nValue);
 	int				GetValue() const { return m_nValue; };
 	void			GetRange(int &nMin, int &nMax) const { nMin = m_nMin; nMax = m_nMax; }

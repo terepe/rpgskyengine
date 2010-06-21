@@ -252,7 +252,7 @@ public:
 	virtual bool    HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool    HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam);
 
-	virtual void    OnFrameRender(double fTime, float fElapsedTime);
+	virtual void    OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	virtual void    UpdateRects();
 
 	DWORD	GetListBoxStyle() const { return m_dwStyle; }

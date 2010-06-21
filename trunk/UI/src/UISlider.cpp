@@ -222,9 +222,9 @@ void CUISlider::SetValueInternal(int nValue)
 	}
 }
 
-void CUISlider::OnFrameRender(double fTime, float fElapsedTime)
+void CUISlider::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	CONTROL_STATE iState = GetState();
-	m_Style.draw(m_rcBoundingBox,L"",iState, fElapsedTime);
-	m_StyleButton.draw(m_rcButton,L"",iState, fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox,L"",iState, fElapsedTime);
+	m_StyleButton.draw(mTransform,m_rcButton,L"",iState, fElapsedTime);
 }

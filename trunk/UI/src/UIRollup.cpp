@@ -524,7 +524,7 @@ bool CUIRollup::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 
-void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
+void CUIRollup::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	if(m_bVisible == false)
 		return;
@@ -596,5 +596,5 @@ void CUIRollup::OnFrameRender(double fTime, float fElapsedTime)
 
 	// Render the scroll bar
 
-	m_ScrollBar.OnFrameRender(fTime, fElapsedTime);
+	m_ScrollBar.OnFrameRender(mTransform,fTime,fElapsedTime);
 }

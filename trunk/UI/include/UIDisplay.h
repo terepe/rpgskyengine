@@ -6,6 +6,6 @@ class DLL_EXPORT CUIDisplay: public CUIControl//, public CDisplay
 public:
 	CUIDisplay();
 	virtual void	XMLParse(const TiXmlElement* pControlElement);
-	virtual void	OnFrameRender(double fTime, float fElapsedTime);
+	virtual void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	CRect<int>		getViewport();
 };

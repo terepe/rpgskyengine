@@ -92,11 +92,11 @@ void UIGraph::DrawPolyLine(POINT* apPoints, UINT nNumPoints, Color32 color)
 	S_DELS(vertices);
 }
 
-void UIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, const CRect<float>& rcDest2, UINT TextureID, Color32 color)
+void UIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest,UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
 		return;
-	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest, rcDest2, TextureID, color);
+	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest,TextureID, color);
 }
 
 void UIGraph::DrawSprite3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)

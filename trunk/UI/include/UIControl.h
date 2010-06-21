@@ -99,7 +99,7 @@ public:
 	virtual void Refresh();
 
 	virtual void OnFrameMove(double fTime, float fElapsedTime) {}
-	virtual void OnFrameRender(double fTime, float fElapsedTime) {}
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime) {}
 
 	// Windows message handler
 	virtual bool MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) { return false; }
@@ -137,7 +137,7 @@ public:
 	virtual bool isStyleVisible(){return m_Style.isVisible();}
 
 	virtual void SetTip(const std::wstring& wstrTip) { m_wstrTip = wstrTip; }
-	virtual void drawTip(const CRect<int>& rc, double fTime, float fElapsedTime);
+	virtual void drawTip(const Matrix& mTransform,const CRect<int>& rc, double fTime, float fElapsedTime);
 
 	virtual void SetStyle(const std::string& strStyleName);
 
@@ -177,7 +177,7 @@ public:
 	static CUIControl* s_pControlMouseOver;    // The control which is hovered over
 
 	virtual void ClientToScreen(RECT& rc);
-	virtual void ScreenToClient(RECT& rc);
+	CRect<int> screenToClient(const CRect<int>& rc);
 	virtual void UpdateRects();
 protected:
 	virtual CONTROL_STATE GetState();
@@ -199,6 +199,8 @@ protected:
 	bool				m_bEnabled;			// Enabled/disabled flag
 
 	CRect<int>			m_rcBoundingBox;	// Rectangle defining the active region of the control
+	CRect<int>			m_rcRelativeBox;	// Rectangle defining the active region of the control
+
 	CRect<int>			m_rcScale;
 	CRect<int>			m_rcOffset;
 };

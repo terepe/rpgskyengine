@@ -594,9 +594,9 @@ void CUIListBox::OnLButtonUp(POINT point)
 	}
 }
 
-void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
+void CUIListBox::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUICombo::OnFrameRender(fTime, fElapsedTime);
+	CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
 
 	CONTROL_STATE iState = GetState();
 
@@ -649,17 +649,17 @@ void CUIListBox::OnFrameRender(double fTime, float fElapsedTime)
 
 				if(bSelectedStyle)
 				{
-					m_StyleSelected.draw(rc, pItem->wstrText,iState, fElapsedTime);
+					m_StyleSelected.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
 				}
 				else
 				{
 					if (i%2==0)
 					{
-						m_StyleItem1.draw(rc, pItem->wstrText,iState, fElapsedTime);
+						m_StyleItem1.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
 					}
 					else
 					{
-						m_StyleItem2.draw(rc, pItem->wstrText,iState, fElapsedTime);
+						m_StyleItem2.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
 					}
 				}
 				rc.offset(0, m_nTextHeight);

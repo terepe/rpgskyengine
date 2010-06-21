@@ -24,5 +24,5 @@ public:
 	virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 
 	// ‰÷»æ
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 };

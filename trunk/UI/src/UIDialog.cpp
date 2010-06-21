@@ -176,7 +176,7 @@ void CUIDialog::OnFrameMove(double fTime, float fElapsedTime)
 	}
 }
 
-void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
+void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	// For invisible dialog, out now.
 	if((m_bMinimized && !m_bCaption))
@@ -186,7 +186,7 @@ void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 	// its controls.
 	if(!m_bMinimized)
 	{
-		CUICombo::OnFrameRender(fTime, fElapsedTime);
+		CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
 	}
 
 	if(m_bCaption)
@@ -197,7 +197,7 @@ void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 		{
 			wstrOutput += L"Minimized";
 		}
-		m_StyleCaption.draw(m_rcCaption, wstrOutput,GetState(), fElapsedTime);
+		m_StyleCaption.draw(mTransform,m_rcCaption, wstrOutput,GetState(), fElapsedTime);
 	}
 
 	//
@@ -206,7 +206,7 @@ void CUIDialog::OnFrameRender(double fTime, float fElapsedTime)
 		CUIDialog* pDialog = m_Dialogs[i];
 		if (pDialog->IsVisible()||pDialog->isStyleVisible())
 		{
-			pDialog->OnFrameRender(fTime, fElapsedTime);
+			pDialog->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
 		}
 	}
 	return;

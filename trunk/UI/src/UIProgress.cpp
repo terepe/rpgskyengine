@@ -40,7 +40,7 @@ void CUIProgress::SetRange(int nMin, int nMax)
 	SetValue(m_nValue);
 }
 
-void CUIProgress::OnFrameRender(double fTime, float fElapsedTime)
+void CUIProgress::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	int nOffsetX = 0;
 	int nOffsetY = 0;
@@ -56,6 +56,6 @@ void CUIProgress::OnFrameRender(double fTime, float fElapsedTime)
 		nOffsetX = -1;
 		nOffsetY = -2;
 	}
-	m_Style.draw(m_rcBoundingBox,L"",iState, fElapsedTime);
+	m_Style.draw(mTransform,m_rcRelativeBox,L"",iState, fElapsedTime);
 	//m_StyleButton.draw(m_rcButton,m_wstrText,iState, fElapsedTime, fBlendRate);
 }

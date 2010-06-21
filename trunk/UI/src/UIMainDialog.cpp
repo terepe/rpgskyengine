@@ -18,13 +18,13 @@ bool CUIMainDialog::OnInitDialog()
 	return CUIDialog::OnInitDialog();
 }
 
-void CUIMainDialog::OnFrameRender(double fTime, float fElapsedTime)
+void CUIMainDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUIDialog::OnFrameRender(fTime, fElapsedTime);
+	CUIDialog::OnFrameRender(mTransform,fTime,fElapsedTime);
 	// ÏÔÊ¾Tips
 	if (s_pControlMouseOver)
 	{
-		s_pControlMouseOver->drawTip(m_rcBoundingBox.getRECT(), fTime, fElapsedTime);
+		s_pControlMouseOver->drawTip(mTransform,m_rcBoundingBox.getRECT(), fTime, fElapsedTime);
 	}
 	else
 	{

@@ -55,6 +55,16 @@ inline uint32 StrToTextFormat(const std::string& str)
 	return uFormat;
 }
 
+#include "Timer.h"
+void StyleDrawData::updateRect(CRect<float> rect)
+{
+	rc.left		= rect.left+rect.getWidth()*scale.left;
+	rc.right	= rect.left+rect.getWidth()*scale.right;
+	rc.top		= rect.top+rect.getHeight()*scale.top;
+	rc.bottom	= rect.top+rect.getHeight()*scale.bottom;
+	rc+= offset;
+}
+
 CUIStyle::CUIStyle():
 m_nVisible(0)
 {}
@@ -78,16 +88,29 @@ const CUIStyleData& CUIStyle::getStyleData()
 	return GetStyleMgr().getStyleData(m_strName);
 }
 
-void CUIStyle::draw(const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
+void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
-	Blend(rc, state, fElapsedTime);
-	getStyleData().draw(wstrText,m_mapStyleDrawData);
+	CRect<float> rcNew;
+	rcNew.left = -0.5f*rc.getWidth();
+	rcNew.right = 0.5f*rc.getWidth();
+	rcNew.top = -0.5f*rc.getHeight();
+	rcNew.bottom = 0.5f*rc.getHeight();
+	Blend(rcNew, state, fElapsedTime);
+
+	//////////////////////////////////////////////////////////////////////////
+	//Matrix mRotate;
+	//mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*2,0));
+	mWorld=Matrix::newTranslation(Vec3D(rc.left+0.5f*rc.getWidth(),rc.top+0.5f*rc.getHeight(),0));//*mRotate;
+	mWorld = mTransform*mWorld;
+	GetRenderSystem().setWorldMatrix(mWorld);
+
+	getStyleData().draw(mTransform,wstrText,m_mapStyleDrawData);
 }
 
-void CUIStyle::draw(const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
+void CUIStyle::draw(const Matrix& mTransform, const CRect<int>& rc, const std::wstring& wstrText, CONTROL_STATE state, float fElapsedTime)
 {
-	Blend(rc.getRECT(), state, fElapsedTime);
-	getStyleData().draw(wstrText,m_mapStyleDrawData);
+	CRect<float> rcFloat = rc.getRECT();;
+	draw(mTransform, rcFloat, wstrText, state, fElapsedTime);
 }
 
 void CUIStyleData::blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const
@@ -101,9 +124,8 @@ void CUIStyleData::blend(const CRect<float>& rc, UINT iState, float fElapsedTime
 		it->second.updateRect(rc);
 	}
 }
-#include "Timer.h"
 
-void CUIStyleData::draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
+void CUIStyleData::draw(const Matrix& mTransform, const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	R.SetDepthBufferFunc(false,false);
@@ -111,37 +133,16 @@ void CUIStyleData::draw(const std::wstring& wstrText, std::map<int,StyleDrawData
 	CRect<int> rcViewport;
 	R.getViewport(rcViewport);
 	Matrix mView;
-	mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
+	//mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
 	mView.unit();
 	R.setViewMatrix(mView);
 	Matrix mProjection;
 	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
 	R.setProjectionMatrix(mProjection);
-
+	//////////////////////////////////////////////////////////////////////////
 	for (size_t i=0; i<m_setStyleElement.size(); ++i)
 	{
-		//////////////////////////////////////////////////////////////////////////
-		float fZ = 20;//fmod(GetGlobalTimer().GetTime(),1)*2;
-		CRect<float>& rcDest=mapStyleDrawData[i].rc;
-		CRect<float> rcNewDest;
-		rcNewDest.left = (rcDest.left/(float)rcViewport.right*2.0f-1.0f)/mProjection._11*fZ;
-		rcNewDest.right = (rcDest.right/(float)rcViewport.right*2.0f-1.0f)/mProjection._11*fZ;
-		rcNewDest.top = (1.0f-rcDest.top/(float)rcViewport.bottom*2.0f)/mProjection._22*fZ;
-		rcNewDest.bottom = (1.0f-rcDest.bottom/(float)rcViewport.bottom*2.0f)/mProjection._22*fZ;
-
-		CRect<float> rcNewDest2;
-		rcNewDest2.left = -0.5f*rcNewDest.getWidth();
-		rcNewDest2.right = 0.5f*rcNewDest.getWidth();
-		rcNewDest2.top = -0.5f*rcNewDest.getHeight();
-		rcNewDest2.bottom = 0.5f*rcNewDest.getHeight();
-		Matrix mRotate;
-		mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*2,0));
-
-		Matrix mWorld;
-		mWorld=Matrix::newTranslation(Vec3D(rcNewDest.left+0.5f*rcNewDest.getWidth(),rcNewDest.top+0.5f*rcNewDest.getHeight(),fZ))*mRotate;
-		R.setWorldMatrix(mWorld);
-
-		m_setStyleElement[i]->draw(wstrText,rcDest,rcNewDest2,mapStyleDrawData[i].color.getColor());
+		m_setStyleElement[i]->draw(wstrText,mapStyleDrawData[i].rc,mapStyleDrawData[i].color.getColor());
 	}
 }
 
@@ -382,11 +383,11 @@ void StyleText::XMLParse(const TiXmlElement& element)
 	}
 }
 
-void StyleElement::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleElement::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 }
 
-void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
@@ -395,7 +396,7 @@ void StyleText::draw(const std::wstring& wstrText,const CRect<float>& rc, const 
 	GetTextRender().drawText(wstrText,-1,rc,uFormat,color);
 }
 
-void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
@@ -409,7 +410,7 @@ void StyleUBB::draw(const std::wstring& wstrText,const CRect<float>& rc, const C
 	GetRenderSystem().SetTextureAlphaOP(1,TBOP_DISABLE);
 }
 
-void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
@@ -422,13 +423,13 @@ void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc, cons
 	switch(m_nSpriteLayoutType)
 	{
 	case SPRITE_LAYOUT_WRAP:
-		UIGraph::DrawSprite(rc,rc2,m_nTexture,color);
+		UIGraph::DrawSprite(rc,rc,m_nTexture,color);
 		break;
 	case SPRITE_LAYOUT_SIMPLE:
-		UIGraph::DrawSprite(m_rcBorder,rc2,m_nTexture,color);
+		UIGraph::DrawSprite(m_rcBorder,rc,m_nTexture,color);
 		break;
 	case SPRITE_LAYOUT_3X3GRID:
-		UIGraph::DrawSprite3x3Grid(m_rcBorder,m_rcCenter,rc,rc2, m_nTexture,color);
+		UIGraph::DrawSprite3x3Grid(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
 		break;
 	case SPRITE_LAYOUT_3X3GRID_WRAP:
 		UIGraph::DrawSprite3x3GridWrap(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
@@ -442,7 +443,7 @@ void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc, cons
 	}
 }
 
-void StyleBorder::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleBorder::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
@@ -455,7 +456,7 @@ void StyleBorder::draw(const std::wstring& wstrText,const CRect<float>& rc, cons
 	GetRenderSystem().SetTextureAlphaOP(0,TBOP_MODULATE);
 }
 
-void StyleSquare::draw(const std::wstring& wstrText,const CRect<float>& rc, const CRect<float>& rc2,const Color32& color)const
+void StyleSquare::draw(const std::wstring& wstrText,const CRect<float>& rc,const Color32& color)const
 {
 	if(color.a==0)
 	{
