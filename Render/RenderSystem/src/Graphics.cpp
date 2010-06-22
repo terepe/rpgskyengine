@@ -404,62 +404,6 @@ void CGraphics::DrawTex(const CRect<float>& rcSrc, float destX, float destY, int
 	DrawTex(rcSrc, rcDest, nTexID, color);
 }
 
-void CGraphics::DrawTexWrap(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
-{
-	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
-	if (pTex)
-	{
-		float fTileWidth = rcSrc.getWidth();
-		float fTileHeight = rcSrc.getHeight();
-		int nWidth	= rcDest.getWidth()/fTileWidth;
-		int nHeight	= rcDest.getHeight()/fTileHeight;
-
-		int nTileCount = int(nWidth) * int(nHeight);
-		int nVertexCount = nTileCount*4;
-		int nIndexCount = nTileCount*6;
-
-		float u0 = (rcSrc.left+0.5f)	/ (float)pTex->GetWidth();
-		float v0 = (rcSrc.top+0.5f)		/ (float)pTex->GetHeight();
-		float u1 = (rcSrc.right+0.5f)	/ (float)pTex->GetWidth();
-		float v1 = (rcSrc.bottom+0.5f)	/ (float)pTex->GetHeight();
-		// VB
-		VERTEX_XYZW_DIF_TEX* vb = new VERTEX_XYZW_DIF_TEX[nVertexCount];
-		for (int y = 0; y < nHeight; y++)
-		{
-			for (int x = 0; x < nWidth; x++)
-			{
-				VERTEX_XYZW_DIF_TEX v[ 4 ] =
-				{
-					Vec4D(rcDest.left+fTileWidth*x,		rcDest.top+fTileHeight*y,		0.5f, 1.0f), color, Vec2D(u0, v0),
-					Vec4D(rcDest.left+fTileWidth*(x+1),	rcDest.top+fTileHeight*y,		0.5f, 1.0f), color, Vec2D(u1, v0),
-					Vec4D(rcDest.left+fTileWidth*(x+1),	rcDest.top+fTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u1, v1),
-					Vec4D(rcDest.left+fTileWidth*x,		rcDest.top+fTileHeight*(y+1),	0.5f, 1.0f), color, Vec2D(u0, v1),
-				};
-				memcpy(&vb[ (y * nWidth + x)*4 ], v, sizeof(VERTEX_XYZW_DIF_TEX)*4);
-			}
-		}
-		// IB
-		WORD* ib = new WORD[nIndexCount];
-		for (int i = 0; i < nTileCount; i++)
-		{
-			ib[i*6]= i*4;
-			ib[i*6+1]= i*4+1;
-			ib[i*6+2]= i*4+2;
-			ib[i*6+3]= i*4;
-			ib[i*6+4]= i*4+2;
-			ib[i*6+5]= i*4+3;
-		}
-
-		CRenderSystem& R = GetRenderSystem();
-		R.SetTexture(0, nTexID);
-		R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
-		R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, nVertexCount, nTileCount*2, ib, vb, sizeof(VERTEX_XYZW_DIF_TEX));
-		// É¾³ý
-		delete[] vb;
-		delete[] ib;
-	}
-}
-
 void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
@@ -554,54 +498,8 @@ void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCen
 	}
 }
 
-void CGraphics::Draw3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
-{
-	CRect<float> rcCenterDest(
-		rcDest.left + (rcCenterSrc.left - rcSrc.left),
-		rcDest.top + (rcCenterSrc.top - rcSrc.top),
-		rcDest.right + (rcCenterSrc.right - rcSrc.right),
-		rcDest.bottom + (rcCenterSrc.bottom - rcSrc.bottom));
-
-	float SrcX[4] =
-	{
-		rcSrc.left,
-		rcCenterSrc.left,
-		rcCenterSrc.right,
-		rcSrc.right,
-	};
-	float SrcY[4] =
-	{
-		rcSrc.top,
-		rcCenterSrc.top,
-		rcCenterSrc.bottom,
-		rcSrc.bottom,
-	};
-	float DestX[4] =
-	{
-		rcDest.left,
-		rcCenterDest.left,
-		rcCenterDest.right,
-		rcDest.right,
-	};
-	float DestY[4] =
-	{
-		rcDest.top,
-		rcCenterDest.top,
-		rcCenterDest.bottom,
-		rcDest.bottom,
-	};
-	for (int y = 0; y < 3; y++)
-	{
-		for (int x = 0; x < 3; x++)
-		{
-			CRect<float> rcGridSrc(SrcX[0+x],SrcY[0+y],SrcX[1+x],SrcY[1+y]);
-			CRect<float> rcGridDest(DestX[0+x],DestY[0+y],DestX[1+x],DestY[1+y]);
-			DrawTexWrap(rcGridSrc, rcGridDest, nTexID, color);
-		}
-	}
-}
-///////////////////////////////////////////////////////////////////////////
-//3D Graph
+//////////////////////////////////////////////////////////////////////////
+// 3D Graph
 //////////////////////////////////////////////////////////////////////////
 void CGraphics::DrawLine3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
 {

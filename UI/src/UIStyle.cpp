@@ -344,7 +344,7 @@ void StyleSprite::XMLParse(const TiXmlElement& element)
 		m_rcBorder.bottom	+= m_rcBorder.top;
 		if (element.Attribute("center_rect"))
 		{
-			m_nSpriteLayoutType = SPRITE_LAYOUT_3X3GRID;//SPRITE_LAYOUT_3X3GRID_WRAP
+			m_nSpriteLayoutType = SPRITE_LAYOUT_3X3GRID;
 			const char* strCenterRect = element.Attribute("center_rect");
 			m_rcCenter.strToRect(strCenterRect);
 			m_rcCenter.left		+= m_rcBorder.left;
@@ -430,9 +430,6 @@ void StyleSprite::draw(const std::wstring& wstrText,const CRect<float>& rc,const
 		break;
 	case SPRITE_LAYOUT_3X3GRID:
 		UIGraph::DrawSprite3x3Grid(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
-		break;
-	case SPRITE_LAYOUT_3X3GRID_WRAP:
-		UIGraph::DrawSprite3x3GridWrap(m_rcBorder,m_rcCenter,rc,m_nTexture,color);
 		break;
 	default:
 		break;

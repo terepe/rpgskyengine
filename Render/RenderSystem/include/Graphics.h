@@ -64,13 +64,8 @@ public:
 	void DrawTex	(const CRect<float>& rcDest, int nTexID, Color32 color);
 	void DrawTex	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 	void DrawTex	(const CRect<float>& rcSrc, float destX, float destY, int nTexID, Color32 color);
-
-	//
-	void DrawTexWrap(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 	//
 	void Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
-	//
-	void Draw3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 
 	// 2DÏß
 	void Line2DBegin();
