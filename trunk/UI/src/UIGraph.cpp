@@ -99,13 +99,6 @@ void UIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& r
 	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest,TextureID, color);
 }
 
-void UIGraph::DrawSprite3x3GridWrap(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)
-{
-	if(color.a == 0)
-		return;
-	GetGraphics().Draw3x3GridWrap(rcSrc, rcCenterSrc, rcDest, TextureID, color);
-}
-
 void UIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, UINT TextureID, Color32 color)
 {
 	if(color.a == 0)
