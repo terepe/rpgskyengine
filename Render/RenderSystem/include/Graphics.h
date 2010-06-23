@@ -37,10 +37,10 @@ public:
 	void Begin		(BGMODE mode, uint32 nSize);
 	//
 	void Color	(Color32 c);
-	void TexCoord2fv(const float *v);
+	void TexCoord2fv(const Vec2D& v);
 	void TexCoord2f	(const float u, const float v);
-	void Vertex2fv	(const float *v);
-	void Vertex3fv	(const float *v);
+	void Vertex2fv	(const Vec3D& v);
+	void Vertex3fv	(const Vec3D& v);
 	//
 	void End();
 

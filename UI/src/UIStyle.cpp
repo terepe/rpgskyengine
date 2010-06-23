@@ -119,7 +119,7 @@ void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std:
 	R.setProjectionMatrix(mProjection);
 	//////////////////////////////////////////////////////////////////////////
 	Matrix mRotate;
-	mRotate.rotate(Vec3D(vRotate.x,vRotate.y,vRotate.z));
+	mRotate.rotate(vRotate);
 	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left,rc.top,0))*mRotate;
 	GetRenderSystem().setWorldMatrix(mWorld);
 	//////////////////////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 	{
 		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 		{
-			setRotate[i].set(0.0f,0.0f,0.0f,0.0f);
+			setRotate[i].set(0.0f,0.0f,0.0f);
 		}
 		const TiXmlElement *pElement = xml.FirstChildElement("rotate");
 		if (pElement)
@@ -299,14 +299,12 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 			const char* pszText = pElement->GetText();
 			if(pszText)
 			{
-				CRect<float> rc;
-				rc.strToRect(pszText);
-				rc.x=rc.x/180.0f*PI;
-				rc.y=rc.y/180.0f*PI;
-				rc.z=rc.z/180.0f*PI;
+				Vec3D v;
+				v.setByString(pszText);
+				v*=PI/180.0f;
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
-					setRotate[i] = rc;
+					setRotate[i] = v;
 				}
 			}
 			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
@@ -314,10 +312,8 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					setRotate[i].strToRect(pszText);
-					setRotate[i].x=setRotate[i].x/180.0f*PI;
-					setRotate[i].y=setRotate[i].y/180.0f*PI;
-					setRotate[i].z=setRotate[i].z/180.0f*PI;
+					setRotate[i].setByString(pszText);
+					setRotate[i]*=PI/180.0f;
 				}
 			}
 		}
@@ -415,7 +411,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 			if(pszText)
 			{
 				CRect<float> rc;
-				rc.strToRect(pszText);
+				rc.setByString(pszText);
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
 					setOffset[i] = rc;
@@ -426,7 +422,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					setOffset[i].strToRect(pszText);
+					setOffset[i].setByString(pszText);
 				}
 			}
 		}
@@ -444,7 +440,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 			if(pszText)
 			{
 				CRect<float> rc;
-				rc.strToRect(pszText);
+				rc.setByString(pszText);
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
 					setScale[i] = rc;
@@ -455,7 +451,7 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 				pszText =  pElement->Attribute(szControlState[i]);
 				if (pszText)
 				{
-					setScale[i].strToRect(pszText);
+					setScale[i].setByString(pszText);
 				}
 			}
 		}
@@ -477,14 +473,14 @@ void StyleSprite::XMLParse(const TiXmlElement& element)
 	if (element.Attribute("rect"))
 	{
 		const char* strRect = element.Attribute("rect");
-		m_rcBorder.strToRect(strRect);
+		m_rcBorder.setByString(strRect);
 		m_rcBorder.right	+= m_rcBorder.left;
 		m_rcBorder.bottom	+= m_rcBorder.top;
 		if (element.Attribute("center_rect"))
 		{
 			m_nSpriteLayoutType = SPRITE_LAYOUT_3X3GRID;
 			const char* strCenterRect = element.Attribute("center_rect");
-			m_rcCenter.strToRect(strCenterRect);
+			m_rcCenter.setByString(strCenterRect);
 			m_rcCenter.left		+= m_rcBorder.left;
 			m_rcCenter.top		+= m_rcBorder.top;
 			m_rcCenter.right	+= m_rcCenter.left;
