@@ -110,12 +110,17 @@ public:
 	void Refresh();
 	void add(const std::vector<StyleElement*>& setStyleElement);
 
+	virtual void XMLParse(const TiXmlElement& xml);
+
 	void blend(const CRect<float>& rc, UINT iState, float fElapsedTime, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	void draw(const std::wstring& wstrText, std::map<int,StyleDrawData>& mapStyleDrawData)const;
 	const StyleElement* getFontStyleElement()const;
 
 	std::vector<StyleElement*>	m_setStyleElement;
 	StyleElement*				m_pFontStyleElement;
+
+	float			setBlendRate[CONTROL_STATE_MAX];
+	CRect<float>	setRotate[CONTROL_STATE_MAX];
 };
 
 class CUIStyle
@@ -135,6 +140,7 @@ public:
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapStyleDrawData;
 	Matrix			mWorld;
+	CRect<float>	vRotate;
 };
 
 class CUIStyleMgr

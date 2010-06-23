@@ -71,8 +71,14 @@ m_nVisible(0)
 
 void CUIStyle::Blend(const CRect<float>& rc, UINT iState, float fElapsedTime)
 {
-	m_nVisible = interpolate(1.0f - powf(0.8, 30 * fElapsedTime), m_nVisible, CONTROL_STATE_HIDDEN==iState?0:255);
+	float fRate = 1.0f - powf(0.8f, 30 * fElapsedTime);
+
+	m_nVisible = interpolate(fRate, m_nVisible, CONTROL_STATE_HIDDEN==iState?0:255);
 	const CUIStyleData& styleData = getStyleData();
+
+	fRate = 1.0f - powf(styleData.setBlendRate[iState], 30 * fElapsedTime);
+	vRotate		= interpolate(fRate, vRotate, styleData.setRotate[iState]);
+
 	styleData.blend(rc,iState,fElapsedTime,m_mapStyleDrawData);
 }
 
@@ -99,7 +105,8 @@ void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std:
 
 
 	CRenderSystem& R = GetRenderSystem();
-	R.SetDepthBufferFunc(false,false);
+	//R.SetDepthBufferFunc(false,false);
+	R.SetDepthBufferFunc(true,true);
 	//////////////////////////////////////////////////////////////////////////
 	CRect<int> rcViewport;
 	R.getViewport(rcViewport);
@@ -108,12 +115,12 @@ void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std:
 	mView.unit();
 	R.setViewMatrix(mView);
 	Matrix mProjection;
-	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
+	mProjection.MatrixPerspectiveFovLH(PI/2,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
 	R.setProjectionMatrix(mProjection);
 	//////////////////////////////////////////////////////////////////////////
-	//Matrix mRotate;
-	//mRotate.rotate(Vec3D(0,GetGlobalTimer().GetTime()*2,0));
-	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left,rc.top,0));//*mRotate;
+	Matrix mRotate;
+	mRotate.rotate(Vec3D(vRotate.x,vRotate.y,vRotate.z));
+	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left,rc.top,0))*mRotate;
 	GetRenderSystem().setWorldMatrix(mWorld);
 	//////////////////////////////////////////////////////////////////////////
 
@@ -187,6 +194,136 @@ void CUIStyleData::add(const std::vector<StyleElement*>& setStyleElement)
 	m_setStyleElement.insert(m_setStyleElement.end(), setStyleElement.begin(), setStyleElement.end()); 
 }
 
+void CUIStyleData::XMLParse(const TiXmlElement& xml)
+{
+	const TiXmlElement* pElement = xml.FirstChildElement();
+	while (pElement)
+	{
+		StyleElement* pNewStyleElement = NULL;
+		if (pElement->ValueStr() == "texture")
+		{
+			pNewStyleElement = new StyleSprite;
+		}
+		else if (pElement->ValueStr() == "border")
+		{
+			pNewStyleElement = new StyleBorder;
+		}
+		else if (pElement->ValueStr() == "square")
+		{
+			pNewStyleElement = new StyleSquare;
+		}
+		else if (pElement->ValueStr() == "font")
+		{
+			pNewStyleElement = new StyleText;
+			m_pFontStyleElement = pNewStyleElement;
+		}
+		else if (pElement->ValueStr() == "ubb")
+		{
+			pNewStyleElement = new StyleUBB;
+			m_pFontStyleElement = pNewStyleElement;
+		}
+		else
+		{
+			pNewStyleElement = new StyleBorder;
+		}
+		pNewStyleElement->XMLParse(*pElement);
+		m_setStyleElement.push_back(pNewStyleElement);
+		pElement = pElement->NextSiblingElement();
+	}
+	//
+	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setBlendRate[i]=0.8f;
+		}
+		const TiXmlElement *pElement = xml.FirstChildElement("blend");
+		if (pElement)
+		{
+			const char* pszText = pElement->GetText();
+			if(pszText)
+			{
+				float fBlend = (float)atof(pszText);
+				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+				{
+					setBlendRate[i] = fBlend;
+				}
+			}
+			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+			{
+				pszText =  pElement->Attribute(szControlState[i]);
+				if (pszText)
+				{
+					setBlendRate[i] = (float)atof(pszText);
+				}
+			}
+		}
+	}
+	//
+	//{
+	//	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	//	{
+	//		setOffset[i].set(0.0f,0.0f,0.0f,0.0f);
+	//	}
+	//	const TiXmlElement *pElement = xml.FirstChildElement("offset");
+	//	if (pElement)
+	//	{
+	//		const char* pszText = pElement->GetText();
+	//		if(pszText)
+	//		{
+	//			CRect<float> rc;
+	//			rc.strToRect(pszText);
+	//			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	//			{
+	//				setOffset[i] = rc;
+	//			}
+	//		}
+	//		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	//		{
+	//			pszText =  pElement->Attribute(szControlState[i]);
+	//			if (pszText)
+	//			{
+	//				setOffset[i].strToRect(pszText);
+	//			}
+	//		}
+	//	}
+	//}
+	// 
+	{
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			setRotate[i].set(0.0f,0.0f,0.0f,0.0f);
+		}
+		const TiXmlElement *pElement = xml.FirstChildElement("rotate");
+		if (pElement)
+		{
+			const char* pszText = pElement->GetText();
+			if(pszText)
+			{
+				CRect<float> rc;
+				rc.strToRect(pszText);
+				rc.x=rc.x/180.0f*PI;
+				rc.y=rc.y/180.0f*PI;
+				rc.z=rc.z/180.0f*PI;
+				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+				{
+					setRotate[i] = rc;
+				}
+			}
+			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+			{
+				pszText =  pElement->Attribute(szControlState[i]);
+				if (pszText)
+				{
+					setRotate[i].strToRect(pszText);
+					setRotate[i].x=setRotate[i].x/180.0f*PI;
+					setRotate[i].y=setRotate[i].y/180.0f*PI;
+					setRotate[i].z=setRotate[i].z/180.0f*PI;
+				}
+			}
+		}
+	}
+}
+
 const StyleElement* CUIStyleData::getFontStyleElement()const
 {
 	return m_pFontStyleElement;
@@ -249,9 +386,10 @@ void StyleElement::XMLParse(const TiXmlElement& element)
 			const char* pszText = pElement->GetText();
 			if(pszText)
 			{
+				float fBlend = (float)atof(pszText);
 				for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 				{
-					setBlendRate[i] = (float)atof(pszText);
+					setBlendRate[i] = fBlend;
 				}
 			}
 			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
@@ -493,13 +631,13 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 		return false;
 	}
 	//获得根元素，即root。
-	TiXmlElement *pRootElement = myDocument.RootElement();
+	const TiXmlElement *pRootElement = myDocument.RootElement();
 	if (pRootElement==NULL)
 	{
 		return false;
 	}
 	//获得第一个Style节点。
-	TiXmlElement *pStyleElement = pRootElement->FirstChildElement("element");
+	const TiXmlElement *pStyleElement = pRootElement->FirstChildElement("element");
 	while (pStyleElement)
 	{
 		// Style name
@@ -510,42 +648,7 @@ bool CUIStyleMgr::Create(const std::string& strFilename)
 			for (size_t i=0; i<setTokenizer.size(); ++i)
 			{
 				CUIStyleData& styleData = m_mapStyleData[setTokenizer[i]];//.add(StyleData);
-				{
-					const TiXmlElement* pElement = pStyleElement->FirstChildElement();
-					while (pElement)
-					{
-						StyleElement* pNewStyleElement = NULL;
-						if (pElement->ValueStr() == "texture")
-						{
-							pNewStyleElement = new StyleSprite;
-						}
-						else if (pElement->ValueStr() == "border")
-						{
-							pNewStyleElement = new StyleBorder;
-						}
-						else if (pElement->ValueStr() == "square")
-						{
-							pNewStyleElement = new StyleSquare;
-						}
-						else if (pElement->ValueStr() == "font")
-						{
-							pNewStyleElement = new StyleText;
-							styleData.m_pFontStyleElement = pNewStyleElement;
-						}
-						else if (pElement->ValueStr() == "ubb")
-						{
-							pNewStyleElement = new StyleUBB;
-							styleData.m_pFontStyleElement = pNewStyleElement;
-						}
-						else
-						{
-							pNewStyleElement = new StyleBorder;
-						}
-						pNewStyleElement->XMLParse(*pElement);
-						styleData.m_setStyleElement.push_back(pNewStyleElement);
-						pElement = pElement->NextSiblingElement();
-					}
-				}
+				styleData.XMLParse(*pStyleElement);
 			}
 		}
 		// 查找下一个

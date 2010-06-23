@@ -339,7 +339,7 @@ void CTextRender::OnFrameMove()
 		}
 		if(m_pTextTexture==NULL)
 		{
-			m_pTextTexture = GetRenderSystem().GetTextureMgr().CreateTexture(m_nTextTexWidth, m_nTextTexHeight);
+			m_pTextTexture = GetRenderSystem().GetTextureMgr().CreateTexture(m_nTextTexWidth, m_nTextTexHeight,1);
 				//GetRenderSystem().GetTextureMgr().CreateDynamicTexture(m_nTextTexWidth, m_nTextTexHeight);
 		}
 		if (m_pTextTexture)
