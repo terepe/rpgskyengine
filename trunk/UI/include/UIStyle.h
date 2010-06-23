@@ -120,7 +120,7 @@ public:
 	StyleElement*				m_pFontStyleElement;
 
 	float			setBlendRate[CONTROL_STATE_MAX];
-	CRect<float>	setRotate[CONTROL_STATE_MAX];
+	Vec3D			setRotate[CONTROL_STATE_MAX];
 };
 
 class CUIStyle
@@ -139,8 +139,8 @@ public:
 	int m_nVisible;
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapStyleDrawData;
-	Matrix			mWorld;
-	CRect<float>	vRotate;
+	Matrix	mWorld;
+	Vec3D	vRotate;
 };
 
 class CUIStyleMgr

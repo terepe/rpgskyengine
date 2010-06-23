@@ -78,9 +78,9 @@ void CGraphics::Color(Color32 c)
 	m_TempVertex.c = c;
 }
 
-void CGraphics::TexCoord2fv(const float *v)
+void CGraphics::TexCoord2fv(const Vec2D& v)
 {
-	m_TempVertex.t = *(Vec2D*)v;
+	m_TempVertex.t = v;
 }
 
 void CGraphics::TexCoord2f(const float u, const float v)
@@ -89,9 +89,9 @@ void CGraphics::TexCoord2f(const float u, const float v)
 	m_TempVertex.t.y = v;
 }
 
-void CGraphics::Vertex2fv(const float *v)
+void CGraphics::Vertex2fv(const Vec3D& v)
 {
-	m_TempVertex.p = *(Vec3D*)v;
+	m_TempVertex.p = v;
 	m_pVertex[m_nCount] = m_TempVertex;
 	m_nCount++;
 	if (m_nCount>=10000)
@@ -100,9 +100,9 @@ void CGraphics::Vertex2fv(const float *v)
 	}
 }
 
-void CGraphics::Vertex3fv(const float *v)
+void CGraphics::Vertex3fv(const Vec3D& v)
 {
-	m_TempVertex.p = *(Vec3D*)v;
+	m_TempVertex.p = v;
 	m_pVertex[m_nCount] = m_TempVertex;
 	m_nCount++;
 }
