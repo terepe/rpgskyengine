@@ -422,7 +422,7 @@ void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCen
 		}
 		if(rcCenterDest.top>rcCenterDest.bottom)
 		{
-			rcCenterDest.top==(rcDest.top+rcDest.bottom)*0.5f;
+			rcCenterDest.top=(rcDest.top+rcDest.bottom)*0.5f;
 			rcCenterDest.bottom=(rcDest.top+rcDest.bottom)*0.5f;
 		}
 		VERTEX_XYZW_DIF_TEX vertex[4*4];
@@ -687,7 +687,7 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 		}
 		if(rcCenterDest.top>rcCenterDest.bottom)
 		{
-			rcCenterDest.top==(rcDest.top+rcDest.bottom)*0.5f;
+			rcCenterDest.top=(rcDest.top+rcDest.bottom)*0.5f;
 			rcCenterDest.bottom=(rcDest.top+rcDest.bottom)*0.5f;
 		}
 		VERTEX_XYZ_DIF_TEX vertex[4*4];

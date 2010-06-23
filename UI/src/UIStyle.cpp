@@ -165,6 +165,14 @@ CRect<float>& CUIStyle::getTextRect()
 
 CUIStyleData::CUIStyleData():m_pFontStyleElement(NULL)
 {
+	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	{
+		setBlendRate[i]=0.8f;
+	}
+	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	{
+		setRotate[i].set(0.0f,0.0f,0.0f);
+	}
 }
 
 CUIStyleData::~CUIStyleData()
@@ -232,10 +240,6 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 	}
 	//
 	{
-		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
-		{
-			setBlendRate[i]=0.8f;
-		}
 		const TiXmlElement *pElement = xml.FirstChildElement("blend");
 		if (pElement)
 		{
@@ -289,10 +293,6 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 	//}
 	// 
 	{
-		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
-		{
-			setRotate[i].set(0.0f,0.0f,0.0f);
-		}
 		const TiXmlElement *pElement = xml.FirstChildElement("rotate");
 		if (pElement)
 		{
