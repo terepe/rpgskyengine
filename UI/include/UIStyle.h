@@ -120,6 +120,7 @@ public:
 	StyleElement*				m_pFontStyleElement;
 
 	float			setBlendRate[CONTROL_STATE_MAX];
+	Vec3D			setTranslation[CONTROL_STATE_MAX];
 	Vec3D			setRotate[CONTROL_STATE_MAX];
 };
 
@@ -140,6 +141,7 @@ public:
 	std::string	m_strName;
 	std::map<int,StyleDrawData> m_mapStyleDrawData;
 	Matrix	mWorld;
+	Vec3D	vTranslation;
 	Vec3D	vRotate;
 };
 

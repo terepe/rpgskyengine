@@ -77,7 +77,8 @@ void CUIStyle::Blend(const CRect<float>& rc, UINT iState, float fElapsedTime)
 	const CUIStyleData& styleData = getStyleData();
 
 	fRate = 1.0f - powf(styleData.setBlendRate[iState], 30 * fElapsedTime);
-	vRotate		= interpolate(fRate, vRotate, styleData.setRotate[iState]);
+	vRotate			= interpolate(fRate, vRotate, styleData.setRotate[iState]);
+	vTranslation	= interpolate(fRate, vTranslation, styleData.setTranslation[iState]);
 
 	styleData.blend(rc,iState,fElapsedTime,m_mapStyleDrawData);
 }
@@ -105,8 +106,8 @@ void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std:
 
 
 	CRenderSystem& R = GetRenderSystem();
-	//R.SetDepthBufferFunc(false,false);
-	R.SetDepthBufferFunc(true,true);
+	R.SetDepthBufferFunc(false,false);
+	//R.SetDepthBufferFunc(true,true);
 	//////////////////////////////////////////////////////////////////////////
 	CRect<int> rcViewport;
 	R.getViewport(rcViewport);
@@ -115,12 +116,14 @@ void CUIStyle::draw(const Matrix& mTransform, const CRect<float>& rc, const std:
 	mView.unit();
 	R.setViewMatrix(mView);
 	Matrix mProjection;
-	mProjection.MatrixPerspectiveFovLH(PI/2,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
+	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
 	R.setProjectionMatrix(mProjection);
 	//////////////////////////////////////////////////////////////////////////
 	Matrix mRotate;
 	mRotate.rotate(vRotate);
-	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left,rc.top,0))*mRotate;
+	Matrix mTrans;
+	mTrans.translation(vTranslation);
+	mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left+0.5f*rc.getWidth(),rc.top+0.5f*rc.getHeight(),0))*mTrans*mRotate*Matrix::newTranslation(Vec3D(-0.5f*rc.getWidth(),-0.5f*rc.getHeight(),0));
 	GetRenderSystem().setWorldMatrix(mWorld);
 	//////////////////////////////////////////////////////////////////////////
 
@@ -168,6 +171,10 @@ CUIStyleData::CUIStyleData():m_pFontStyleElement(NULL)
 	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 	{
 		setBlendRate[i]=0.8f;
+	}
+	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+	{
+		setTranslation[i].set(0.0f,0.0f,0.0f);
 	}
 	for (size_t i=0;i< CONTROL_STATE_MAX;++i)
 	{
@@ -291,7 +298,31 @@ void CUIStyleData::XMLParse(const TiXmlElement& xml)
 	//		}
 	//	}
 	//}
-	// 
+	//
+	{
+	const TiXmlElement *pElement = xml.FirstChildElement("translation");
+	if (pElement)
+	{
+		const char* pszText = pElement->GetText();
+		if(pszText)
+		{
+			Vec3D v;
+			v.setByString(pszText);
+			for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+			{
+				setTranslation[i] = v;
+			}
+		}
+		for (size_t i=0;i< CONTROL_STATE_MAX;++i)
+		{
+			pszText =  pElement->Attribute(szControlState[i]);
+			if (pszText)
+			{
+				setTranslation[i].setByString(pszText);
+			}
+		}
+	}
+}
 	{
 		const TiXmlElement *pElement = xml.FirstChildElement("rotate");
 		if (pElement)
