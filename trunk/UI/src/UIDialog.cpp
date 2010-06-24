@@ -184,9 +184,32 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 
 	// If the dialog is minimized, skip rendering
 	// its controls.
+	Matrix& mNewTransform = m_Style.mWorld*Matrix::newTranslation(Vec3D(0,m_nCaptionHeight,0));
 	if(!m_bMinimized)
 	{
-		CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
+		//CUICombo::OnFrameRender(mTransform,fTime,fElapsedTime);
+		m_Style.draw(mTransform,m_rcRelativeBox, L"",GetState(), fElapsedTime);
+
+		// render controls
+		for(uint32 i=0; i < m_Controls.size(); i++)
+		{
+			CUIControl* pControl = m_Controls[i];   
+
+			if (pControl->IsFocus())
+			{
+				continue;
+			}
+			pControl->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
+		}
+		for(uint32 i=0; i < m_Controls.size(); i++)
+		{
+			CUIControl* pControl = m_Controls[i];   
+
+			if (pControl->IsFocus())
+			{
+				pControl->OnFrameRender(m_Style.mWorld,fTime, fElapsedTime);
+			}
+		}
 	}
 
 	if(m_bCaption)
@@ -197,7 +220,9 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 		{
 			wstrOutput += L"Minimized";
 		}
-		m_StyleCaption.draw(mTransform,m_rcCaption, wstrOutput,GetState(), fElapsedTime);
+		CRect<int>	rcCaption=m_rcRelativeBox;
+		rcCaption.bottom=rcCaption.top+m_nCaptionHeight;
+		m_StyleCaption.draw(mTransform,rcCaption, wstrOutput,GetState(), fElapsedTime);
 	}
 
 	//
@@ -206,7 +231,7 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 		CUIDialog* pDialog = m_Dialogs[i];
 		if (pDialog->IsVisible()||pDialog->isStyleVisible())
 		{
-			pDialog->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
+			pDialog->OnFrameRender(mNewTransform,fTime,fElapsedTime);
 		}
 	}
 	return;
