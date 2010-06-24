@@ -35,8 +35,7 @@ CUIControl::CUIControl()
 	m_rcOffset.set(0,0,0,0);
 	m_rcScale.set(0,0,0,0);
 
-	ZeroMemory(&m_rcBoundingBox, sizeof(m_rcBoundingBox));
-	ZeroMemory(&m_rcOffset, sizeof(m_rcOffset));
+	m_rcBoundingBox.set(0,0,0,0);
 }
 
 CUIControl::~CUIControl()

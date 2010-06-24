@@ -118,12 +118,14 @@ void CUIDialog::XMLParse(const TiXmlElement* pElement)
 				SetCaptionText(strText);
 			}
 
-			int nHeight = 18;
 			if (pCaptionElement->Attribute("height"))
 			{
-				pCaptionElement->Attribute("height",&nHeight);
+				pCaptionElement->Attribute("height",&m_nCaptionHeight);
 			}
-			SetCaptionHeight(nHeight);
+			else
+			{
+				m_nCaptionHeight=18;
+			}
 			SetCaptionEnable(true);
 		}
 	}
@@ -214,15 +216,9 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 
 	if(m_bCaption)
 	{
-		std::wstring wstrOutput;
-		wstrOutput = m_wstrCaption;
-		if(m_bMinimized)
-		{
-			wstrOutput += L"Minimized";
-		}
 		CRect<int>	rcCaption=m_rcRelativeBox;
 		rcCaption.bottom=rcCaption.top+m_nCaptionHeight;
-		m_StyleCaption.draw(mTransform,rcCaption, wstrOutput,GetState(), fElapsedTime);
+		m_StyleCaption.draw(mTransform,rcCaption, m_wstrCaption,GetState(), fElapsedTime);
 	}
 
 	//
