@@ -54,6 +54,7 @@ void UISetHWND(HWND hWnd);
 
 #define EVENT_SETFOCUS						0x0901
 #define EVENT_KILLFOCUS						0x0902
+#define EVENT_VISIBLE						0x0903
 // Enums for pre-defined control types
 
 enum UI_CONTROL_TYPE 
@@ -132,7 +133,7 @@ public:
 
 	virtual void SetEnabled(bool bEnabled) { m_bEnabled = bEnabled; }
 	virtual bool GetEnabled() { return m_bEnabled; }
-	virtual void SetVisible(bool bVisible) { m_bVisible = bVisible; }
+	virtual void SetVisible(bool bVisible) { m_bVisible = bVisible; SendEvent(EVENT_VISIBLE);}
 	virtual bool IsVisible() { return m_bVisible; }
 	virtual bool isStyleVisible(){return m_Style.isVisible();}
 
