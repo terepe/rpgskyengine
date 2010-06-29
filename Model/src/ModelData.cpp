@@ -129,7 +129,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 	if (pColorAnimsNode)
 	{
 		m_ColorAnims.resize(nColorAnimCount);
-		for (uint32 i = 0; i < m_ColorAnims.size(); ++i)
+		for (size_t i=0;i<m_ColorAnims.size();++i)
 		{
 			CNodeData* pNode = pColorAnimsNode->firstChild(i);
 			if (pNode)
@@ -331,7 +331,7 @@ bool CModelData::SaveFile(const std::string& strFilename)
 	CNodeData* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
 	if (pColorAnimsNode)
 	{
-		for (uint32 i = 0; i < m_ColorAnims.size(); i++)
+		for (size_t i=0;i<m_ColorAnims.size();++i)
 		{
 			CNodeData* pNode = pColorAnimsNode->AddNode(i);
 			if (pNode)

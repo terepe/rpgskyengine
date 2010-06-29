@@ -101,7 +101,7 @@ void CUIListBox::RemoveItemByData(void *pData)
 
 void CUIListBox::RemoveAllItems()
 {
-	for(uint32 i = 0; i < m_Items.size(); ++i)
+	for(size_t i= 0;i<m_Items.size();++i)
 	{
 		UIListBoxItem *pItem = m_Items[i];
 		delete pItem;

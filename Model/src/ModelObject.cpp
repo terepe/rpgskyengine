@@ -69,7 +69,7 @@ void CModelObject::create()
 
 		// Particles
 		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());
-		for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
+		for (size_t i=0;i<m_setParticleGroup.size();++i)
 		{
 			m_setParticleGroup[i].Init(&m_pModelData->m_setParticleEmitter[i]);
 		}
@@ -266,7 +266,7 @@ void CModelObject::Animate(const std::string& strAnimName)
 	//}
 
 	// Á£×Ó¶¯»­
-	for (uint32 i = 0; i < m_setParticleGroup.size(); i++)
+	for (size_t i=0;i<m_setParticleGroup.size();++i)
 	{
 		// random time distribution for teh win ..?
 		int pt = globalTime;//a.timeStart + (t + (int)(tmax*m_pModelData->m_setParticleEmitter[i].tofs)) % tmax;
