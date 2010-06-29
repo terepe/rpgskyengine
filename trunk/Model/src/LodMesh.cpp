@@ -291,10 +291,6 @@ void CLodMesh::Init()
 						}
 					}
 				}
-				for (uint32 i=0; i<uVertexCount; i++)
-				{
-					
-				}
 			}
 			m_pShareBuffer->unlock();
 		}
@@ -312,7 +308,7 @@ void CLodMesh::Init()
 				uint16* indices = (uint16*)it->pIB->lock(CHardwareBuffer::HBL_NORMAL);
 				if (indices)
 				{
-					for (uint32 i = 0; i< indexSize; i++)
+					for (size_t i=0;i<indexSize;++i)
 					{
 						indices[i] = it->IndexLookup[ it->Indices[i] ];
 					}

@@ -44,7 +44,7 @@ CUICombo::CUICombo()
 
 CUICombo::~CUICombo()
 {
-	for(uint32 i=0; i < m_AssignControls.size(); i++)
+	for(size_t i=0;i<m_AssignControls.size();++i)
 	{
 		S_DEL(m_AssignControls[i]);
 	}
@@ -338,7 +338,7 @@ void CUICombo::Refresh()
 	s_pControlPressed = NULL;
 	s_pControlMouseOver = NULL;
 
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		pControl->Refresh();
@@ -350,7 +350,7 @@ void CUICombo::Refresh()
 
 void CUICombo::OnFrameMove(double fTime, float fElapsedTime)
 {
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		if (m_Controls[i])
 		{
@@ -377,7 +377,7 @@ void CUICombo::OnFrameRender(const Matrix& mTransform, double fTime, float fElap
 	m_Style.draw(mTransform,m_rcRelativeBox, L"",GetState(), fElapsedTime);
 
 	// render controls
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];   
 
@@ -387,7 +387,7 @@ void CUICombo::OnFrameRender(const Matrix& mTransform, double fTime, float fElap
 		}
 		pControl->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
 	}
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];   
 
@@ -471,7 +471,7 @@ bool CUICombo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				(s_pControlFocus->GetType() != UI_CONTROL_EDITBOX
 				&& s_pControlFocus->GetType() != UI_CONTROL_IMEEDITBOX)))
 			{
-				for(uint32 i=0; i < m_Controls.size(); i++)
+				for(size_t i=0;i<m_Controls.size();++i)
 				{
 					CUIControl* pControl = m_Controls[i];
 					if(pControl->GetHotkey() == wParam)
@@ -524,7 +524,7 @@ bool CUICombo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 CUIControl* CUICombo::GetControlAtPoint(POINT pt)
 {
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		if (pControl->IsFocus())
@@ -585,15 +585,6 @@ void CUICombo::setControlVisible(const std::string& strID, bool bEnabled)
 void CUICombo::SetVisible(bool bVisible)
 {
 	CUIControl::SetVisible(bVisible);
-	//if (false==bVisible)
-	//{
-	//	m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
-	//	for(uint32 i=0; i < m_Controls.size(); i++)
-	//	{
-	//		CUIControl* pControl = m_Controls[i];
-	//		pControl->m_Style.Blend(CONTROL_STATE_HIDDEN, 1.0f, 0.0f);
-	//	}
-	//}
 }
 
 void CUICombo::OnMouseMove(POINT point)
@@ -753,7 +744,7 @@ bool CUICombo::IsFocus()
 		return true;
 	}
 	
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		if (pControl->IsFocus())
@@ -816,7 +807,7 @@ void CUICombo::AddControl(CUIControl* pControl)
 
 CUIControl* CUICombo::GetControl(const std::string& strID)
 {
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		if(m_Controls[i]->GetID() == strID)
 		{
@@ -828,7 +819,7 @@ CUIControl* CUICombo::GetControl(const std::string& strID)
 
 CUIControl* CUICombo::GetControl(const std::string& strID, uint32 nControlType)
 {
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		if(pControl->GetID() == strID && pControl->GetType() == nControlType)
@@ -898,7 +889,7 @@ CUIControl* CUICombo::GetPrevControl(CUIControl* pControl)
 void CUICombo::ClearRadioButtonGroup(uint32 nButtonGroup)
 {
 	// Find all radio buttons with the given group number
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 
@@ -924,7 +915,7 @@ void CUICombo::ScreenToClient(RECT& rc)
 void CUICombo::FocusDefaultControl()
 {
 	// Check for default control in this dialog
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		if(pControl->IsDefault())
@@ -943,7 +934,7 @@ void CUICombo::FocusDefaultControl()
 void CUICombo::OnChildSize(const CRect<int>& rc)
 {
 	// change Controls' size
-	for(uint32 i=0; i < m_Controls.size(); i++)
+	for(size_t i=0;i<m_Controls.size();++i)
 	{
 		CUIControl* pControl = m_Controls[i];
 		if (pControl)

@@ -113,7 +113,7 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 void CSkeleton::calcBonesPoint(const std::vector<Matrix>& setBonesMatrix, std::vector<Vec3D>& setBonesPoint)const
 {
 	setBonesPoint.resize(setBonesMatrix.size());
-	for (uint32 i=0; i < m_Bones.size(); i++)
+	for (size_t i=0;i<m_Bones.size();++i)
 	{
 		Matrix	mInvLocal = m_Bones[i].mInvLocal;
 		mInvLocal.Invert();
@@ -131,7 +131,7 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 
 	if (R.prepareMaterial("Skeleton"))
 	{
-		for (uint32 i=0; i < m_Bones.size(); i++)
+		for(size_t i=0;i<m_Bones.size();++i)
 		{
 			if (m_Bones[i].parent!=255)
 			{
@@ -144,7 +144,7 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 	R.SetBlendFunc(true);
 	R.SetTextureColorOP(0,TBOP_MODULATE);
 	R.SetTextureAlphaOP(0,TBOP_MODULATE);
-	for (uint32 i=0; i < m_Bones.size(); i++)
+	for(size_t i=0;i<m_Bones.size();++i)
 	{
 		if (m_Bones[i].parent!=255)
 		{
@@ -164,7 +164,7 @@ CNodeData* CSkeleton::Save(CNodeData& lump, const char* name)
 	CNodeData* pNode = lump.SetInt(name,m_Bones.size());
 	if (pNode)
 	{
-		for (uint32 i=0; i<m_Bones.size(); ++i)
+		for(size_t i=0;i<m_Bones.size();++i)
 		{
 			CNodeData* pChild = pNode->AddNode(i);
 			if (pChild)
@@ -191,7 +191,7 @@ CNodeData* CSkeleton::Load(CNodeData& lump, const char* name)
 	if (pNode)
 	{
 		m_Bones.resize(nCount);
-		for (uint32 i=0; i<m_Bones.size(); ++i)
+		for(size_t i=0;i<m_Bones.size();++i)
 		{
 			CNodeData* pChild = pNode->firstChild(i);
 			if (pChild)

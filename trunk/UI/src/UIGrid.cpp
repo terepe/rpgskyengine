@@ -86,7 +86,7 @@ void CUIGrid::AddRow(const std::wstring& wstrRow)
 
 int CUIGrid::GetRow(const std::wstring& wstrRow)
 {
-	for (uint32 i=0; i<m_Row.size(); ++i)
+	for (size_t i=0;i<m_Row.size();++i)
 	{
 		if (wstrRow == m_Row[i])
 		{
@@ -99,7 +99,7 @@ int CUIGrid::GetRow(const std::wstring& wstrRow)
 int	CUIGrid::GetLine(const std::wstring& wstrLine)
 {
 	uint32 uCount = GetLineCount();
-	for (uint32 i=0; i<uCount; ++i)
+	for (size_t i=0;i<uCount;++i)
 	{
 		if (wstrLine == m_Cells[i*m_Row.size()].wstrText)
 		{

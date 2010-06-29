@@ -118,7 +118,7 @@ void CUIRollup::RemovePageByData(void *pData)
 
 void CUIRollup::RemoveAllPages()
 {
-	for(uint32 i = 0; i < m_Pages.size(); ++i)
+	for(size_t i=0;i<m_Pages.size();++i)
 	{
 		UIRollupPage *pPage = m_Pages[i];
 		delete pPage;

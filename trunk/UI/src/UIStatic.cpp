@@ -24,7 +24,7 @@ void CUIStatic::SetText(const std::wstring& wstrText)
 	m_wstrText = wstrText;
 }
 
-void CUIStatic::SetText(int32 nValue)
+void CUIStatic::SetText(int nValue)
 {
 	m_wstrText = i2ws(nValue);
-}		
+}

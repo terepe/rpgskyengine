@@ -20,7 +20,7 @@ CUIDialog::~CUIDialog()
 		((CUIDialog*)GetParentDialog())->UnregisterDialog(this);
 	}
 
-	for(uint32 i=0; i < m_Dialogs.size(); i++)
+	for(size_t i=0;i<m_Dialogs.size();++i)
 	{
 		if (m_Dialogs[i]->GetParentDialog() == this)
 		{
@@ -65,7 +65,7 @@ bool CUIDialog::InitDialog()
 	{
 		return false;
 	}
-	for(uint32 i=0; i < m_Dialogs.size(); i++)
+	for(size_t i=0;i<m_Dialogs.size();++i)
 	{
 		if (m_Dialogs[i]->InitDialog()==false)
 		{
@@ -163,7 +163,7 @@ void CUIDialog::OnFrameMove(double fTime, float fElapsedTime)
 {
 	if(!m_bMinimized&&m_bVisible)
 	{
-		for(uint32 i=0; i < m_Controls.size(); i++)
+		for(size_t i=0;i<m_Controls.size();++i)
 		{
 			if (m_Controls[i])
 			{
@@ -171,7 +171,7 @@ void CUIDialog::OnFrameMove(double fTime, float fElapsedTime)
 			}
 		}
 		//
-		for (uint32 i=0; i<m_Dialogs.size(); ++i)
+		for(size_t i=0;i<m_Dialogs.size();++i)
 		{
 			m_Dialogs[i]->OnFrameMove(fTime, fElapsedTime);
 		}
@@ -193,7 +193,7 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 		m_Style.draw(mTransform,m_rcRelativeBox, L"",GetState(), fElapsedTime);
 
 		// render controls
-		for(uint32 i=0; i < m_Controls.size(); i++)
+		for(size_t i=0;i<m_Controls.size();++i)
 		{
 			CUIControl* pControl = m_Controls[i];   
 
@@ -203,7 +203,7 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 			}
 			pControl->OnFrameRender(mNewTransform,fTime,fElapsedTime);
 		}
-		for(uint32 i=0; i < m_Controls.size(); i++)
+		for(size_t i=0;i<m_Controls.size();++i)
 		{
 			CUIControl* pControl = m_Controls[i];   
 
@@ -221,7 +221,7 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 	}
 
 	//
-	for (uint32 i=0; i<m_Dialogs.size(); ++i)
+	for(size_t i=0;i<m_Dialogs.size();++i)
 	{
 		CUIDialog* pDialog = m_Dialogs[i];
 		if (pDialog->IsVisible()||pDialog->isStyleVisible())
@@ -301,7 +301,7 @@ bool CUIDialog::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				(s_pControlFocus->GetType() != UI_CONTROL_EDITBOX
 				&& s_pControlFocus->GetType() != UI_CONTROL_IMEEDITBOX)))
 			{
-				for(uint32 i=0; i < m_Controls.size(); i++)
+				for(size_t i=0;i<m_Controls.size();++i)
 				{
 					CUIControl* pControl = m_Controls[i];
 					if(pControl->GetHotkey() == wParam)
@@ -638,7 +638,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 		// set the focused control to NULL. This state, where no control
 		// has focus, allows the camera to work.
 		int nLastDialogIndex = -1;//m_Dialogs.IndexOf(pLastDialog);
-		for (uint32 i=0; i<m_Dialogs.size(); ++i)
+		for(size_t i=0;i<m_Dialogs.size();++i)
 		{
 			if(pLastDialog == m_Dialogs[i])
 			{
@@ -647,7 +647,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 			}
 		}
 		int nDialogIndex = -1;//m_Dialogs.IndexOf(pDialog);
-		for (uint32 i=0; i<m_Dialogs.size(); ++i)
+		for(size_t i=0;i<m_Dialogs.size();++i)
 		{
 			if(pDialog == m_Dialogs[i])
 			{
@@ -684,7 +684,7 @@ bool CUIDialog::OnCycleFocus(bool bForward)
 
 void CUIDialog::OnChildSize(const CRect<int>& rc)
 {
-	for (uint32 i=0; i<m_Dialogs.size(); ++i)
+	for(size_t i=0;i<m_Dialogs.size();++i)
 	{
 		m_Dialogs[i]->OnSize(rc);
 	}
@@ -701,7 +701,7 @@ void CUIDialog::OnSize(const CRect<int>& rc)
 
 bool CUIDialog::RegisterDialog(CUIDialog *pDialog)
 {
-	for(uint32 i = 0; i < m_Dialogs.size(); ++i)
+	for(size_t i=0;i<m_Dialogs.size();++i)
 	{
 		if(m_Dialogs[i] == pDialog)
 		{
