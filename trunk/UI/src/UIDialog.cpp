@@ -201,7 +201,7 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 			{
 				continue;
 			}
-			pControl->OnFrameRender(m_Style.mWorld,fTime,fElapsedTime);
+			pControl->OnFrameRender(mNewTransform,fTime,fElapsedTime);
 		}
 		for(uint32 i=0; i < m_Controls.size(); i++)
 		{
@@ -209,16 +209,15 @@ void CUIDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fEla
 
 			if (pControl->IsFocus())
 			{
-				pControl->OnFrameRender(m_Style.mWorld,fTime, fElapsedTime);
+				pControl->OnFrameRender(mNewTransform,fTime, fElapsedTime);
 			}
 		}
 	}
 
 	if(m_bCaption)
 	{
-		CRect<int>	rcCaption=m_rcRelativeBox;
-		rcCaption.bottom=rcCaption.top+m_nCaptionHeight;
-		m_StyleCaption.draw(mTransform,rcCaption, m_wstrCaption,GetState(), fElapsedTime);
+		CRect<int>	rcCaption(0,0,m_rcBoundingBox.getWidth(),m_nCaptionHeight);
+		m_StyleCaption.draw(m_Style.mWorld,rcCaption, m_wstrCaption,GetState(), fElapsedTime);
 	}
 
 	//

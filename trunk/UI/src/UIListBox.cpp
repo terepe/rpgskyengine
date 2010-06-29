@@ -603,11 +603,8 @@ void CUIListBox::OnFrameRender(const Matrix& mTransform, double fTime, float fEl
 	// Render the text
 	if(m_Items.size() > 0)
 	{
-		// Find out the height of a single line of text
-		CRect<int> rc = m_rcText;
-		// Update the line height formation
 		m_nTextHeight = UIGraph::GetFontSize()*1.5f;
-
+		CRect<int> rc(0,0,m_rcText.getWidth(),m_nTextHeight);
 		rc.bottom = rc.top+m_nTextHeight;
 
 		static bool bSBInit;
@@ -621,10 +618,9 @@ void CUIListBox::OnFrameRender(const Matrix& mTransform, double fTime, float fEl
 			bSBInit = true;
 		}
 
-		rc.right = m_rcText.right;
 		for(int i = m_ScrollBar.GetTrackPos(); i < (int)m_Items.size(); ++i)
 		{
-			if(rc.bottom > m_rcText.bottom)
+			if(rc.bottom > m_rcText.getHeight())
 				break;
 
 			UIListBoxItem *pItem = m_Items[i];
@@ -649,17 +645,17 @@ void CUIListBox::OnFrameRender(const Matrix& mTransform, double fTime, float fEl
 
 				if(bSelectedStyle)
 				{
-					m_StyleSelected.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
+					m_StyleSelected.draw(m_Style.mWorld,rc, pItem->wstrText,iState, fElapsedTime);
 				}
 				else
 				{
 					if (i%2==0)
 					{
-						m_StyleItem1.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
+						m_StyleItem1.draw(m_Style.mWorld,rc, pItem->wstrText,iState, fElapsedTime);
 					}
 					else
 					{
-						m_StyleItem2.draw(mTransform,rc, pItem->wstrText,iState, fElapsedTime);
+						m_StyleItem2.draw(m_Style.mWorld,rc, pItem->wstrText,iState, fElapsedTime);
 					}
 				}
 				rc.offset(0, m_nTextHeight);
