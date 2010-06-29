@@ -180,10 +180,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\ScriptStringAnalysis.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\UIButton.h"
 				>
 			</File>
@@ -289,10 +285,6 @@
 			>
 			<File
 				RelativePath=".\src\IME.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ScriptStringAnalysis.cpp"
 				>
 			</File>
 			<File
