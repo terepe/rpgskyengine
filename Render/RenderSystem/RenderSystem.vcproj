@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="RenderSystem"
 	ProjectGUID="{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}"
 	RootNamespace="RenderSystem"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
