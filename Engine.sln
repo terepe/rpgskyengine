@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "UI\UI.vcproj", "{F604143C-01E8-4DDC-A06D-C577F2CA7052}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Freetype", "Render\Freetype\freetype.vcproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem", "Render\RenderSystem\RenderSystem.vcproj", "{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}"
@@ -23,18 +21,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Debug|Win32.Build.0 = Debug|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release Multithreaded|Win32.Build.0 = Release|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release Singlethreaded|Win32.Build.0 = Release|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release|Win32.ActiveCfg = Release|Win32
-		{F604143C-01E8-4DDC-A06D-C577F2CA7052}.Release|Win32.Build.0 = Release|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug Multithreaded|Win32.ActiveCfg = Debug Multithreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug Multithreaded|Win32.Build.0 = Debug Multithreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug Singlethreaded|Win32.ActiveCfg = Debug Singlethreaded|Win32
