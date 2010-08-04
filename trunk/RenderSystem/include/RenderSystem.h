@@ -15,11 +15,11 @@
 #if defined(_DEBUG)
 #pragma comment(lib, "commond.lib")
 #pragma comment(lib, "mathd.lib")
-#pragma comment(lib, "freetyped.lib")
+//#pragma comment(lib, "freetyped.lib")
 #else
 #pragma comment(lib, "common.lib")
 #pragma comment(lib, "math.lib")
-#pragma comment(lib, "freetype.lib")
+//#pragma comment(lib, "freetype.lib")
 #endif
 
 
