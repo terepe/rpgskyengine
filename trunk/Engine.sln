@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem", "Render\RenderSystem\RenderSystem.vcproj", "{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sound", "Media\Sound\Sound.vcproj", "{F1194937-24A6-425B-BDFA-E4B47B6CA385}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Model", "Model\Model.vcproj", "{9C205B68-B380-418C-8422-50BEE76017CF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineCore", "EngineCore\EngineCore.vcproj", "{207B1BF3-3503-4C5F-A8B7-7378C61CA0A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem", "RenderSystem\RenderSystem.vcproj", "{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,18 +19,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug|Win32.Build.0 = Debug|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Multithreaded|Win32.Build.0 = Release|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Singlethreaded|Win32.Build.0 = Release|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release|Win32.ActiveCfg = Release|Win32
-		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release|Win32.Build.0 = Release|Win32
 		{F1194937-24A6-425B-BDFA-E4B47B6CA385}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
 		{F1194937-24A6-425B-BDFA-E4B47B6CA385}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
 		{F1194937-24A6-425B-BDFA-E4B47B6CA385}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
@@ -67,6 +55,18 @@ Global
 		{207B1BF3-3503-4C5F-A8B7-7378C61CA0A1}.Release Singlethreaded|Win32.Build.0 = Release|Win32
 		{207B1BF3-3503-4C5F-A8B7-7378C61CA0A1}.Release|Win32.ActiveCfg = Release|Win32
 		{207B1BF3-3503-4C5F-A8B7-7378C61CA0A1}.Release|Win32.Build.0 = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Debug|Win32.Build.0 = Debug|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Multithreaded|Win32.Build.0 = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release Singlethreaded|Win32.Build.0 = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release|Win32.ActiveCfg = Release|Win32
+		{67E8BE2E-F68E-473E-AECB-1A6DA07E7AB6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
