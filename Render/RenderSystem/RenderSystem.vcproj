@@ -313,30 +313,6 @@
 		<Filter
 			Name="TextRender"
 			>
-			<File
-				RelativePath=".\src\ScriptStringAnalysis.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\ScriptStringAnalysis.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\TextRender.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TextRender.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\UBB.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\include\UBB.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
