@@ -1,7 +1,7 @@
 #include "Skeleton.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
-#include "TextRender.h"
+//#include "TextRender.h"
 
 uint8 CSkeleton::getIDByName(const std::string& strName)
 {
@@ -148,9 +148,9 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 	{
 		if (m_Bones[i].parent!=255)
 		{
-			Pos2D posScreen;
-			R.world2Screen(setBonesPoint[i],posScreen);
-			GetTextRender().drawText(s2ws(m_Bones[i].strName),posScreen.x,posScreen.y);
+			//Pos2D posScreen;
+			//R.world2Screen(setBonesPoint[i],posScreen);
+			//GetTextRender().drawText(s2ws(m_Bones[i].strName),posScreen.x,posScreen.y);
 		}
 	}
 }
