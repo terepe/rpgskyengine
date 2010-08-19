@@ -587,20 +587,18 @@ void CGraphics::DrawRect3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
 	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZ_DIF));
 }
 
-void CGraphics::FillRect3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
+void CGraphics::FillRect3D(float x0, float y0, float x1, float y1, Color32 color)
 {
-	VERTEX_XYZ_DIF v[4];
-	v[0].p = v0;
-	v[1].p = Vec3D(v1.x, v0.y, v0.z);
-	v[2].p = Vec3D(v0.x, v1.y, v1.z);
-	v[3].p = v1;
-	v[0].c = color;
-	v[1].c = color;
-	v[2].c = color;
-	v[3].c = color;
+	VERTEX_XYZ_DIF v[4]=
+	{
+		Vec3D(x0, y0, 0.0f), color,
+		Vec3D(x1, y0, 0.0f), color,
+		Vec3D(x1, y1, 0.0f), color,
+		Vec3D(x0, y1, 0.0f), color,
+	};
 	CRenderSystem& R = GetRenderSystem();
 	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_STRIP, 2, v, sizeof(VERTEX_XYZ_DIF));
+	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF));
 }
 
 void CGraphics::drawBBox(const BBox& bbox, Color32 color)
