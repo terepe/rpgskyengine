@@ -86,7 +86,8 @@ public:
 	void fillQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
 	// 3Dæÿ–Œ
 	void DrawRect3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
-	void FillRect3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
+	void FillRect3D	(float x0, float y0, float x1, float y1, Color32 color);
+	//void FillRect3D	(const CRect<float>& rcDest, Color32 color);
 	// 3DÕ÷‘≤–Œ
 	void DrawCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	void FillCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
