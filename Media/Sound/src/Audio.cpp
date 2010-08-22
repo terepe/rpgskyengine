@@ -1,4 +1,4 @@
-#include "Sound.h"
+#include "Audio.h"
 #if defined(_DEBUG)
 #pragma comment(lib, "fmodvc.lib")
 #else
@@ -16,13 +16,13 @@ FSOUND_DSPUNIT      *OscUnit;
 static signed short *OscBuffer;
 static int           OscBlock;
 
-CFmodSound& GetSound()
+CAudio& GetSound()
 {
-	static CFmodSound g_Sound;
+	static CAudio g_Sound;
 	return g_Sound;
 }
 
-CFmodSound::CFmodSound(void)
+CAudio::CAudio(void)
 {
 	FSOUND_Init(44100, 32, 0);
 	m_Music.mod = NULL;
@@ -40,7 +40,7 @@ CFmodSound::CFmodSound(void)
 	InitDSP();
 }
 
-CFmodSound::~CFmodSound(void)
+CAudio::~CAudio(void)
 {
 	CloseDSP();
 
@@ -56,7 +56,7 @@ CFmodSound::~CFmodSound(void)
 	FSOUND_Close();
 }
 
-void CFmodSound::FrameMove(float fElapsedTime)
+void CAudio::FrameMove(float fElapsedTime)
 {
 	m_Music.nNowVolume += int((m_Music.nVolume*1000 - m_Music.nNowVolume)*fElapsedTime);
 	// 
@@ -70,7 +70,7 @@ void CFmodSound::FrameMove(float fElapsedTime)
 	}
 }
 
-bool CFmodSound::LoadMusic(const std::string& strFilename)
+bool CAudio::LoadMusic(const char* szFilename)
 {
 	// 先清空
 	if (m_Music.mod)
@@ -80,12 +80,12 @@ bool CFmodSound::LoadMusic(const std::string& strFilename)
 		m_Music.stream = NULL;
 	}
 	// 用MOD载入
-	m_Music.mod=FMUSIC_LoadSong(strFilename.c_str());
+	m_Music.mod=FMUSIC_LoadSong(szFilename);
 
 	// 不能载入就用流载入
 	if (!m_Music.mod)
 	{
-		m_Music.stream = FSOUND_Stream_Open(strFilename.c_str(), FSOUND_NORMAL | FSOUND_2D | FSOUND_MPEGACCURATE | FSOUND_NONBLOCKING, 0, 0);
+		m_Music.stream = FSOUND_Stream_Open(szFilename, FSOUND_NORMAL | FSOUND_2D | FSOUND_MPEGACCURATE | FSOUND_NONBLOCKING, 0, 0);
 	}
 	if (!m_Music.mod && !m_Music.stream)
 	{
@@ -95,12 +95,12 @@ bool CFmodSound::LoadMusic(const std::string& strFilename)
 	return true;
 }
 
-void CFmodSound::SetMusicVolume(int nVolume)
+void CAudio::SetMusicVolume(int nVolume)
 {
 	m_Music.nVolume = nVolume*m_nBGMVolume/255;
 }
 
-void CFmodSound::PlayMusic(bool bLoop, int nVolume)
+void CAudio::PlayMusic(bool bLoop, int nVolume)
 {
 	SetMusicVolume(nVolume);
 	if (m_Music.mod)
@@ -122,19 +122,19 @@ void CFmodSound::PlayMusic(bool bLoop, int nVolume)
 	}
 }
 
-void CFmodSound::PlayBGM(const std::string& strFilename, bool bLoop, int nVolume)
+void CAudio::PlayBGM(const char* szFilename, bool bLoop, int nVolume)
 {
-	if (LoadMusic(strFilename))
+	if (LoadMusic(szFilename))
 	{
 		PlayMusic(bLoop, nVolume);
 	}
 }
 
-void CFmodSound::PlayMusicEx(const std::string& strFilename, bool bLoop, int nVolume)
+void CAudio::PlayMusicEx(const char* szFilename, bool bLoop, int nVolume)
 {
 }
 
-void CFmodSound::ReplayMusic()
+void CAudio::ReplayMusic()
 {
 	if (m_Music.mod)
 	{
@@ -146,7 +146,7 @@ void CFmodSound::ReplayMusic()
 	}
 }
 
-void CFmodSound::PausedMusic()
+void CAudio::PausedMusic()
 {
 	if (m_Music.mod)
 	{
@@ -158,7 +158,7 @@ void CFmodSound::PausedMusic()
 	}
 }
 
-void CFmodSound::StopMusic()
+void CAudio::StopMusic()
 {
 	if (m_Music.mod)
 	{
@@ -170,7 +170,7 @@ void CFmodSound::StopMusic()
 	}
 }
 
-signed short* CFmodSound::GetOscBuffer()
+signed short* CAudio::GetOscBuffer()
 {
 	if (OscBuffer)
 	{
@@ -193,12 +193,12 @@ signed short* CFmodSound::GetOscBuffer()
 	return 0;
 }
 
-int CFmodSound::GetBufferLength()
+int CAudio::GetBufferLength()
 {
 	return FSOUND_DSP_GetBufferLength();
 }
 
-void CFmodSound::InitDSP()
+void CAudio::InitDSP()
 {
 	int bytesperoutputsample;
 	int mixertype = FSOUND_GetMixer();
@@ -245,7 +245,7 @@ void CFmodSound::InitDSP()
 	DSP_Ready = true;
 }
 
-void CFmodSound::CloseDSP()
+void CAudio::CloseDSP()
 {
 	DSP_Ready = false;
 
@@ -292,7 +292,7 @@ void CFmodSound::CloseDSP()
 	//LowPass_Close();
 }
 
-void * F_CALLBACKAPI CFmodSound::OscCallback(void *originalbuffer, void *newbuffer, int length, void *userdata)
+void * F_CALLBACKAPI CAudio::OscCallback(void *originalbuffer, void *newbuffer, int length, void *userdata)
 {
 	int             mixertype = FSOUND_GetMixer();
 	int             count;
@@ -345,32 +345,32 @@ void * F_CALLBACKAPI CFmodSound::OscCallback(void *originalbuffer, void *newbuff
 }
 
 
-void CFmodSound::LoadSound(const std::string& strFilename)
+void CAudio::LoadSound(const char* szFilename)
 {
 
 }
-void CFmodSound::playSound(const std::string& strFilename)
+void CAudio::playSound(const char* szFilename)
 {
 
 }
-void CFmodSound::Play3DSound(const std::string& strFilename, float x, float y, float fRadius, int nVolume)
+void CAudio::Play3DSound(const char* szFilename, float x, float y, float fRadius, int nVolume)
 {
 
 }
-void CFmodSound::PlaySoundEx(const std::string& strFilename, bool bLoop, int nVolume)
+void CAudio::PlaySoundEx(const char* szFilename, bool bLoop, int nVolume)
 {
 
 }
 
-void CFmodSound::ReplaySound(int nChannel)
+void CAudio::ReplaySound(int nChannel)
 {
 
 }
-void CFmodSound::PausedSound(int nChannel)
+void CAudio::PausedSound(int nChannel)
 {
 
 }
-void CFmodSound::StopSound(int nChannel)
+void CAudio::StopSound(int nChannel)
 {
 
 }

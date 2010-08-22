@@ -176,7 +176,7 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath=".\Include\Sound.h"
+				RelativePath=".\Include\Audio.h"
 				>
 			</File>
 		</Filter>
@@ -185,7 +185,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\src\Sound.cpp"
+				RelativePath=".\src\Audio.cpp"
 				>
 			</File>
 		</Filter>

@@ -52,32 +52,32 @@ typedef struct
 	unsigned int    cdtrack_length;
 } MUSIC;
 
-class CFmodSound
+class CAudio
 {
 public:
-	CFmodSound(void);
-	~CFmodSound(void);
+	CAudio(void);
+	~CAudio(void);
 
 	// FrameMove
 	void FrameMove(float fElapsedTime);
 
 	// “Ù¿÷
-	bool LoadMusic(const std::string& strFilename);	// ‘ÿ»Î“Ù¿÷
+	bool LoadMusic(const char* szFilename);	// ‘ÿ»Î“Ù¿÷
 	void SetMusicVolume(int nVolume = 255);	// …Ë÷√µ±«∞µƒ“Ù¿÷“Ù¡ø
 	void PlayMusic(bool bLoop = true, int nVolume = 255);	// ≤•∑≈“Ù¿÷
-	void PlayMusicEx(const std::string& strFilename, bool bLoop = true, int nVolume = 255);
+	void PlayMusicEx(const char* szFilename, bool bLoop = true, int nVolume = 255);
 
 	void ReplayMusic();	// ÷ÿ≤•“Ù¿÷
 	void PausedMusic();	// ‘›Õ£“Ù¿÷
 	void StopMusic();	// Õ£÷π“Ù¿÷
 
-	void PlayBGM(const std::string& strFilename, bool bLoop = true, int nVolume = 255);	// ≤•∑≈±≥æ∞“Ù¿÷
+	void PlayBGM(const char* szFilename, bool bLoop = true, int nVolume = 255);	// ≤•∑≈±≥æ∞“Ù¿÷
 
 	// “Ù–ß
-	void LoadSound(const std::string& strFilename);	// ‘ÿ»Î“Ù¿÷
-	void playSound(const std::string& strFilename);	// ≤•∑≈“Ù¿÷
-	void Play3DSound(const std::string& strFilename, float x, float y, float fRadius=-1, int nVolume = 255);
-	void PlaySoundEx(const std::string& strFilename, bool bLoop = true, int nVolume = 255);
+	void LoadSound(const char* szFilename);	// ‘ÿ»Î“Ù¿÷
+	void playSound(const char* szFilename);	// ≤•∑≈“Ù¿÷
+	void Play3DSound(const char* szFilename, float x, float y, float fRadius=-1, int nVolume = 255);
+	void PlaySoundEx(const char* szFilename, bool bLoop = true, int nVolume = 255);
 
 	void ReplaySound(int nChannel = -1);	// ÷ÿ≤•“Ù¿÷
 	void PausedSound(int nChannel = -1);	// ‘›Õ£“Ù¿÷
@@ -113,4 +113,4 @@ private:
 	// “Ù–ß“Ù¡ø
 	int		m_nSeVolume;
 };
-CFmodSound& GetSound();
+CAudio& GetAudio();
