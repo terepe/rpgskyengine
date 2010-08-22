@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Sound"
+	Name="Audio"
 	ProjectGUID="{F1194937-24A6-425B-BDFA-E4B47B6CA385}"
 	TargetFrameworkVersion="131072"
 	>
