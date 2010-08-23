@@ -50,8 +50,8 @@
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/Sound.pch"
 				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>

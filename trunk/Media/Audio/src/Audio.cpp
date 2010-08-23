@@ -16,10 +16,10 @@ FSOUND_DSPUNIT      *OscUnit;
 static signed short *OscBuffer;
 static int           OscBlock;
 
-CAudio& GetSound()
+CAudio& GetAudio()
 {
-	static CAudio g_Sound;
-	return g_Sound;
+	static CAudio g_Audio;
+	return g_Audio;
 }
 
 CAudio::CAudio(void)
@@ -52,6 +52,7 @@ CAudio::~CAudio(void)
 	if (m_Music.stream)
 	{
 		FSOUND_Stream_Close(m_Music.stream);
+		m_Music.stream = NULL;
 	}
 	FSOUND_Close();
 }
@@ -77,6 +78,10 @@ bool CAudio::LoadMusic(const char* szFilename)
 	{
 		FMUSIC_FreeSong(m_Music.mod);
 		m_Music.mod = NULL;
+	}
+	if (m_Music.stream)
+	{
+		FSOUND_Stream_Close(m_Music.stream);
 		m_Music.stream = NULL;
 	}
 	// ”√MOD‘ÿ»Î
