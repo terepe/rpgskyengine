@@ -356,7 +356,16 @@ void CAudio::LoadSound(const char* szFilename)
 }
 void CAudio::playSound(const char* szFilename)
 {
-
+	FSOUND_STREAM  *stream = FSOUND_Stream_Open(szFilename, FSOUND_NORMAL | FSOUND_2D | FSOUND_MPEGACCURATE | FSOUND_NONBLOCKING, 0, 0);
+	if (FSOUND_Stream_GetOpenState(stream) != 0)
+	{
+		while (FSOUND_Stream_GetOpenState(stream) == -2)
+		{
+			Sleep(100);
+		}
+	}
+	FSOUND_Stream_SetMode(stream, FSOUND_LOOP_OFF);
+	m_Music.channel = FSOUND_Stream_Play(FSOUND_FREE, stream);
 }
 void CAudio::Play3DSound(const char* szFilename, float x, float y, float fRadius, int nVolume)
 {
