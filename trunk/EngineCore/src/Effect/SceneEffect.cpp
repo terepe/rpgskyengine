@@ -36,9 +36,11 @@ void CSceneEffect::clearTextures()
 	S_DEL(m_pBackTexture);
 	// new 
 	{ // Fixed the scene texture release.
-		CRenderSystem& R = GetRenderSystem();
-		CShader* pShader = R.GetShaderMgr().getSharedShader();
-		pShader->setTexture("g_texScene",(CTexture*)NULL);
+		CShader* pShader = GetRenderSystem().GetShaderMgr().getSharedShader();
+		if (pShader)
+		{
+			pShader->setTexture("g_texScene",(CTexture*)NULL);
+		}
 	}
 
 	S_DEL(m_pSceneCopyTexture);
@@ -46,11 +48,15 @@ void CSceneEffect::clearTextures()
 
 void CSceneEffect::Reset(const CRect<int>& rc)
 {
-	clearTextures();
-
-	m_Rect = rc;
 	int nWidth = rc.getWidth();
 	int nHeight = rc.getHeight();
+	if (nWidth<=0||nHeight<=0)
+	{
+		return;
+	}
+	m_Rect = rc;
+
+	clearTextures();
 
 	m_nWidth = nWidth;
 	m_nHeight= nHeight;
