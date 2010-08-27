@@ -1,6 +1,5 @@
-#include "Sound.h"
-
 #include "MapSound.h"
+#include "Audio.h"
 //#include "SceneMgr.h"
 //#include "Hero.h"
 
@@ -119,8 +118,8 @@ BOOL CMapSound::Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile
 	m_nVolume = nVolume;
 	m_strFilename = pszFile;
 	m_dwInterval = dwInterval; 
-//	GetSound().playSound(m_szFile);
-//	m_pSound = (CSound*)GetSound().Play3DSound(m_szFile, 0, 0,
+//	GetAudio().playSound(m_szFile);
+//	m_pSound = (CSound*)GetAudio().Play3DSound(m_szFile, 0, 0,
 //											m_nRange, -1, m_nVolume);
 	return true;
 }
@@ -143,11 +142,11 @@ void CMapSound::Play()
 //		DXClose2DSound(m_pSound);
 	if(m_dwInterval == 0)
 		//m_pSound = (CSound*)
-		GetSound().Play3DSound(m_strFilename, m_vPos.x, m_vPos.z,
+		GetAudio().Play3DSound(m_strFilename.c_str(), m_vPos.x, m_vPos.z,
 											m_nRange, m_nVolume);
 	else
 		//m_pSound = (CSound*)
-		GetSound().Play3DSound(m_strFilename, m_vPos.x, m_vPos.z,
+		GetAudio().Play3DSound(m_strFilename.c_str(), m_vPos.x, m_vPos.z,
 											m_nRange, m_nVolume);
 }
 //-------------------------------------------------------------
