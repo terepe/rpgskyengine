@@ -157,7 +157,7 @@ void C3DMapEffect::LoadDataObj(FILE* fp)
 	this->Create( m_vPos, m_szIndex);
 	//if(!m_bSimpleObj)
 	//	m_objEffect.EverPlay();
-	m_bDelSelf	= true;
+	m_bDelSelf = true;
 	m_bDie = false;
 	m_bSave = true;
 }
