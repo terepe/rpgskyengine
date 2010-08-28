@@ -43,8 +43,11 @@ public:
 	bool	isCellIn(const Pos2D& posCell)const;
 	bool	isPointIn(const Pos2D& posCell)const;
 	//
-	uint8	GetCellTileID(const Pos2D& posCell, int nLayer = 0)const;
-	void	SetCellTileID(const Pos2D& posCell, uint8 uTileID, int nLayer = 0);
+	TerrainCell* getCell(int x, int y);
+	const TerrainCell* getCell(int x, int y)const;
+	//
+	uint8	GetCellTileID(const Pos2D& posCell, size_t layer = 0)const;
+	void	SetCellTileID(const Pos2D& posCell, uint8 uTileID, size_t layer = 0);
 	//
 	uint32	GetVertexIndex(const Pos2D& posCell)const;
 	int		GetCellXByVertexIndex(uint32 uVertexIndex)const;
@@ -83,14 +86,7 @@ public:
 
 	bool	hasGrass(int nCellX, int nCellY)const;
 
-	std::vector<int8>&		getTiles(size_t layer)	{return m_TileID[layer];}
-	std::vector<Color32>&	getColors()				{return m_Colors;}
-	std::vector<Color32>&	getLightColors()		{return m_LightColors;}
-	std::vector<float>&		getHeights()			{return m_Height;}
-	std::vector<Vec3D>&		getNormals()			{return m_Normals;}
-	std::vector<int8>&		getAttributes()			{return m_Attribute;}
-	std::vector<int8>&		getOthers()				{return m_Other;}
-	std::vector<Vec2D>&		getEquableTexUV()		{return m_EquableTexUV;}
+	std::vector<TerrainCell>&		getCells()	{return m_Cells;}
 protected:
 	float	GetCellXLength(const Pos2D& posCell)const;
 	float	GetCellYLength(const Pos2D& posCell)const;
@@ -112,15 +108,7 @@ protected:
 
 	Vec3D		m_vLightDir;
 
-	std::vector<int8>		m_TileID[2];
-	std::vector<Color32>	m_Colors;
-	std::vector<Color32>	m_LightColors;
-	std::vector<float>		m_Height;
-	std::vector<Vec3D>		m_Normals;
-	std::vector<int8>		m_Attribute;
-	std::vector<int8>		m_Other;
-	std::vector<Vec2D>		m_EquableTexUV;
-	std::vector<bool>		m_Searched;
+	std::vector<TerrainCell>	m_Cells;
 
 	uint16					m_uMuFlgMap;
 	uint32					m_uMuFlgAtt;

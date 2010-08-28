@@ -19,6 +19,19 @@ struct TerrainVertex
 	Vec2D	t1;
 };
 
+struct TerrainCell
+{
+	unsigned char	uTileID[2];
+	Color32			color;
+	Color32			lightColor;
+	float			fHeight;
+	Vec3D			vNormals;
+	unsigned char	uAttribute;
+	unsigned char	uOther;
+	Vec2D			vEquableTexUV;
+	bool			bSearched;
+};
+
 class iTerrainData
 {
 public:
@@ -41,8 +54,8 @@ public:
 	virtual bool isCellIn(const Pos2D& posCell)const=0;
 	virtual bool isPointIn(const Pos2D& posCell)const=0;
 	//
-	virtual uint8	GetCellTileID(const Pos2D& posCell, int nLayer = 0)const=0;
-	virtual void	SetCellTileID(const Pos2D& posCell, uint8 uTileID, int nLayer = 0)=0;
+	virtual uint8	GetCellTileID(const Pos2D& posCell, size_t layer = 0)const=0;
+	virtual void	SetCellTileID(const Pos2D& posCell, uint8 uTileID, size_t layer = 0)=0;
 	//
 	virtual uint32	GetVertexIndex(const Pos2D& posCell)const=0;
 	virtual int		GetCellXByVertexIndex(uint32 uVertexIndex)const=0;
@@ -81,14 +94,8 @@ public:
 
 	virtual bool	hasGrass(int nCellX, int nCellY)const=0;
 
-	virtual std::vector<int8>&		getTiles(size_t layer)=0;
-	virtual std::vector<Color32>&	getColors()=0;
-	virtual std::vector<Color32>&	getLightColors()=0;
-	virtual std::vector<float>&		getHeights()=0;
-	virtual std::vector<Vec3D>&		getNormals()=0;
-	virtual std::vector<int8>&		getAttributes()=0;
-	virtual std::vector<int8>&		getOthers()=0;
-	virtual std::vector<Vec2D>&		getEquableTexUV()=0;
+	virtual std::vector<TerrainCell>& getCells()=0;
+
 protected:
 	virtual float	GetCellXLength(const Pos2D& posCell)const=0;
 	virtual float	GetCellYLength(const Pos2D& posCell)const=0;
