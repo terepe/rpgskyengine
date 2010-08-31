@@ -27,8 +27,6 @@ struct TerrainCell
 	float			fHeight;
 	Vec3D			vNormals;
 	unsigned char	uAttribute;
-	unsigned char	uOther;
-	Vec2D			vEquableTexUV;
 	bool			bSearched;
 };
 
@@ -39,7 +37,7 @@ public:
 	virtual ~iTerrainData(){};
 	//
 	virtual void clear()=0;
-	virtual void Create(size_t width, size_t height, size_t cubeSize)=0;
+	virtual void create(size_t width, size_t height, size_t cubeSize)=0;
 	virtual bool resize(size_t width, size_t height, size_t cubeSize)=0;
 	//
 	virtual int	GetVertexXCount()const=0;
@@ -51,39 +49,36 @@ public:
 	virtual int GetCubeSize()const=0;
 	virtual int GetCellCount()const=0;
 	//
-	virtual bool isCellIn(const Pos2D& posCell)const=0;
-	virtual bool isPointIn(const Pos2D& posCell)const=0;
+	virtual bool isCellIn(int nCellX, int nCellY)const=0;
+	virtual bool isPointIn(int nCellX, int nCellY)const=0;
 	//
-	virtual uint8	GetCellTileID(const Pos2D& posCell, size_t layer = 0)const=0;
-	virtual void	SetCellTileID(const Pos2D& posCell, uint8 uTileID, size_t layer = 0)=0;
+	virtual uint8	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const=0;
+	virtual void	SetCellTileID(int nCellX, int nCellY, uint8 uTileID, size_t layer = 0)=0;
 	//
-	virtual uint32	GetVertexIndex(const Pos2D& posCell)const=0;
+	virtual uint32	GetVertexIndex(int nCellX, int nCellY)const=0;
 	virtual int		GetCellXByVertexIndex(uint32 uVertexIndex)const=0;
 	virtual int		GetCellYByVertexIndex(uint32 uVertexIndex)const=0;
 	virtual Pos2D	GetCellPosByVertexIndex(uint32 uVertexIndex)const=0;
 	//
-	virtual float	getVertexHeight(const Pos2D& posCell)const=0;
-	virtual void	setVertexHeight(const Pos2D& posCell, float fHeight)=0;
+	virtual float	getVertexHeight(int nCellX, int nCellY)const=0;
+	virtual void	setVertexHeight(int nCellX, int nCellY, float fHeight)=0;
 	//
-	virtual Vec3D	getVertexNormal(const Pos2D& posCell)const=0;
+	virtual Vec3D	getVertexNormal(int nCellX, int nCellY)const=0;
 	//
-	virtual uint8	getCellAttribute(const Pos2D& posCell)const=0;
-	virtual void	setCellAttribute(const Pos2D& posCell, uint8 uAtt)=0;
+	virtual uint8	getCellAttribute(int nCellX, int nCellY)const=0;
+	virtual void	setCellAttribute(int nCellX, int nCellY, uint8 uAtt)=0;
 
-	virtual bool	isCellSearched(const Pos2D& posCell)const=0;
-	virtual void	setCellSearched(const Pos2D& posCell, bool bSearched)=0;
+	virtual bool	isCellSearched(int nCellX, int nCellY)const=0;
+	virtual void	setCellSearched(int nCellX, int nCellY, bool bSearched)=0;
 	//
-	virtual Color32	getVertexColor(const Pos2D& posCell)const=0;
-	virtual void	setVertexColor(const Pos2D& posCell, Color32 color)=0;
+	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
+	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
 	//
 	virtual float	GetHeight(const Vec2D& vPos)const=0;
-	virtual void	SetHeight(const Vec2D& vPos, float fHeight)=0;
 	virtual Vec4D	GetColor(const Vec2D& vPos)const=0;
 	//
-	virtual bool	PickCell(const Pos2D& posCell, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
+	virtual bool	PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
 	virtual bool	Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
-	//
-	virtual void	CalcTexUV()=0;
 	//
 	virtual const std::string& getFilename()const=0;
 	//
@@ -95,12 +90,6 @@ public:
 	virtual bool	hasGrass(int nCellX, int nCellY)const=0;
 
 	virtual std::vector<TerrainCell>& getCells()=0;
-
-protected:
-	virtual float	GetCellXLength(const Pos2D& posCell)const=0;
-	virtual float	GetCellYLength(const Pos2D& posCell)const=0;
-	virtual float	GetXLength(int nCellY)const=0;
-	virtual float	GetYLength(int nCellX)const=0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -147,11 +136,6 @@ struct Cube
 			pChildCube[1].createChildCube(size);
 		}
 	}
-
-	Pos2D getMinCellPos()const
-	{
-		return Pos2D((int)bbox.vMin.x,(int)bbox.vMin.z);
-	};
 
 	void getChildCubesByFrustum(const CFrustum& frustum, LIST_CUBES& CubeList)const
 	{
