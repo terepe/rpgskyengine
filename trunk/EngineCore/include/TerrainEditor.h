@@ -16,20 +16,27 @@ struct EditValue
 struct EditTarget
 {
 	int type;
-	Pos2D pos;
+	int x;
+	int y;
+	void set(int _type, int _x, int _y)
+	{
+		type = _type;
+		x = _x;
+		y = _y;
+	}
 	bool operator< (const EditTarget &et) const
 	{
 		if(type!=et.type)
 		{
 			return type<et.type;
 		}
-		if(pos.y!=et.pos.y)
+		if(y!=et.y)
 		{
-			return pos.y<et.pos.y;
+			return y<et.y;
 		}
-		if(pos.x!=et.pos.x)
+		if(x!=et.x)
 		{
-			return pos.x<et.pos.x;
+			return x<et.x;
 		}
 		return false;
 	}

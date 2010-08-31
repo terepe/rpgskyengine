@@ -69,7 +69,7 @@ public:
 	virtual bool create();// ≥ı ºªØ
 protected:
 	//
-	virtual void updateVB(const Pos2D& posBegin, const Pos2D& posEnd);
+	virtual void updateVB(int nBeginX, int nBeginY, int nEndX, int nEndY);
 	virtual void CreateVB();
 	virtual void CreateIB();
 	virtual void CreateGrassVB(size_t uGrassCount);
