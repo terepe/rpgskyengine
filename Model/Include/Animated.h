@@ -13,18 +13,11 @@
 
 // global time for global sequences
 extern int globalTime;
-extern int globalFrame;
 
 enum Interpolations {
 	INTERPOLATION_NONE,
 	INTERPOLATION_LINEAR,
 	INTERPOLATION_HERMITE
-};
-
-struct FrameRange
-{
-	uint32	begin;
-	uint32	end;
 };
 
 /*
@@ -35,16 +28,11 @@ template <class T >
 class Animated
 {
 public:
-	Animated():
-		type(INTERPOLATION_LINEAR),
-		seq(-1),
-		globals(NULL)
+	Animated():type(INTERPOLATION_LINEAR)
 	{
 	}
-	int type, seq;
-	int *globals;
+	int type;
 
-	//std::vector<FrameRange> m_FrameRanges;
 	// keyframes
 	std::vector<uint32> m_KeyTimes;
 	std::vector<T> m_KeyData;
@@ -64,28 +52,15 @@ public:
 	{
 		if (/*type != INTERPOLATION_NONE || */m_KeyData.size()>1)
 		{
-			FrameRange range;
-
 			// obtain a time value and a data range
-			if (seq>-1) {
-				if (globals[seq]==0) 
-					time = 0;
-				else 
-					time = globalTime % globals[seq];
-				range.begin = 0;
-				range.end = uint32(m_KeyData.size()-1);
-			} else {
-				//range = m_FrameRanges[anim];
-				range.begin = 0;
-				range.end = uint32(m_KeyData.size()-1);
-				time %= m_KeyTimes.back(); // I think this might not be necessary?
-			}
+			time %= m_KeyTimes.back(); // I think this might not be necessary?
 
- 			if (range.begin != range.end)
+ 			if (m_KeyData.size()>2)
 			{
 				size_t t1, t2;
 				size_t pos=0;
-				for (size_t i=range.begin; i<range.end; i++) //i<=end??
+				size_t keyEnd=m_KeyTimes.size()-1;
+				for (size_t i=0; i<keyEnd; i++)
 				{
 					if (time >= m_KeyTimes[i] && time < m_KeyTimes[i+1])
 					{
@@ -110,7 +85,7 @@ public:
 			}
 			else
 			{
-				return m_KeyData[range.begin];
+				return m_KeyData[0];
 			}
 		} else {
 			// default value
@@ -127,43 +102,5 @@ public:
 		{
 			m_KeyData[i] = fixfunc(m_KeyData[i]);
 		}
-	}
-
-	void Save(CNodeData& lump)
-	{
-		lump.SetInt("type", type);
-		lump.SetInt("seq", seq);
-		//lump.SetVector("FrameRanges", m_FrameRanges);
-		lump.SetVector("Times", m_KeyTimes);
-		lump.SetVector("Data", m_KeyData);
-	}
-
-	void Load(CNodeData& lump)
-	{
-		lump.GetInt("type", type);
-		lump.GetInt("seq", seq);
-		//lump.getVector("FrameRanges", m_FrameRanges);
-		lump.getVector("Times", m_KeyTimes);
-		lump.getVector("Data", m_KeyData);
-	}
-
-	CNodeData* Save(CNodeData& lump, const char* name)
-	{
-		CNodeData* pNode = lump.AddNode(name);
-		if (pNode)
-		{
-			Save(*pNode);
-		}
-		return pNode;
-	}
-
-	CNodeData* Load(CNodeData& lump, const char* name)
-	{
-		CNodeData* pNode = lump.firstChild(name);
-		if (pNode)
-		{
-			Load(*pNode);
-		}
-		return pNode;
 	}
 };
