@@ -134,9 +134,9 @@ bool CModelData::LoadFile(const std::string& strFilename)
 			CNodeData* pNode = pColorAnimsNode->firstChild(i);
 			if (pNode)
 			{
-				m_ColorAnims[i].color.Load(*pNode, "color");
-				m_ColorAnims[i].specular.Load(*pNode, "specular");
-				m_ColorAnims[i].opacity.Load(*pNode, "opacity");
+			//	m_ColorAnims[i].color.Load(*pNode, "color");
+			//	m_ColorAnims[i].specular.Load(*pNode, "specular");
+			//	m_ColorAnims[i].opacity.Load(*pNode, "opacity");
 			}
 		}
 	}
@@ -336,9 +336,9 @@ bool CModelData::SaveFile(const std::string& strFilename)
 			CNodeData* pNode = pColorAnimsNode->AddNode(i);
 			if (pNode)
 			{
-				m_ColorAnims[i].color.Save(*pNode, "color");
-				m_ColorAnims[i].specular.Save(*pNode, "specular");
-				m_ColorAnims[i].opacity.Save(*pNode, "opacity");
+		//		m_ColorAnims[i].color.Save(*pNode, "color");
+		//		m_ColorAnims[i].specular.Save(*pNode, "specular");
+		//		m_ColorAnims[i].opacity.Save(*pNode, "opacity");
 			}
 		}
 	}
