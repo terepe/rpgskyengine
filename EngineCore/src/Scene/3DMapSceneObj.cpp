@@ -1,14 +1,8 @@
 #include "3DMapSceneObj.h"
 
-bool C3DMapSceneObj::Create(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
+bool C3DMapSceneObj::Create(const char* szFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
-	//if (!IOReadFile::Exists(strFilename))
-	//{
-	//	MessageBoxA(NULL,strFilename.c_str(),"Error!Cannot find!",0);
-	//	return false;
-	//}
-	m_pModelObject = new CModelObject;
-	m_pModelObject->Register(strFilename);
+	CModelObject::Register(szFilename);
 	setPos(vPos);
 	setRotate(vRotate);
 	setScale(vScale);
@@ -18,10 +12,10 @@ bool C3DMapSceneObj::Create(const string& strFilename,const Vec3D& vPos,const Ve
 	return true;
 }
 
-C3DMapSceneObj* C3DMapSceneObj::CreateNew(const string& strFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
+C3DMapSceneObj* C3DMapSceneObj::CreateNew(const char* szFilename,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
 	C3DMapSceneObj* pObject = new C3DMapSceneObj;
-	if(!pObject->Create(strFilename,vPos,vRotate,vScale))
+	if(!pObject->Create(szFilename,vPos,vRotate,vScale))
 	{
 		S_DEL(pObject);
 		return NULL;

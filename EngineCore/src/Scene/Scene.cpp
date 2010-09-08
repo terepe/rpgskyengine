@@ -306,9 +306,7 @@ CMapObj* CScene::add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRota
 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
 	{
 		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
-		std::string strBmdFilename = objectInfo.strFilename;
-
-		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(strBmdFilename,vPos,vRotate,vScale);
+		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(objectInfo.strFilename.c_str(),vPos,vRotate,vScale);
 		pObject->setObjectID(uID);
 		addMapObj(pObject);
 		return pObject;

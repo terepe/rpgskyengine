@@ -148,123 +148,53 @@
 		<Filter
 			Name="Header Files"
 			>
-			<File
-				RelativePath=".\include\2DMapobj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\3DMapEffect.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\3DMapObj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\3DMapSceneObj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\BaseCamera.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Camera.h"
-				>
-			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			>
+		</Filter>
+		<Filter
+			Name="Scene"
+			>
 			<File
 				RelativePath=".\include\InterfaceScene.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\LightMap.h"
+				RelativePath=".\src\Scene\Scene.cpp"
 				>
-			</File>
-			<File
-				RelativePath=".\include\Log.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\MapObj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\MapSound.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\ObjectTree.h"
-				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\include\Scene.h"
 				>
 			</File>
-			<File
-				RelativePath=".\include\SceneEffect.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\SkyBox.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Terrain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TerrainBrush.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TerrainData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TerrainDecal.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TerrainEditor.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Source Files"
-			>
-			<Filter
-				Name="Log"
-				>
-				<File
-					RelativePath=".\src\Log\Log.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Camera"
-				>
-				<File
-					RelativePath=".\src\Camera\BaseCamera.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\Camera\Camera.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Common"
-				>
-			</Filter>
 			<Filter
 				Name="Terrain"
 				>
 				<File
-					RelativePath=".\src\Terrain\LightMap.cpp"
+					RelativePath=".\src\Terrain\Terrain.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\Terrain\Terrain.cpp"
+					RelativePath=".\include\Terrain.h"
 					>
 				</File>
 				<File
@@ -272,7 +202,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\TerrainBrush.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Terrain\TerrainData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\TerrainData.h"
 					>
 				</File>
 				<File
@@ -280,23 +218,51 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\TerrainDecal.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Terrain\TerrainEditor.cpp"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="Effect"
-				>
 				<File
-					RelativePath=".\src\Effect\SceneEffect.cpp"
+					RelativePath=".\include\TerrainEditor.h"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="Scene"
+				Name="SkyBox"
+				>
+				<File
+					RelativePath=".\src\SkyBox.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\SkyBox.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Lightmap"
+				>
+				<File
+					RelativePath=".\src\Terrain\LightMap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\LightMap.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Object"
 				>
 				<File
 					RelativePath=".\src\Scene\2DMapObj.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\2DMapobj.h"
 					>
 				</File>
 				<File
@@ -304,7 +270,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\3DMapEffect.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Scene\3DMapObj.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\3DMapObj.h"
 					>
 				</File>
 				<File
@@ -312,7 +286,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\3DMapSceneObj.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\MapObj.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Scene\MapSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\MapSound.h"
 					>
 				</File>
 				<File
@@ -320,33 +306,55 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\Scene\Scene.cpp"
+					RelativePath=".\include\ObjectTree.h"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath=".\src\SkyBox.cpp"
+		<Filter
+			Name="Camera"
 			>
-		</File>
+			<File
+				RelativePath=".\src\Camera\BaseCamera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\BaseCamera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Camera\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Camera.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Effect"
+			>
+			<File
+				RelativePath=".\src\Effect\SceneEffect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\SceneEffect.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Log"
+			>
+			<File
+				RelativePath=".\src\Log\Log.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Log.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
