@@ -5,7 +5,6 @@
 C3DMapObj::C3DMapObj()
 {
 	m_vScale=Vec3D(1.0f,1.0f,1.0f);
-	m_pModelObject=NULL;
 }
 C3DMapObj::~C3DMapObj()
 {
@@ -34,11 +33,7 @@ Matrix C3DMapObj::getWorldMatrix()const
 
 BBox C3DMapObj::getBBox()const
 {
-	BBox bbox;
-	if (m_pModelObject)
-	{
-		bbox=m_pModelObject->getBBox();
-	}
+	BBox bbox=CModelComplex::getBBox();
 	Matrix mRotate;
 	mRotate.rotate(getRotate());
 
@@ -58,26 +53,20 @@ BBox C3DMapObj::getBBox()const
 
 void C3DMapObj::OnFrameMove(float fElapsedTime)
 {
-	if (m_pModelObject)
+	if (!CModelComplex::isCreated())
 	{
-		if (!m_pModelObject->isCreated())
-		{
-			m_pModelObject->create();
-			//m_ObjectTree.delObject((*it));
-			//m_ObjectTree.addObject((*it));
-		}
-		m_pModelObject->OnFrameMove(fElapsedTime);
-		m_pModelObject->updateEmitters(getWorldMatrix(),fElapsedTime);
+		CModelComplex::create();
+		//m_ObjectTree.delObject((*it));
+		//m_ObjectTree.addObject((*it));
 	}
+	CModelComplex::OnFrameMove(fElapsedTime);
+	CModelComplex::updateEmitters(getWorldMatrix(),fElapsedTime);
 }
 
 void C3DMapObj::render(int flag)const
 {
-	if (m_pModelObject)
-	{
-		GetRenderSystem().setWorldMatrix(getWorldMatrix());
-		m_pModelObject->render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
-	}
+	GetRenderSystem().setWorldMatrix(getWorldMatrix());
+	CModelComplex::render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
 }
 
 void C3DMapObj::renderFocus()const
@@ -93,18 +82,11 @@ void C3DMapObj::renderDebug()const
 
 void C3DMapObj::drawWithoutMaterial()const
 {
-	if (m_pModelObject)
-	{
-		m_pModelObject->drawMesh(MATERIAL_RENDER_NORMAL);
-	}
+	CModelComplex::drawMesh(MATERIAL_RENDER_NORMAL);
 }
 
 bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
 {
-	if (!m_pModelObject)
-	{
-		return false;
-	}
 	if (getBBox().intersect(vRayPos , vRayDir, tmin, tmax))
 	{
 		Matrix mWorld = getWorldMatrix();
@@ -112,7 +94,7 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		Vec3D vNewRayDir = vRayDir;
 		transformRay(vNewRayPos,vNewRayDir,mWorld);
 
-		if (m_pModelObject->getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
+		if (CModelComplex::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 		{
 			return true;
 		}
@@ -122,18 +104,18 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 
 int C3DMapObj::getOrder()
 {
-	if (m_pModelObject&&m_pModelObject->getModelData())
+	if (CModelComplex::getModelData())
 	{
-		return m_pModelObject->getModelData()->GetOrder();
+		return CModelComplex::getModelData()->GetOrder();
 	}
 	return CMapObj::getOrder();
 }
 
 bool C3DMapObj::isSkinMesh()
 {
-	if (m_pModelObject&&m_pModelObject->getModelData())
+	if (CModelComplex::getModelData())
 	{
-		return m_pModelObject->getModelData()->m_Mesh.m_bSkinMesh;
+		return CModelComplex::getModelData()->m_Mesh.m_bSkinMesh;
 	}
 	return false;
 }

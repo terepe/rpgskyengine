@@ -1,16 +1,15 @@
 #pragma once
 #include "MapObj.h"
-#include "ModelObject.h"
+#include "ModelComplex.h"
 
-class C3DMapObj : public CMapObj
+class C3DMapObj : public CMapObj, public CModelComplex
 {
 public:
 	C3DMapObj();
 	~C3DMapObj();
 protected:
 	Pos2D m_posCell;
-	CModelObject	*m_pModelObject;
-public:// for mapobj
+public:
 	virtual void GetCellPos( Pos2D& posCell );
 	virtual void SetCellPos( Pos2D& posCell );
 
