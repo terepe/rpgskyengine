@@ -26,7 +26,8 @@ enum ANIMTYPE
 struct AnimNode
 {
 	AnimNode();
-	short	CurLoop;			// Current loop that we're upto.
+	short	LoopCount;			// Current loop that we're upto.
+	short	CurLoop;
 	uint32	uFrame;
 	uint32	uTotalFrames;
 	float	fSpeed;
@@ -107,7 +108,7 @@ class AnimManager
 	short Count;			// Total index of animations
 	short PlayIndex;		// Current animation index we're upto
 	short CurLoop;			// Current loop that we're upto.
-
+short LoopCount;
 	int TimeDiff;			// Difference in time between each frame
 
 	float Speed;			// The speed of which to multiply the time given for Tick();

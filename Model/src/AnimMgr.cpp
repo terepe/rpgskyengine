@@ -1,18 +1,14 @@
 #include "AnimMgr.h"
 
-AnimNode::AnimNode():CurLoop(-1),uFrame(0),uTotalFrames(0),fSpeed(1.0f){}
+AnimNode::AnimNode():CurLoop(0),LoopCount(-1),uFrame(0),uTotalFrames(0),fSpeed(1.0f){}
 
 int AnimNode::next()
 {
 	uFrame -= uTotalFrames;
-	if (CurLoop==1)
+	CurLoop++;
+	if (LoopCount!=-1&&CurLoop>=LoopCount)
 	{
 		return 1;
-	}
-	else if(CurLoop>1)
-	{
-		CurLoop--;
-		return 0;
 	}
 	return 0;
 }
@@ -20,14 +16,10 @@ int AnimNode::next()
 int AnimNode::prev()
 {
 	uFrame += uTotalFrames;
-	if (CurLoop==1)
+	CurLoop--;
+	if (CurLoop<0)
 	{
 		return -1;
-	}
-	else if(CurLoop>1)
-	{
-		CurLoop++;
-		return 0;
 	}
 	return 0;
 }
@@ -82,6 +74,7 @@ AnimManager::AnimManager(ModelAnimation *anim) {
 	Count = 1;
 	PlayIndex = 0;
 	CurLoop = 0;
+	LoopCount = -1;
 	Speed = 1.0f;
 	mouthSpeed = 1.0f;
 	Paused = false;
@@ -136,7 +129,7 @@ void AnimManager::AddAnim(uint32 id, short loops)
 void AnimManager::Play() {
 	PlayIndex = 0;
 	//if (Frame == 0 && PlayID == 0) {
-		CurLoop = animList[PlayIndex].Loops;
+		LoopCount = animList[PlayIndex].Loops;
 		Frame = anims[animList[PlayIndex].AnimID].timeStart;
 		TotalFrames = anims[animList[PlayIndex].AnimID].timeEnd - anims[animList[PlayIndex].AnimID].timeStart;
 	//}
@@ -150,7 +143,7 @@ void AnimManager::Stop()
 	Paused = true;
 	PlayIndex = 0;
 	Frame = anims[animList[0].AnimID].timeStart;
-	CurLoop = animList[0].Loops;
+	LoopCount = animList[0].Loops;
 }
 
 void AnimManager::Pause(bool force) {
@@ -165,7 +158,7 @@ void AnimManager::Pause(bool force) {
 
 void AnimManager::Next()
 {
-	if(CurLoop == 1) // 进入下一动画
+	if(CurLoop == LoopCount) // 进入下一动画
 	{
 		PlayIndex++;
 		if (PlayIndex >= Count)
@@ -173,11 +166,12 @@ void AnimManager::Next()
 			Stop();
 			return;
 		}
-		CurLoop = animList[PlayIndex].Loops;
+		CurLoop = 0;
+		LoopCount = animList[PlayIndex].Loops;
 	}
-	else if(CurLoop > 1) // 进入当前动画的下一循环
+	else if(CurLoop < LoopCount) // 进入当前动画的下一循环
 	{
-		CurLoop--;
+		CurLoop++;
 	}
 	// 帧移动到动画最开始处
 	Frame = anims[animList[PlayIndex].AnimID].timeStart;
@@ -185,7 +179,7 @@ void AnimManager::Next()
 
 void AnimManager::Prev()
 {
-	if(CurLoop >= animList[PlayIndex].Loops)
+	if(CurLoop == 0)
 	{
 		PlayIndex--;
 
@@ -197,9 +191,9 @@ void AnimManager::Prev()
 
 		CurLoop = animList[PlayIndex].Loops;
 	}
-	else if(CurLoop < animList[PlayIndex].Loops)
+	else if(CurLoop > 0)
 	{
-		CurLoop++;
+		CurLoop--;
 	}
 
 	Frame = anims[animList[PlayIndex].AnimID].timeEnd;
@@ -292,5 +286,6 @@ void AnimManager::Clear() {
 	PlayIndex = 0;
 	Count = 0;
 	CurLoop = 0;
+	LoopCount = 0;
 	Frame = 0;
 }

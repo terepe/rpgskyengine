@@ -4,7 +4,7 @@
 CMaterialMgr::CMaterialMgr()
 {
 #ifdef _DEBUG
-	m_DataPlugsMgr.createPlugFromPath("Plugins\\debug\\","Material_Data_Plug_CreateObject");
+	m_DataPlugsMgr.createPlugFromPath("Pluginsd\\","Material_Data_Plug_CreateObject");
 #else
 	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Material_Data_Plug_CreateObject");
 #endif

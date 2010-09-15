@@ -94,6 +94,11 @@ void CModelObject::create()
 	m_bCreated=true;
 }
 
+void CModelObject::setBBox(const BBox& box)
+{
+	m_BBox=box;
+}
+
 const BBox& CModelObject::getBBox()const
 {
 	return m_BBox;
@@ -316,6 +321,7 @@ void CModelObject::SetAnim(const std::string& strAnimName)
 			{
 				m_AnimMgr.uFrame=0;
 				m_AnimMgr.uTotalFrames = timeCount;
+				m_AnimMgr.CurLoop=0;
 			}
 		}
 	}

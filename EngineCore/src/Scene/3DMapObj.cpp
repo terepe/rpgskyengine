@@ -98,6 +98,17 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		{
 			return true;
 		}
+		else
+		{
+			for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
+			{
+				const CModelData* pModelData = it->second->getModelData();
+				if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))
+				{
+					return true;
+				}
+			}
+		}
 	}
 	return false;
 }

@@ -30,15 +30,13 @@ public:
 	void updateEmitters(const Matrix& mWorld, float fElapsedTime);
 	void SetLodLevel(int nLodLevel);
 
-	//void setupAtt(int id);
-	//void setupAtt2(int id);
-
 	void Animate(const std::string& strAnimName);
 	void CalcBones(const std::string& strAnim, int time);
 
 	bool isCreated();
 	void create();
 
+	void setBBox(const BBox& box);
 	const BBox& getBBox()const;
 	int getModelDataID()const;
 	CModelData* getModelData()const;
