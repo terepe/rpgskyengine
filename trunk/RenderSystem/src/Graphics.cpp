@@ -54,19 +54,19 @@ void CGraphics::Clear()
 	m_nVBOffset = 0;
 }
 
-void CGraphics::Begin(BGMODE mode, uint32 nSize)
+void CGraphics::Begin(BGMODE mode, size_t uSize)
 {
 	m_nCount = 0;
 	m_uMode = mode;
-	m_nVBBatchSize = nSize;
-	if (m_nVBOffset + nSize > MAX_VBSIZE)
+	m_nVBBatchSize = uSize;
+	if (m_nVBOffset + uSize > MAX_VBSIZE)
 	{
 		m_nVBOffset = 0;
 	}
 	m_pVertex = NULL;
 	if (m_pVB)
 	{
-		m_pVertex = (VERTEX_XYZ_DIF_TEX*)m_pVB->lock(m_nVBOffset * sizeof(VERTEX_XYZ_DIF_TEX), nSize * sizeof(VERTEX_XYZ_DIF_TEX),
+		m_pVertex = (VERTEX_XYZ_DIF_TEX*)m_pVB->lock(m_nVBOffset * sizeof(VERTEX_XYZ_DIF_TEX), uSize * sizeof(VERTEX_XYZ_DIF_TEX),
 			m_nVBOffset?CHardwareBuffer::HBL_NO_OVERWRITE:CHardwareBuffer::HBL_DISCARD);
 	}
 	//assert(m_pVB);
@@ -143,11 +143,7 @@ void CGraphics::End()
 	m_nCount = 0;
 }
 
-//void CGraphics::Begin(BGMODE mode, uint32 nSize)
-//{
-//	m_dwMode = mode;
-//}
-//
+
 //void CGraphics::Vertex2fv(const float *v)
 //{
 //	m_TempVertex.p = *(Vec3D*)v;
@@ -481,7 +477,7 @@ void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCen
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		const static uint16 index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
+		const static unsigned short index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
 									 1,1+1,1+5,		1,1+5,1+4,
 									 2,2+1,2+5,		2,2+5,2+4,
 									 4,4+1,4+5,		4,4+5,4+4,
@@ -624,7 +620,7 @@ void CGraphics::drawBBox(const BBox& bbox, Color32 color)
 	//	//{ 3, 2, 6 }, { 3, 6, 7 },	/// 前方
 	//	//{ 0, 4, 5 }, { 0, 5, 1 }	/// 后方
 	//}
-	uint16		idx[24] = 
+	unsigned short		idx[24] = 
 	{ 
 		0, 1, 1, 2, 2, 3, 3, 0,
 		4, 5, 5, 6, 6, 7, 7, 4,
@@ -743,7 +739,7 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		const static uint16 index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
+		const static unsigned short index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
 			1,1+1,1+5,		1,1+5,1+4,
 			2,2+1,2+5,		2,2+5,2+4,
 			4,4+1,4+5,		4,4+5,4+4,

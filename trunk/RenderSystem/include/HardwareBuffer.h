@@ -1,8 +1,8 @@
 #pragma once
-#include "Common.h"
+#define NULL    0
 
 class CHardwareBufferMgr;
-class DLL_EXPORT CHardwareBuffer 
+class CHardwareBuffer 
 {
 public:
 	enum Usage 

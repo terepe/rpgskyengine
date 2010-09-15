@@ -1,7 +1,7 @@
 #pragma once
 #include "ModelObject.h"
 
-class DLL_EXPORT CModelComplex :public CModelObject
+class CModelComplex :public CModelObject
 {
 public:
 	CModelComplex();

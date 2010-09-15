@@ -1,15 +1,14 @@
 #pragma once
 #include "InterfaceScene.h"
-#include "LumpFile.h"
 
 //struct SceneObjectInfo
 //{
-//	uint32	uObjectID;
+//	unsigned long	uObjectID;
 //	Vec3D	vPos;
 //	float	fScale;
 //	float	fYawAngle;
 //	float	fPitchAngle;
-//	uint32	uSkinID;
+//	unsigned long	uSkinID;
 //};
 
 enum E_TERRAIN_ATT_TYPE
@@ -18,6 +17,8 @@ enum E_TERRAIN_ATT_TYPE
 	TERRAIN_ATT_TYPE_BALK	= 1<<2,
 	TERRAIN_ATT_TYPE_CLEAR	= 1<<3,
 };
+
+#define ATTRIBUTE_GRASS 0x8
 
 // 地图文件数据
 class CTerrainData:public iTerrainData
@@ -46,21 +47,21 @@ public:
 	TerrainCell* getCell(int x, int y);
 	const TerrainCell* getCell(int x, int y)const;
 	//
-	uint8	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const;
-	void	SetCellTileID(int nCellX, int nCellY, uint8 uTileID, size_t layer = 0);
+	unsigned char	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const;
+	void	SetCellTileID(int nCellX, int nCellY, unsigned char uTileID, size_t layer = 0);
 	//
-	uint32	GetVertexIndex(int nCellX, int nCellY)const;
-	int		GetCellXByVertexIndex(uint32 uVertexIndex)const;
-	int		GetCellYByVertexIndex(uint32 uVertexIndex)const;
-	Pos2D	GetCellPosByVertexIndex(uint32 uVertexIndex)const;
+	unsigned long	GetVertexIndex(int nCellX, int nCellY)const;
+	int		GetCellXByVertexIndex(unsigned long uVertexIndex)const;
+	int		GetCellYByVertexIndex(unsigned long uVertexIndex)const;
+	Pos2D	GetCellPosByVertexIndex(unsigned long uVertexIndex)const;
 	//
 	float	getVertexHeight(int nCellX, int nCellY)const;
 	void	setVertexHeight(int nCellX, int nCellY, float fHeight);
 	//
 	Vec3D	getVertexNormal(int nCellX, int nCellY)const;
 	//
-	uint8	getCellAttribute(int nCellX, int nCellY)const;
-	void	setCellAttribute(int nCellX, int nCellY, uint8 uAtt);
+	unsigned char	getCellAttribute(int nCellX, int nCellY)const;
+	void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt);
 	//
 	bool	isCellSearched(int nCellX, int nCellY)const;
 	void	setCellSearched(int nCellX, int nCellY, bool bSearched);
@@ -133,7 +134,7 @@ protected:
 
 	std::vector<TerrainCell>	m_Cells;
 
-	uint16					m_uMuFlgMap;
-	uint32					m_uMuFlgAtt;
+	unsigned short					m_uMuFlgMap;
+	unsigned long					m_uMuFlgAtt;
 
 };

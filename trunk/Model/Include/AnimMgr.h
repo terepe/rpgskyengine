@@ -13,7 +13,7 @@
 // but hopefully over time I can remove and re-write it so this is the core.
 struct AnimInfo {
 	short Loops;
-	uint32 AnimID;
+	unsigned long AnimID;
 };
 
 enum ANIMTYPE
@@ -28,46 +28,46 @@ struct AnimNode
 	AnimNode();
 	short	LoopCount;			// Current loop that we're upto.
 	short	CurLoop;
-	uint32	uFrame;
-	uint32	uTotalFrames;
+	unsigned long	uFrame;
+	unsigned long	uTotalFrames;
 	float	fSpeed;
-	virtual int Tick(uint32 uElapsedTime)=0;
+	virtual int Tick(unsigned long uElapsedTime)=0;
 	virtual int next();
 	virtual int prev();
 };
 
 struct SingleAnimNode:public AnimNode
 {
-	virtual int Tick(uint32 uElapsedTime);
+	virtual int Tick(unsigned long uElapsedTime);
 };
 
 struct ListAnimNode:public AnimNode
 {
 	short nPlayIndex;		// Current animation index we're upto
 	std::vector<AnimNode*>	setNodes;
-	virtual int Tick(uint32 uElapsedTime);
+	virtual int Tick(unsigned long uElapsedTime);
 };
 
 struct ParallelAnimNode:public AnimNode
 {
 	std::vector<AnimNode*>	setNodes;
-	virtual int Tick(uint32 uElapsedTime);
+	virtual int Tick(unsigned long uElapsedTime);
 };
 
 struct MyAnimInfo
 {
 	MyAnimInfo():nAnimID(-1),uFrame(0),uTotalFrames(0),fSpeed(0){}
 	int		nAnimID;
-	uint32	timeStart;
-	uint32	timeEnd;
-	uint32	uFrame;
-	uint32	uTotalFrames;
+	unsigned long	timeStart;
+	unsigned long	timeEnd;
+	unsigned long	uFrame;
+	unsigned long	uTotalFrames;
 	float	fSpeed;
-	void Tick(uint32 uElapsedTime)
+	void Tick(unsigned long uElapsedTime)
 	{
 		if (-1 < nAnimID)
 		{
-			uFrame += uint32(uElapsedTime*fSpeed);
+			uFrame += unsigned long(uElapsedTime*fSpeed);
 			if (uFrame >= timeEnd)
 			{
 				uTotalFrames = timeEnd - timeStart;
@@ -92,18 +92,18 @@ class AnimManager
 	AnimInfo animList[4];
 
 	// 当前帧
-	uint32 Frame;		// Frame number we're upto in the current animation
-	uint32 TotalFrames;
+	unsigned long Frame;		// Frame number we're upto in the current animation
+	unsigned long TotalFrames;
 
 	// 口型帧
 	int AnimIDSecondary;
 	// 口型帧
-	uint32 FrameSecondary;
+	unsigned long FrameSecondary;
 
 	// 口型动画ID
 	int AnimIDMouth;
 	// 口型帧
-	uint32 FrameMouth;
+	unsigned long FrameMouth;
 
 	short Count;			// Total index of animations
 	short PlayIndex;		// Current animation index we're upto
@@ -119,8 +119,8 @@ public:
 	AnimManager(ModelAnimation *anim);
 	~AnimManager();
 
-	void AddAnim(uint32 id, short loop); // Adds an animation to our array.
-	//void Set(short index, uint32 id, short loop); // sets one of the 4 existing animations and changes it (not really used currently)
+	void AddAnim(unsigned long id, short loop); // Adds an animation to our array.
+	//void Set(short index, unsigned long id, short loop); // sets one of the 4 existing animations and changes it (not really used currently)
 
 	void SetSecondary(int id) {
 		AnimIDSecondary = id;
@@ -128,7 +128,7 @@ public:
 	}
 	void ClearSecondary() { AnimIDSecondary = -1; }
 	int GetSecondaryID() { return AnimIDSecondary; }
-	uint32 GetSecondaryFrame() { return FrameSecondary; }
+	unsigned long GetSecondaryFrame() { return FrameSecondary; }
 
 	// For independent mouth movement.
 	void SetMouth(int id) {
@@ -137,7 +137,7 @@ public:
 	}
 	void ClearMouth() { AnimIDMouth = -1; }
 	int GetMouthID() { return AnimIDMouth; }
-	uint32 GetMouthFrame() { return FrameMouth; }
+	unsigned long GetMouthFrame() { return FrameMouth; }
 	void SetMouthSpeed(float speed) {
 		mouthSpeed = speed;
 	}
@@ -152,9 +152,9 @@ public:
 	int Tick(int time);
 
 	const ModelAnimation& getCurrentAnim();
-	uint32 GetFrameCount();
-	uint32 GetFrame() {return Frame;}
-	void SetFrame(uint32 f);
+	unsigned long GetFrameCount();
+	unsigned long GetFrame() {return Frame;}
+	void SetFrame(unsigned long f);
 	void SetSpeed(float speed) {Speed = speed;}
 	float GetSpeed() {return Speed;}
 
@@ -168,7 +168,7 @@ public:
 	bool IsParticlePaused() { return !AnimParticles; }
 	void AnimateParticles() { AnimParticles = true; }
 
-	uint32 GetAnim() { return animList[PlayIndex].AnimID; }
+	unsigned long GetAnim() { return animList[PlayIndex].AnimID; }
 
 	int GetTimeDiff();
 	void SetTimeDiff(int i);

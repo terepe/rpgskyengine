@@ -82,8 +82,8 @@ void CLightMap::CalcLightMap(int nCalcCount)
 	CShader* pShader = GetRenderSystem().GetShaderMgr().getItem(m_uShaderID);
 	if (pShader)
 	{
-		pShader->setFloat("g_fTerrainW", (float)m_pScene->getTerrain()->GetData().GetWidth());
-		pShader->setFloat("g_fTerrainH", (float)m_pScene->getTerrain()->GetData().GetHeight());
+		pShader->setFloat("g_fTerrainW", (float)m_pScene->getTerrain()->GetWidth());
+		pShader->setFloat("g_fTerrainH", (float)m_pScene->getTerrain()->GetHeight());
 	}
 
 	CalcLightMapByShader(nCalcCount);
@@ -121,7 +121,7 @@ void CLightMap::CalcLightMapByShader(int nCalcCount)
 
 	CRenderSystem& R = GetRenderSystem();
 	// µÆ¹â
-	Vec3D vLightDir = m_pScene->getTerrain()->GetData().GetLightDir();
+	Vec3D vLightDir = m_pScene->getTerrain()->GetLightDir();
 	//m_pShader->SetFloat("g_fScale",1.0f/nCalcCount);
 	//for (int i = 0; i < nCalcCount; i++)
 	{
@@ -135,7 +135,7 @@ void CLightMap::CalcLightMapByShader(int nCalcCount)
 			// ChunkÒõÓ°
 			CalcChunkLightMap(vLightDir, cube);
 		}
-		std::string strFilename = m_pScene->getTerrain()->GetData().getFilename();
+		std::string strFilename = m_pScene->getTerrain()->getFilename();
 		std::string strLightmapFilename = GetParentPath(strFilename)+"LightMap.bmp";
 		m_pLightMapRenderTarget->SaveToFile(strLightmapFilename);
 

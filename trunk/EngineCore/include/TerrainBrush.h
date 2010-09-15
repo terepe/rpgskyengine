@@ -1,6 +1,6 @@
 #pragma once
 #include "TerrainDecal.h"
-class DLL_EXPORT CTerrainBrush: public CTerrainDecal
+class CTerrainBrush: public CTerrainDecal
 {
 public:
 	CTerrainBrush();
@@ -16,8 +16,8 @@ public:
 	float	GetStrength()const{return m_fStrength;}
 	void	SetTileID(int nTileID);
 	int		GetTileID(int nX = 0, int nY = 0)const;
-	void	SetAtt(uint8 uAtt);
-	uint8	GetAtt()const;
+	void	SetAtt(unsigned char uAtt);
+	unsigned char	GetAtt()const;
 	void	setHeightRang(float fMin, float fMax);
 	float	getHeightMin()const;
 	float	getHeightMax()const;
@@ -47,14 +47,14 @@ protected:
 	Matrix					m_mRandiusTexTrans;
 	Matrix					m_mHardnessTexTrans;
 	float					m_fX, m_fY;
-	uint32					m_uBaseVertexIndex;
+	unsigned long					m_uBaseVertexIndex;
 	float					m_fSize;
 	float					m_fHardness;
 	float					m_fStrength;
 	BrushType				m_eBrushType;
 	BrushHeightType			m_eBrushHeightType;
 	int						m_nTileID;
-	uint8					m_uAtt;
+	unsigned char					m_uAtt;
 	float					m_fHeightMin;
 	float					m_fHeightMax;
 	Color32					m_color;

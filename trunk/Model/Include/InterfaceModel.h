@@ -7,13 +7,13 @@
 //////////////////////////////////////////////////////////////////////////
 struct VertexIndex
 {
-	uint16 p;
-	uint16 n;
-	uint16 c;
-	uint16 uv1;
-	uint16 uv2;
-	uint16 w;
-	uint16 b;
+	unsigned short p;
+	unsigned short n;
+	unsigned short c;
+	unsigned short uv1;
+	unsigned short uv2;
+	unsigned short w;
+	unsigned short b;
 
 	VertexIndex()
 	{
@@ -22,8 +22,8 @@ struct VertexIndex
 
 	bool operator< (const VertexIndex& v) const
 	{
-		const uint8* p1=(const uint8*)this;
-		const uint8* p2=(const uint8*)&v;
+		const unsigned char* p1=(const unsigned char*)this;
+		const unsigned char* p2=(const unsigned char*)&v;
 		for (size_t i=0;i<sizeof(VertexIndex);++i)
 		{
 			if (*p1!=*p2)
@@ -45,9 +45,9 @@ class CSubMesh
 public:
 	void addPos(const Vec3D& vPos)
 	{pos.push_back(vPos);}
-	void addBone(uint32 uBone)
+	void addBone(unsigned long uBone)
 	{bone.push_back(uBone);}
-	void addWeight(uint32 uWeight)
+	void addWeight(unsigned long uWeight)
 	{weight.push_back(uWeight);}
 	void addNormal(const Vec3D& vNormal)
 	{normal.push_back(vNormal);}
@@ -70,11 +70,11 @@ public:
 	{
 		setVectorValue(pos,n,vPos);
 	}
-	void setBone(size_t n, uint32 uBone)
+	void setBone(size_t n, unsigned long uBone)
 	{
 		setVectorValue(bone,n,uBone);
 	}
-	void setWeight(size_t n, uint32 uWeight)
+	void setWeight(size_t n, unsigned long uWeight)
 	{
 		setVectorValue(weight,n,uWeight);
 	}
@@ -105,11 +105,11 @@ public:
 	{
 		getVectorValue(pos,n,vPos);
 	}
-	void getBone(size_t n, uint32& uBone)
+	void getBone(size_t n, unsigned long& uBone)
 	{
 		getVectorValue(bone,n,uBone);
 	}
-	void getWeight(size_t n, uint32& uWeight)
+	void getWeight(size_t n, unsigned long& uWeight)
 	{
 		getVectorValue(weight,n,uWeight);
 	}
@@ -123,8 +123,8 @@ public:
 	}
 
 	std::vector<Vec3D>	pos;
-	std::vector<uint32>	weight;
-	std::vector<uint32>	bone;
+	std::vector<unsigned long>	weight;
+	std::vector<unsigned long>	bone;
 	std::vector<Vec3D>	normal;
 	std::vector<Color32>color;
 	std::vector<Vec2D>	texcoord;
@@ -155,7 +155,7 @@ struct BoneInfo
 	std::string				strName;
 	Matrix					mInvLocal;
 	Vec3D pivot;
-	uint8 parent;
+	unsigned char parent;
 	bool billboard;
 };
 

@@ -10,9 +10,7 @@ CBaseCamera::CBaseCamera()
     SetViewParams(vEyePt, vLookatPt);
 
     // Setup the projection matrix
-    SetProjParams(PI/4, 800, 600, 1.0f, 1000.0f);
-
-    GetCursorPos(&m_ptLastMousePosition);
+    SetProjParams(3.14159f/4, 800, 600, 1.0f, 1000.0f);
 
     m_fCameraYawAngle = 0.0f;
     m_fCameraPitchAngle = 0.0f;

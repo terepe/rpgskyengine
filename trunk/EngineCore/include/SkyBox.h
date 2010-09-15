@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 #include "RenderSystem.h"
 #include "Vec3D.h"
 #include "Color.h"
@@ -8,11 +7,11 @@ struct SkyboxVertex
 {
 	enum _FVF {FVF=(FVF_XYZ|FVF_DIFFUSE|FVF_TEX1|FVF_TEXCOORDSIZE3(0))};
 	Vec3D		p;
-	uint32		c;
+	unsigned long		c;
 	Vec3D		t;
 };
 
-class DLL_EXPORT CSkyBox
+class CSkyBox
 {
 public:
 	CSkyBox();

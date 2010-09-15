@@ -11,7 +11,7 @@ CModelDataMgr::CModelDataMgr()
 #endif
 }
 
-uint32 CModelDataMgr::RegisterModel(const std::string& strFilename)
+unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 {
 	if (strFilename.length()==0)
 	{
@@ -42,7 +42,7 @@ uint32 CModelDataMgr::RegisterModel(const std::string& strFilename)
 	return add(strFilename, pModel);
 }
 
-CModelData* CModelDataMgr::GetModel(uint32 uModelID)
+CModelData* CModelDataMgr::GetModel(unsigned long uModelID)
 {
 	return getItem(uModelID);
 }

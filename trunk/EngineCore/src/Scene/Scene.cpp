@@ -157,7 +157,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						pObj->GetObjType() != MAP_3DEFFECT &&
 						pObj->GetObjType() != MAP_3DEFFECTNEW)
 					{
-						Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D((*it)->getPos().x,(*it)->getPos().z));
+						Vec4D vColor = m_pTerrain->GetColor(Vec2D((*it)->getPos().x,(*it)->getPos().z));
 						vColor.w=1.0f;
 
 					

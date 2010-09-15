@@ -139,7 +139,7 @@ void C3DMapObj::renderFocus(Color32 color)const
 	static CShader* m_pShaderFocus=NULL;
 	if (m_pShaderFocus==NULL)
 	{
-		uint32 uShaderID = R.GetShaderMgr().registerItem("Data\\fx\\ObjectFocus.fx");
+		unsigned long uShaderID = R.GetShaderMgr().registerItem("Data\\fx\\ObjectFocus.fx");
 		m_pShaderFocus = R.GetShaderMgr().getItem(uShaderID);
 	}
 	if (m_pShaderFocus)

@@ -1,16 +1,16 @@
 #pragma once
-#include "Common.h"
 #include <windows.h>
+#include <xstring>
 
-class DLL_EXPORT CRenderWindow
+class CRenderWindow
 {
 public:
 	CRenderWindow();
 	~CRenderWindow();
 public:
-	virtual bool Create(WNDPROC pWndProc, const std::wstring& strWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen = false) = 0;
-	virtual void SetFullscreen(bool bFullScreen, uint32 width, uint32 height) {}
-	//virtual void Resize(uint32 width, uint32 height) = 0;
+	virtual bool Create(WNDPROC pWndProc, const std::wstring& strWindowTitle, unsigned long uWidth, unsigned long uHeight, bool bFullScreen = false) = 0;
+	virtual void SetFullscreen(bool bFullScreen, unsigned long width, unsigned long height) {}
+	//virtual void Resize(unsigned long width, unsigned long height) = 0;
 	virtual double GetTime()= 0;
 	virtual float GetElapsedTime()= 0;
 	virtual bool FrameBegin()= 0;

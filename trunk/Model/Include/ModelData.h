@@ -25,7 +25,7 @@ struct ColorAnim
 	Animated<Vec3D> specular;
 	Animated<short> opacity;
 
-	Vec4D GetColor(uint32 uTime)const
+	Vec4D GetColor(unsigned long uTime)const
 	{
 		return Vec4D(color.getValue(uTime), opacity.getValue(uTime)/32767.0f);
 	}
@@ -89,8 +89,8 @@ p(0)
 {
 }
 // RenderFlag;
-uint16 nRenderFlag;	//
-uint16 nBlendMode;	//
+unsigned short nRenderFlag;	//
+unsigned short nBlendMode;	//
 int nTransID,nTexanimID,nColorID;
 int nOrder;
 float p;
@@ -118,7 +118,7 @@ bool operator< (const ModelRenderPass &m) const
 
 //////////////////////////////////////////////////////////////////////////
 
-class DLL_EXPORT CModelData:public iModelData
+class CModelData:public iModelData
 {
 public:
 	CModelData();
@@ -139,7 +139,6 @@ public:
 	virtual bool saveMaterial(const std::string& strFilename);
 	virtual bool initParticleMaterial();
 	virtual	bool loadParticleEmitters(const std::string& strFilename);
-	bool SaveFile(const std::string& strFilename);
 	void InitSkins();
 	void Init();
 	int	GetOrder();

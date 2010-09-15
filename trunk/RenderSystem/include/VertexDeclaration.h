@@ -2,16 +2,16 @@
 #include "RenderSystemCommon.h"
 #include <list>
 
-class DLL_EXPORT CVertexDeclaration
+class CVertexDeclaration
 {
 public:
 	CVertexDeclaration();
 	virtual ~CVertexDeclaration();
 public:
-	void AddElement(uint16 uSource, uint16 uOffset, VertexElementType type, VertexElementSemantic semantic, uint8 uIndex = 0);
+	void AddElement(unsigned short uSource, unsigned short uOffset, VertexElementType type, VertexElementSemantic semantic, unsigned char uIndex = 0);
 	virtual void EndElement()=0;
 protected:
-	uint32 GetTypeSize(VertexElementType type);
+	unsigned long GetTypeSize(VertexElementType type);
 	std::list<VertexElement> m_ElementList;
 
 };

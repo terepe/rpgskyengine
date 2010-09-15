@@ -7,8 +7,8 @@ class CModelDataMgr: public CManager<CModelData>,public TSingleton<CModelDataMgr
 {
 public:
 	CModelDataMgr();
-	uint32 RegisterModel(const std::string& strFilename);
-	CModelData* GetModel(uint32 uModelID);
+	unsigned long RegisterModel(const std::string& strFilename);
+	CModelData* GetModel(unsigned long uModelID);
 	bool loadModel(CModelData& modelData,const std::string& strFilename);
 	CDataPlugsMgr& getDataPlugsMgr();
 private:

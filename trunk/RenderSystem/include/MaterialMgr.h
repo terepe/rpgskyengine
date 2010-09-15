@@ -3,7 +3,7 @@
 #include "Material.h"
 #include "DataPlugsMgr.h"
 
-class DLL_EXPORT CMaterialMgr
+class CMaterialMgr
 {
 public:
 	CMaterialMgr();

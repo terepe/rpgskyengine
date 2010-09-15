@@ -291,7 +291,7 @@ void CModelObject::OnFrameMove(float fElapsedTime)
 	Animate(m_strAnimName);
 }
 
-void CModelObject::SetLOD(uint32 uLodID)
+void CModelObject::SetLOD(unsigned long uLodID)
 {
 	if (NULL==m_pModelData)
 	{
@@ -303,7 +303,7 @@ void CModelObject::SetLOD(uint32 uLodID)
 	}
 }
 
-void CModelObject::SetSkin(uint32 uSkinID)
+void CModelObject::SetSkin(unsigned long uSkinID)
 {
 
 }

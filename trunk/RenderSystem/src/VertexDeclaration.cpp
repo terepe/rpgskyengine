@@ -9,13 +9,13 @@ CVertexDeclaration::~CVertexDeclaration()
 {
 }
 
-void CVertexDeclaration::AddElement(uint16 uSource, uint16 uOffset, VertexElementType type, VertexElementSemantic semantic, uint8 uIndex)
+void CVertexDeclaration::AddElement(unsigned short uSource, unsigned short uOffset, VertexElementType type, VertexElementSemantic semantic, unsigned char uIndex)
 {
 	VertexElement vertexElement = {uSource, uOffset, type, semantic, uIndex};
 	m_ElementList.push_back(vertexElement);
 }
 
-uint32 CVertexDeclaration::GetTypeSize(VertexElementType type)
+unsigned long CVertexDeclaration::GetTypeSize(VertexElementType type)
 {
 	switch(type)
 	{

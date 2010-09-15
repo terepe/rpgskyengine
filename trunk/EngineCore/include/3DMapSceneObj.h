@@ -1,7 +1,7 @@
 #pragma once
 #include "3DMapObj.h"
 
-class DLL_EXPORT C3DMapSceneObj : public C3DMapObj
+class C3DMapSceneObj : public C3DMapObj
 {
 public:
 	int64 getObjectID(){return m_ObjectID;}

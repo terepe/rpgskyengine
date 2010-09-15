@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
+#include <string>
 
-class DLL_EXPORT CTexture
+class CTexture
 {
 	friend class CTextureMgr;
 public:

@@ -1,27 +1,28 @@
 #pragma once
-#include "Common.h"
 #include "Vec2d.h"
 #include "Vec3d.h"
-
+#include <map>
+#include <vector>
 
 // block B - animations
-struct ModelAnimation {
-	uint32 animID;
-	uint32 timeStart;
-	uint32 timeEnd;
+struct ModelAnimation
+{
+	unsigned long animID;
+	unsigned long timeStart;
+	unsigned long timeEnd;
 
 	float moveSpeed;
 
-	uint32 loopType;
-	uint32 flags;
-	uint32 d1;
-	uint32 d2;
-	uint32 playSpeed;  // note: this can't be play speed because it's 0 for some models
+	unsigned long loopType;
+	unsigned long flags;
+	unsigned long d1;
+	unsigned long d2;
+	unsigned long playSpeed;  // note: this can't be play speed because it's 0 for some models
 
 	Vec3D boxA, boxB;
 	float rad;
 
-	int16 s[2];
+	short s[2];
 };
 
 

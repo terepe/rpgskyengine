@@ -3,7 +3,7 @@
 #include "Frustum.h"
 #include "HardwareIndexBuffer.h"
 
-class DLL_EXPORT CTerrainDecal
+class CTerrainDecal
 {
 public:
 	CTerrainDecal();
@@ -12,7 +12,7 @@ public:
 	virtual void createBySize(size_t uBufferWidth, size_t uWidth, size_t uHeight);
 	virtual bool setIB();
 	virtual void Draw(float fX, float fY);
-	virtual void Draw(uint32 uBaseVertexIndex);
+	virtual void Draw(unsigned long uBaseVertexIndex);
 	float GetRadius(){return m_fRadius;}
 public:
 	void	SetVisible(bool bVisible){m_bVisible = bVisible;}
@@ -21,7 +21,7 @@ public:
 protected:
 	int GalcLogicalLengthByRadius(float fRadius);
 	virtual void CreateIB();
-	virtual uint32 GetBaseVertexIndex(float fX, float fY);
+	virtual unsigned long GetBaseVertexIndex(float fX, float fY);
 	CHardwareIndexBuffer*	m_pIB;
 	int						m_nBufferWidth;
 	size_t					m_uWidth;

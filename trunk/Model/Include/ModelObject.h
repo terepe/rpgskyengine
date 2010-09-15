@@ -2,7 +2,7 @@
 #include "ModelData.h"
 #include "AnimMgr.h"
 
-class DLL_EXPORT CModelObject
+class CModelObject
 {
 public:
 	CModelObject();
@@ -11,8 +11,8 @@ public:
 	void SkinAnim();	// 动画更新
 	virtual void OnFrameMove(float fElapsedTime);
 public:
-	void SetLOD(uint32 uLodID);		// 设置LodID
-	void SetSkin(uint32 uSkinID);	// 设置皮肤
+	void SetLOD(unsigned long uLodID);		// 设置LodID
+	void SetSkin(unsigned long uSkinID);	// 设置皮肤
 	void SetAnim(const std::string& strAnimName);
 	void SetLightMap(const std::string& strFilename);	// SetLightMap
 public:
@@ -54,8 +54,8 @@ public:												// All the anim data.
 	float	m_fAlpha;								// 过度透明
 protected:											// Attribute.
 	float	m_fRad;									// Radius
-	uint32	m_uLodLevel;							// Current Lod Level
-	uint32	m_uSkinID;								// Current Skin ID
+	unsigned long	m_uLodLevel;							// Current Lod Level
+	unsigned long	m_uSkinID;								// Current Skin ID
 	OBJID	m_idLightMapTex;						//
 	bool	m_bLightmap;
 	bool	m_bCreated;
