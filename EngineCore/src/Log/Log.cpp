@@ -9,21 +9,21 @@ CLog* GetLog()
 
 CLog::CLog()
 {
-	m_nTarget = LOG_TARGET_FILE;
+	m_uTarget = LOG_TARGET_FILE;
 	m_szFilename[0] = NULL;
 	m_hwnd = NULL;
 }
 
-CLog::CLog(UINT32 nTarget, LPSTR szFilename)
+CLog::CLog(unsigned long uTarget, const char* szFilename)
 {
-	m_nTarget = nTarget;
+	m_uTarget = uTarget;
 
-	if(nTarget & LOG_TARGET_FILE)
+	if(uTarget & LOG_TARGET_FILE)
 		SetFilename(szFilename);
 	else
 		m_szFilename[0] = NULL;
 
-	if(nTarget & LOG_TARGET_WINDOW)
+	if(uTarget & LOG_TARGET_WINDOW)
 		CreateLogWindow();
 	else
 		m_hwnd = NULL;
@@ -36,7 +36,7 @@ CLog::~CLog()
 	DestroyWindow(m_hwnd);
 }
 
-void CLog::SetFilename(LPSTR szFilename)
+void CLog::SetFilename(const char* szFilename)
 {
 	strcpy(m_szFilename, szFilename);
 }
@@ -72,7 +72,7 @@ void CLog::CreateLogWindow()
 	ShowWindow(m_hwndList, SW_SHOW);
 }
 
-int CLog::Log(LPSTR fmt, ...)
+int CLog::Log(const char* fmt, ...)
 {
 	char	buff[1024];
 	WCHAR	wbuff[1024];
@@ -85,13 +85,13 @@ int CLog::Log(LPSTR fmt, ...)
 	vsprintf(buff, fmt, (char *)(&fmt+1));
 
 	// Console输出的情况 
-	if(m_nTarget & LOG_TARGET_CONSOLE)
+	if(m_uTarget & LOG_TARGET_CONSOLE)
 	{
 		printf("(date[%s] time[%s]) : %s\n", date, time, buff);
 	}
 
 	// Log File输出的情况
-	if(m_nTarget & LOG_TARGET_FILE)
+	if(m_uTarget & LOG_TARGET_FILE)
 	{
 		FILE*	fp = NULL;
 		fp = fopen(m_szFilename, "a+");
@@ -106,7 +106,7 @@ int CLog::Log(LPSTR fmt, ...)
 	MultiByteToWideChar(CP_ACP,0,buff,-1,wbuff,wlen);
 
 	// Log Window输出的情况 
-	if(m_nTarget & LOG_TARGET_WINDOW)
+	if(m_uTarget & LOG_TARGET_WINDOW)
 	{
 		SendMessage(m_hwndList, LB_ADDSTRING, 0, (LPARAM) wbuff);
 		UINT32 n = SendMessage(m_hwndList, LB_GETCOUNT, 0, 0L) - 1;

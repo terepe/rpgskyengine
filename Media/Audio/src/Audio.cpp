@@ -5,7 +5,6 @@
 #pragma comment(lib, "fmodvc.lib")
 #endif
 #include "fmod.h"
-//#include "Log.h"
 #include "fmod_errors.h"
 #include "windows.h"
 /*

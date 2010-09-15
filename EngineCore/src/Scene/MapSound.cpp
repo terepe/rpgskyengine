@@ -3,7 +3,7 @@
 //#include "SceneMgr.h"
 //#include "Hero.h"
 
-BOOL CMapSound::s_bStroke = false;
+bool CMapSound::s_bStroke = false;
 
 CMapSound::CMapSound()
 {
@@ -57,7 +57,7 @@ void CMapSound::Process(void* pInfo)
 	Vec3D vHeroWorldpos;
 	//g_objHero.GetCellPos( posHero );
 	//GetSceneMgr().Cell2World( posHero, vHeroWorldpos );
-	//BOOL bActive;
+	//bool bActive;
 	if((abs(vHeroWorldpos.x - m_vPos.x) > m_nRange)// && abs(posHero.x - m_vPos.x) > 1000)
 		|| (abs(vHeroWorldpos.z - m_vPos.z) > m_nRange))// && abs(posHero.y - m_vPos.y) > 1000))
 	{
@@ -75,20 +75,20 @@ void CMapSound::Process(void* pInfo)
 	
 //	if(!Check2DSound(m_pSound) && m_bActive)
 	{
-		if(!m_bWait)
-		{
-			m_bWait = true;
-			m_dwWaitPoint = ::TimeGet();
-		}
-		if(::TimeGet() - m_dwWaitPoint > m_dwInterval)
-		{
-			this->Play();
-			m_bWait = false;
-		}
+// 		if(!m_bWait)
+// 		{
+// 			m_bWait = true;
+// 			m_dwWaitPoint = ::TimeGet();
+// 		}
+// 		if(::TimeGet() - m_dwWaitPoint > m_dwInterval)
+// 		{
+// 			this->Play();
+// 			m_bWait = false;
+// 		}
 	}
 }
 //-------------------------------------------------------------
-BOOL CMapSound::IsFocus()
+bool CMapSound::IsFocus()
 {
 	return m_bFocus;
 }
@@ -108,7 +108,7 @@ bool CMapSound::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3D& vCo
 	return false;
 }
 
-BOOL CMapSound::Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
+bool CMapSound::Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, unsigned long dwInterval)
 {
 	if(!pszFile)
 		return false;
@@ -124,13 +124,13 @@ BOOL CMapSound::Create(const Vec3D& vPos, int nRange, int nVolume, char* pszFile
 	return true;
 }
 //-------------------------------------------------------------
-CMapSound* CMapSound::CreateNew(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, DWORD dwInterval)
+CMapSound* CMapSound::CreateNew(const Vec3D& vPos, int nRange, int nVolume, char* pszFile, unsigned long dwInterval)
 {
 	CMapSound* pSound = new CMapSound;
-	MYASSERT(pSound);
+	// assert(pSound);
 	if(!pSound->Create( vPos, nRange, nVolume, pszFile, dwInterval ))
 	{
-		S_DEL(pSound);
+		delete pSound;
 		return NULL;
 	}
 	return pSound;

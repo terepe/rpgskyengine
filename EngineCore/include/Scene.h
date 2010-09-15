@@ -38,7 +38,7 @@ public:
 	virtual bool addMapObj(CMapObj* pObj);
 	virtual bool delMapObj(CMapObj* pObj);
 
-	C3DMapEffect* add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelself = true);
+	C3DMapEffect* add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, bool bDelself = true);
 	void del3DMapEffect(const Vec3D& vWorldPos);
 	void del3DMapEffect(C3DMapEffect* pEffect);
 

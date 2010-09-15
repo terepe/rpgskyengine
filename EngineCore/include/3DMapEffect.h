@@ -4,27 +4,27 @@
 class C3DMapEffect 	:	public C3DMapObj 
 {
 public:
-	static BOOL s_bStroke;
+	static bool s_bStroke;
 protected:
-	BOOL			m_bDelSelf;
-	BOOL			m_bDie;
+	bool			m_bDelSelf;
+	bool			m_bDie;
 	int				m_nDelay;
-	BOOL			m_bSave;
+	bool			m_bSave;
 	char			m_szIndex[64];
 	float			m_fHorizontal;
 	float			m_fVertical;
-	BOOL			m_bOver;
-	BOOL			m_bSimpleObj;
+	bool			m_bOver;
+	bool			m_bSimpleObj;
 	////C3DSimpleObj	m_objSimple;
-	DWORD			m_dwFrameIndex;
+	unsigned long			m_dwFrameIndex;
 
 public:
 	C3DMapEffect();
 	virtual ~C3DMapEffect();
 
 public:
-	static  C3DMapEffect* CreateNew(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
-	BOOL Create(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf = true, BOOL bSave = false);
+	static  C3DMapEffect* CreateNew(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf = true, bool bSave = false);
+	bool Create(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf = true, bool bSave = false);
 
 public:
 	void SetRotate(float fHorizontal, float fVertical);
@@ -33,10 +33,10 @@ public:
 	virtual int GetObjType(){return MAP_3DEFFECT;}
 	virtual void Die(){m_bDie = true;}
 public:
-	BOOL	NeedSave(){return m_bSave;}
+	bool	NeedSave(){return m_bSave;}
 	void	LoadDataObj(FILE* fp);
 	void	LoadTextObj(FILE* fp);
 	void	SetDir(int nDir);
 public:
-	BOOL	IsOver(){return m_bOver;}
+	bool	IsOver(){return m_bOver;}
 };

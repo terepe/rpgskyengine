@@ -326,10 +326,10 @@ void CTexture::Filter(int nSrcLevel, int nFilter)
 {
 	//int w = nWidth;
 	//int n = nHeight;
-	//DWORD* buffer = new DWORD[w*n];
+	//unsigned long* buffer = new unsigned long[w*n];
 	//for (int i=1; i<16; i++)
 	//{
-	//	DWORD* p = buffer;
+	//	unsigned long* p = buffer;
 	//	w >>= 1;
 	//	h >>= 1;
 	//	if (w==0) w = 1;

@@ -93,7 +93,7 @@ void CLightMap::CalcLightMap(int nCalcCount)
 
 	//D3DLOCKED_RECT	LockedRect;
 	//HRESULT Result = m_pDataSurf->LockRect(&LockedRect,NULL,0);
-	//DWORD* dst = (DWORD*)LockedRect.pBits;
+	//unsigned long* dst = (unsigned long*)LockedRect.pBits;
 
 	////for (int i = 0; i < m_nWidth * m_nHeight; i++)
 	////{
