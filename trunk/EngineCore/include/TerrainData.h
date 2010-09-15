@@ -84,6 +84,37 @@ public:
 	bool	hasGrass(int nCellX, int nCellY)const;
 
 	std::vector<TerrainCell>&		getCells()	{return m_Cells;}
+
+	void  getPath(int sx,int sy,int tx,int ty, std::vector<unsigned char>& path);
+	//////////////////启发式搜索(A*)寻路/////////////////////////////////
+#define MAX_NODE 		100 //允许同时存在多少待扩展节点
+#define MAX_ALLNODE 	1000 //允许节点数
+#define MAX_HASH		1999 //Hash表大小，最好是质数
+	struct Node
+	{
+		int x,y,f,level,n;
+	};
+	//待扩展节点的资料
+	Node node[MAX_NODE];
+	//节点的资料
+	struct AllNode
+	{
+		int act,father;
+	}
+	allnode[MAX_ALLNODE];
+	//Hash表，用来判断节点是否已访问过
+	struct Hash
+	{
+		int x,y;
+	}
+	Hash[MAX_HASH];
+
+	int node_count; //目前的待扩展节点数
+	int allnode_count; //目前的节点数
+	void AddNode(int x,int y,int tx,int ty,int act,int level,int father);
+	Node GetNode();
+	void Add2Hash(int x,int y);
+	bool CheckHash(int x,int y);
 protected:
 	std::string	m_strFilename;
 	char		m_szName[32];

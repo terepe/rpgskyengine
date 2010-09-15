@@ -5,7 +5,7 @@
 CModelDataMgr::CModelDataMgr()
 {
 #ifdef _DEBUG
-	m_DataPlugsMgr.createPlugFromPath("Plugins\\debug\\","Model_Plug_CreateObject");
+	m_DataPlugsMgr.createPlugFromPath("Pluginsd\\","Model_Plug_CreateObject");
 #else
 	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Model_Plug_CreateObject");
 #endif
