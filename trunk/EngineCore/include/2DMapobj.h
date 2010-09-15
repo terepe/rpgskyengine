@@ -19,5 +19,5 @@ public:
 	virtual void Process(void* pInfo){}
 
 	virtual int GetObjType   (){return MAP_NONE;}
-	virtual BOOL IsFocus(){return false;}
+	virtual bool IsFocus(){return false;}
 };

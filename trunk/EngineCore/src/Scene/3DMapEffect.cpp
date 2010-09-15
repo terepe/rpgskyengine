@@ -1,7 +1,7 @@
 #include "3DMapEffect.h"
 //#include "Role.h"
 
-BOOL C3DMapEffect::s_bStroke = false;
+bool C3DMapEffect::s_bStroke = false;
 C3DMapEffect::C3DMapEffect()
 {
 	m_bDie = false;
@@ -44,7 +44,7 @@ void C3DMapEffect::Show(void* pInfo)
 			//	this->IsFocus();
 			//union
 			//{
-			//	DWORD dwColor;
+			//	unsigned long dwColor;
 			//	struct
 			//	{
 			//		unsigned char ucAlpha;
@@ -80,7 +80,7 @@ void C3DMapEffect::SetRotate(float fHorizontal, float fVertical)
 void C3DMapEffect::Process(void* pInfo)
 {
 	m_dwFrameIndex ++;
-	BOOL* pbOver = (BOOL*)pInfo;
+	bool* pbOver = (bool*)pInfo;
 	if(m_bDie)
 	{
 		m_nDelay ++;
@@ -102,7 +102,7 @@ void C3DMapEffect::Process(void* pInfo)
 	//	*pbOver = false;
 }
 //-------------------------------------------------------------------
-C3DMapEffect* C3DMapEffect::CreateNew(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
+C3DMapEffect* C3DMapEffect::CreateNew(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf, bool bSave)
 {
 	if(!pszIndex)
 		return NULL;
@@ -117,7 +117,7 @@ C3DMapEffect* C3DMapEffect::CreateNew(const Vec3D& vWorldPos, char* pszIndex, BO
 	return pEffect;
 }
 //-------------------------------------------------------------------
-BOOL C3DMapEffect::Create(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf, BOOL bSave)
+bool C3DMapEffect::Create(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf, bool bSave)
 {
 	if(!pszIndex)
 		return false;
@@ -131,7 +131,7 @@ BOOL C3DMapEffect::Create(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf,
 	if(pszIndex[0] == '$')
 	{
 		m_bSimpleObj = true;
-		DWORD dwData;
+		unsigned long dwData;
 		if(1 != sscanf(pszIndex, "$%u", &dwData))
 			return false;
 	////	m_objSimple.Create(dwData);

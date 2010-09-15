@@ -1,6 +1,8 @@
 #pragma once
 
-#include "common.h"
+//#include "common.h"
+#include <windows.h>
+#include <stdio.h>
 #define LOG_TARGET_CONSOLE			0x00000001
 #define LOG_TARGET_FILE				0x00000002
 #define LOG_TARGET_WINDOW			0x00000004
@@ -11,20 +13,20 @@
 
 #define LOG(_text) GetLog()->Log(_text);
 
-class DLL_EXPORT CLog
+class CLog
 {
 public:
 	CLog();
-	CLog(UINT32 nTarget, LPSTR szFilename = "log.txt");
+	CLog(unsigned long uTarget, const char* szFilename = "log.txt");
 	~CLog();
 public:
-	void	SetFilename(LPSTR szFilename);
+	void	SetFilename(const char* szFilename);
 	void	CreateLogWindow();
-	int		Log(LPSTR fmt, ...);
+	int		Log(const char* fmt, ...);
 
 private:
-	unsigned int	m_nTarget;
-	char			m_szFilename[MAX_PATH];
+	unsigned long	m_uTarget;
+	char			m_szFilename[260];
 	HWND			m_hwnd;
 	HWND			m_hwndList;
 private:
@@ -32,5 +34,4 @@ private:
 	CLog::WndProcLog(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
-//DECLARE ZFLog*		g_pLog;
 CLog* GetLog();

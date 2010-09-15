@@ -8,7 +8,10 @@ ObjectTree::ObjectTree()
 ObjectTree::~ObjectTree()
 {
 	clearObjects();
-	S_DELS(pChild);
+	if (pChild)
+	{
+		delete[] pChild;
+	}
 }
 
 const BBox& ObjectTree::getBBox()const
@@ -278,7 +281,10 @@ void ObjectTree::create(const BBox& box, size_t size)
 	if (size>0)
 	{
 		size--;
-		S_DELS(pChild);
+		if (pChild)
+		{
+			delete[] pChild;
+		}
 		pChild = new ObjectTree[8];
 		BBox childBoxs[8];
 		for (size_t i=0;i<8;++i)

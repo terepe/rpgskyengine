@@ -261,7 +261,7 @@ bool CScene::delMapObj(CMapObj* pObj)
 	return true;
 }
 
-C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, BOOL bDelSelf)
+C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf)
 {
 	if (!pszIndex)
 		return NULL;

@@ -15,7 +15,7 @@ public:
 
 	virtual void Process(void* pInfo){;}
 	virtual int  GetObjType(){return MAP_3DOBJ;}
-	virtual BOOL IsFocus(){return false;}
+	virtual bool IsFocus(){return false;}
 
 	virtual Matrix getWorldMatrix()const;
 	virtual BBox getBBox()const;

@@ -1,6 +1,4 @@
 #pragma once
-#include "common.h"
-#include "SharedBaseFunc.h"
 #include "Pos2D.h"
 #include "Vec3D.h"
 #include "Frustum.h"
@@ -58,18 +56,15 @@ public:
 	virtual Pos2D getCellPos()	{return Pos2D();}
 	virtual void SetCellPos( Pos2D& posCell )	{}
 
-	virtual void GetBase(CMySize& infoSize)		{infoSize.iWidth = 1;infoSize.iHeight =1;}
-	virtual void SetBase(CMySize infoSize)		{}
+	virtual bool IsFocus()						{return false;}
 
-	virtual BOOL IsFocus()						{return false;}
-
-	virtual void SetARGB(DWORD dwARGB)			{m_dwARGB = dwARGB;}
-	virtual DWORD GetARGB()						{return m_dwARGB;}
+	virtual void SetARGB(unsigned long dwARGB)			{m_dwARGB = dwARGB;}
+	virtual unsigned long GetARGB()						{return m_dwARGB;}
 	virtual int getOrder()						{return m_nOrder;}
 	virtual void setOrder(int nOrder)			{m_nOrder=nOrder;}
 public:
 	int		m_nType;
-	DWORD	m_dwARGB;
+	unsigned long	m_dwARGB;
 	Vec3D	m_vPos;
 	Vec3D	m_vRotate;
 	Vec3D	m_vScale;

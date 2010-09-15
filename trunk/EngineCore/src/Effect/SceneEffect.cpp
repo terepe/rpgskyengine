@@ -105,7 +105,7 @@ void CSceneEffect::Reset(const CRect<int>& rc)
 	m_FloodLumVB[2].p = Vec4D(fX1, fY1, 0.0f, 1.0f);
 	m_FloodLumVB[3].p = Vec4D(fX1, fY0, 0.0f, 1.0f);
 
-	DWORD BloomWeights[7] = 
+	unsigned long BloomWeights[7] = 
 	{
 		0,
 		225,
@@ -170,8 +170,8 @@ void CSceneEffect::Reset(const CRect<int>& rc)
 	float fOffset = 1;
 	for(int i = 0; i < 7; i++)
 	{
-		DWORD Alpha =254.0f*fBloomWeights[i]+1;
-		DWORD color = (255<<24)+(Alpha<<16)+(Alpha<<8)+Alpha;
+		unsigned long Alpha =254.0f*fBloomWeights[i]+1;
+		unsigned long color = (255<<24)+(Alpha<<16)+(Alpha<<8)+Alpha;
 		if (i == 0)
 		{
 			for (int n = 0; n < 6; n++)
@@ -238,7 +238,7 @@ void CSceneEffect::RenderTemporalBloom()
 	//if(R.BeginFrame())
 	{
 		int nAlpha =227; min(m_fBloomVal*255,255);
-		DWORD dwFactor = (nAlpha<<24)+0xFF0000;
+		unsigned long dwFactor = (nAlpha<<24)+0xFF0000;
 		R.SetTextureFactor(dwFactor);
 		R.SetCullingMode(CULL_NONE);// CULL_CCW
 		R.SetLightingEnabled(false);
@@ -336,7 +336,7 @@ void CSceneEffect::RenderBloom()
 	//}
 
 	//int nAlpha = min(m_fBloomVal*255,255);
-	//DWORD dwFactor = nAlpha<<24;
+	//unsigned long dwFactor = nAlpha<<24;
 
 	//R.SetShader(-1);
 
