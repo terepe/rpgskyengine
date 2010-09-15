@@ -1,6 +1,5 @@
 #pragma once
 #include "InterfaceDataPlugsBase.h"
-#include "Common.h"
 #include "Vec4D.h"
 #include "Vec2D.h"
 #include "Color.h"
@@ -28,68 +27,6 @@ struct TerrainCell
 	Vec3D			vNormals;
 	unsigned char	uAttribute;
 	bool			bSearched;
-};
-
-class iTerrainData
-{
-public:
-	iTerrainData(){};
-	virtual ~iTerrainData(){};
-	//
-	virtual void clear()=0;
-	virtual void create(size_t width, size_t height, size_t cubeSize)=0;
-	virtual bool resize(size_t width, size_t height, size_t cubeSize)=0;
-	//
-	virtual int	GetVertexXCount()const=0;
-	virtual int	GetVertexYCount()const=0;
-	virtual int	GetVertexCount()const=0;
-	//
-	virtual int GetWidth()const=0;
-	virtual int GetHeight()const=0;
-	virtual int GetCubeSize()const=0;
-	virtual int GetCellCount()const=0;
-	//
-	virtual bool isCellIn(int nCellX, int nCellY)const=0;
-	virtual bool isPointIn(int nCellX, int nCellY)const=0;
-	//
-	virtual uint8	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const=0;
-	virtual void	SetCellTileID(int nCellX, int nCellY, uint8 uTileID, size_t layer = 0)=0;
-	//
-	virtual uint32	GetVertexIndex(int nCellX, int nCellY)const=0;
-	virtual int		GetCellXByVertexIndex(uint32 uVertexIndex)const=0;
-	virtual int		GetCellYByVertexIndex(uint32 uVertexIndex)const=0;
-	virtual Pos2D	GetCellPosByVertexIndex(uint32 uVertexIndex)const=0;
-	//
-	virtual float	getVertexHeight(int nCellX, int nCellY)const=0;
-	virtual void	setVertexHeight(int nCellX, int nCellY, float fHeight)=0;
-	//
-	virtual Vec3D	getVertexNormal(int nCellX, int nCellY)const=0;
-	//
-	virtual uint8	getCellAttribute(int nCellX, int nCellY)const=0;
-	virtual void	setCellAttribute(int nCellX, int nCellY, uint8 uAtt)=0;
-
-	virtual bool	isCellSearched(int nCellX, int nCellY)const=0;
-	virtual void	setCellSearched(int nCellX, int nCellY, bool bSearched)=0;
-	//
-	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
-	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
-	//
-	virtual float	GetHeight(const Vec2D& vPos)const=0;
-	virtual Vec4D	GetColor(const Vec2D& vPos)const=0;
-	//
-	virtual bool	PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
-	virtual bool	Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
-	//
-	virtual const std::string& getFilename()const=0;
-	//
-	virtual Vec3D	GetLightDir()const=0;
-
-	virtual void	getVertexByCell(int nCellX, int nCellY, TerrainVertex& vertex)const=0;
-	virtual void	getGrassVertexByCell(int nCellX, int nCellY, TerrainVertex*& vertex)const=0;
-
-	virtual bool	hasGrass(int nCellX, int nCellY)const=0;
-
-	virtual std::vector<TerrainCell>& getCells()=0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -203,15 +140,14 @@ struct Cube
 
 class CTerrainDecal;
 
-class iTerrain
+class iTerrainData
 {
 public:
 	typedef std::map<int,std::string>		MAP_TILES;
 	typedef std::vector<const Cube*>		LIST_CUBES;
+
 	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName)=0;
 	virtual CMaterial& getMaterial(const std::string& strMaterialName)=0;
-	virtual iTerrainData& GetData()=0;
-	virtual const iTerrainData& GetData()const=0;
 
 	virtual CTerrainDecal& GetLightMapDecal()=0;
 
@@ -226,8 +162,65 @@ public:
 	virtual void setLightMapTexture(const std::string& strFilename)=0;
 
 	virtual bool create()=0;
-};
+public:
+	iTerrainData(){};
+	virtual ~iTerrainData(){};
+	//
+	virtual void clear()=0;
+	virtual void create(size_t width, size_t height, size_t cubeSize)=0;
+	virtual bool resize(size_t width, size_t height, size_t cubeSize)=0;
+	//
+	virtual int	GetVertexXCount()const=0;
+	virtual int	GetVertexYCount()const=0;
+	virtual int	GetVertexCount()const=0;
+	//
+	virtual int GetWidth()const=0;
+	virtual int GetHeight()const=0;
+	virtual int GetCubeSize()const=0;
+	virtual int GetCellCount()const=0;
+	//
+	virtual bool isCellIn(int nCellX, int nCellY)const=0;
+	virtual bool isPointIn(int nCellX, int nCellY)const=0;
+	//
+	virtual unsigned char	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const=0;
+	virtual void	SetCellTileID(int nCellX, int nCellY, unsigned char uTileID, size_t layer = 0)=0;
+	//
+	virtual unsigned long	GetVertexIndex(int nCellX, int nCellY)const=0;
+	virtual int		GetCellXByVertexIndex(unsigned long uVertexIndex)const=0;
+	virtual int		GetCellYByVertexIndex(unsigned long uVertexIndex)const=0;
+	virtual Pos2D	GetCellPosByVertexIndex(unsigned long uVertexIndex)const=0;
+	//
+	virtual float	getVertexHeight(int nCellX, int nCellY)const=0;
+	virtual void	setVertexHeight(int nCellX, int nCellY, float fHeight)=0;
+	//
+	virtual Vec3D	getVertexNormal(int nCellX, int nCellY)const=0;
+	//
+	virtual unsigned char	getCellAttribute(int nCellX, int nCellY)const=0;
+	virtual void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt)=0;
 
+	virtual bool	isCellSearched(int nCellX, int nCellY)const=0;
+	virtual void	setCellSearched(int nCellX, int nCellY, bool bSearched)=0;
+	//
+	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
+	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
+	//
+	virtual float	GetHeight(const Vec2D& vPos)const=0;
+	virtual Vec4D	GetColor(const Vec2D& vPos)const=0;
+	//
+	virtual bool	PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
+	virtual bool	Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
+	//
+	virtual const std::string& getFilename()const=0;
+	//
+	virtual Vec3D	GetLightDir()const=0;
+
+	virtual void	getVertexByCell(int nCellX, int nCellY, TerrainVertex& vertex)const=0;
+	virtual void	getGrassVertexByCell(int nCellX, int nCellY, TerrainVertex*& vertex)const=0;
+
+	virtual bool	hasGrass(int nCellX, int nCellY)const=0;
+
+	virtual std::vector<TerrainCell>& getCells()=0;
+};
 
 //////////////////////////////////////////////////////////////////////////
 // Scene
@@ -237,8 +230,8 @@ public:
 class iScene
 {
 public:
-	virtual iTerrain* getTerrain()=0;
-	virtual const iTerrain*	getTerrain()const=0;
+	virtual iTerrainData* getTerrain()=0;
+	virtual const iTerrainData*	getTerrain()const=0;
 	virtual void clearObjectResources()=0;
 	virtual void setObjectResources(int64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void createObjectTree(const BBox& box, size_t size)=0;

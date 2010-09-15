@@ -1,6 +1,6 @@
 #pragma once
-#include "Common.h"
 #include "Color.h"
+#include "windows.h"
 
 class CAniTex
 {

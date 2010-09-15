@@ -1,8 +1,7 @@
 #pragma once
 #include "HardwareBuffer.h"
 
-
-class DLL_EXPORT CHardwareIndexBuffer : public CHardwareBuffer
+class CHardwareIndexBuffer : public CHardwareBuffer
 {
 public:
 	enum IndexType {

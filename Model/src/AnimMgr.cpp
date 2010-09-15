@@ -24,9 +24,9 @@ int AnimNode::prev()
 	return 0;
 }
 
-int SingleAnimNode::Tick(uint32 uElapsedTime)
+int SingleAnimNode::Tick(unsigned long uElapsedTime)
 {
-	uFrame += uint32(uElapsedTime*fSpeed);
+	uFrame += unsigned long(uElapsedTime*fSpeed);
 	if (uFrame >= uTotalFrames)
 	{
 		return next();
@@ -38,7 +38,7 @@ int SingleAnimNode::Tick(uint32 uElapsedTime)
 	return 0;
 }
 
-int ListAnimNode::Tick(uint32 uElapsedTime)
+int ListAnimNode::Tick(unsigned long uElapsedTime)
 {
 	uTotalFrames = setNodes.size();
 	if (setNodes.size()>uFrame)
@@ -56,7 +56,7 @@ int ListAnimNode::Tick(uint32 uElapsedTime)
 	return 0;
 }
 
-int ParallelAnimNode::Tick(uint32 uElapsedTime)
+int ParallelAnimNode::Tick(unsigned long uElapsedTime)
 {
 	for (size_t i=0;i<setNodes.size();++i)
 	{
@@ -93,7 +93,7 @@ AnimManager::~AnimManager() {
 }
 
 
-void AnimManager::AddAnim(uint32 id, short loops)
+void AnimManager::AddAnim(unsigned long id, short loops)
 {
 	if (Count > 3)
 		return;
@@ -216,7 +216,7 @@ int AnimManager::Tick(int time)
 	}
 
 	// 
-	Frame += uint32(time*Speed);
+	Frame += unsigned long(time*Speed);
 	if (Frame >= anims[animList[PlayIndex].AnimID].timeEnd)
 	{
 		Next();
@@ -236,7 +236,7 @@ const ModelAnimation& AnimManager::getCurrentAnim()
 	return anims[animList[PlayIndex].AnimID];
 }
 
-uint32 AnimManager::GetFrameCount()
+unsigned long AnimManager::GetFrameCount()
 {
 	return (anims[animList[PlayIndex].AnimID].timeEnd - anims[animList[PlayIndex].AnimID].timeStart);
 }
@@ -262,7 +262,7 @@ void AnimManager::PrevFrame()
 	Pause(true);
 }
 
-void AnimManager::SetFrame(uint32 f)
+void AnimManager::SetFrame(unsigned long f)
 {
 	//TimeDiff = f - Frame;
 	Frame = f;

@@ -91,7 +91,7 @@ void CParticleGroup::draw()const
 		R.SetRenderState(D3DRS_POINTSPRITEENABLE, true);
 		R.SetRenderState(D3DRS_POINTSCALEENABLE, true);
 
-		R.SetRenderState(D3DRS_POINTSIZE, static_cast<uint32>(maxSize);
+		R.SetRenderState(D3DRS_POINTSIZE, static_cast<unsigned long>(maxSize);
 
 		CGraphics* bg = &GetGraphics();
 		bg->Begin(BGMODE_POIN, m_Particles.size());

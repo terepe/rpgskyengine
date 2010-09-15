@@ -1,11 +1,10 @@
 #pragma once
-#include "Common.h"
 #include "Vec2D.h"
 #include "Vec3D.h"
 #include "Vec4D.h"
 #include "Matrix.h"
 
-class DLL_EXPORT CBaseCamera
+class CBaseCamera
 {
 public:
 	CBaseCamera();
@@ -40,8 +39,6 @@ protected:
 	virtual void UpdateVelocity(float fElapsedTime);
 	Matrix			m_mView;		   // View matrix 
 	Matrix			m_mProj;		   // Projection matrix
-
-	POINT			m_ptLastMousePosition;  // Last absolute position of mouse cursor
 
 	Vec3D			m_vMouseDelta;		  // Mouse relative delta smoothed over a few frames
 

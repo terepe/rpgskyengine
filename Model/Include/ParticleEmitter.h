@@ -40,12 +40,12 @@ struct TexCoordSet
     Vec2D tc[4];
 };
 
-class DLL_EXPORT CParticleEmitter
+class CParticleEmitter
 {
 public:
 	// 速度， 变化，伸展，lat， 重力，周期，产生率，来自一个地区的，通道，减速度
 	Animated<float> m_Speed, m_Variation, m_Spread, m_Lat, m_Gravity, m_Lifespan, m_Rate, m_Areal, m_Areaw, m_Deacceleration;
-	Animated<uint8> m_Enabled;
+	Animated<unsigned char> m_Enabled;
 	Color32 m_Colors[3];	// 颜色x3
 
 	float m_Sizes[3];		// 大小x3
@@ -66,8 +66,8 @@ public:
 	//bool transform;
 
 	// unknown parameters omitted for now ...
-	int32 flags;
-	int16 pType;
+	long flags;
+	short pType;
 
 	int	m_nBoneID;
 

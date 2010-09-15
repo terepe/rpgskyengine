@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 #include "Manager.h"
 #include "Color.h"
 #include "matrix.h"
@@ -22,7 +21,7 @@ struct SceneBloomVertex
 };
 
 #define BLOOM_MODEL 1
-class DLL_EXPORT CSceneEffect
+class CSceneEffect
 {
 public:
 	CSceneEffect(); 

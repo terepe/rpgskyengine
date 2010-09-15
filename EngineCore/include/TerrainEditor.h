@@ -7,7 +7,7 @@ struct EditValue
 	union 
 	{
 		float fHeight;
-		uint8 uAtt;
+		unsigned char uAtt;
 		unsigned long color;
 		int nTileID;
 	};
@@ -48,7 +48,7 @@ struct EditRecord
 };
 typedef std::map<EditTarget,EditValue>  MAP_EDIT_RECORD;
 
-class DLL_EXPORT CTerrainEditor : public CTerrain
+class CTerrainEditor : public CTerrain
 {
 public:
 	CTerrainEditor(); 
@@ -100,7 +100,7 @@ protected:
 	bool m_bShowBrushDecal;
 	// ±ÊË¢Ìù»¨
 	CTerrainBrush	m_BrushDecal;
-	std::map<uint8,TerrainSub>	m_mapRenderAttributeSubs;
+	std::map<unsigned char,TerrainSub>	m_mapRenderAttributeSubs;
 
 	std::vector<MAP_EDIT_RECORD> m_setReback;
 	std::vector<MAP_EDIT_RECORD> m_setRedo;

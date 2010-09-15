@@ -1,8 +1,8 @@
 #pragma once
-#include "Common.h"
 #include "Color.h"
 #include "Vec2D.h"
 #include "Vec4D.h"
+#include <map>
 
 enum E_MATERIAL_RENDER_TYPE
 {
@@ -163,13 +163,13 @@ private:
 	std::string	strShader;		// shader
 public:
 	// texture
-	uint32	uDiffuse;
-	uint32	uEmissive;
-	uint32	uSpecular;
-	uint32	uNormal;
-	uint32	uReflection;		// nTexEnvironment
-	uint32	uLightMap;
-	uint32	uShader;			// shader
+	unsigned long	uDiffuse;
+	unsigned long	uEmissive;
+	unsigned long	uSpecular;
+	unsigned long	uNormal;
+	unsigned long	uReflection;		// nTexEnvironment
+	unsigned long	uLightMap;
+	unsigned long	uShader;			// shader
 
 	// color
 	Vec4D	vAmbient;
@@ -181,7 +181,7 @@ public:
 	bool	bDepthWrite;
 	bool	bBlend;
 	bool	bAlphaTest;
-	uint8	uAlphaTestValue;
+	unsigned char uAlphaTestValue;
 	Vec2D	vTexAnim;
 	float	m_fOpacity;
 	Color32 cEmissive;

@@ -20,7 +20,7 @@ CShader* CShaderMgr::getSharedShader()
 	return getItem(m_uShareShaderID);
 }
 
-uint32 CShaderMgr::registerItem(const std::string& strFilename)
+unsigned long CShaderMgr::registerItem(const std::string& strFilename)
 {
 	if(!IOReadBase::Exists(strFilename))
 	{

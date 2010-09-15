@@ -1,7 +1,6 @@
 #include "LodMesh.h"
 #include "RenderSystem.h"
 #include "Intersect.h"
-#include "LumpFile.h"
 
 void CBoundMesh::draw()const
 {
@@ -93,7 +92,7 @@ void CLodMesh::Init()
 		setVecVertexIndex.resize(m_setSubMesh.size());
 		m_Lods.resize(1);
 		IndexedSubset subset;
-		std::vector<uint16> setIndex;
+		std::vector<unsigned short> setIndex;
 		for (size_t i=0;i<m_setSubMesh.size();++i)
 		{
 			CSubMesh& subMesh = m_setSubMesh[i];
@@ -196,10 +195,10 @@ void CLodMesh::Init()
 
 	m_pVertexDeclHardware = GetRenderSystem().CreateVertexDeclaration();
 
-	uint32 dwFVF = 0;
-	uint16 uOffset = 0;
+	unsigned long dwFVF = 0;
+	unsigned short uOffset = 0;
 	m_uSkinVertexSize = 0;
-	uint16 uStream = 0;
+	unsigned short uStream = 0;
 	// pos
 	if (bPos)
 	{
@@ -223,7 +222,7 @@ void CLodMesh::Init()
 	if (bColor)
 	{
 		m_pVertexDeclHardware->AddElement(uStream, uOffset, VET_COLOUR, VES_DIFFUSE);
-		uOffset += sizeof(uint32);
+		uOffset += sizeof(unsigned long);
 	}
 	// texCoord
 	if (bTexCoord)
@@ -251,7 +250,7 @@ void CLodMesh::Init()
 		m_pShareBuffer = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(uVertexCount, m_uShareVertexSize);
 		if (m_pShareBuffer)
 		{
-			uint8* pBuffer = (uint8*)m_pShareBuffer->lock(CHardwareBuffer::HBL_NORMAL);
+			unsigned char* pBuffer = (unsigned char*)m_pShareBuffer->lock(CHardwareBuffer::HBL_NORMAL);
 			if (pBuffer)
 			{
 				for (size_t i=0;i<setVecVertexIndex.size();++i)
@@ -305,7 +304,7 @@ void CLodMesh::Init()
 			it->pIB = GetRenderSystem().GetHardwareBufferMgr().CreateIndexBuffer(indexSize);
 			if (it->pIB)
 			{
-				uint16* indices = (uint16*)it->pIB->lock(CHardwareBuffer::HBL_NORMAL);
+				unsigned short* indices = (unsigned short*)it->pIB->lock(CHardwareBuffer::HBL_NORMAL);
 				if (indices)
 				{
 					for (size_t i=0;i<indexSize;++i)
@@ -319,7 +318,7 @@ void CLodMesh::Init()
 	}
 }
 
-uint32 CLodMesh::GetSkinVertexSize()
+unsigned long CLodMesh::GetSkinVertexSize()
 {
 	return m_uSkinVertexSize;
 }
@@ -401,12 +400,12 @@ void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& set
 	// 运算顶点
 	if (pVB)
 	{
-		//uint32 dwLockFlag = D3DLOCK_NOOVERWRITE;// 不等待 直接写入
+		//unsigned long dwLockFlag = D3DLOCK_NOOVERWRITE;// 不等待 直接写入
 		//if (1/*useEnvMapping*/)// 当一个Mesh被叠加多遍渲染的话 Lock 要等待GPU渲染完成或另开内存，否则会出现叠面
 		//{
 		//	dwLockFlag = 0;//D3DLOCK_DISCARD;// 另开一块内存写入
 		//}
-		uint16 uCount	= m_setSkinVertex.size();
+		unsigned short uCount	= m_setSkinVertex.size();
 		//ModelVertex* pVIn		= &[0];
 		const SkinVertex* pSkinVertex	= &m_setSkinVertex[0];
 
@@ -418,10 +417,10 @@ void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& set
 			{
 				Vec3D v(0,0,0);
 				Vec3D n(0,0,0);
-				for (uint8 b=0; b<4; b++)
+				for (unsigned char b=0; b<4; b++)
 				{
-					uint8 bone = pSkinVertex->b[b];
-					uint8 weight = pSkinVertex->w[b];
+					unsigned char bone = pSkinVertex->b[b];
+					unsigned char weight = pSkinVertex->w[b];
 					if (weight!=0)
 					{
 						float fWeight = weight / 255.0f;
@@ -488,8 +487,8 @@ void CLodMesh::InitBBox()
 		}
 		if (false==m_bSkinMesh)
 		{
-			std::vector<uint32>& bone = m_setSubMesh[i].bone;
-			for (std::vector<uint32>::iterator it=bone.begin();it!=bone.end();++it)
+			std::vector<unsigned long>& bone = m_setSubMesh[i].bone;
+			for (std::vector<unsigned long>::iterator it=bone.begin();it!=bone.end();++it)
 			{
 				if (*it>0)
 				{
@@ -508,8 +507,8 @@ void CLodMesh::InitBBox()
 	m_fRad = sqrtf(m_fRad);
 }
 
-void CLodMesh::load(CNodeData& lump)
-{
+//void CLodMesh::load(CNodeData& lump)
+//{
 	//lump.getVector("pos",		pos);
 //	lump.getVector("normal",	normal);
 //	lump.getVector("color",		color);
@@ -518,12 +517,12 @@ void CLodMesh::load(CNodeData& lump)
 //	lump.getVector("weight",	weight);
 //	lump.getVector("bone",		bone);
 	// error lump.getVector("face",		m_mapVertexIndex);
-	update();
+//	update();
 	//m_Lods.resize(1);
-}
+//}
 
-void CLodMesh::save(CNodeData& lump)
-{
+//void CLodMesh::save(CNodeData& lump)
+//{
 //	lump.SetVector("pos",		pos);
 //	lump.SetVector("normal",	normal);
 //	lump.SetVector("color",		color);
@@ -532,7 +531,7 @@ void CLodMesh::save(CNodeData& lump)
 //	lump.SetVector("weight",	weight);
 //	lump.SetVector("bone",		bone);
 	// error lump.SetVector("face",		m_setVertexIndex);
-}
+//}
 
 
 bool SubMeshIntersect(const CSubMesh& subMesh,const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)

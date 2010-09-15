@@ -4,12 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include "Common.h"
-
 #include "interpolation.h"
-
-#include "LumpFile.h"
-
 
 // global time for global sequences
 extern int globalTime;
@@ -34,7 +29,7 @@ public:
 	int type;
 
 	// keyframes
-	std::vector<uint32> m_KeyTimes;
+	std::vector<unsigned long> m_KeyTimes;
 	std::vector<T> m_KeyData;
 
 	bool isUsed()const

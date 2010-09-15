@@ -21,7 +21,7 @@
 #endif
 
 
-class DLL_EXPORT CRenderSystem
+class CRenderSystem
 {
 public:
 	CRenderSystem();
@@ -57,12 +57,12 @@ public:
 	virtual void setWorldMatrix(const Matrix& m) = 0;
 	virtual void setViewMatrix(const Matrix& m) = 0;
 	virtual void setProjectionMatrix(const Matrix& m) = 0;
-	virtual void setTextureMatrix(uint8 uTexChannel, TextureTransformFlag flag, const Matrix& m = Matrix::ZERO) = 0;
+	virtual void setTextureMatrix(unsigned char uTexChannel, TextureTransformFlag flag, const Matrix& m = Matrix::ZERO) = 0;
 	// get matrix
 	virtual void getWorldMatrix(Matrix& m)const = 0;
 	virtual void getViewMatrix(Matrix& m)const = 0;
 	virtual void getProjectionMatrix(Matrix& m)const = 0;
-	virtual void getTextureMatrix(uint8 uTexChannel, Matrix& m)const = 0;
+	virtual void getTextureMatrix(unsigned char uTexChannel, Matrix& m)const = 0;
 
 	// Func
 	virtual void SetDepthBufferFunc(bool bDepthTest = true, bool bDepthWrite = true,				// 深度检测
@@ -91,18 +91,18 @@ public:
 	virtual void SetTextureStageStateDecolor() = 0;
 	// 设置shader
 	virtual void SetShader(CShader* pShader) = 0;
-	virtual void SetShader(uint32 id) = 0;
+	virtual void SetShader(unsigned long id) = 0;
 	// Light
-	virtual void SetDirectionalLight(uint32 uIndex,const DirectionalLight& light) = 0;
-	virtual void LightEnable(uint32 Index, bool bEnable) = 0;
+	virtual void SetDirectionalLight(unsigned long uIndex,const DirectionalLight& light) = 0;
+	virtual void LightEnable(unsigned long Index, bool bEnable) = 0;
 	virtual void SetLightingEnabled(bool bEnable) = 0;
-	virtual void SetTexCoordIndex(uint32 stage, uint32 index) = 0;
+	virtual void SetTexCoordIndex(unsigned long stage, unsigned long index) = 0;
 
 	// 设置纹理
-	virtual void SetTexture(uint32 Stage, uint32 TextureID) = 0;
-	virtual void SetTexture(uint32 Stage, const CTexture* pTexture) = 0;
+	virtual void SetTexture(unsigned long Stage, unsigned long TextureID) = 0;
+	virtual void SetTexture(unsigned long Stage, const CTexture* pTexture) = 0;
 	// Get
-	virtual CTexture* GetTexture(uint32 Stage) = 0;
+	virtual CTexture* GetTexture(unsigned long Stage) = 0;
 
 	virtual CVertexDeclaration* CreateVertexDeclaration() = 0;
 	//
@@ -110,18 +110,18 @@ public:
 	// 顶点
 	virtual void SetVB(int nVBID) = 0;
 	// 设置FVF顶点格式
-	virtual void SetFVF(uint32 FVF) = 0;
+	virtual void SetFVF(unsigned long FVF) = 0;
 	//
 	virtual void SetVertexDeclaration(CVertexDeclaration* pDecl) = 0;
 	//
-	virtual void SetStreamSource(uint32 StreamNumber, CHardwareVertexBuffer* pStreamData,uint32 OffsetInBytes,uint32 Stride) = 0;
+	virtual void SetStreamSource(unsigned long StreamNumber, CHardwareVertexBuffer* pStreamData,unsigned long OffsetInBytes,unsigned long Stride) = 0;
 	virtual void SetIndices(CHardwareIndexBuffer* pIndexData) = 0;
 
 	// 绘制
-	virtual void DrawPrimitive(VertexRenderOperationType PrimitiveType,uint32 StartVertex,uint32 PrimitiveCount) = 0;
-	virtual void DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,uint32 MinVertexIndex,uint32 NumVertices,uint32 startIndex,uint32 primCount) = 0;
-	virtual void DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 PrimitiveCount,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride) = 0;
-	virtual void DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 MinVertexIndex,uint32 NumVertices,uint32 PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride) = 0;
+	virtual void DrawPrimitive(VertexRenderOperationType PrimitiveType,unsigned long StartVertex,unsigned long PrimitiveCount) = 0;
+	virtual void DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long startIndex,unsigned long primCount) = 0;
+	virtual void DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long PrimitiveCount,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride) = 0;
+	virtual void DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride) = 0;
 
 	virtual void drawIndexedSubset(const IndexedSubset& subset) = 0;
 
@@ -141,5 +141,5 @@ private:
 	CMaterialMgr m_MaterialMgr;
 };
 
-DLL_EXPORT void SetRenderSystem(CRenderSystem* pRenderSystem);
-DLL_EXPORT CRenderSystem& GetRenderSystem();
+void SetRenderSystem(CRenderSystem* pRenderSystem);
+CRenderSystem& GetRenderSystem();

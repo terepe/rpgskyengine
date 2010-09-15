@@ -3,7 +3,7 @@
 #include "Texture.h"
 #include <set>
 
-class DLL_EXPORT CTextureMgr : public CManager<CTexture>
+class CTextureMgr : public CManager<CTexture>
 {
 public:
 	CTextureMgr();
@@ -20,8 +20,8 @@ public:
 	virtual CTexture* CreateRenderTarget(int nWidth, int nHeight);
 	virtual CTexture* CreateDepthStencil(int nWidth, int nHeight);
 
-	uint32 RegisterTexture(const std::string& strFilename, int nLevels = -1);
-	CTexture* getLoadedTexture(uint32 uTexID);
+	unsigned long RegisterTexture(const std::string& strFilename, int nLevels = -1);
+	CTexture* getLoadedTexture(unsigned long uTexID);
 	void releaseBuffer(int nIndex);
 	void releaseBuffer(const std::string& strFilename);
 	void Update();

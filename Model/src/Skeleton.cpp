@@ -3,7 +3,7 @@
 #include "Graphics.h"
 //#include "TextRender.h"
 
-uint8 CSkeleton::getIDByName(const std::string& strName)
+unsigned char CSkeleton::getIDByName(const std::string& strName)
 {
 	for (size_t i=0;i<m_Bones.size();++i)
 	{
@@ -154,62 +154,62 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 		}
 	}
 }
-
-CNodeData* CSkeleton::Save(CNodeData& lump, const char* name)
-{
-	if (0==m_Bones.size())
-	{
-		return false;
-	}
-	CNodeData* pNode = lump.SetInt(name,m_Bones.size());
-	if (pNode)
-	{
-		for(size_t i=0;i<m_Bones.size();++i)
-		{
-			CNodeData* pChild = pNode->AddNode(i);
-			if (pChild)
-			{
-				//m_BoneAnims[i].trans.Save(*pChild,"trans");
-				//m_BoneAnims[i].rot.Save(*pChild,"rot");
-				//m_BoneAnims[i].scale.Save(*pChild,"scale");
-
-// 				pChild->SetString("name", m_BoneAnims[i].strName.c_str());
-// 				pChild->SetVal("pivot", m_BoneAnims[i].pivot);
-// 				pChild->SetVal("parent", m_BoneAnims[i].parent);
-// 				pChild->SetVal("billboard",m_BoneAnims[i].billboard);
-// 				pChild->SetVal("mat",m_BoneAnims[i].mSkin);
-			}
-		}
-	}
-	return pNode;
-}
-
-CNodeData* CSkeleton::Load(CNodeData& lump, const char* name)
-{
-	int nCount = 0;
-	CNodeData* pNode = lump.GetInt(name, nCount);
-	if (pNode)
-	{
-		m_Bones.resize(nCount);
-		for(size_t i=0;i<m_Bones.size();++i)
-		{
-			CNodeData* pChild = pNode->firstChild(i);
-			if (pChild)
-			{
-// 				m_BoneAnims[i].trans.Load(*pChild,"trans");
-// 				m_BoneAnims[i].rot.Load(*pChild,"rot");
-// 				m_BoneAnims[i].scale.Load(*pChild,"scale");
 // 
-// 				pChild->GetString("name", m_BoneAnims[i].strName);
-// 				pChild->GetVal("pivot", m_BoneAnims[i].pivot);
-// 				pChild->GetVal("parent", m_BoneAnims[i].parent);
-// 				pChild->GetVal("billboard",m_BoneAnims[i].billboard);
-// 				pChild->GetVal("mat",m_BoneAnims[i].mSkin);
-			}
-		}
-	}
-	return pNode;
-}
+// CNodeData* CSkeleton::Save(CNodeData& lump, const char* name)
+// {
+// 	if (0==m_Bones.size())
+// 	{
+// 		return false;
+// 	}
+// 	CNodeData* pNode = lump.SetInt(name,m_Bones.size());
+// 	if (pNode)
+// 	{
+// 		for(size_t i=0;i<m_Bones.size();++i)
+// 		{
+// 			CNodeData* pChild = pNode->AddNode(i);
+// 			if (pChild)
+// 			{
+// 				//m_BoneAnims[i].trans.Save(*pChild,"trans");
+// 				//m_BoneAnims[i].rot.Save(*pChild,"rot");
+// 				//m_BoneAnims[i].scale.Save(*pChild,"scale");
+// 
+// // 				pChild->SetString("name", m_BoneAnims[i].strName.c_str());
+// // 				pChild->SetVal("pivot", m_BoneAnims[i].pivot);
+// // 				pChild->SetVal("parent", m_BoneAnims[i].parent);
+// // 				pChild->SetVal("billboard",m_BoneAnims[i].billboard);
+// // 				pChild->SetVal("mat",m_BoneAnims[i].mSkin);
+// 			}
+// 		}
+// 	}
+// 	return pNode;
+// }
+
+// CNodeData* CSkeleton::Load(CNodeData& lump, const char* name)
+// {
+// 	int nCount = 0;
+// 	CNodeData* pNode = lump.GetInt(name, nCount);
+// 	if (pNode)
+// 	{
+// 		m_Bones.resize(nCount);
+// 		for(size_t i=0;i<m_Bones.size();++i)
+// 		{
+// 			CNodeData* pChild = pNode->firstChild(i);
+// 			if (pChild)
+// 			{
+// // 				m_BoneAnims[i].trans.Load(*pChild,"trans");
+// // 				m_BoneAnims[i].rot.Load(*pChild,"rot");
+// // 				m_BoneAnims[i].scale.Load(*pChild,"scale");
+// // 
+// // 				pChild->GetString("name", m_BoneAnims[i].strName);
+// // 				pChild->GetVal("pivot", m_BoneAnims[i].pivot);
+// // 				pChild->GetVal("parent", m_BoneAnims[i].parent);
+// // 				pChild->GetVal("billboard",m_BoneAnims[i].billboard);
+// // 				pChild->GetVal("mat",m_BoneAnims[i].mSkin);
+// 			}
+// 		}
+// 	}
+// 	return pNode;
+// }
 
 size_t CSkeleton::getAnimationCount()
 {

@@ -8,7 +8,7 @@
 
 struct TerrainSub:public IndexedSubset
 {
-	void myVertexIndex(uint32 uIndex)
+	void myVertexIndex(unsigned long uIndex)
 	{
 		if (icount==0)
 		{
@@ -20,7 +20,7 @@ struct TerrainSub:public IndexedSubset
 	}
 };
 
-class CTerrain:public iTerrain
+class CTerrain:public CTerrainData
 {
 public:
 	CTerrain(); 
@@ -31,7 +31,7 @@ public:
 	virtual CMaterial& getMaterial(const std::string& strMaterialName);
 	//
 	virtual void create(size_t width, size_t height,  size_t cubeSize);
-	virtual void resize(size_t width, size_t height,  size_t cubeSize);
+	virtual bool resize(size_t width, size_t height,  size_t cubeSize);
 	//
 	void	ShowBox(bool bShowBox){m_bShowBox = bShowBox;}
 	bool	IsShowBox(){return m_bShowBox;}
@@ -58,8 +58,6 @@ public:
 	virtual void DrawChunk(const Cube& cube);
 	//
 	MAP_TILES& GetTiles(){return m_Tiles;}
-	iTerrainData& GetData(){return m_TerrainData;}
-	const iTerrainData& GetData()const{return m_TerrainData;}
 	Cube& GetRootCube(){return m_RootCube;}
 	CHardwareVertexBuffer* GetVB(){return m_pVB;}
 	CTerrainDecal& GetLightMapDecal(){return m_LightMapDecal;}
@@ -80,7 +78,6 @@ protected:
 	void	CalcChunkIB(Cube& cube);
 	void	UpdateCubeBBox(Cube& cube);
 protected:
-	CTerrainData			m_TerrainData;
 	//int						m_nVBID;
 	CHardwareVertexBuffer*	m_pVB;
 	CHardwareIndexBuffer*	m_pIB;
@@ -96,9 +93,9 @@ protected:
 	// Œ∆¿ÌTile
 	MAP_TILES		m_Tiles;
 	int				m_nLightMap;
-	uint32			m_uShowTileIBCount;
+	unsigned long			m_uShowTileIBCount;
 	// For Render
-	std::map<uint8,TerrainSub>	m_RenderTileSubsLayer[2];
+	std::map<unsigned char,TerrainSub>	m_RenderTileSubsLayer[2];
 	TerrainSub					m_GrassSub;
 	//
 	LIST_CUBES		m_RenderCubesList;

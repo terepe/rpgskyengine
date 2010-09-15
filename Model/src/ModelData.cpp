@@ -64,111 +64,112 @@ CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
 
 bool CModelData::LoadFile(const std::string& strFilename)
 {
-	m_strModelFilename = strFilename;
-	CModelDataMgr::getInstance().loadModel(*this,strFilename);
-
-	bLoaded=true;
-	return true;
-
-	CLumpFile lumpFile;
-	if (!lumpFile.LoadFile(strFilename))
-	{
-		return false;
-	}
-	// Mesh
-	m_Mesh.load(lumpFile);
-
-	// 读入模型包围体
-	lumpFile.getVector("BoundV",	m_BoundMesh.pos);
-	lumpFile.getVector("BoundI",	m_BoundMesh.indices);
-
-	// Box
-// 	lumpFile.GetVal("BoxMin",		m_bbox.vMin);
-// 	lumpFile.GetVal("BoxMax",		m_bbox.vMax);
-// 	if (m_bbox.vMin==m_bbox.vMax)
-// 	{
-// 		m_bbox = m_Mesh.m_bbox;
-// 	}
-
-	// 纹理通道
-	CNodeData* pTexChannelsNode = lumpFile.firstChild("Texs");
-	if (pTexChannelsNode)
-	{
-		int subID = 0;
-		CNodeData* pChannelNode = pTexChannelsNode->firstChild("Channel");
-		while (pChannelNode)
-		{
-			CNodeData* pFilenamelNode = pChannelNode->firstChild("file");
-			if (pFilenamelNode)
-			{
-				std::string strTexFileName;
-				pFilenamelNode->GetString(strTexFileName);
-				strTexFileName = GetParentPath(strFilename) + strTexFileName;
-				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),subID);
-				{
-					CMaterial& material = this->getMaterial(strMaterialName);
-					material.setDiffuse(strTexFileName);
-					material.bAlphaTest=true;
-				}
-				setRenderPass(subID, subID, strMaterialName );
-				subID++;
-			}
-			pChannelNode = pChannelNode->nextSibling("Channel");
-		}
-	}
-
-	//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
-	// 纹理通道
-	//std::vector<TexGroup>		m_TexChannels;
-	// 皮肤
-	//std::vector<ModelSkin>		m_Skins;
-
-	// ColorAnim
-	int nColorAnimCount = 0;
-	CNodeData* pColorAnimsNode = lumpFile.GetInt("ColorAnim", nColorAnimCount);
-	if (pColorAnimsNode)
-	{
-		m_ColorAnims.resize(nColorAnimCount);
-		for (size_t i=0;i<m_ColorAnims.size();++i)
-		{
-			CNodeData* pNode = pColorAnimsNode->firstChild(i);
-			if (pNode)
-			{
-			//	m_ColorAnims[i].color.Load(*pNode, "color");
-			//	m_ColorAnims[i].specular.Load(*pNode, "specular");
-			//	m_ColorAnims[i].opacity.Load(*pNode, "opacity");
-			}
-		}
-	}
-	// AnimList
-	//lumpFile.getVector("AnimList", m_AnimList);
-	if (m_AnimList.empty())
-	{
-		ModelAnimation anim;
-		anim.animID = 0;
-		anim.timeStart=0;
-		anim.timeEnd=100000;
-		anim.moveSpeed=1;
-		anim.loopType = 0;
-		anim.flags=0;
-		anim.d1=0;
-		anim.d2=0;
-		anim.playSpeed=1;
-
-		//anim.boxA, boxB;
-		//float rad;
-
-		//int16 s[2];
-		m_AnimList["0"]=anim;
-	}
-	// Skeleton
-	m_Skeleton.Load(lumpFile,"Skeleton");
-	//loadMaterial(ChangeExtension(strFilename,".mat.csv"));
-	loadParticleEmitters(ChangeExtension(strFilename,".par.csv"));
-
-	bLoaded=true;
-	return true;
+ 	m_strModelFilename = strFilename;
+ 	CModelDataMgr::getInstance().loadModel(*this,strFilename);
+ 
+ 	bLoaded=true;
+ 	return true;
 }
+// 
+// 	CLumpFile lumpFile;
+// 	if (!lumpFile.LoadFile(strFilename))
+// 	{
+// 		return false;
+// 	}
+// 	// Mesh
+// 	m_Mesh.load(lumpFile);
+// 
+// 	// 读入模型包围体
+// 	lumpFile.getVector("BoundV",	m_BoundMesh.pos);
+// 	lumpFile.getVector("BoundI",	m_BoundMesh.indices);
+// 
+// 	// Box
+// // 	lumpFile.GetVal("BoxMin",		m_bbox.vMin);
+// // 	lumpFile.GetVal("BoxMax",		m_bbox.vMax);
+// // 	if (m_bbox.vMin==m_bbox.vMax)
+// // 	{
+// // 		m_bbox = m_Mesh.m_bbox;
+// // 	}
+// 
+// 	// 纹理通道
+// 	CNodeData* pTexChannelsNode = lumpFile.firstChild("Texs");
+// 	if (pTexChannelsNode)
+// 	{
+// 		int subID = 0;
+// 		CNodeData* pChannelNode = pTexChannelsNode->firstChild("Channel");
+// 		while (pChannelNode)
+// 		{
+// 			CNodeData* pFilenamelNode = pChannelNode->firstChild("file");
+// 			if (pFilenamelNode)
+// 			{
+// 				std::string strTexFileName;
+// 				pFilenamelNode->GetString(strTexFileName);
+// 				strTexFileName = GetParentPath(strFilename) + strTexFileName;
+// 				std::string strMaterialName = Format("%s%d",ChangeExtension(getItemName(),".sub"),subID);
+// 				{
+// 					CMaterial& material = this->getMaterial(strMaterialName);
+// 					material.setDiffuse(strTexFileName);
+// 					material.bAlphaTest=true;
+// 				}
+// 				setRenderPass(subID, subID, strMaterialName );
+// 				subID++;
+// 			}
+// 			pChannelNode = pChannelNode->nextSibling("Channel");
+// 		}
+// 	}
+// 
+// 	//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
+// 	// 纹理通道
+// 	//std::vector<TexGroup>		m_TexChannels;
+// 	// 皮肤
+// 	//std::vector<ModelSkin>		m_Skins;
+// 
+// 	// ColorAnim
+// 	int nColorAnimCount = 0;
+// 	CNodeData* pColorAnimsNode = lumpFile.GetInt("ColorAnim", nColorAnimCount);
+// 	if (pColorAnimsNode)
+// 	{
+// 		m_ColorAnims.resize(nColorAnimCount);
+// 		for (size_t i=0;i<m_ColorAnims.size();++i)
+// 		{
+// 			CNodeData* pNode = pColorAnimsNode->firstChild(i);
+// 			if (pNode)
+// 			{
+// 			//	m_ColorAnims[i].color.Load(*pNode, "color");
+// 			//	m_ColorAnims[i].specular.Load(*pNode, "specular");
+// 			//	m_ColorAnims[i].opacity.Load(*pNode, "opacity");
+// 			}
+// 		}
+// 	}
+// 	// AnimList
+// 	//lumpFile.getVector("AnimList", m_AnimList);
+// 	if (m_AnimList.empty())
+// 	{
+// 		ModelAnimation anim;
+// 		anim.animID = 0;
+// 		anim.timeStart=0;
+// 		anim.timeEnd=100000;
+// 		anim.moveSpeed=1;
+// 		anim.loopType = 0;
+// 		anim.flags=0;
+// 		anim.d1=0;
+// 		anim.d2=0;
+// 		anim.playSpeed=1;
+// 
+// 		//anim.boxA, boxB;
+// 		//float rad;
+// 
+// 		//int16 s[2];
+// 		m_AnimList["0"]=anim;
+// 	}
+// 	// Skeleton
+// 	m_Skeleton.Load(lumpFile,"Skeleton");
+// 	//loadMaterial(ChangeExtension(strFilename,".mat.csv"));
+// 	loadParticleEmitters(ChangeExtension(strFilename,".par.csv"));
+// 
+// 	bLoaded=true;
+// 	return true;
+// }
 
 #include<iostream>
 #include<iomanip>
@@ -295,63 +296,63 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename)
 	initParticleMaterial();
 	return true;
 }
-
-bool CModelData::SaveFile(const std::string& strFilename)
-{
-	CLumpFile lumpFile;
-	lumpFile.SetName("model");
-	lumpFile.SetInt(1);
-	CNodeData* pskinNode = lumpFile.SetBool("skin", true);
-	{
-		//pNode->Set
-	}
-
-	saveMaterial(ChangeExtension(strFilename,".mat.csv"));
-	// Mesh
-	m_Mesh.save(lumpFile);
-
-	// 写入包围体
-	lumpFile.SetVector("BoundV", m_BoundMesh.pos);
-	lumpFile.SetVector("BoundI", m_BoundMesh.indices);
-
-	// Box
-// 	lumpFile.SetVal("BoxMin", m_bbox.vMin);
-// 	lumpFile.SetVal("BoxMax", m_bbox.vMax);
-
-	//for (int i = 0; i < m_Lods.size(); i++)
-	{
-		//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
-
-		//std::vector<TexGroup>		m_TexChannels;
-		// 皮肤
-		//std::vector<ModelSkin>		m_Skins;
-	}
-
-	// ColorAnim
-	CNodeData* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
-	if (pColorAnimsNode)
-	{
-		for (size_t i=0;i<m_ColorAnims.size();++i)
-		{
-			CNodeData* pNode = pColorAnimsNode->AddNode(i);
-			if (pNode)
-			{
-		//		m_ColorAnims[i].color.Save(*pNode, "color");
-		//		m_ColorAnims[i].specular.Save(*pNode, "specular");
-		//		m_ColorAnims[i].opacity.Save(*pNode, "opacity");
-			}
-		}
-	}
-
-	// AnimList
-	//lumpFile.SetVector("AnimList", m_AnimList);
-
-	// Skeleton
-	m_Skeleton.Save(lumpFile,"Skeleton");
-
-	lumpFile.SaveFile(strFilename);
-	return true;
-}
+// 
+// bool CModelData::SaveFile(const std::string& strFilename)
+// {
+// 	CLumpFile lumpFile;
+// 	lumpFile.SetName("model");
+// 	lumpFile.SetInt(1);
+// 	CNodeData* pskinNode = lumpFile.SetBool("skin", true);
+// 	{
+// 		//pNode->Set
+// 	}
+// 
+// 	saveMaterial(ChangeExtension(strFilename,".mat.csv"));
+// 	// Mesh
+// 	m_Mesh.save(lumpFile);
+// 
+// 	// 写入包围体
+// 	lumpFile.SetVector("BoundV", m_BoundMesh.pos);
+// 	lumpFile.SetVector("BoundI", m_BoundMesh.indices);
+// 
+// 	// Box
+// // 	lumpFile.SetVal("BoxMin", m_bbox.vMin);
+// // 	lumpFile.SetVal("BoxMax", m_bbox.vMax);
+// 
+// 	//for (int i = 0; i < m_Lods.size(); i++)
+// 	{
+// 		//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
+// 
+// 		//std::vector<TexGroup>		m_TexChannels;
+// 		// 皮肤
+// 		//std::vector<ModelSkin>		m_Skins;
+// 	}
+// 
+// 	// ColorAnim
+// 	CNodeData* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
+// 	if (pColorAnimsNode)
+// 	{
+// 		for (size_t i=0;i<m_ColorAnims.size();++i)
+// 		{
+// 			CNodeData* pNode = pColorAnimsNode->AddNode(i);
+// 			if (pNode)
+// 			{
+// 		//		m_ColorAnims[i].color.Save(*pNode, "color");
+// 		//		m_ColorAnims[i].specular.Save(*pNode, "specular");
+// 		//		m_ColorAnims[i].opacity.Save(*pNode, "opacity");
+// 			}
+// 		}
+// 	}
+// 
+// 	// AnimList
+// 	//lumpFile.SetVector("AnimList", m_AnimList);
+// 
+// 	// Skeleton
+// 	m_Skeleton.Save(lumpFile,"Skeleton");
+// 
+// 	lumpFile.SaveFile(strFilename);
+// 	return true;
+// }
 
 
 void CModelData::Init()

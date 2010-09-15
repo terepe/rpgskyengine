@@ -5,7 +5,7 @@
 #include "3DMapEffect.h"
 #include "ObjectTree.h"
 
-class DLL_EXPORT CScene:public iScene
+class CScene:public iScene
 {
 public:
 	struct ObjectInfo
@@ -71,8 +71,8 @@ public:
 	ObjectTree& GetObject(){return m_ObjectTree;}
 
 	void			SetTerrain(CTerrain* pTerrain){m_pTerrain = pTerrain;}
-	iTerrain*		getTerrain(){return m_pTerrain;}
-	const iTerrain*	getTerrain()const{return m_pTerrain;}
+	iTerrainData*		getTerrain(){return m_pTerrain;}
+	const iTerrainData*	getTerrain()const{return m_pTerrain;}
 	void			CalcLightMap();
 
 	void showStaticObject(bool bShowStaticObject){m_bShowStaticObject = bShowStaticObject;}

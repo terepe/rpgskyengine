@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Skeleton.h"
+#include "RenderSystemCommon.h"
 
 class CHardwareVertexBuffer;
 class CHardwareIndexBuffer;
@@ -20,12 +20,12 @@ struct SkinVertex: public SkinnedVertex
 		b4=0;
 	}
 	union{
-		uint8	w[4];
-		uint32	w4;
+		unsigned char	w[4];
+		unsigned long	w4;
 	};
 	union{
-		uint8	b[4];
-		uint32	b4;
+		unsigned char	b[4];
+		unsigned long	b4;
 	};
 };
 
@@ -37,33 +37,21 @@ struct ModelLod
 		nLevel = 0;
 	}
 	CHardwareIndexBuffer*		pIB;			// 索引缓冲
-	std::vector<uint16>			IndexLookup;	// 使用索引查找表可以优化骨骼动画（通过索引表去更新必要的顶点） Vertices in this model (index into vertices[])
-	std::vector<uint16>			Indices;		// indices
+	std::vector<unsigned short>	IndexLookup;	// 使用索引查找表可以优化骨骼动画（通过索引表去更新必要的顶点） Vertices in this model (index into vertices[])
+	std::vector<unsigned short>	Indices;		// indices
 	std::vector<IndexedSubset>	setSubset;		// 部件
-	int32						nLevel;			// LOD等级
-	void Load(CNodeData& lump)
-	{
-		lump.getVector("IndexLookup",	IndexLookup);
-		lump.getVector("Indices",		Indices);
-		lump.getVector("Geoset",		setSubset);
-	}
-	void Save(CNodeData& lump)
-	{
-		lump.SetVector("IndexLookup",	IndexLookup);
-		lump.SetVector("Indices",		Indices);
-		lump.SetVector("Geoset",		setSubset);
-	}
+	long						nLevel;			// LOD等级
 };
 
 class CBoundMesh
 {
 public:
 	std::vector<Vec3D>			pos;		// 包围盒
-	std::vector<uint16>			indices;	// 包围盒
+	std::vector<unsigned short>			indices;	// 包围盒
 	void draw()const;
 };
 
-class DLL_EXPORT CLodMesh:public iLodMesh
+class CLodMesh:public iLodMesh
 {
 public:
 	CLodMesh();
@@ -76,7 +64,7 @@ public:
 	virtual void update();
 
 	void Init();
-	uint32 GetSkinVertexSize();
+	unsigned long GetSkinVertexSize();
 	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL)const;
 	void drawSub(size_t uSubID, size_t uLodLevel=0)const;
 	void draw(size_t uLodLevel=0)const;
@@ -85,8 +73,6 @@ public:
 	void Clear();
 	size_t GetSkinVertexCount(){return m_setSkinVertex.size();}
 
-	void load(CNodeData& lump);
-	void save(CNodeData& lump);
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const;
 	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
 protected:
@@ -96,8 +82,8 @@ public:
 	CHardwareVertexBuffer*	m_pShareBuffer;	// Share Vertex Buffer
 	std::vector<ModelLod>	m_Lods;			// the lods
 
-	uint16					m_uSkinVertexSize;
-	uint16					m_uShareVertexSize;
+	unsigned short					m_uSkinVertexSize;
+	unsigned short					m_uShareVertexSize;
 
 	CVertexDeclaration*		m_pVertexDeclHardware;	// FVF
 
@@ -108,7 +94,7 @@ protected:
 	std::vector<SkinVertex>	m_setSkinVertex;
 };
 
-class DLL_EXPORT CMeshCoordinate:public CLodMesh
+class CMeshCoordinate:public CLodMesh
 {
 public:
 	CMeshCoordinate();

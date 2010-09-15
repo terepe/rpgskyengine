@@ -1,7 +1,7 @@
 #pragma once
 #include "HardwareBuffer.h"
 
-class DLL_EXPORT CHardwareVertexBuffer : public CHardwareBuffer
+class CHardwareVertexBuffer : public CHardwareBuffer
 {
 protected:
 

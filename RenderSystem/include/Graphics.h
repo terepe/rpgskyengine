@@ -23,18 +23,18 @@ typedef enum _BGMODE {
 	BGMODE_FORCE_DWORD		= 0x7fffffff, /* force 32-bit size enum */
 } BGMODE;
 
-class DLL_EXPORT CGraphics
+class CGraphics
 {
 public:
 	CGraphics(void);
 	~CGraphics(void);
 public:
-	uint32 m_uMode;
+	unsigned long m_uMode;
 	VERTEX_XYZ_DIF_TEX	m_Buffer[10000];
 public:
 	void Clear();
 	//
-	void Begin		(BGMODE mode, uint32 nSize);
+	void Begin		(BGMODE mode, size_t uSize);
 	//
 	void Color	(Color32 c);
 	void TexCoord2fv(const Vec2D& v);
@@ -115,4 +115,4 @@ protected:
 	int					m_nPassCount;
 };
 
-DLL_EXPORT CGraphics& GetGraphics();
+CGraphics& GetGraphics();

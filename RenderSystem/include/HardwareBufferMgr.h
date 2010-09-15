@@ -1,10 +1,9 @@
 #pragma once
-#include "Common.h"
 #include "HardwareIndexBuffer.h"
 #include "HardwareVertexBuffer.h"
 #include <set>
 
-class DLL_EXPORT CHardwareBufferMgr
+class CHardwareBufferMgr
 {
 public:
 	CHardwareBufferMgr() {}

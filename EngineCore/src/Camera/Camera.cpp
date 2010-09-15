@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-// Constructor
+#define CAMERA_PI 3.14159f
 CCamera::CCamera()
 {
 	m_vTargetPos = Vec3D(0, 0, 0);
@@ -8,8 +8,8 @@ CCamera::CCamera()
 	m_fDefaultRadius = 5.0f;
 	m_fMinRadius = 1.0f;
 	m_fMaxRadius = 80.0f;
-	m_fMinPitchAngle = -PI*0.49f;
-	m_fMaxPitchAngle = +PI*0.49f;
+	m_fMinPitchAngle = -CAMERA_PI*0.49f;
+	m_fMaxPitchAngle = +CAMERA_PI*0.49f;
 }
 
 void CCamera::setTargetPos(Vec3D& vPos)
@@ -94,7 +94,7 @@ void CCamera::FrameMove(float fElapsedTime)
 }
 
 #include "RenderSystem.h"
-void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,const CRect<int>& rc)
+void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,const RECT& rc)
 {
 	Vec3D v;
 	v.x =  (((2.0f * (x-rc.left)) / (rc.right-rc.left)) - 1) / m_mProj._11;

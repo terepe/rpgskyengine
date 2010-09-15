@@ -3,7 +3,7 @@
 #include "RenderSystem.h"
 #include "3DMapSceneObj.h"
 
-class DLL_EXPORT CLightMap
+class CLightMap
 {
 public:
 	CLightMap();
@@ -31,7 +31,7 @@ protected:
 	//void		CalcObjectLightMap(const D3DXVECTOR3& vLightDir, HR3D_CSceneObject* pOject);
 	//void		CalcLightMapMatrix(const D3DXVECTOR3& vPos, const D3DXVECTOR3& vLightDir);
 public:
-	uint32			m_uShaderID;
+	unsigned long			m_uShaderID;
 	// 设备默认渲染目标
 	CTexture*		m_pBackRenderTarget;
 	CTexture*		m_pBackDepthStencil;

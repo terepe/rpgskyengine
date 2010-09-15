@@ -26,7 +26,7 @@ int randint(int lower, int upper)
 	return lower + (int)((upper-lower)*frand());
 }
 
-Vec4D fromARGB(uint32 color)
+Vec4D fromARGB(unsigned long color)
 {
 	const float a = ((color & 0xFF000000) >> 24) / 255.0f;
 	const float r = ((color & 0x00FF0000) >> 16) / 255.0f;
@@ -737,7 +737,7 @@ void RibbonEmitter::draw()
 
 	//glBegin(GL_QUAD_STRIP);
 	CGraphics* bg = &GetGraphics();
-	//bg->Color1dw(static_cast<uint32>tcolor);
+	//bg->Color1dw(static_cast<unsigned long>tcolor);
 	bg->Color(tcolor.getColor());
 	bg->Begin(BGMODE_QUADSTRIP, segs.size()*2+2);
 	std::list<RibbonSegment>::iterator it = segs.begin();

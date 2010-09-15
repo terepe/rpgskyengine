@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 #include "Vec2D.h"
 #include "Vec3D.h"
 #include "Vec4D.h"
@@ -228,12 +227,12 @@ enum FillMode
 
 struct VertexElement
 {
-	uint16					uStream;     // Stream index
-	uint16					uOffset;     // Offset in the stream in bytes
+	unsigned short			uStream;     // Stream index
+	unsigned short			uOffset;     // Offset in the stream in bytes
 	VertexElementType		Type;       // Data type
 	//BYTE    Method;     // Processing method
 	VertexElementSemantic	Semantics;      // Semantics
-	uint8					uIndex; // Semantic index
+	unsigned char			uIndex; // Semantic index
 };
 
 // Flexible vertex format bits
@@ -342,4 +341,17 @@ struct DirectionalLight
 	vDirection(direction)
 	{
 	}
+};
+
+struct IndexedSubset
+{
+	IndexedSubset()
+	{
+		memset(this,0,sizeof(*this));
+	}
+	unsigned short vbase;	// base vertex
+	unsigned short vstart;	// first vertex
+	unsigned short vcount;	// num vertices
+	unsigned short istart;	// first index
+	unsigned short icount;	// num indices
 };
