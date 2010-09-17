@@ -4,11 +4,7 @@
 
 CModelDataMgr::CModelDataMgr()
 {
-#ifdef _DEBUG
-	m_DataPlugsMgr.createPlugFromPath("Pluginsd\\","Model_Plug_CreateObject");
-#else
 	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Model_Plug_CreateObject");
-#endif
 }
 
 unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
