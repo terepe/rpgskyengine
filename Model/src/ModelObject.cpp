@@ -7,7 +7,7 @@
 #include "ModelDataMgr.h"
 
 CModelObject::CModelObject() :
-m_idLightMapTex(0),
+m_uLightMapTex(0),
 m_bLightmap(false),
 m_pModelData(NULL),
 m_bCreated(false)
@@ -329,8 +329,8 @@ void CModelObject::SetAnim(const std::string& strAnimName)
 
 void CModelObject::SetLightMap(const std::string& strFilename)
 {
-	m_idLightMapTex = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
-	GetRenderSystem().GetTextureMgr().releaseBuffer(m_idLightMapTex);
+	m_uLightMapTex = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	GetRenderSystem().GetTextureMgr().releaseBuffer(m_uLightMapTex);
 	m_bLightmap = true;
 }
 

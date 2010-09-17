@@ -10,7 +10,7 @@ class CScene:public iScene
 public:
 	struct ObjectInfo
 	{
-		int64		uID;
+		__int64		uID;
 		std::string	strName;
 		std::string strFilename;
 		//float		fScale;
@@ -18,7 +18,7 @@ public:
 		//bool		bHasShadow;
 	};
 
-	typedef std::map<int64,ObjectInfo>  MAP_OBJECT_INFO;
+	typedef std::map<__int64,ObjectInfo>  MAP_OBJECT_INFO;
 	CScene();
 	~CScene();
 public:
@@ -33,7 +33,7 @@ public:
 
 	// load
 	virtual void clearObjectResources();
-	virtual void setObjectResources(int64 uID,const std::string& strName,const std::string& strFilename);
+	virtual void setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void createObjectTree(const BBox& box, size_t size);
 	virtual bool addMapObj(CMapObj* pObj);
 	virtual bool delMapObj(CMapObj* pObj);
@@ -42,7 +42,7 @@ public:
 	void del3DMapEffect(const Vec3D& vWorldPos);
 	void del3DMapEffect(C3DMapEffect* pEffect);
 
-	virtual CMapObj* add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
+	virtual CMapObj* add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	virtual void removeAllObjects();
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject);
 	// Focus Objects

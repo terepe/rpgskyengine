@@ -362,7 +362,7 @@ void CModelData::Init()
 	{
 		if (m_Mesh.m_Lods.size()>0)
 		{
-			for (int i=0; i<m_Mesh.m_Lods[0].setSubset.size();++i)
+			for (size_t i=0; i<m_Mesh.m_Lods[0].setSubset.size();++i)
 			{
 				ModelRenderPass& pass = m_mapPasses[i];
 				pass.nSubID = i;
@@ -431,7 +431,7 @@ bool CModelData::passBegin(const ModelRenderPass& pass, float fOpacity, int nAni
 	}
 	//if(m_bLightmap)
 	{
-		//	pass.material.uLightMap = m_idLightMapTex;
+		//	pass.material.uLightMap = m_uLightMapTex;
 	}
 
 	// TEXTURE

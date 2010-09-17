@@ -208,7 +208,7 @@ void CScene::clearObjectResources()
 	m_ObjectInfo.clear();
 }
 
-void CScene::setObjectResources(int64 uID,const std::string& strName,const std::string& strFilename)
+void CScene::setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)
 {
 	ObjectInfo Info;
 	Info.uID				= uID;
@@ -301,7 +301,7 @@ void CScene::del3DMapEffect(C3DMapEffect* pEffect)
 	}
 }
 
-CMapObj* CScene::add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
+CMapObj* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
 	{
@@ -374,7 +374,7 @@ Vec3D CScene::getFocusObjectsPos()
 	{
 		vPos+=m_setFocusObjects[i]->getPos();
 	}
-	vPos/=m_setFocusObjects.size();
+	vPos/=(float)m_setFocusObjects.size();
 	return vPos;
 }
 
@@ -436,7 +436,7 @@ Vec3D CScene::getFocusObjectsScale()
 	{
 		vScale+=m_setFocusObjects[i]->getScale();
 	}
-	vScale/=m_setFocusObjects.size();
+	vScale/=(float)m_setFocusObjects.size();
 	return vScale;
 }
 
