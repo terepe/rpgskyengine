@@ -43,7 +43,10 @@ struct Cube
 	}
 	~Cube()
 	{
-		S_DELS(pChildCube);
+		if (pChildCube)
+		{
+			delete[] pChildCube;
+		}
 	}
 	Cube* pChildCube;
 	BBox bbox;
@@ -233,9 +236,9 @@ public:
 	virtual iTerrainData* getTerrain()=0;
 	virtual const iTerrainData*	getTerrain()const=0;
 	virtual void clearObjectResources()=0;
-	virtual void setObjectResources(int64 uID,const std::string& strName,const std::string& strFilename)=0;
+	virtual void setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void createObjectTree(const BBox& box, size_t size)=0;
-	virtual CMapObj* add3DMapSceneObj(int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
+	virtual CMapObj* add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
 	virtual void removeAllObjects()=0;
 	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject)=0;
 

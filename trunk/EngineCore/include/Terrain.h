@@ -8,7 +8,7 @@
 
 struct TerrainSub:public IndexedSubset
 {
-	void myVertexIndex(unsigned long uIndex)
+	void myVertexIndex(unsigned short uIndex)
 	{
 		if (icount==0)
 		{

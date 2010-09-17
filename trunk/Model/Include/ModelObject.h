@@ -56,7 +56,7 @@ protected:											// Attribute.
 	float	m_fRad;									// Radius
 	unsigned long	m_uLodLevel;							// Current Lod Level
 	unsigned long	m_uSkinID;								// Current Skin ID
-	OBJID	m_idLightMapTex;						//
+	unsigned long	m_uLightMapTex;						//
 	bool	m_bLightmap;
 	bool	m_bCreated;
 protected:

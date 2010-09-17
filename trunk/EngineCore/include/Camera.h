@@ -2,6 +2,7 @@
 #include "BaseCamera.h"
 #include "Frustum.h"
 #include "Pos2D.h"
+#include <windows.h>
 
 class CCamera  : public CBaseCamera
 {
