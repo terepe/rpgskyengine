@@ -56,6 +56,7 @@ public:
 	virtual Pos2D getCellPos()	{return Pos2D();}
 	virtual void SetCellPos( Pos2D& posCell )	{}
 
+	virtual bool isDynamic()					{return false;}
 	virtual bool IsFocus()						{return false;}
 
 	virtual void SetARGB(unsigned long dwARGB)			{m_dwARGB = dwARGB;}

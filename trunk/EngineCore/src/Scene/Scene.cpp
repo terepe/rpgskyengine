@@ -75,6 +75,14 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 		//	m_ObjectTree.delObject((*it));
 		//	m_ObjectTree.addObject((*it));
 		//}
+		if ((*it)->isDynamic())
+		{
+			continue;
+		}
+		(*it)->OnFrameMove(fElapsedTime);
+	}
+	for (DEQUE_MAPOBJ::iterator it = m_setDynamicObj.begin(); it != m_setDynamicObj.end(); ++it)
+	{
 		(*it)->OnFrameMove(fElapsedTime);
 	}
 }
@@ -226,6 +234,10 @@ bool CScene::addMapObj(CMapObj* pObj)
 {
 	if(!pObj)
 		return false;
+	if (pObj->isDynamic())
+	{
+		m_setDynamicObj.push_back(pObj);
+	}
 	if (m_ObjectTree.addObject(pObj))
 	{
 		m_bNeedUpdate = true;
@@ -243,6 +255,14 @@ bool CScene::delMapObj(CMapObj* pObj)
 {
 	if(!pObj)
 		return false;
+	if (pObj->isDynamic())
+	{
+		DEQUE_MAPOBJ::iterator it = find( m_setDynamicObj.begin( ), m_setDynamicObj.end( ), pObj );
+		if(it!=m_setRenderSceneObj.end())
+		{
+			m_setDynamicObj.erase(it);
+		}
+	}
 	if (!m_ObjectTree.delObject(pObj))// when del a object, all the bboxs were not rebuild!
 	{
 		return false;

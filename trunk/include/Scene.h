@@ -93,6 +93,7 @@ public:
 	CTerrain*		m_pTerrain;
 	ObjectTree		m_ObjectTree;
 	DEQUE_MAPOBJ	m_setMapObj;
+	DEQUE_MAPOBJ	m_setDynamicObj;
 	DEQUE_MAPOBJ	m_setRenderSceneObj;
 	MAP_OBJECT_INFO	m_ObjectInfo;
 	bool			m_bNeedUpdate;
