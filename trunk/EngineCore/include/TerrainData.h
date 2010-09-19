@@ -20,6 +20,10 @@ enum E_TERRAIN_ATT_TYPE
 
 #define ATTRIBUTE_GRASS 0x8
 
+#define ATTRIBUTE_SAFE		(0x01<<0)
+#define ATTRIBUTE_BREAK		(0x01<<2)
+#define ATTRIBUTE_UNVISIBLE	(0x01<<3)
+
 // 地图文件数据
 class CTerrainData:public iTerrainData
 {
@@ -63,9 +67,6 @@ public:
 	unsigned char	getCellAttribute(int nCellX, int nCellY)const;
 	void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt);
 	//
-	bool	isCellSearched(int nCellX, int nCellY)const;
-	void	setCellSearched(int nCellX, int nCellY, bool bSearched);
-	//
 	Color32	getVertexColor(int nCellX, int nCellY)const;
 	void	setVertexColor(int nCellX, int nCellY, Color32 color);
 	//
@@ -90,7 +91,6 @@ public:
 	//////////////////启发式搜索(A*)寻路/////////////////////////////////
 #define MAX_NODE 		100 //允许同时存在多少待扩展节点
 #define MAX_ALLNODE 	1000 //允许节点数
-#define MAX_HASH		1999 //Hash表大小，最好是质数
 	struct Node
 	{
 		int x,y,f,level,n;
@@ -100,22 +100,19 @@ public:
 	//节点的资料
 	struct AllNode
 	{
-		int act,father;
+		unsigned char dir;
+		int father;
 	}
-	allnode[MAX_ALLNODE];
-	//Hash表，用来判断节点是否已访问过
-	struct Hash
-	{
-		int x,y;
-	}
-	Hash[MAX_HASH];
+	m_allnode[MAX_ALLNODE];
 
-	int node_count; //目前的待扩展节点数
-	int allnode_count; //目前的节点数
-	void AddNode(int x,int y,int tx,int ty,int act,int level,int father);
+	int m_nNodeCount; //目前的待扩展节点数
+	int m_nAllNodeCount; //目前的节点数
+	void AddNode(int x,int y,int tx,int ty,unsigned char dir,int level,int father);
 	Node GetNode();
 	void Add2Hash(int x,int y);
 	bool CheckHash(int x,int y);
+
+	std::vector<bool> m_Searched;
 protected:
 	std::string	m_strFilename;
 	char		m_szName[32];
