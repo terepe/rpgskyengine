@@ -66,7 +66,7 @@ bool CScene::updateMapObj(CMapObj* pMapObj)
 
 void CScene::OnFrameMove(double fTime, float fElapsedTime)
 {
-	m_ObjectTree.process();
+	//m_ObjectTree.process(); µİ¹éËÙ¶ÈÌ«ÂıÁË
 	for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin(); it != m_setRenderSceneObj.end(); ++it)
 	{
 		//if (!(*it)->isCreated())

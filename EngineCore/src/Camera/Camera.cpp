@@ -12,7 +12,7 @@ CCamera::CCamera()
 	m_fMaxPitchAngle = +CAMERA_PI*0.49f;
 }
 
-void CCamera::setTargetPos(Vec3D& vPos)
+void CCamera::setTargetPos(const Vec3D& vPos)
 {
 	m_vTargetPos = vPos;
 }

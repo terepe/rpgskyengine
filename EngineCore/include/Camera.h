@@ -9,7 +9,7 @@ class CCamera  : public CBaseCamera
 public:
 	CCamera();
 	virtual const Vec3D& getTargetPos(){return m_vTargetPos;}
-	virtual void setTargetPos(Vec3D& vPos);
+	virtual void setTargetPos(const Vec3D& vPos);
 	virtual void FrameMove(float fElapsedTime);
 
 	virtual void MoveTarget();

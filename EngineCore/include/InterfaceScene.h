@@ -26,7 +26,6 @@ struct TerrainCell
 	float			fHeight;
 	Vec3D			vNormals;
 	unsigned char	uAttribute;
-	bool			bSearched;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,9 +199,6 @@ public:
 	//
 	virtual unsigned char	getCellAttribute(int nCellX, int nCellY)const=0;
 	virtual void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt)=0;
-
-	virtual bool	isCellSearched(int nCellX, int nCellY)const=0;
-	virtual void	setCellSearched(int nCellX, int nCellY, bool bSearched)=0;
 	//
 	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
 	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
