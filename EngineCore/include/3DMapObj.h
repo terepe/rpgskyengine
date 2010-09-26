@@ -18,8 +18,10 @@ public:
 	virtual bool IsFocus(){return false;}
 
 	virtual Matrix getWorldMatrix()const;
+	virtual Matrix getShadowMatrix()const;
 	virtual BBox getBBox()const;
 	virtual void render(int flag)const;
+	virtual void renderShadow()const;
 	virtual void renderFocus()const;
 	virtual void renderDebug()const;
 	virtual void OnFrameMove(float fElapsedTime);

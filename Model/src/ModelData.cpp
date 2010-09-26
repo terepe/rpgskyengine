@@ -519,6 +519,21 @@ void CModelData::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLe
 	}
 }
 
+void CModelData::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB)const
+{
+	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
+	{
+		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		{
+			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
+			{
+				GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).uDiffuse);
+				m_Mesh.drawSub(it->second.nSubID,uLodLevel);
+			}
+		}
+	}
+}
+
 void CModelData::drawMesh(CHardwareVertexBuffer* pSkinVB)const
 {
 	if (m_Mesh.SetMeshSource(0,pSkinVB))

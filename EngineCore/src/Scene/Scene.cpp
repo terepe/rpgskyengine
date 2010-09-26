@@ -151,6 +151,33 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		m_pTerrain->Render();
 	}
 	{
+		GetRenderSystem().SetBlendFunc(true,BLENDOP_ADD,SBF_ZERO,SBF_SOURCE_COLOUR);
+		GetRenderSystem().SetAlphaTestFunc(true);
+		GetRenderSystem().SetDepthBufferFunc(false,false);
+		GetRenderSystem().SetTextureFactor(0x80808080);
+		GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
+		GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TEXTURE);
+
+		GetRenderSystem().SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
+		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
+			it != m_setRenderSceneObj.end(); ++it)
+		{
+			try {
+				CMapObj* pObj = (*it);
+				if(pObj)
+				{
+					//if(pObj->GetObjType() == MAP_3DOBJ)
+					{
+						C3DMapObj* p3DObj = (C3DMapObj*)pObj;
+						p3DObj->renderShadow();
+					}
+				}
+			}catch(...)
+			{ 
+				return;
+			}
+		}
+
 		//
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
@@ -169,12 +196,12 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						vColor.w=1.0f;
 
 					
-						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
 							GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					else
 					{
-						DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(0.8f,0.8f,0.8f,0.8f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
 						GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					(*it)->render(MATERIAL_RENDER_GEOMETRY);
@@ -183,8 +210,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			{
 				return;
 			}
+			GetRenderSystem().SetStencilFunc(false);
 		}
-		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,-1.0f));
+		if (m_pTerrain)
+		{
+			m_pTerrain->renderGrass();
+		}
+		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
 		GetRenderSystem().SetDirectionalLight(0,light);
 
 		for(size_t i=0;i<m_setFocusObjects.size();++i)
