@@ -195,13 +195,12 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						Vec4D vColor = m_pTerrain->GetColor(Vec2D((*it)->getPos().x,(*it)->getPos().z));
 						vColor.w=1.0f;
 
-					
-						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
+						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,0.0f));
 							GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					else
 					{
-						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(0.8f,0.8f,0.8f,0.8f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
+						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,0.0f));
 						GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					(*it)->render(MATERIAL_RENDER_GEOMETRY);
@@ -290,7 +289,7 @@ bool CScene::delMapObj(CMapObj* pObj)
 	if (pObj->isDynamic())
 	{
 		DEQUE_MAPOBJ::iterator it = find( m_setDynamicObj.begin( ), m_setDynamicObj.end( ), pObj );
-		if(it!=m_setRenderSceneObj.end())
+		if(it!=m_setDynamicObj.end())
 		{
 			m_setDynamicObj.erase(it);
 		}
