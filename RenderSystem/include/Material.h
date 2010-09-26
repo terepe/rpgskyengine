@@ -28,7 +28,7 @@ public:
 		uShader(-1),
 		bLightingEnabled(false),
 		vAmbient(0.6f,0.6f,0.6f,0.6f),
-		vDiffuse(0.6f,0.6f,0.6f,0.6f),
+		vDiffuse(1.0f,1.0f,1.0f,1.0f),
 		bDepthWrite(true),
 		bAlphaTest(false),
 		uAlphaTestValue(0x80),

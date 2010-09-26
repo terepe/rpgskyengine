@@ -38,9 +38,9 @@ Matrix C3DMapObj::getShadowMatrix()const
 	Matrix mInvertLight=mLight;
 	mInvertLight.Invert();
 	Matrix mTransLight(
-		1,0,0,0,
+		1,-1,0,0,
 		0,0,0,0,
-		0,1,1,0,
+		0,0,1,0,
 		0,0,0,1);
 
 	Matrix mTrans;
