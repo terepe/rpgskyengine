@@ -41,6 +41,19 @@ void CModelComplex::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	}
 }
 
+void CModelComplex::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType)const
+{
+	CModelObject::drawMeshWithTexture(eModelRenderType);
+	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
+	{
+		it->second->drawMeshWithTexture(eModelRenderType);
+	}
+	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
+	{
+		it->second->drawMeshWithTexture(eModelRenderType);
+	}
+}
+
 void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	CModelObject::renderMesh(eModelRenderType);

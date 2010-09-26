@@ -71,7 +71,8 @@ public:
 		unsigned char value = 0x80) = 0;
 	virtual void SetBlendFunc(bool bBlend = true, SceneBlendOperation op = BLENDOP_ADD,				// 混合参数
 		SceneBlendFactor src = SBF_SOURCE_ALPHA, SceneBlendFactor dest = SBF_ONE_MINUS_SOURCE_ALPHA) = 0;
-
+	virtual void SetStencilFunc(bool bStencil, StencilOP op=STENCILOP_INCR,							// 模板检测
+		CompareFunction stencilFunction = CMPF_LESS_EQUAL) = 0;
 	//
 	virtual void SetCullingMode(CullingMode mode) = 0;	// 设置剔除模式
 	virtual void SetTextureFactor(Color32 color) = 0;	// 设置纹理因素颜色

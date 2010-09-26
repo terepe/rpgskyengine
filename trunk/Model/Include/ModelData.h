@@ -149,6 +149,7 @@ private:
 public:
 	void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
 	void drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB=NULL)const;
+	void drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB=NULL)const;
 	void drawMesh(CHardwareVertexBuffer* pSkinVB=NULL)const;
 public:
 	CLodMesh				m_Mesh;

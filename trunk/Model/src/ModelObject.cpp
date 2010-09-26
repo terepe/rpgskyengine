@@ -383,6 +383,19 @@ void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	m_pModelData->drawMesh(eModelRenderType,m_uLodLevel,m_pVB);
 }
 
+void CModelObject::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType)const
+{
+	if (NULL==m_pModelData)
+	{
+		return;
+	}
+	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
+	{
+		return;
+	}
+	m_pModelData->drawMeshWithTexture(eModelRenderType,m_uLodLevel,m_pVB);
+}
+
 void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	if (NULL==m_pModelData)
