@@ -87,7 +87,7 @@ public:
 
 	std::vector<TerrainCell>&		getCells()	{return m_Cells;}
 
-	void  getPath(int sx,int sy,int tx,int ty, std::vector<unsigned char>& path);
+	unsigned char getPath(int sx,int sy,int tx,int ty, std::vector<unsigned char>& path);
 	//////////////////启发式搜索(A*)寻路/////////////////////////////////
 #define MAX_NODE 		100 //允许同时存在多少待扩展节点
 #define MAX_ALLNODE 	1000 //允许节点数
