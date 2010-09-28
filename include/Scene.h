@@ -36,6 +36,7 @@ public:
 	virtual void setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void createObjectTree(const BBox& box, size_t size);
 	virtual bool addMapObj(CMapObj* pObj);
+	bool removeRenderObj(CMapObj* pObj);
 	virtual bool delMapObj(CMapObj* pObj);
 
 	C3DMapEffect* add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, bool bDelself = true);
@@ -93,7 +94,6 @@ public:
 	CTerrain*		m_pTerrain;
 	ObjectTree		m_ObjectTree;
 	DEQUE_MAPOBJ	m_setMapObj;
-	DEQUE_MAPOBJ	m_setDynamicObj;
 	DEQUE_MAPOBJ	m_setRenderSceneObj;
 	MAP_OBJECT_INFO	m_ObjectInfo;
 	bool			m_bNeedUpdate;

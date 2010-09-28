@@ -164,6 +164,8 @@ void C3DMapObj::renderFocus(Color32 color)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	R.SetDepthBufferFunc(true,false);
+	R.SetAlphaTestFunc(false);
+	R.SetBlendFunc(false);
 	R.SetCullingMode(CULL_NONE);
 	static CShader* m_pShaderFocus=NULL;
 	if (m_pShaderFocus==NULL)
