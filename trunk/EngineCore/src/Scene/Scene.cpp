@@ -75,14 +75,6 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 		//	m_ObjectTree.delObject((*it));
 		//	m_ObjectTree.addObject((*it));
 		//}
-		if ((*it)->isDynamic())
-		{
-			continue;
-		}
-		(*it)->OnFrameMove(fElapsedTime);
-	}
-	for (DEQUE_MAPOBJ::iterator it = m_setDynamicObj.begin(); it != m_setDynamicObj.end(); ++it)
-	{
 		(*it)->OnFrameMove(fElapsedTime);
 	}
 }
@@ -177,7 +169,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 				return;
 			}
 		}
+		GetRenderSystem().SetStencilFunc(false);
 
+		//
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			m_setFocusObjects[i]->renderFocus();
+		}
 		//
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
@@ -196,7 +194,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						vColor.w=1.0f;
 
 						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,0.0f));
-							GetRenderSystem().SetDirectionalLight(0,light);
+						GetRenderSystem().SetDirectionalLight(0,light);
 					}
 					else
 					{
@@ -209,7 +207,6 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			{
 				return;
 			}
-			GetRenderSystem().SetStencilFunc(false);
 		}
 		if (m_pTerrain)
 		{
@@ -218,10 +215,6 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
 		GetRenderSystem().SetDirectionalLight(0,light);
 
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
-		{
-			m_setFocusObjects[i]->renderFocus();
-		}
 		Fog fogForGlow;
 		fogForGlow = m_Fog;
 		//fogForGlow.fStart = m_Fog.fStart;
@@ -265,10 +258,6 @@ bool CScene::addMapObj(CMapObj* pObj)
 {
 	if(!pObj)
 		return false;
-	if (pObj->isDynamic())
-	{
-		m_setDynamicObj.push_back(pObj);
-	}
 	if (m_ObjectTree.addObject(pObj))
 	{
 		m_bNeedUpdate = true;
@@ -282,28 +271,27 @@ bool CScene::addMapObj(CMapObj* pObj)
 	return false;
 }
 
-bool CScene::delMapObj(CMapObj* pObj)
+bool CScene::removeRenderObj(CMapObj* pObj)
 {
-	if(!pObj)
-		return false;
-	if (pObj->isDynamic())
-	{
-		DEQUE_MAPOBJ::iterator it = find( m_setDynamicObj.begin( ), m_setDynamicObj.end( ), pObj );
-		if(it!=m_setDynamicObj.end())
-		{
-			m_setDynamicObj.erase(it);
-		}
-	}
-	if (!m_ObjectTree.delObject(pObj))// when del a object, all the bboxs were not rebuild!
-	{
-		return false;
-	}
 	// del from render
 	DEQUE_MAPOBJ::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
 	if(it!=m_setRenderSceneObj.end())
 	{
 		m_setRenderSceneObj.erase(it);
+		return true;
 	}
+	return false;
+}
+
+bool CScene::delMapObj(CMapObj* pObj)
+{
+	if(!pObj)
+		return false;
+	if (!m_ObjectTree.delObject(pObj))// when del a object, all the bboxs were not rebuild!
+	{
+		return false;
+	}
+	removeRenderObj(pObj);
 	{
 		m_bNeedUpdate = true;
 	}
