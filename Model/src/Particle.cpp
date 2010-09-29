@@ -147,7 +147,11 @@ void CParticleGroup::draw()const
 				mbb._14=0;
 				mbb._24=0;
 				mbb._34=0;
-			}		
+			}
+			mbb=mTrans;
+			mbb._14=0;
+			mbb._24=0;
+			mbb._34=0;
 		}
 
 		if (m_pEmitter->type==0 || m_pEmitter->type==2)			// 正常的粒子

@@ -204,13 +204,11 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 
 bool CModelData::initParticleMaterial()
 {
-	//if (m_setParticleEmitter.size()==0)
+	std::string strParticleMaterialName = GetFilename(ChangeExtension(getItemName(),".par"));
+	for (size_t i=0;i<m_setParticleEmitter.size();++i)
 	{
-		for (size_t i=0;i<m_setParticleEmitter.size();++i)
-		{
-			std::string strMaterialName = Format("%s%d",GetFilename(ChangeExtension(getItemName(),".par")).c_str(),i);
-			m_setParticleEmitter[i].m_strMaterialName = strMaterialName;
-		}
+		std::string strMaterialName = Format("%s%d",strParticleMaterialName.c_str(),i);
+		m_setParticleEmitter[i].m_strMaterialName = strMaterialName;
 	}
 	return true;
 }
@@ -278,7 +276,6 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename)
 			particleEmitter.m_vPos.y=csv.GetFloat("PosY");
 			particleEmitter.m_vPos.z=csv.GetFloat("PosZ");
 
-			//particleEmitter.m_nBlend=csv.GetInt("Blend");
 			particleEmitter.m_nOrder=csv.GetInt("Order");
 			particleEmitter.type=csv.GetInt("Type");
 
@@ -286,8 +283,6 @@ bool CModelData::loadParticleEmitters(const std::string& strFilename)
 			particleEmitter.m_nCols=csv.GetInt("Cols");
 
 			particleEmitter.m_bBillboard=csv.GetBool("IsBillboard");
-
-			//particleEmitter.uTexID=TM.RegisterTexture(getRealFilename(strPath,csv.GetStr("Tex")));
 
 			m_setParticleEmitter.push_back(particleEmitter);
 		}
