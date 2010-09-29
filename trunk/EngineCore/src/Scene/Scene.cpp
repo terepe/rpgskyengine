@@ -120,19 +120,19 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	if (m_setFocusObjects.size()>0)
 	{
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
-		{
-			m_setFocusObjects[i]->renderDebug();
-		}
+// 		for(size_t i=0;i<m_setFocusObjects.size();++i)
+// 		{
+// 			m_setFocusObjects[i]->renderDebug();
+// 		}
 		// The octree boxs of focus objects.
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
-		{
-			ObjectTree* pParentObjectTree = m_ObjectTree.find(m_setFocusObjects[i]);
-			if (pParentObjectTree)
-			{
-				GetGraphics().drawBBox(pParentObjectTree->getBBox(),0xFF00FF44);
-			}
-		}
+// 		for(size_t i=0;i<m_setFocusObjects.size();++i)
+// 		{
+// 			ObjectTree* pParentObjectTree = m_ObjectTree.find(m_setFocusObjects[i]);
+// 			if (pParentObjectTree)
+// 			{
+// 				GetGraphics().drawBBox(pParentObjectTree->getBBox(),0xFF00FF44);
+// 			}
+// 		}
 	}
 	//
 	GetRenderSystem().setFog(m_Fog);
@@ -172,11 +172,6 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		GetRenderSystem().SetStencilFunc(false);
 
 		//
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
-		{
-			m_setFocusObjects[i]->renderFocus();
-		}
-		//
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
@@ -208,6 +203,19 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 				return;
 			}
 		}
+		//
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			m_setFocusObjects[i]->renderFocus();
+		}
+		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		{
+			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
+				Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,0.0f));
+			GetRenderSystem().SetDirectionalLight(0,light);
+			m_setFocusObjects[i]->render(MATERIAL_RENDER_GEOMETRY);
+		}
+		//
 		if (m_pTerrain)
 		{
 			m_pTerrain->renderGrass();
