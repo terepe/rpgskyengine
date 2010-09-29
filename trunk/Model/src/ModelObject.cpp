@@ -60,13 +60,11 @@ void CModelObject::create()
 		{
 			CSkeleton& skeleton = m_pModelData->m_Skeleton;
 			m_setBonesMatrix.resize(skeleton.m_Bones.size());
-			skeleton.CalcBonesMatrix("",0,m_setBonesMatrix);
+			skeleton.CalcBonesMatrix("0",0,m_setBonesMatrix);
 			long timeCount;
 			skeleton.getAnimation(0,m_strAnimName,timeCount);
 		}
-
 		
-
 		// Particles
 		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());
 		for (size_t i=0;i<m_setParticleGroup.size();++i)
@@ -427,6 +425,7 @@ void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)co
 void CModelObject::render(E_MATERIAL_RENDER_TYPE eModelRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
 {
 	renderMesh(eModelRenderType);
+	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
 	renderParticles(eParticleRenderType);
 }
 

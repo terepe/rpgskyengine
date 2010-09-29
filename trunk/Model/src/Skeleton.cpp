@@ -38,17 +38,25 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.find(strAnim);
 	if (it==m_Anims.end())
 	{
-		return;
+		//return;
+		for (size_t i=0;i<m_Bones.size();++i)
+		{
+			setBonesMatrix[i].unit();
+		}
 	}
-	const std::vector<BoneAnim>& bonesAnim = it->second.setBonesAnim;
-	for (size_t i=0;i<m_Bones.size();++i)
+	else
 	{
-		//bool tr = m_pBoneAnim->rot.isUsed() || m_pBoneAnim->scale.isUsed() || m_pBoneAnim->trans.isUsed() || m_pBoneAnim->billboard;
-		//if (tr)
-		//m_mat.translation(boneInfo.pivot);
-		setBonesMatrix[i].unit();
-		bonesAnim[i].transform(setBonesMatrix[i],time);
+		const std::vector<BoneAnim>& bonesAnim = it->second.setBonesAnim;
+		for (size_t i=0;i<m_Bones.size();++i)
+		{
+			//bool tr = m_pBoneAnim->rot.isUsed() || m_pBoneAnim->scale.isUsed() || m_pBoneAnim->trans.isUsed() || m_pBoneAnim->billboard;
+			//if (tr)
+			//m_mat.translation(boneInfo.pivot);
+			setBonesMatrix[i].unit();
+			bonesAnim[i].transform(setBonesMatrix[i],time);
+		}
 	}
+
 	std::vector<bool> setCalc(m_Bones.size(),false);// 重置所有骨骼为'false',说明骨骼的动画还没计算过！
 	
 	for (size_t i=0;i<m_Bones.size();++i)
