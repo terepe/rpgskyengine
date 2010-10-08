@@ -67,6 +67,7 @@ bool CScene::updateMapObj(CMapObj* pMapObj)
 void CScene::OnFrameMove(double fTime, float fElapsedTime)
 {
 	//m_ObjectTree.process(); µÝ¹éËÙ¶ÈÌ«ÂýÁË
+	m_setLightObj.clear();
 	for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin(); it != m_setRenderSceneObj.end(); ++it)
 	{
 		//if (!(*it)->isCreated())
@@ -76,6 +77,10 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 		//	m_ObjectTree.addObject((*it));
 		//}
 		(*it)->OnFrameMove(fElapsedTime);
+		//if (((CModelObject*)(*it))->m_setParticleGroup.size()>0)
+		{
+			m_setLightObj.push_back(*it);
+		}
 	}
 }
 
@@ -102,13 +107,14 @@ void CScene::UpdateRender(const CFrustum& frustum)
 		GetRenderObject(frustum, m_setRenderSceneObj);
 	}
 }
+
 #include "Graphics.h"
 void CScene::OnFrameRender(double fTime, float fElapsedTime)
 {
-	//GetRenderSystem().setFogEnable(true);
-	GetRenderSystem().ClearBuffer(true, true, m_Fog.color);
-	// 
 	CRenderSystem& R = GetRenderSystem();
+	//R.setFogEnable(true);
+	R.ClearBuffer(true, true, m_Fog.color);
+	// 
 	if (m_bShowObjectBBox)
 	{
 		R.SetDepthBufferFunc(true,true);
@@ -135,22 +141,43 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 // 		}
 	}
 	//
-	GetRenderSystem().setFog(m_Fog);
-	GetRenderSystem().setFogEnable(m_Fog.fEnd>0.0f);
-	GetRenderSystem().SetDirectionalLight(0, m_Light);
+	R.setFog(m_Fog);
+	R.setFogEnable(m_Fog.fEnd>0.0f);
+	R.SetDirectionalLight(0, m_Light);
+	Vec3D vLightDir = Vec3D(-0.8f,-1.0f,0.0f).normalize();
 	if (m_pTerrain)
 	{
 		m_pTerrain->Render();
 	}
+	if (m_pTerrain)
 	{
-		GetRenderSystem().SetBlendFunc(true,BLENDOP_ADD,SBF_ZERO,SBF_SOURCE_COLOUR);
-		GetRenderSystem().SetAlphaTestFunc(true);
-		GetRenderSystem().SetDepthBufferFunc(false,false);
-		GetRenderSystem().SetTextureFactor(0x80808080);
-		GetRenderSystem().SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
-		GetRenderSystem().SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TEXTURE);
+		if(m_pTerrain->Prepare())
+		{
+			if(R.prepareMaterial("LightDecal"))
+			{
+				R.SetBlendFunc(true,BLENDOP_ADD,SBF_DEST_COLOUR,SBF_ONE);
+				for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
+					itLight != m_setLightObj.end(); ++itLight)
+				{
+					const Vec3D& vLightPos = (*itLight)->getPos();
+					m_pTerrain->drawLightDecal(vLightPos.x,vLightPos.z,3.0f,0xFFFFFFFF);
+				}
+			}
+		}
+		R.finishMaterial();
+	}
+	{
+		R.SetCullingMode(CULL_NONE);
+		R.SetShader((CShader*)NULL);
+		R.SetLightingEnabled(false);
+		R.SetBlendFunc(true,BLENDOP_ADD,SBF_ZERO,SBF_SOURCE_COLOUR);
+		R.SetAlphaTestFunc(true);
+		R.SetDepthBufferFunc(false,false);
+		R.SetTextureFactor(0x80808080);
+		R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
+		R.SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TEXTURE);
 
-		GetRenderSystem().SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
+		R.SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
@@ -161,7 +188,20 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 					//if(pObj->GetObjType() == MAP_3DOBJ)
 					{
 						C3DMapObj* p3DObj = (C3DMapObj*)pObj;
-						p3DObj->renderShadow();
+						float fHeight = getTerrain()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
+						p3DObj->renderShadow(vLightDir,fHeight);
+						for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
+							itLight != m_setLightObj.end(); ++itLight)
+						{
+							Vec3D vDir = (*it)->getPos()-(*itLight)->getPos();
+							if (vDir.length()<3.0f)
+							{
+								vDir.normalize();
+								vDir.y=-1;
+								vDir.normalize();
+								p3DObj->renderShadow(vDir,fHeight);
+							}
+						}
 					}
 				}
 			}catch(...)
@@ -169,7 +209,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 				return;
 			}
 		}
-		GetRenderSystem().SetStencilFunc(false);
+		R.SetStencilFunc(false);
+
 
 		//
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
@@ -185,18 +226,30 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						pObj->GetObjType() != MAP_3DEFFECT &&
 						pObj->GetObjType() != MAP_3DEFFECTNEW)
 					{
-						Vec4D vColor = m_pTerrain->GetColor(Vec2D((*it)->getPos().x,(*it)->getPos().z));
+						Vec4D vColor = m_pTerrain->GetColor((*it)->getPos().x,(*it)->getPos().z);
 						vColor.w=1.0f;
 
-						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,0.0f));
-						GetRenderSystem().SetDirectionalLight(0,light);
+						DirectionalLight light(vColor*0.5f,vColor+0.3f,Vec4D(1.0f,1.0f,1.0f,1.0f),vLightDir);
+						R.SetDirectionalLight(0,light);
 					}
 					else
 					{
-						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,0.0f));
-						GetRenderSystem().SetDirectionalLight(0,light);
+						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
+						R.SetDirectionalLight(0,light);
+					}
+					for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
+						itLight != m_setLightObj.end(); ++itLight)
+					{
+						if (((*itLight)->getPos()-(*it)->getPos()).length()<3.0f)
+						{
+							PointLight light(Vec4D(0.0f,0.0f,0.0f,1.0f),Vec4D(1.0f,0.0f,0.0f,1.0f),
+								Vec4D(1.0f,1.0f,1.0f,1.0f),(*itLight)->getPos(),3.0f);
+							R.setPointLight(1,light);
+							R.LightEnable(1,true);
+						}
 					}
 					(*it)->render(MATERIAL_RENDER_GEOMETRY);
+					R.LightEnable(1,false);
 				}
 			}catch(...)
 			{
@@ -211,8 +264,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		for(size_t i=0;i<m_setFocusObjects.size();++i)
 		{
 			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
-				Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(-1.0f,-1.0f,0.0f));
-			GetRenderSystem().SetDirectionalLight(0,light);
+				Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
+			R.SetDirectionalLight(0,light);
 			m_setFocusObjects[i]->render(MATERIAL_RENDER_GEOMETRY);
 		}
 		//
@@ -221,20 +274,20 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			m_pTerrain->renderGrass();
 		}
 		DirectionalLight light(Vec4D(0.3f,0.3f,0.3f,0.3f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec4D(0.6f,0.6f,0.6f,0.6f),Vec3D(0.0f,-1.0f,1.0f));
-		GetRenderSystem().SetDirectionalLight(0,light);
+		R.SetDirectionalLight(0,light);
 
 		Fog fogForGlow;
 		fogForGlow = m_Fog;
 		//fogForGlow.fStart = m_Fog.fStart;
 		fogForGlow.fEnd = m_Fog.fEnd*2.0f;
-		GetRenderSystem().setFog(fogForGlow);
+		R.setFog(fogForGlow);
 		//
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
 			(*it)->render(MATERIAL_RENDER_ALPHA);
 		}
-		GetRenderSystem().setWorldMatrix(Matrix::UNIT);
+		R.setWorldMatrix(Matrix::UNIT);
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{

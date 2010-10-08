@@ -1,6 +1,7 @@
 #pragma once
 #include "ModelData.h"
 #include "AnimMgr.h"
+#include "Particle.h"
 
 class CModelObject
 {

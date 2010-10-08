@@ -31,16 +31,19 @@ Matrix C3DMapObj::getWorldMatrix()const
 	return mTrans*mRotate*mScale;
 }
 
-Matrix C3DMapObj::getShadowMatrix()const
+Matrix C3DMapObj::getShadowMatrix(const Vec3D& vLight,float fHeight)const
 {
 	Matrix mLight;
-	//mLight.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(-1.0f,-1.0f,-1.0f),Vec3D(0,1,0)));
+	float fDot=-sqrtf(vLight.x*vLight.x+vLight.z*vLight.z)/vLight.y;
+	//MessageBoxW(NULL,f2ws(fDot,6,6).c_str(),L"",0);
+	Vec3D vEye(getPos().x,fHeight,getPos().z);
+	mLight.MatrixLookAtLH(vEye,vEye+vLight,Vec3D(0,1.0f,0));
 	Matrix mInvertLight=mLight;
 	mInvertLight.Invert();
 	Matrix mTransLight(
-		1,-1,0,0,
-		0,0,0,0,
-		0,0,1,0,
+		1,0,0,0,
+		0,1,0,0,
+		0,fDot,0,0,
 		0,0,0,1);
 
 	Matrix mTrans;
@@ -50,7 +53,7 @@ Matrix C3DMapObj::getShadowMatrix()const
 	mRotate.rotate(getRotate());
 	mScale.scale(getScale());
 
-	return mTrans*mTransLight*mRotate*mScale;
+	return mInvertLight*mTransLight*mLight*mTrans*mRotate*mScale;
 }
 
 BBox C3DMapObj::getBBox()const
@@ -91,9 +94,9 @@ void C3DMapObj::render(int flag)const
 	CModelComplex::render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
 }
 
-void C3DMapObj::renderShadow()const
+void C3DMapObj::renderShadow(const Vec3D& vLight,float fHeight)const
 {
-	GetRenderSystem().setWorldMatrix(getShadowMatrix());
+	GetRenderSystem().setWorldMatrix(getShadowMatrix(vLight,fHeight));
 	CModelComplex::drawMeshWithTexture(MATERIAL_RENDER_GEOMETRY);
 	//drawMesh(MATERIAL_RENDER_GEOMETRY);
 }

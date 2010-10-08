@@ -355,6 +355,24 @@ struct DirectionalLight
 	}
 };
 
+struct PointLight
+{
+	Vec4D vAmbient;
+	Vec4D vDiffuse;
+	Vec4D vSpecular;
+	Vec3D vPosition;
+	float fRange;
+	PointLight(){}
+	PointLight(const Vec4D& ambient,const Vec4D& diffuse,const Vec4D& specular,const Vec3D& position, float range):
+	vAmbient(ambient),
+		vDiffuse(diffuse),
+		vSpecular(specular),
+		vPosition(position),
+		fRange(range)
+	{
+	}
+};
+
 struct IndexedSubset
 {
 	IndexedSubset()

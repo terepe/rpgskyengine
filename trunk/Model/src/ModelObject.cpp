@@ -3,7 +3,6 @@
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "ParticleEmitter.h"
-#include "Particle.h"
 #include "ModelDataMgr.h"
 
 CModelObject::CModelObject() :

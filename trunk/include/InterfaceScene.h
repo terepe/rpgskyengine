@@ -203,8 +203,8 @@ public:
 	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
 	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
 	//
-	virtual float	GetHeight(const Vec2D& vPos)const=0;
-	virtual Vec4D	GetColor(const Vec2D& vPos)const=0;
+	virtual float	GetHeight(float fX, float fY)const=0;
+	virtual Vec4D	GetColor(float fX, float fY)const=0;
 	//
 	virtual bool	PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
 	virtual bool	Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;

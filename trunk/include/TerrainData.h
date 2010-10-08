@@ -70,8 +70,8 @@ public:
 	Color32	getVertexColor(int nCellX, int nCellY)const;
 	void	setVertexColor(int nCellX, int nCellY, Color32 color);
 	//
-	float	GetHeight(const Vec2D& vPos)const;
-	Vec4D	GetColor(const Vec2D& vPos)const;
+	float	GetHeight(float fX, float fY)const;
+	Vec4D	GetColor(float fX, float fY)const;
 	// Åö×²¾«Ñ¡
 	virtual bool PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const;
 	virtual bool Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const;
