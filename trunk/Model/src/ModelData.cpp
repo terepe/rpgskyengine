@@ -214,11 +214,11 @@ bool CModelData::initParticleMaterial()
 }
 
 #include "CSVFile.h"
-bool CModelData::loadParticleEmitters(const std::string& strFilename)
+bool CModelData::loadParticleEmitters(const char* szFilename)
 {
 	CCsvFile csv;
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	if (csv.Open(strFilename))
+	if (csv.Open(szFilename))
 	{
 		while (csv.SeekNextLine())
 		{

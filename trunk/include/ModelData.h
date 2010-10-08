@@ -138,7 +138,7 @@ public:
 	virtual bool LoadFile(const std::string& strFilename);
 	virtual bool saveMaterial(const std::string& strFilename);
 	virtual bool initParticleMaterial();
-	virtual	bool loadParticleEmitters(const std::string& strFilename);
+	virtual	bool loadParticleEmitters(const char* szFilename);
 	void InitSkins();
 	void Init();
 	int	GetOrder();
