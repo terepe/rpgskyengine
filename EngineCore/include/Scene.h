@@ -95,6 +95,7 @@ public:
 	ObjectTree		m_ObjectTree;
 	DEQUE_MAPOBJ	m_setMapObj;
 	DEQUE_MAPOBJ	m_setRenderSceneObj;
+	DEQUE_MAPOBJ	m_setLightObj;
 	MAP_OBJECT_INFO	m_ObjectInfo;
 	bool			m_bNeedUpdate;
 protected:
