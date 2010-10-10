@@ -9,7 +9,7 @@ public:
 	CMaterialMgr();
 	~CMaterialMgr();
 	CMaterial& getItem(const std::string& strMaterialName);
-	bool loadMaterial(const std::string& strFilename);
+	bool loadMaterial(const char* szFilename);
 protected:
 	std::map<std::string, CMaterial> m_Items;
 private:
