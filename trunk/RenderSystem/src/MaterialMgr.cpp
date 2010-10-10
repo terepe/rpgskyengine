@@ -15,14 +15,14 @@ CMaterial& CMaterialMgr::getItem(const std::string& strMaterialName)
 	return m_Items[strMaterialName];
 }
 
-bool CMaterialMgr::loadMaterial(const std::string& strFilename)
+bool CMaterialMgr::loadMaterial(const char* szFilename)
 {
 	// 判断格式--根据文件后缀名
-	std::string strExt = GetExtension(strFilename);
+	std::string strExt = GetExtension(szFilename);
 	CMaterialDataPlugBase* pModelPlug = (CMaterialDataPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt);
 	if (pModelPlug)
 	{
-		return pModelPlug->importData(m_Items,strFilename);
+		return pModelPlug->importData(m_Items,szFilename);
 	}
 	return false;
 }
