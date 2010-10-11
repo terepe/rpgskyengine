@@ -99,8 +99,8 @@ void CLodMesh::Init()
 			std::vector<VertexIndex>& setVertexIndex=setVecVertexIndex[i];
 
 			transformRedundance(subMesh.m_setVertexIndex,setVertexIndex,setIndex);
-			subset.vstart += subset.vcount;
-			subset.vbase = subset.vstart;
+			subset.vstart = 0;	// 因为每个sub都是独立的ib索引编号 从0开始，所以只需要设置vbase（vb地址偏移），有些显卡在误设置vstart（IB范围后）会不显示。
+			subset.vbase += subset.vcount;
 			subset.istart += subset.icount;
 			subset.vcount = setVertexIndex.size();
 			subset.icount = setIndex.size()-subset.istart;
