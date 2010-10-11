@@ -34,24 +34,16 @@ void CRenderSystem::world2Screen(const Vec3D& vWorldPos, Pos2D& posScreen)
 	posScreen.y = int(rc.top+(rc.bottom-rc.top)*(0.5f-vOut.y*0.5f/fW));
 }
 
+#include "Intersect.h"
 void CRenderSystem::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y)
 {
 	Matrix mProj;
 	getProjectionMatrix(mProj);
 	CRect<int> rc;
 	getViewport(rc);
-	Vec3D v;
-	v.x =  (((2.0f * (x-rc.left)) / (rc.right-rc.left)) - 1) / mProj._11;
-	v.y = -(((2.0f * (y-rc.top)) / (rc.bottom-rc.top)) - 1) / mProj._22;
-	v.z =  1.0f;
-
 	Matrix mView;
 	getViewMatrix(mView);
-	Matrix mViewInv = mView;
-	mViewInv.Invert();
-	//vRayDir = mViewInv*v-Vec3D(mView._14,mView._24,mView._34);
-	vRayDir.normalize();
-	//vRayPos = m_vEye;
+	::GetPickRay(vRayPos,vRayDir,x,y,mView,mProj,rc.getRECT());
 }
 
 CMaterialMgr& CRenderSystem::getMaterialMgr()

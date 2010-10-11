@@ -93,19 +93,10 @@ void CCamera::FrameMove(float fElapsedTime)
 	m_Frustum.Build(m_mProj*m_mView);
 }
 
-#include "RenderSystem.h"
+#include "Intersect.h"
 void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,const RECT& rc)
 {
-	Vec3D v;
-	v.x =  (((2.0f * (x-rc.left)) / (rc.right-rc.left)) - 1) / m_mProj._11;
-	v.y = -(((2.0f * (y-rc.top)) / (rc.bottom-rc.top)) - 1) / m_mProj._22;
-	v.z =  1.0f;
-
-	Matrix mViewInv = m_mView;
-	mViewInv.Invert();
-	vRayDir = mViewInv*v-m_vEye;
-	vRayDir.normalize();
-	vRayPos = m_vEye;
+	::GetPickRay(vRayPos,vRayDir,x,y,m_mView,m_mProj,rc);
 }
 
 void CCamera::World2Screen(const Vec3D& vWorldPos, Pos2D& posScreen)
