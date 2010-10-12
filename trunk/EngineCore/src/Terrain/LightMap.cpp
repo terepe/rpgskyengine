@@ -82,8 +82,8 @@ void CLightMap::CalcLightMap(int nCalcCount)
 	CShader* pShader = GetRenderSystem().GetShaderMgr().getItem(m_uShaderID);
 	if (pShader)
 	{
-		pShader->setFloat("g_fTerrainW", (float)m_pScene->getTerrain()->GetWidth());
-		pShader->setFloat("g_fTerrainH", (float)m_pScene->getTerrain()->GetHeight());
+		pShader->setFloat("g_fTerrainW", (float)m_pScene->getTerrainData()->GetWidth());
+		pShader->setFloat("g_fTerrainH", (float)m_pScene->getTerrainData()->GetHeight());
 	}
 
 	CalcLightMapByShader(nCalcCount);
@@ -121,21 +121,21 @@ void CLightMap::CalcLightMapByShader(int nCalcCount)
 
 	CRenderSystem& R = GetRenderSystem();
 	// 灯光
-	Vec3D vLightDir = m_pScene->getTerrain()->GetLightDir();
+	Vec3D vLightDir = m_pScene->getTerrainData()->GetLightDir();
 	//m_pShader->SetFloat("g_fScale",1.0f/nCalcCount);
 	//for (int i = 0; i < nCalcCount; i++)
 	{
 		// 地形阴影
 		ClearLightMap();
 		CTerrain::LIST_CUBES		renderChunkCubesList;
-		m_pScene->getTerrain()->getCrunodeCubes(renderChunkCubesList);
+		m_pScene->getTerrainData()->getCrunodeCubes(renderChunkCubesList);
 		for (size_t i=0; i<renderChunkCubesList.size(); ++i)
 		{
 			const Cube& cube = *renderChunkCubesList[i];
 			// Chunk阴影
 			CalcChunkLightMap(vLightDir, cube);
 		}
-		std::string strFilename = m_pScene->getTerrain()->getFilename();
+		std::string strFilename = m_pScene->getTerrainData()->getFilename();
 		std::string strLightmapFilename = GetParentPath(strFilename)+"LightMap.bmp";
 		m_pLightMapRenderTarget->SaveToFile(strLightmapFilename);
 
@@ -187,13 +187,13 @@ void CLightMap::RenderDepthToTex(const Matrix& mLight)
 		pShader->setMatrix("g_mViewProj",mLight);
 		if (pShader->begin("RenderDepth"))// 地表
 		{
-			if (m_pScene->getTerrain()->Prepare())
+			if (m_pScene->getTerrainData()->Prepare())
 			{
-				R.SetIndices(m_pScene->getTerrain()->GetLightMapDecal().GetIB());
+				R.SetIndices(m_pScene->getTerrainData()->GetLightMapDecal().GetIB());
 				CTerrain::LIST_CUBES		renderChunkCubesList;
 				{
 					CTerrain::LIST_CUBES		renderCubesList;
-					m_pScene->getTerrain()->getCubesByFrustum(frustum, renderCubesList);
+					m_pScene->getTerrainData()->getCubesByFrustum(frustum, renderCubesList);
 					for (size_t i=0; i<renderCubesList.size(); ++i)
 					{
 						renderCubesList[i]->getChildCrunodeCubes(renderChunkCubesList);
@@ -202,7 +202,7 @@ void CLightMap::RenderDepthToTex(const Matrix& mLight)
 				for (size_t i=0; i<renderChunkCubesList.size(); ++i)
 				{
 					const Cube& cube = *renderChunkCubesList[i];
-					m_pScene->getTerrain()->DrawChunk(cube);
+					m_pScene->getTerrainData()->DrawChunk(cube);
 				}
 			}
 			pShader->end();
@@ -251,13 +251,13 @@ void CLightMap::RenderTerrainLightMapToTex(const Matrix& mLight, const Cube& cub
 	{
 		if (pShader->begin("RenderToLightMapTex"))
 		{
-			if (m_pScene->getTerrain()->Prepare())
+			if (m_pScene->getTerrainData()->Prepare())
 			{
-				R.SetIndices(m_pScene->getTerrain()->GetLightMapDecal().GetIB());
+				R.SetIndices(m_pScene->getTerrainData()->GetLightMapDecal().GetIB());
 
 				R.SetCullingMode(CULL_NONE);
 				R.SetDepthBufferFunc(false,false);
-				m_pScene->getTerrain()->DrawChunk(cube);
+				m_pScene->getTerrainData()->DrawChunk(cube);
 			}
 			pShader->end();
 		}

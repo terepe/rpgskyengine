@@ -69,12 +69,12 @@ public:
 	// data
 	MAP_OBJECT_INFO& GetObjectInfo(){return m_ObjectInfo;}
 
-	ObjectTree& GetObject(){return m_ObjectTree;}
+	ObjectTree&				GetObject									(){return m_ObjectTree;}
 
-	void			SetTerrain(CTerrain* pTerrain){m_pTerrain = pTerrain;}
-	iTerrainData*		getTerrain(){return m_pTerrain;}
-	const iTerrainData*	getTerrain()const{return m_pTerrain;}
-	void			CalcLightMap();
+	void					SetTerrain									(CTerrain* pTerrain){m_pTerrain = pTerrain;}
+	iTerrainData*			getTerrainData								(){return m_pTerrain;}
+	const iTerrainData*		getTerrainData								()const{return m_pTerrain;}
+	void					CalcLightMap								();
 
 	void showStaticObject(bool bShowStaticObject){m_bShowStaticObject = bShowStaticObject;}
 	void showAnimObject(bool bShowAnimObject){m_bShowAnimObject = bShowAnimObject;}

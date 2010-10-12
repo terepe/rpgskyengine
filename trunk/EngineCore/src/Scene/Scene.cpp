@@ -188,7 +188,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 					//if(pObj->GetObjType() == MAP_3DOBJ)
 					{
 						C3DMapObj* p3DObj = (C3DMapObj*)pObj;
-						float fHeight = getTerrain()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
+						float fHeight = getTerrainData()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
 						p3DObj->renderShadow(vLightDir,fHeight);
 						for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
 							itLight != m_setLightObj.end(); ++itLight)
