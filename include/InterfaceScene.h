@@ -229,8 +229,8 @@ public:
 class iScene
 {
 public:
-	virtual iTerrainData* getTerrain()=0;
-	virtual const iTerrainData*	getTerrain()const=0;
+	virtual iTerrainData* getTerrainData()=0;
+	virtual const iTerrainData*	getTerrainData()const=0;
 	virtual void clearObjectResources()=0;
 	virtual void setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void createObjectTree(const BBox& box, size_t size)=0;
