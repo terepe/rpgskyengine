@@ -310,10 +310,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="TextRender"
-			>
-		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
