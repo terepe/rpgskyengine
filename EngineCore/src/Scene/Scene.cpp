@@ -77,7 +77,7 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 		//	m_ObjectTree.addObject((*it));
 		//}
 		(*it)->OnFrameMove(fElapsedTime);
-		//if (((CModelObject*)(*it))->m_setParticleGroup.size()>0)
+		if (((C3DMapObj*)(*it))->m_setParticleGroup.size()>0)
 		{
 			m_setLightObj.push_back(*it);
 		}
