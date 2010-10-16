@@ -197,6 +197,7 @@ public:
 	std::vector<BoneInfo>				m_Bones;	// ¹Ç÷À
 	std::map<std::string,SkeletonAnim>	m_Anims;	// ¶¯»­
 	
+	virtual int getBoneIDByName(const char* szName)=0;
 	virtual size_t getAnimationCount()=0;
 	//virtual void setAnimation(const std::string& strName, long timeCount)=0;
 	virtual bool getAnimation(const std::string& strName, long& timeCount)const=0;

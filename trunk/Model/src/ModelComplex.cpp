@@ -54,6 +54,7 @@ void CModelComplex::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType)
 	}
 }
 
+#include "RenderSystem.h"
 void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	CModelObject::renderMesh(eModelRenderType);
@@ -61,9 +62,19 @@ void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	{
 		it->second->renderMesh(eModelRenderType);
 	}
+	Matrix mWorld;
+	GetRenderSystem().getWorldMatrix(mWorld);
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
-		it->second->renderMesh(eModelRenderType);
+		int nBoneID = m_pModelData->m_Skeleton.getBoneIDByName(it->first.c_str());
+		if (nBoneID!=-1)
+		{
+			Matrix mBoneLocal = m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
+			mBoneLocal.Invert();
+			Matrix mBone=m_setBonesMatrix[nBoneID]*mBoneLocal;
+			GetRenderSystem().setWorldMatrix(mWorld*mBone);
+			it->second->renderMesh(eModelRenderType);
+		}
 	}
 }
 
@@ -85,22 +96,38 @@ void CModelComplex::drawSkeleton()const
 	}
 }
 
-void CModelComplex::loadSkinModel(const std::string& strName,const std::string& strFilename)
+void CModelComplex::loadSkinModel(const char* szName,const char* szFilename)
 {
-	if (m_mapSkinModel.find(strName)!=m_mapSkinModel.end())
+	if (m_mapSkinModel.find(szName)!=m_mapSkinModel.end())
 	{
-		if (m_mapSkinModel[strName]->getModelFilename()==strFilename)
+		if (m_mapSkinModel[szName]->getModelFilename()==szFilename)
 		{
 			return;
 		}
 	}
-	if (strFilename.length()>0)
+	if (strlen(szFilename)>0)
 	{
 		CModelObject* pModelObject = new CModelObject();
-		pModelObject->Register(strFilename);
+		pModelObject->Register(szFilename);
 		pModelObject->create();
-		m_mapSkinModel[strName]=pModelObject;
-		//return true;
+		m_mapSkinModel[szName]=pModelObject;
 	}
-	//return false;
+}
+
+void CModelComplex::loadChildModel(const char* szBoneName,const char* szFilename)
+{
+	if (m_mapChildModel.find(szBoneName)!=m_mapChildModel.end())
+	{
+		if (m_mapChildModel[szBoneName]->getModelFilename()==szFilename)
+		{
+			return;
+		}
+	}
+	if (strlen(szFilename)>0)
+	{
+		CModelObject* pModelObject = new CModelObject();
+		pModelObject->Register(szFilename);
+		pModelObject->create();
+		m_mapChildModel[szBoneName]=pModelObject;
+	}
 }

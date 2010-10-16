@@ -3,18 +3,6 @@
 #include "Graphics.h"
 //#include "TextRender.h"
 
-unsigned char CSkeleton::getIDByName(const std::string& strName)
-{
-	for (size_t i=0;i<m_Bones.size();++i)
-	{
-		if (strName==m_Bones[i].strName)
-		{
-			return i;
-		}
-	}
-	return 0xFF;
-}
-
 void CSkeleton::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,std::vector<bool>& setCalc)const
 {
 	if (setCalc[nBoneID])
@@ -218,6 +206,20 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 // 	}
 // 	return pNode;
 // }
+int CSkeleton::getBoneIDByName(const char* szName)
+{
+	size_t uBoneCount = m_Bones.size();
+	// ----
+	for(size_t i = 0 ; i < uBoneCount; i++)
+	{
+		if(strcmp(m_Bones[i].strName.c_str(),szName)==0)
+		{
+			return i;
+		}
+	}
+	// ----
+	return -1;
+}
 
 size_t CSkeleton::getAnimationCount()
 {

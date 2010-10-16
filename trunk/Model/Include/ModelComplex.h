@@ -13,7 +13,8 @@ public:
 	virtual void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_RENDER_NORMAL)const;
 	virtual void drawSkeleton()const;
-	void loadSkinModel(const std::string& strName,const std::string& strFilename);
+	void loadSkinModel(const char* szName,const char* szFilename);
+	void loadChildModel(const char* szBoneName,const char* szFilename);
 public:
 	std::map<std::string,CModelObject*>	m_mapSkinModel;
 	std::map<std::string,CModelObject*>	m_mapChildModel;
