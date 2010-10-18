@@ -248,7 +248,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 							R.LightEnable(1,true);
 						}
 					}
-					(*it)->render(MATERIAL_RENDER_GEOMETRY);
+					(*it)->render(MATERIAL_GEOMETRY);
 					R.LightEnable(1,false);
 				}
 			}catch(...)
@@ -266,7 +266,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
 				Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
 			R.SetDirectionalLight(0,light);
-			m_setFocusObjects[i]->render(MATERIAL_RENDER_GEOMETRY);
+			m_setFocusObjects[i]->render(MATERIAL_GEOMETRY);
 		}
 		//
 		if (m_pTerrain)
@@ -285,13 +285,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MATERIAL_RENDER_ALPHA);
+			(*it)->render(MATERIAL_ALPHA);
 		}
 		R.setWorldMatrix(Matrix::UNIT);
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MATERIAL_RENDER_GLOW);
+			(*it)->render(MATERIAL_GLOW);
 		}
 	}
 }

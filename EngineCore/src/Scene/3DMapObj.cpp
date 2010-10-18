@@ -97,8 +97,7 @@ void C3DMapObj::render(int flag)const
 void C3DMapObj::renderShadow(const Vec3D& vLight,float fHeight)const
 {
 	GetRenderSystem().setWorldMatrix(getShadowMatrix(vLight,fHeight));
-	CModelComplex::drawMeshWithTexture(MATERIAL_RENDER_GEOMETRY);
-	//drawMesh(MATERIAL_RENDER_GEOMETRY);
+	CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 }
 
 void C3DMapObj::renderFocus()const
@@ -110,11 +109,6 @@ void C3DMapObj::renderFocus()const
 void C3DMapObj::renderDebug()const
 {
 	GetGraphics().drawBBox(getBBox(),0xFFFF4400);
-}
-
-void C3DMapObj::drawWithoutMaterial()const
-{
-	CModelComplex::drawMesh(MATERIAL_RENDER_NORMAL);
 }
 
 bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
@@ -180,9 +174,9 @@ void C3DMapObj::renderFocus(Color32 color)const
 	{
 		m_pShaderFocus->setVec4D("g_vColorFocus",Vec4D(color));
 		Matrix mWorld = getWorldMatrix();
-		m_pShaderFocus->setMatrix("g_mWorld",mWorld);
+		R.setWorldMatrix(mWorld);
 		R.SetShader(m_pShaderFocus);
-		drawWithoutMaterial();
+		CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 		R.SetShader((CShader*)NULL);
 	}
 }

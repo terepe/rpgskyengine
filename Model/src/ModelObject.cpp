@@ -367,39 +367,13 @@ bool CModelObject::Prepare()const
 	return m_pModelData->m_Mesh.SetMeshSource(m_uLodLevel,m_pVB);
 }
 
-void CModelObject::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
-{
-	if (NULL==m_pModelData)
-	{
-		return;
-	}
-	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
-	{
-		return;
-	}
-	m_pModelData->drawMesh(eModelRenderType,m_uLodLevel,m_pVB);
-}
-
-void CModelObject::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType)const
-{
-	if (NULL==m_pModelData)
-	{
-		return;
-	}
-	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
-	{
-		return;
-	}
-	m_pModelData->drawMeshWithTexture(eModelRenderType,m_uLodLevel,m_pVB);
-}
-
 void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
 	if (NULL==m_pModelData)
 	{
 		return;
 	}
-	if (eModelRenderType==MATERIAL_RENDER_NOTHING)
+	if (eModelRenderType==MATERIAL_NONE)
 	{
 		return;
 	}
@@ -408,7 +382,7 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 
 void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
 {
-	if (eParticleRenderType!=MATERIAL_RENDER_NOTHING)
+	if (eParticleRenderType!=MATERIAL_NONE)
 	{
 		for (size_t i = 0;i < m_setParticleGroup.size();++i)
 		{
@@ -421,9 +395,9 @@ void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)co
 	}
 }
 
-void CModelObject::render(E_MATERIAL_RENDER_TYPE eModelRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
+void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
 {
-	renderMesh(eModelRenderType);
+	renderMesh(eMeshRenderType);
 	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
 	renderParticles(eParticleRenderType);
 }

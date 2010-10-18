@@ -477,63 +477,43 @@ void CModelData::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLod
 {
 	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
 	{
-		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		if (eModelRenderType==(MATERIAL_ALL|MATERIAL_RENDER_NO_MATERIAL))
 		{
-			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
+			m_Mesh.draw();
+		}
+		else for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		{
+			E_MATERIAL_RENDER_TYPE RenderType = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType();
+			if (RenderType&eModelRenderType)
 			{
-				if (passBegin(it->second,fOpacity,nAnimTime))
+				if (eModelRenderType&MATERIAL_RENDER_ALPHA_TEST)
 				{
-					if (it->second.nSubID<0)
-					{
-						m_Mesh.draw(uLodLevel);
-					}
-					else
-					{
-						m_Mesh.drawSub(it->second.nSubID,uLodLevel);
-					}
+					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).uDiffuse);
+					m_Mesh.drawSub(it->second.nSubID,uLodLevel);
 				}
-				passEnd();
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
-				//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
+				else if (eModelRenderType&MATERIAL_RENDER_NO_MATERIAL)
+				{
+					m_Mesh.drawSub(it->second.nSubID,uLodLevel);
+				}
+				else
+				{
+					if (passBegin(it->second,fOpacity,nAnimTime))
+					{
+						if (it->second.nSubID<0)
+						{
+							m_Mesh.draw(uLodLevel);
+						}
+						else
+						{
+							m_Mesh.drawSub(it->second.nSubID,uLodLevel);
+						}
+					}
+					passEnd();
+					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(0,1);
+					//	GetRenderSystem().GetDevice()->SetStreamSourceFreq(1,1);
+				}
 			}
 		}
-	}
-}
-
-void CModelData::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB)const
-{
-	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
-	{
-		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
-		{
-			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
-			{
-				m_Mesh.drawSub(it->second.nSubID,uLodLevel);
-			}
-		}
-	}
-}
-
-void CModelData::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB)const
-{
-	if (m_Mesh.SetMeshSource(uLodLevel,pSkinVB))
-	{
-		for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
-		{
-			if (GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType()&eModelRenderType)
-			{
-				GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).uDiffuse);
-				m_Mesh.drawSub(it->second.nSubID,uLodLevel);
-			}
-		}
-	}
-}
-
-void CModelData::drawMesh(CHardwareVertexBuffer* pSkinVB)const
-{
-	if (m_Mesh.SetMeshSource(0,pSkinVB))
-	{
-		m_Mesh.draw();
 	}
 }
 
