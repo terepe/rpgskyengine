@@ -30,7 +30,7 @@ public:
 	void Setup(int nTime);
 	//void SetTex(float dt);
 	void draw()const;
-	virtual void render(E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_RENDER_NORMAL)const;
+	virtual void render(E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
 	CParticleGroup(): m_pEmitter(NULL)
 	{
 		m_nTime = 0;

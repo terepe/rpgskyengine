@@ -28,32 +28,6 @@ void CModelComplex::OnFrameMove(float fElapsedTime)
 	}
 }
 
-void CModelComplex::drawMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
-{
-	CModelObject::drawMesh(eModelRenderType);
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
-	{
-		it->second->drawMesh(eModelRenderType);
-	}
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
-	{
-		it->second->drawMesh(eModelRenderType);
-	}
-}
-
-void CModelComplex::drawMeshWithTexture(E_MATERIAL_RENDER_TYPE eModelRenderType)const
-{
-	CModelObject::drawMeshWithTexture(eModelRenderType);
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
-	{
-		it->second->drawMeshWithTexture(eModelRenderType);
-	}
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
-	{
-		it->second->drawMeshWithTexture(eModelRenderType);
-	}
-}
-
 #include "RenderSystem.h"
 void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 {
@@ -64,18 +38,7 @@ void CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 	}
 	Matrix mWorld;
 	GetRenderSystem().getWorldMatrix(mWorld);
-	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
-	{
-		int nBoneID = m_pModelData->m_Skeleton.getBoneIDByName(it->first.c_str());
-		if (nBoneID!=-1)
-		{
-			Matrix mBoneLocal = m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
-			mBoneLocal.Invert();
-			Matrix mBone=m_setBonesMatrix[nBoneID]*mBoneLocal;
-			GetRenderSystem().setWorldMatrix(mWorld*mBone);
-			it->second->renderMesh(eModelRenderType);
-		}
-	}
+	renderChildMesh(mWorld, eModelRenderType);
 }
 
 void CModelComplex::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
@@ -129,5 +92,21 @@ void CModelComplex::loadChildModel(const char* szBoneName,const char* szFilename
 		pModelObject->Register(szFilename);
 		pModelObject->create();
 		m_mapChildModel[szBoneName]=pModelObject;
+	}
+}
+
+void CModelComplex::renderChildMesh(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType)const
+{
+	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
+	{
+		int nBoneID = m_pModelData->m_Skeleton.getBoneIDByName(it->first.c_str());
+		if (nBoneID!=-1)
+		{
+			Matrix mBoneLocal = m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
+			mBoneLocal.Invert();
+			Matrix mBone=m_setBonesMatrix[nBoneID]*mBoneLocal;
+			GetRenderSystem().setWorldMatrix(mWorld*mBone);
+			it->second->renderMesh(eModelRenderType);
+		}
 	}
 }
