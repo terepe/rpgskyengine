@@ -1,7 +1,7 @@
 #include "Skeleton.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
-//#include "TextRender.h"
+#include "TextRender.h"
 
 void CSkeleton::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,std::vector<bool>& setCalc)const
 {
@@ -117,7 +117,7 @@ void CSkeleton::calcBonesPoint(const std::vector<Matrix>& setBonesMatrix, std::v
 	}
 }
 
-void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
+void CSkeleton::render(const std::vector<Matrix>& setBonesMatrix, CTextRender* pTextRender)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	CGraphics& G = GetGraphics();
@@ -127,6 +127,7 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 
 	if (R.prepareMaterial("Skeleton"))
 	{
+		R.SetDepthBufferFunc(false,false);
 		for(size_t i=0;i<m_Bones.size();++i)
 		{
 			if (m_Bones[i].parent!=255)
@@ -140,13 +141,16 @@ void CSkeleton::Render(const std::vector<Matrix>& setBonesMatrix)const
 	R.SetBlendFunc(true);
 	R.SetTextureColorOP(0,TBOP_MODULATE);
 	R.SetTextureAlphaOP(0,TBOP_MODULATE);
-	for(size_t i=0;i<m_Bones.size();++i)
+	if (pTextRender)
 	{
-		if (m_Bones[i].parent!=255)
+		for(size_t i=0;i<m_Bones.size();++i)
 		{
-			//Pos2D posScreen;
-			//R.world2Screen(setBonesPoint[i],posScreen);
-			//GetTextRender().drawText(s2ws(m_Bones[i].strName),posScreen.x,posScreen.y);
+			if (m_Bones[i].parent!=255)
+			{
+				Pos2D posScreen;
+				R.world2Screen(setBonesPoint[i],posScreen);
+				pTextRender->drawText(s2ws(m_Bones[i].strName).c_str(),posScreen.x,posScreen.y);
+			}
 		}
 	}
 }

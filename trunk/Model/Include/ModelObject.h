@@ -14,7 +14,8 @@ public:
 public:
 	void SetLOD(unsigned long uLodID);		// …Ë÷√LodID
 	void SetSkin(unsigned long uSkinID);	// …Ë÷√∆§∑Ù
-	void SetAnim(const std::string& strAnimName);
+	void setAnim(int nID);
+	void setAnim(const char* szAnimName);
 	void SetLightMap(const std::string& strFilename);	// SetLightMap
 public:
 	void Register(const std::string& strFilename);
@@ -25,7 +26,7 @@ public:
 	virtual void renderParticles	(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_NORMAL)const;
 	virtual void render				(E_MATERIAL_RENDER_TYPE eMeshRenderType=MATERIAL_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_NORMAL)const;
 
-	virtual void drawSkeleton()const;
+	virtual void drawSkeleton(CTextRender* pTextRender)const;
 
 	void updateEmitters(const Matrix& mWorld, float fElapsedTime);
 	void SetLodLevel(int nLodLevel);
