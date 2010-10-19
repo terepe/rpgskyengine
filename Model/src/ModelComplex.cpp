@@ -50,12 +50,12 @@ void CModelComplex::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)c
 	}
 }
 
-void CModelComplex::drawSkeleton()const
+void CModelComplex::drawSkeleton(CTextRender* pTextRender)const
 {
-	CModelObject::drawSkeleton();
+	CModelObject::drawSkeleton(pTextRender);
 	for (std::map<std::string,CModelObject*>::const_iterator it=m_mapChildModel.begin();it!=m_mapChildModel.end();it++)
 	{
-		it->second->drawSkeleton();
+		it->second->drawSkeleton(pTextRender);
 	}
 }
 
@@ -79,11 +79,17 @@ void CModelComplex::loadSkinModel(const char* szName,const char* szFilename)
 
 void CModelComplex::loadChildModel(const char* szBoneName,const char* szFilename)
 {
-	if (m_mapChildModel.find(szBoneName)!=m_mapChildModel.end())
+	std::map<std::string,CModelObject*>::iterator it = m_mapChildModel.find(szBoneName);
+	if (it != m_mapChildModel.end())
 	{
-		if (m_mapChildModel[szBoneName]->getModelFilename()==szFilename)
+		if (it->second->getModelFilename()==szFilename)
 		{
 			return;
+		}
+		else
+		{
+			delete it->second;
+			m_mapChildModel.erase(it);
 		}
 	}
 	if (strlen(szFilename)>0)
@@ -92,6 +98,16 @@ void CModelComplex::loadChildModel(const char* szBoneName,const char* szFilename
 		pModelObject->Register(szFilename);
 		pModelObject->create();
 		m_mapChildModel[szBoneName]=pModelObject;
+	}
+}
+
+void CModelComplex::delChildModel(const char* szBoneName)
+{
+	std::map<std::string,CModelObject*>::iterator it = m_mapChildModel.find(szBoneName);
+	if (it != m_mapChildModel.end())
+	{
+		delete it->second;
+		m_mapChildModel.erase(it);
 	}
 }
 

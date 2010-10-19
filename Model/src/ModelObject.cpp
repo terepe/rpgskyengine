@@ -305,16 +305,26 @@ void CModelObject::SetSkin(unsigned long uSkinID)
 
 }
 
-void CModelObject::SetAnim(const std::string& strAnimName)
+void CModelObject::setAnim(int nID)
 {
 	if (m_pModelData)
 	{
-		if(m_strAnimName!=strAnimName)
+		char szAnimName[256];
+		sprintf_s(szAnimName,"%d",nID);
+		setAnim(szAnimName);
+	}
+}
+
+void CModelObject::setAnim(const char* szAnimName)
+{
+	if (m_pModelData)
+	{
+		if(m_strAnimName!=szAnimName)
 		{
-			m_strAnimName = strAnimName;
+			m_strAnimName = szAnimName;
 
 			long timeCount;
-			if (m_pModelData->getSkeleton().getAnimation(strAnimName,timeCount))
+			if (m_pModelData->getSkeleton().getAnimation(szAnimName,timeCount))
 			{
 				m_AnimMgr.uFrame=0;
 				m_AnimMgr.uTotalFrames = timeCount;
@@ -402,10 +412,10 @@ void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType,E_MATERIAL_REND
 	renderParticles(eParticleRenderType);
 }
 
-void CModelObject::drawSkeleton()const
+void CModelObject::drawSkeleton(CTextRender* pTextRender)const
 {
 	if (m_pModelData)
 	{
-		m_pModelData->m_Skeleton.Render(m_setBonesMatrix);
+		m_pModelData->m_Skeleton.render(m_setBonesMatrix, pTextRender);
 	}
 }
