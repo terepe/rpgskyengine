@@ -90,6 +90,8 @@ public:
 	const DirectionalLight& getLight(){return m_Light;}
 	void setTargetPos(const Vec3D& vPos){m_vTargetPos = vPos;}
 	const Vec3D& getTargetPos()const{return m_vTargetPos;}
+
+	void refreshViewport(){ m_bNeedUpdate = true; }
 public:
 	CTerrain*		m_pTerrain;
 	ObjectTree		m_ObjectTree;
