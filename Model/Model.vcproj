@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\RenderSystem\Include;Include"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\RenderSystem\Include;..\..\3dgui\TextRender\include;Include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

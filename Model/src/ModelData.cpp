@@ -57,9 +57,14 @@ bool CModelData::delRenderPass(int nID)
 	return false;
 }
 
-CMaterial& CModelData::getMaterial(const std::string& strMaterialName)
+void CModelData::loadMaterial(const char* szFilename, const char* szParentDir)
 {
-	return GetRenderSystem().getMaterialMgr().getItem(strMaterialName);
+	GetRenderSystem().getMaterialMgr().loadMaterial(szFilename,szParentDir);
+}
+
+CMaterial& CModelData::getMaterial(const char* szName)
+{
+	return GetRenderSystem().getMaterialMgr().getItem(szName);
 }
 
 bool CModelData::LoadFile(const std::string& strFilename)
@@ -126,7 +131,7 @@ bool CModelData::LoadFile(const std::string& strFilename)
 // 
 // 	// ColorAnim
 // 	int nColorAnimCount = 0;
-// 	CNodeData* pColorAnimsNode = lumpFile.GetInt("ColorAnim", nColorAnimCount);
+// 	CNodeData* pColorAnimsNode = lumpFile.getInt("ColorAnim", nColorAnimCount);
 // 	if (pColorAnimsNode)
 // 	{
 // 		m_ColorAnims.resize(nColorAnimCount);
@@ -183,7 +188,7 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = this->getMaterial(it->second.strMaterialName);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
 		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 		ofs<<(it->second.nSubID)<<","<<
 			(TM.getItemName(material.uDiffuse).c_str())<<","<<
@@ -218,75 +223,75 @@ bool CModelData::loadParticleEmitters(const char* szFilename)
 {
 	CCsvFile csv;
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-	if (csv.Open(szFilename))
+	if (csv.open(szFilename))
 	{
-		while (csv.SeekNextLine())
+		while (csv.seekNextLine())
 		{
 			CParticleEmitter	particleEmitter;
-			particleEmitter.m_nBoneID = csv.GetInt("BoneID");
+			particleEmitter.m_nBoneID = csv.getInt("BoneID",-1);
 
 			particleEmitter.m_Speed.m_KeyTimes.push_back(0);
-			particleEmitter.m_Speed.m_KeyData.push_back(csv.GetFloat("Speed"));
+			particleEmitter.m_Speed.m_KeyData.push_back(csv.getFloat("Speed"));
 
 			particleEmitter.m_Variation.m_KeyTimes.push_back(0);
-			particleEmitter.m_Variation.m_KeyData.push_back(csv.GetFloat("Variation"));
+			particleEmitter.m_Variation.m_KeyData.push_back(csv.getFloat("Variation"));
 
 			particleEmitter.m_Spread.m_KeyTimes.push_back(0);
-			particleEmitter.m_Spread.m_KeyData.push_back(csv.GetFloat("Spread"));
+			particleEmitter.m_Spread.m_KeyData.push_back(csv.getFloat("Spread"));
 
 			particleEmitter.m_Lat.m_KeyTimes.push_back(0);
-			particleEmitter.m_Lat.m_KeyData.push_back(csv.GetFloat("Lat"));
+			particleEmitter.m_Lat.m_KeyData.push_back(csv.getFloat("Lat"));
 
 			particleEmitter.m_Gravity.m_KeyTimes.push_back(0);
-			particleEmitter.m_Gravity.m_KeyData.push_back(csv.GetFloat("Gravity"));
+			particleEmitter.m_Gravity.m_KeyData.push_back(csv.getFloat("Gravity"));
 
 			particleEmitter.m_Lifespan.m_KeyTimes.push_back(0);
-			particleEmitter.m_Lifespan.m_KeyData.push_back(csv.GetFloat("Lifespan"));
+			particleEmitter.m_Lifespan.m_KeyData.push_back(csv.getFloat("Lifespan"));
 
 			particleEmitter.m_Rate.m_KeyTimes.push_back(0);
-			particleEmitter.m_Rate.m_KeyData.push_back(csv.GetFloat("Rate"));
+			particleEmitter.m_Rate.m_KeyData.push_back(csv.getFloat("Rate"));
 
 			particleEmitter.m_Areal.m_KeyTimes.push_back(0);
-			particleEmitter.m_Areal.m_KeyData.push_back(csv.GetFloat("Areal"));
+			particleEmitter.m_Areal.m_KeyData.push_back(csv.getFloat("Areal"));
 
 			particleEmitter.m_Areaw.m_KeyTimes.push_back(0);
-			particleEmitter.m_Areaw.m_KeyData.push_back(csv.GetFloat("Areaw"));
+			particleEmitter.m_Areaw.m_KeyData.push_back(csv.getFloat("Areaw"));
 
 			particleEmitter.m_Deacceleration.m_KeyTimes.push_back(0);
-			particleEmitter.m_Deacceleration.m_KeyData.push_back(csv.GetFloat("Deacceleration"));
+			particleEmitter.m_Deacceleration.m_KeyData.push_back(csv.getFloat("Deacceleration"));
 
-			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.GetInt("TimeBegin"));
+			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeBegin"));
 			particleEmitter.m_Enabled.m_KeyData.push_back(true);
-			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.GetInt("TimeEnd"));
+			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeEnd"));
 			particleEmitter.m_Enabled.m_KeyData.push_back(false);
 	
-			particleEmitter.m_Colors[0]=csv.GetHex("ColorBegin");
-			particleEmitter.m_Colors[1]=csv.GetHex("ColorMiddle");
-			particleEmitter.m_Colors[2]=csv.GetHex("ColorEnd");
+			particleEmitter.m_Colors[0]=csv.getHex("ColorBegin");
+			particleEmitter.m_Colors[1]=csv.getHex("ColorMiddle");
+			particleEmitter.m_Colors[2]=csv.getHex("ColorEnd");
 
-			particleEmitter.m_Sizes[0]=csv.GetFloat("SizeBegin");
-			particleEmitter.m_Sizes[1]=csv.GetFloat("SizeMiddle");
-			particleEmitter.m_Sizes[2]=csv.GetFloat("SizeEnd");
+			particleEmitter.m_Sizes[0]=csv.getFloat("SizeBegin");
+			particleEmitter.m_Sizes[1]=csv.getFloat("SizeMiddle");
+			particleEmitter.m_Sizes[2]=csv.getFloat("SizeEnd");
 	
-			particleEmitter.m_fLifeMid=csv.GetFloat("LifeMiddle");
-			particleEmitter.m_fSlowdown=csv.GetFloat("Slowdown");
-			particleEmitter.m_fRotation=csv.GetFloat("Rotation");
+			particleEmitter.m_fLifeMid=csv.getFloat("LifeMiddle");
+			particleEmitter.m_fSlowdown=csv.getFloat("Slowdown");
+			particleEmitter.m_fRotation=csv.getFloat("Rotation");
 
-			particleEmitter.m_vPos.x=csv.GetFloat("PosX");
-			particleEmitter.m_vPos.y=csv.GetFloat("PosY");
-			particleEmitter.m_vPos.z=csv.GetFloat("PosZ");
+			particleEmitter.m_vPos.x=csv.getFloat("PosX");
+			particleEmitter.m_vPos.y=csv.getFloat("PosY");
+			particleEmitter.m_vPos.z=csv.getFloat("PosZ");
 
-			particleEmitter.m_nOrder=csv.GetInt("Order");
-			particleEmitter.type=csv.GetInt("Type");
+			particleEmitter.m_nOrder=csv.getInt("Order");
+			particleEmitter.type=csv.getInt("Type");
 
-			particleEmitter.m_nRows=csv.GetInt("Rows");
-			particleEmitter.m_nCols=csv.GetInt("Cols");
+			particleEmitter.m_nRows=csv.getInt("Rows");
+			particleEmitter.m_nCols=csv.getInt("Cols");
 
-			particleEmitter.m_bBillboard=csv.GetBool("IsBillboard");
+			particleEmitter.m_bBillboard=csv.getBool("IsBillboard");
 
 			m_setParticleEmitter.push_back(particleEmitter);
 		}
-		csv.Close();
+		csv.close();
 	}
 	initParticleMaterial();
 	return true;
@@ -367,7 +372,7 @@ void CModelData::Init()
 	m_nOrder=0;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = this->getMaterial(it->second.strMaterialName);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
 		m_nOrder+=material.getOrder();
 	}
 }

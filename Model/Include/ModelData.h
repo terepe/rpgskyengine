@@ -131,7 +131,10 @@ public:
 	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
 	virtual bool delRenderPass(int nID);
 
-	virtual CMaterial& getMaterial(const std::string& strMaterialName);
+	virtual void loadMaterial(const char* szFilename, const char* szParentDir);
+
+	virtual CMaterial& getMaterial(const char* szName);
+
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
 
