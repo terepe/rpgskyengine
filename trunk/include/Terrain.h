@@ -110,6 +110,7 @@ public:
 	CHardwareVertexBuffer* GetVB(){return m_pVB;}
 	CTerrainDecal& GetLightMapDecal(){return m_LightMapDecal;}
 	std::string	getTileListFilename(){return m_strTileListFilename;}
+	void loadTilesMaterial(const char* szFilename, const char* szParentDir);
 	void clearAllTiles();
 	void setLightMapTexture(const std::string& strFilename);
 	virtual bool create();// ≥ı ºªØ
