@@ -101,6 +101,25 @@ void CModelComplex::loadChildModel(const char* szBoneName,const char* szFilename
 	}
 }
 
+CModelObject* CModelComplex::getChildModel(const char* szBoneName)
+{
+	std::map<std::string,CModelObject*>::iterator it = m_mapChildModel.find(szBoneName);
+	if (it != m_mapChildModel.end())
+	{
+		return it->second;
+	}
+	return NULL;
+}
+
+void CModelComplex::removwChildModel(const char* szBoneName)
+{
+	std::map<std::string,CModelObject*>::iterator it = m_mapChildModel.find(szBoneName);
+	if (it != m_mapChildModel.end())
+	{
+		m_mapChildModel.erase(it);
+	}
+}
+
 void CModelComplex::delChildModel(const char* szBoneName)
 {
 	std::map<std::string,CModelObject*>::iterator it = m_mapChildModel.find(szBoneName);
@@ -108,6 +127,30 @@ void CModelComplex::delChildModel(const char* szBoneName)
 	{
 		delete it->second;
 		m_mapChildModel.erase(it);
+	}
+}
+
+void CModelComplex::exchangeChildModelPosition(const char* szBoneName1, const char* szBoneName2)
+{
+	CModelObject* pModel1 = getChildModel(szBoneName1);
+	CModelObject* pModel2 = getChildModel(szBoneName2);
+
+	if (pModel1)
+	{
+		m_mapChildModel[szBoneName2] = pModel1;
+	}
+	else
+	{
+		removwChildModel(szBoneName2);
+	}
+
+	if (pModel2)
+	{
+		m_mapChildModel[szBoneName1] = pModel2;
+	}
+	else
+	{
+		removwChildModel(szBoneName1);
 	}
 }
 
