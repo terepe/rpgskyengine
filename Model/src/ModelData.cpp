@@ -59,7 +59,7 @@ bool CModelData::delRenderPass(int nID)
 
 void CModelData::loadMaterial(const char* szFilename, const char* szParentDir)
 {
-	GetRenderSystem().getMaterialMgr().loadMaterial(szFilename,szParentDir);
+	GetRenderSystem().getMaterialMgr().load(szFilename,szParentDir);
 }
 
 CMaterial& CModelData::getMaterial(const char* szName)
@@ -188,7 +188,7 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
 		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 		ofs<<(it->second.nSubID)<<","<<
 			(TM.getItemName(material.uDiffuse).c_str())<<","<<
@@ -229,6 +229,11 @@ bool CModelData::loadParticleEmitters(const char* szFilename)
 		{
 			CParticleEmitter	particleEmitter;
 			particleEmitter.m_nBoneID = csv.getInt("BoneID",-1);
+
+			particleEmitter.m_vPos.x=csv.getFloat("PosX");
+			particleEmitter.m_vPos.y=csv.getFloat("PosY");
+			particleEmitter.m_vPos.z=csv.getFloat("PosZ");
+
 
 			particleEmitter.m_Speed.m_KeyTimes.push_back(0);
 			particleEmitter.m_Speed.m_KeyData.push_back(csv.getFloat("Speed"));
@@ -276,10 +281,6 @@ bool CModelData::loadParticleEmitters(const char* szFilename)
 			particleEmitter.m_fLifeMid=csv.getFloat("LifeMiddle");
 			particleEmitter.m_fSlowdown=csv.getFloat("Slowdown");
 			particleEmitter.m_fRotation=csv.getFloat("Rotation");
-
-			particleEmitter.m_vPos.x=csv.getFloat("PosX");
-			particleEmitter.m_vPos.y=csv.getFloat("PosY");
-			particleEmitter.m_vPos.z=csv.getFloat("PosZ");
 
 			particleEmitter.m_nOrder=csv.getInt("Order");
 			particleEmitter.type=csv.getInt("Type");
@@ -372,7 +373,7 @@ void CModelData::Init()
 	m_nOrder=0;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
 		m_nOrder+=material.getOrder();
 	}
 }
@@ -412,7 +413,7 @@ bool CModelData::passBegin(const ModelRenderPass& pass, float fOpacity, int nAni
 	{
 		Vec4D ecol = m_ColorAnims[pass.nColorID].GetColor(nAnimTime);
 		ecol.w = 1;
-		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName).SetEmissiveColor(ocol.getColor());
+		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName.c_str()).SetEmissiveColor(ocol.getColor());
 
 		//glMaterialfv(GL_FRONT, GL_EMISSION, ecol);
 		/*			D3DMATERIAL9 mtrl;
@@ -466,7 +467,7 @@ bool CModelData::passBegin(const ModelRenderPass& pass, float fOpacity, int nAni
 	//	R.SetTextureFactor(Color32(176,176,176,176));
 	//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
 	//}
-	return GetRenderSystem().prepareMaterial(pass.strMaterialName,fOpacity);
+	return GetRenderSystem().prepareMaterial(pass.strMaterialName.c_str(),fOpacity);
 }
 
 void CModelData::passEnd()const
@@ -488,12 +489,12 @@ void CModelData::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLod
 		}
 		else for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
 		{
-			E_MATERIAL_RENDER_TYPE RenderType = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).getRenderType();
+			E_MATERIAL_RENDER_TYPE RenderType = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).getRenderType();
 			if (RenderType&eModelRenderType)
 			{
 				if (eModelRenderType&MATERIAL_RENDER_ALPHA_TEST)
 				{
-					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName).uDiffuse);
+					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).uDiffuse);
 					m_Mesh.drawSub(it->second.nSubID,uLodLevel);
 				}
 				else if (eModelRenderType&MATERIAL_RENDER_NO_MATERIAL)

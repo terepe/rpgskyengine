@@ -58,7 +58,7 @@ Matrix C3DMapObj::getShadowMatrix(const Vec3D& vLight,float fHeight)const
 
 BBox C3DMapObj::getBBox()const
 {
-	BBox bbox=CModelComplex::getBBox();
+	BBox bbox=CModelObject::getBBox();
 	Matrix mRotate;
 	mRotate.rotate(getRotate());
 
@@ -78,26 +78,26 @@ BBox C3DMapObj::getBBox()const
 
 void C3DMapObj::OnFrameMove(float fElapsedTime)
 {
-	if (!CModelComplex::isCreated())
+	if (!CModelObject::isCreated())
 	{
-		CModelComplex::create();
+		CModelObject::create();
 		//m_ObjectTree.delObject((*it));
 		//m_ObjectTree.addObject((*it));
 	}
-	CModelComplex::OnFrameMove(fElapsedTime);
-	CModelComplex::updateEmitters(getWorldMatrix(),fElapsedTime);
+	CModelObject::OnFrameMove(fElapsedTime);
+	CModelObject::updateEmitters(getWorldMatrix(),fElapsedTime);
 }
 
 void C3DMapObj::render(int flag)const
 {
 	GetRenderSystem().setWorldMatrix(getWorldMatrix());
-	CModelComplex::render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
+	CModelObject::render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
 }
 
 void C3DMapObj::renderShadow(const Vec3D& vLight,float fHeight)const
 {
 	GetRenderSystem().setWorldMatrix(getShadowMatrix(vLight,fHeight));
-	CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+	CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 }
 
 void C3DMapObj::renderFocus()const
@@ -120,15 +120,15 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		Vec3D vNewRayDir = vRayDir;
 		transformRay(vNewRayPos,vNewRayDir,mWorld);
 
-		if (CModelComplex::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
+		if (CModelObject::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 		{
 			return true;
 		}
 		else
 		{
-			for (std::map<std::string,CModelObject*>::const_iterator it=m_mapSkinModel.begin();it!=m_mapSkinModel.end();it++)
+			for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 			{
-				const CModelData* pModelData = it->second->getModelData();
+				const CModelData* pModelData = it->second.pChildObj->getModelData();
 				if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 				{
 					return true;
@@ -141,18 +141,18 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 
 int C3DMapObj::getOrder()
 {
-	if (CModelComplex::getModelData())
+	if (CModelObject::getModelData())
 	{
-		return CModelComplex::getModelData()->GetOrder();
+		return CModelObject::getModelData()->GetOrder();
 	}
 	return CMapObj::getOrder();
 }
 
 bool C3DMapObj::isSkinMesh()
 {
-	if (CModelComplex::getModelData())
+	if (CModelObject::getModelData())
 	{
-		return CModelComplex::getModelData()->m_Mesh.m_bSkinMesh;
+		return CModelObject::getModelData()->m_Mesh.m_bSkinMesh;
 	}
 	return false;
 }
@@ -176,7 +176,7 @@ void C3DMapObj::renderFocus(Color32 color)const
 		Matrix mWorld = getWorldMatrix();
 		R.setWorldMatrix(mWorld);
 		R.SetShader(m_pShaderFocus);
-		CModelComplex::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+		CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 		R.SetShader((CShader*)NULL);
 	}
 }

@@ -149,7 +149,7 @@ public:
 	typedef std::vector<const Cube*>		LIST_CUBES;
 
 	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName)=0;
-	virtual CMaterial& getMaterial(const std::string& strMaterialName)=0;
+	virtual CMaterial& getMaterial(const char* szMaterialName)=0;
 
 	virtual CTerrainDecal& GetLightMapDecal()=0;
 

@@ -230,7 +230,7 @@ void CParticleGroup::render(E_MATERIAL_RENDER_TYPE eRenderType)const
 	{
 		return;
 	}
-	CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(m_pEmitter->m_strMaterialName);
+	CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(m_pEmitter->m_strMaterialName.c_str());
 	if (!(material.getRenderType()&eRenderType))
 	{
 		return;

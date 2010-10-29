@@ -165,10 +165,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\ModelComplex.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Include\ModelData.h"
 				>
 			</File>
@@ -193,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Include\ParticleEmitterMgr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Skeleton.h"
 				>
 			</File>
@@ -206,10 +206,6 @@
 			</File>
 			<File
 				RelativePath=".\src\LodMesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ModelComplex.cpp"
 				>
 			</File>
 			<File

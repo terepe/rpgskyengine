@@ -125,6 +125,40 @@ bool CModelObject::load(const std::string& strFilename)
 	return true;
 }
 
+void CModelObject::loadSkinModel(const char* szName,const char* szFilename)
+{
+	loadChildModel(szName,"skin",szFilename);
+}
+
+void CModelObject::loadChildModel(const char* szName, const char* szBoneName, const char* szFilename)
+{
+	if (strlen(szFilename)==0)
+	{
+		delChild(szName);
+		return;
+	}
+
+	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(szName);
+	if (it != m_mapChildObj.end())
+	{
+		if (it->second.pChildObj->getModelFilename()==szFilename)
+		{
+			return;
+		}
+		else
+		{
+			delete it->second.pChildObj;
+			m_mapChildObj.erase(it);
+		}
+	}
+
+	CModelObject* pModelObject = new CModelObject();
+	pModelObject->Register(szFilename);
+	pModelObject->create();
+	m_mapChildObj[szName].pChildObj = pModelObject;
+	m_mapChildObj[szName].strBoneName = szBoneName;
+}
+
 void CModelObject::CalcBones(const std::string& strAnim, int time)
 {
 	if (m_pModelData)
@@ -284,6 +318,30 @@ void CModelObject::Animate(const std::string& strAnimName)
 
 void CModelObject::OnFrameMove(float fElapsedTime)
 {
+	animate(fElapsedTime);
+
+	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	{
+		if (it->second.strBoneName == "skin")
+		{
+			const CModelData* pModelData = it->second.pChildObj->getModelData();
+			if (pModelData)
+			{
+				if (pModelData->m_Mesh.m_bSkinMesh)
+				{
+					pModelData->m_Mesh.skinningMesh(it->second.pChildObj->m_pVB, m_setBonesMatrix);
+				}
+			}
+		}
+		else
+		{
+			it->second.pChildObj->OnFrameMove(fElapsedTime);
+		}
+	}
+}
+
+void CModelObject::animate(float fElapsedTime)
+{
 	m_AnimMgr.Tick(int(fElapsedTime*1000));
 	Animate(m_strAnimName);
 }
@@ -388,6 +446,10 @@ void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
 		return;
 	}
 	m_pModelData->renderMesh(eModelRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
+
+	Matrix mWorld;
+	GetRenderSystem().getWorldMatrix(mWorld);
+	renderChild(mWorld, eModelRenderType);
 }
 
 void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
@@ -403,13 +465,68 @@ void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)co
 		//	ribbons[i].draw();
 		//}
 	}
+	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	{
+		it->second.pChildObj->renderParticles(eParticleRenderType);
+	}
 }
 
 void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
 {
 	renderMesh(eMeshRenderType);
+
 	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
 	renderParticles(eParticleRenderType);
+}
+
+void CModelObject::renderChild(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType)const
+{
+	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	{
+		const ChildRenderObj& childRenderObj = it->second;
+		int nBoneID = m_pModelData->m_Skeleton.getBoneIDByName(childRenderObj.strBoneName.c_str());
+		if (nBoneID!=-1)
+		{
+			Matrix mBoneLocal = m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
+			mBoneLocal.Invert();
+			Matrix mBone=m_setBonesMatrix[nBoneID]*mBoneLocal;
+			GetRenderSystem().setWorldMatrix(mWorld*mBone);
+		}
+		else
+		{
+			GetRenderSystem().setWorldMatrix(mWorld);
+		}
+		childRenderObj.pChildObj->render(eModelRenderType,eModelRenderType);
+	}
+}
+
+ChildRenderObj* CModelObject::getChild(const char* sName)
+{
+	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
+	if (it != m_mapChildObj.end())
+	{
+		return &it->second;
+	}
+	return NULL;
+}
+
+void CModelObject::delChild(const char* sName)
+{
+	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
+	if (it != m_mapChildObj.end())
+	{
+		delete it->second.pChildObj;
+		m_mapChildObj.erase(it);
+	}
+}
+
+void CModelObject::setChildPosition(const char* sName, const char* szBoneName)
+{
+	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
+	if (it != m_mapChildObj.end())
+	{
+		it->second.strBoneName = szBoneName;
+	}
 }
 
 void CModelObject::drawSkeleton(CTextRender* pTextRender)const
@@ -417,5 +534,9 @@ void CModelObject::drawSkeleton(CTextRender* pTextRender)const
 	if (m_pModelData)
 	{
 		m_pModelData->m_Skeleton.render(m_setBonesMatrix, pTextRender);
+	}
+	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	{
+		it->second.pChildObj->drawSkeleton(pTextRender);
 	}
 }
