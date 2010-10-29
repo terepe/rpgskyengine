@@ -1,8 +1,8 @@
 #pragma once
 #include "MapObj.h"
-#include "ModelComplex.h"
+#include "ModelObject.h"
 
-class C3DMapObj : public CMapObj, public CModelComplex
+class C3DMapObj : public CMapObj, public CModelObject
 {
 public:
 	C3DMapObj();

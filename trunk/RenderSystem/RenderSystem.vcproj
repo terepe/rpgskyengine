@@ -245,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\TMapDataMgr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\VertexDeclaration.h"
 				>
 			</File>
@@ -275,10 +279,6 @@
 			</File>
 			<File
 				RelativePath=".\src\Material.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\MaterialMgr.cpp"
 				>
 			</File>
 			<File

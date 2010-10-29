@@ -23,18 +23,7 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 	}
 
 	CModelData* pModel = new CModelData();
-	//if (strExt==".sm")
-	//{
-	//	pModel = new CModelData();
-	//}
-	//else if (strExt==".m2")
-	//{
-	//	pModel = new CM2Model();
-	//}
-	//else if (strExt==".bmd")
-	//{
-	//	pModel = new CBmdModel();
-	//}
+
 	return add(strFilename, pModel);
 }
 

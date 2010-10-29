@@ -51,9 +51,9 @@ CMaterialMgr& CRenderSystem::getMaterialMgr()
 	return m_MaterialMgr;
 }
 
-bool CRenderSystem::prepareMaterial(const std::string& strMaterialName, float fOpacity)
+bool CRenderSystem::prepareMaterial(const char* szMaterialName, float fOpacity)
 {
-	return prepareMaterial(getMaterialMgr().getItem(strMaterialName),fOpacity);
+	return prepareMaterial(getMaterialMgr().getItem(szMaterialName),fOpacity);
 }
 
 #include "Timer.h"

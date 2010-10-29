@@ -136,7 +136,7 @@ public:
 	void GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir,int x, int y);
 
 	// set material
-	bool prepareMaterial(const std::string& strMaterialName, float fOpacity=1.0f);
+	bool prepareMaterial(const char* szMaterialName, float fOpacity=1.0f);
 	bool prepareMaterial(CMaterial& material, float fOpacity=1.0f);
 	void finishMaterial();
 private:

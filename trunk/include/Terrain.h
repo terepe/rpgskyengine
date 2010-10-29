@@ -74,7 +74,7 @@ public:
 	~CTerrain();
 	//
 	virtual void setTileMaterial(int nTileID, const std::string& strMaterialName);
-	virtual CMaterial& getMaterial(const std::string& strMaterialName);
+	virtual CMaterial& getMaterial(const char* szMaterialName);
 	//
 	virtual void create(size_t width, size_t height,  size_t cubeSize);
 	virtual bool resize(size_t width, size_t height,  size_t cubeSize);
