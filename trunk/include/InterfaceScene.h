@@ -248,28 +248,13 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // Plug
 //////////////////////////////////////////////////////////////////////////
-enum E_SCENE_PLUGIN_TYPE
-{
-	E_SCENE_PLUGIN_EXPORT	= 1,
-	E_SCENE_PLUGIN_IMPORT	= 2,
-	E_SCENE_PLUGIN_TOOL		= 3,
-};
-
 class CScenePlugBase:public CDataPlugBase
 {
 public:
 	CScenePlugBase(){};
 	virtual ~CScenePlugBase(){};
 
-	virtual E_SCENE_PLUGIN_TYPE GetType()	= 0;
-	virtual const char * GetTitle()		= 0;
-	virtual const char * GetFormat()	= 0;
 	virtual int Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName) = 0;
 	virtual int importData(iScene * pScene, const std::string& strFilename)=0;
 	virtual int exportData(iScene * pScene, const std::string& strFilename)=0;
-
-	virtual DWORD GetExportDataType() = 0;
-	virtual DWORD GetImportDataType() = 0;
-
-	virtual void Release() = 0;
 };

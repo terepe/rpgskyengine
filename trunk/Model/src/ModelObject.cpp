@@ -316,7 +316,7 @@ void CModelObject::Animate(const std::string& strAnimName)
 	//}
 }
 
-void CModelObject::OnFrameMove(float fElapsedTime)
+void CModelObject::frameMove(const Matrix& mWorld, float fElapsedTime)
 {
 	animate(fElapsedTime);
 
@@ -335,8 +335,13 @@ void CModelObject::OnFrameMove(float fElapsedTime)
 		}
 		else
 		{
-			it->second.pChildObj->OnFrameMove(fElapsedTime);
+			it->second.pChildObj->frameMove(mWorld, fElapsedTime);
 		}
+	}
+	for (size_t i=0; i<m_setParticleGroup.size(); i++)
+	{
+		const Matrix& matBone = m_setBonesMatrix[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
+		m_pModelData->m_setParticleEmitter[i].update(mWorld*matBone,m_setParticleGroup[i],fElapsedTime);
 	}
 }
 
@@ -414,15 +419,6 @@ void CModelObject::SetLightMap(const std::string& strFilename)
 ////		glDisable(l++);
 //}
 
-// Updates our particles within models.
-void CModelObject::updateEmitters(const Matrix& mWorld, float fElapsedTime)
-{
-	for (size_t i=0; i<m_setParticleGroup.size(); i++)
-	{
-		const Matrix& matBone = m_setBonesMatrix[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
-		m_pModelData->m_setParticleEmitter[i].update(mWorld*matBone,m_setParticleGroup[i],fElapsedTime);
-	}
-}
 
 #include "Timer.h"
 
@@ -435,48 +431,22 @@ bool CModelObject::Prepare()const
 	return m_pModelData->m_Mesh.SetMeshSource(m_uLodLevel,m_pVB);
 }
 
-void CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType)const
+void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType)const
 {
-	if (NULL==m_pModelData)
+
+	if (eMeshRenderType==MATERIAL_NONE)
 	{
 		return;
 	}
-	if (eModelRenderType==MATERIAL_NONE)
+
+	if (m_pModelData)
 	{
-		return;
+		m_pModelData->renderMesh(eMeshRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 	}
-	m_pModelData->renderMesh(eModelRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 
 	Matrix mWorld;
 	GetRenderSystem().getWorldMatrix(mWorld);
-	renderChild(mWorld, eModelRenderType);
-}
-
-void CModelObject::renderParticles(E_MATERIAL_RENDER_TYPE eParticleRenderType)const
-{
-	if (eParticleRenderType!=MATERIAL_NONE)
-	{
-		for (size_t i = 0;i < m_setParticleGroup.size();++i)
-		{
-			m_setParticleGroup[i].render(eParticleRenderType);
-		}
-		// draw ribbons
-		//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
-		//	ribbons[i].draw();
-		//}
-	}
-	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
-	{
-		it->second.pChildObj->renderParticles(eParticleRenderType);
-	}
-}
-
-void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType,E_MATERIAL_RENDER_TYPE eParticleRenderType)const
-{
-	renderMesh(eMeshRenderType);
-
-	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
-	renderParticles(eParticleRenderType);
+	renderChild(mWorld, eMeshRenderType);
 }
 
 void CModelObject::renderChild(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType)const
@@ -496,7 +466,12 @@ void CModelObject::renderChild(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eMod
 		{
 			GetRenderSystem().setWorldMatrix(mWorld);
 		}
-		childRenderObj.pChildObj->render(eModelRenderType,eModelRenderType);
+		childRenderObj.pChildObj->render(eModelRenderType);
+	}
+	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
+	for (size_t i = 0;i < m_setParticleGroup.size();++i)
+	{
+		m_setParticleGroup[i].render(eModelRenderType);
 	}
 }
 

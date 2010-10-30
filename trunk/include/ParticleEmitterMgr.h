@@ -5,5 +5,5 @@
 class CParticleEmitterMgr: public TMapDataMgrMgr<CParticleEmitter, CParticleEmitterDataPlugBase>
 {
 public:
-	CParticleEmitterMgr():TMapDataMgrMgr("Plugins\\","ParticleEmitter_Data_Plug_CreateObject"){}
+	CParticleEmitterMgr():TMapDataMgrMgr("Plugins\\*.dpa"){}
 };

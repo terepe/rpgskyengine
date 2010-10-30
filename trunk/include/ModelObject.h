@@ -19,8 +19,10 @@ public:
 	~CModelObject();
 public:
 	void SkinAnim();	// 动画更新
-	virtual void OnFrameMove(float fElapsedTime);
+	virtual void frameMove(const Matrix& mWorld, float fElapsedTime);
 	virtual void animate(float fElapsedTime);
+	virtual void render(E_MATERIAL_RENDER_TYPE eMeshRenderType=MATERIAL_NORMAL)const;
+	virtual void renderChild(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_NORMAL)const;
 public:
 	void SetLOD(unsigned long uLodID);		// 设置LodID
 	void SetSkin(unsigned long uSkinID);	// 设置皮肤
@@ -34,10 +36,6 @@ public:
 	void loadChildModel(const char* szName, const char* szBoneName, const char* szFilename);
 	bool Prepare()const;
 
-	virtual void renderMesh			(E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_NORMAL)const;
-	virtual void renderParticles	(E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_NORMAL)const;
-	virtual void render				(E_MATERIAL_RENDER_TYPE eMeshRenderType=MATERIAL_NORMAL,E_MATERIAL_RENDER_TYPE eParticleRenderType=MATERIAL_NORMAL)const;
-	virtual void renderChild		(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType=MATERIAL_NORMAL)const;
 
 	ChildRenderObj* getChild(const char* sName);
 	void delChild(const char* sName);
@@ -45,7 +43,6 @@ public:
 
 	virtual void drawSkeleton(CTextRender* pTextRender)const;
 
-	void updateEmitters(const Matrix& mWorld, float fElapsedTime);
 	void SetLodLevel(int nLodLevel);
 
 	void Animate(const std::string& strAnimName);

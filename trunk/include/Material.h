@@ -199,14 +199,7 @@ public:
 	CMaterialDataPlugBase(){};
 	virtual ~CMaterialDataPlugBase(){};
 
-	virtual const char * GetTitle()		= 0;
-	virtual const char * GetFormat()	= 0;
 	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName) = 0;
 	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)=0;
 	virtual bool exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)=0;
-
-	virtual DWORD GetExportDataType() = 0;
-	virtual DWORD GetImportDataType() = 0;
-
-	virtual void Release() = 0;
 };
