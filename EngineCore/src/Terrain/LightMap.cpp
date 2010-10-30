@@ -284,7 +284,7 @@ void CLightMap::RenderObjectLightMapToTex(const Matrix& mLight, const C3DMapScen
 		if (pShader->begin("RenderObjLightMapToTex"))
 		{
 			R.SetTexture(0, m_pDepthRenderTarget);
-			object.renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+			object.render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 			pShader->end();
 		}
 

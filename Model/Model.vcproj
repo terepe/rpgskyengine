@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Include\RenderNodel.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Skeleton.h"
 				>
 			</File>
@@ -226,6 +230,10 @@
 			</File>
 			<File
 				RelativePath=".\src\ParticleEmitter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\RenderNode.cpp"
 				>
 			</File>
 			<File

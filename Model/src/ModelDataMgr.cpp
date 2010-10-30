@@ -4,7 +4,7 @@
 
 CModelDataMgr::CModelDataMgr()
 {
-	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Model_Plug_CreateObject");
+	m_DataPlugsMgr.loadPlugs("Plugins\\*.dme");
 }
 
 unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
@@ -36,7 +36,7 @@ bool CModelDataMgr::loadModel(CModelData& modelData,const std::string& strFilena
 {
 	// 判断格式--根据文件后缀名
 	std::string strExt = GetExtension(strFilename);
-	CModelPlugBase* pModelPlug = (CModelPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt);
+	CModelPlugBase* pModelPlug = (CModelPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt.c_str());
 	if (pModelPlug)
 	{
 		return pModelPlug->importData(&modelData,strFilename);

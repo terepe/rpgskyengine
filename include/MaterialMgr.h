@@ -5,5 +5,5 @@
 class CMaterialMgr: public TMapDataMgrMgr<CMaterial, CMaterialDataPlugBase>
 {
 public:
-	CMaterialMgr():TMapDataMgrMgr("Plugins\\","Material_Data_Plug_CreateObject"){}
+	CMaterialMgr():TMapDataMgrMgr("Plugins\\*.dma"){}
 };

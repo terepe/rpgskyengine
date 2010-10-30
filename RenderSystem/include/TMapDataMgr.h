@@ -7,9 +7,9 @@ template <class T, class TPLUG>
 class TMapDataMgrMgr
 {
 public:
-	TMapDataMgrMgr(const char* szDir, const char* name)
+	TMapDataMgrMgr(const char* szFilename)
 	{
-		m_DataPlugsMgr.createPlugFromPath(szDir, name);
+		m_DataPlugsMgr.loadPlugs(szFilename);
 	}
 
 	~TMapDataMgrMgr(){;}
@@ -23,7 +23,7 @@ public:
 	{
 		// 判断格式--根据文件后缀名
 		std::string strExt = GetExtension(szFilename);
-		TPLUG* pModelPlug = (TPLUG*)m_DataPlugsMgr.getPlugByExtension(strExt);
+		TPLUG* pModelPlug = (TPLUG*)m_DataPlugsMgr.getPlugByExtension(strExt.c_str());
 		if (pModelPlug)
 		{
 			return pModelPlug->importData(m_Items,szFilename, szParentDir);

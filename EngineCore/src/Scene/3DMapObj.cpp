@@ -84,20 +84,19 @@ void C3DMapObj::OnFrameMove(float fElapsedTime)
 		//m_ObjectTree.delObject((*it));
 		//m_ObjectTree.addObject((*it));
 	}
-	CModelObject::OnFrameMove(fElapsedTime);
-	CModelObject::updateEmitters(getWorldMatrix(),fElapsedTime);
+	CModelObject::frameMove(getWorldMatrix(), fElapsedTime);
 }
 
 void C3DMapObj::render(int flag)const
 {
 	GetRenderSystem().setWorldMatrix(getWorldMatrix());
-	CModelObject::render((E_MATERIAL_RENDER_TYPE)flag,(E_MATERIAL_RENDER_TYPE)flag);
+	CModelObject::render((E_MATERIAL_RENDER_TYPE)flag);
 }
 
 void C3DMapObj::renderShadow(const Vec3D& vLight,float fHeight)const
 {
 	GetRenderSystem().setWorldMatrix(getShadowMatrix(vLight,fHeight));
-	CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+	CModelObject::render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 }
 
 void C3DMapObj::renderFocus()const
@@ -176,7 +175,7 @@ void C3DMapObj::renderFocus(Color32 color)const
 		Matrix mWorld = getWorldMatrix();
 		R.setWorldMatrix(mWorld);
 		R.SetShader(m_pShaderFocus);
-		CModelObject::renderMesh(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+		CModelObject::render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 		R.SetShader((CShader*)NULL);
 	}
 }
