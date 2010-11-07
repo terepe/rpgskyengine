@@ -6,6 +6,7 @@
 class CShader
 {
 public:
+	virtual bool create(const std::string& strFilename)=0;
 	virtual void setFloat(const std::string& strFloat, float val)=0;
 	virtual void setVec2D(const std::string& strVec2D, const Vec2D& val)=0;
 	virtual void setVec3D(const std::string& strVec3D, const Vec3D& val)=0;

@@ -1,5 +1,6 @@
 #include "TextureMgr.h"
 #include "IORead.h"
+#include "RenderSystem.h"
 
 CTextureMgr::CTextureMgr():m_pLoadingTexture(NULL)
 {
@@ -11,7 +12,7 @@ CTextureMgr::~CTextureMgr()
 
 CTexture* CTextureMgr::createTexture()
 {
-	CTexture* pTex = newTexture();
+	CTexture* pTex = GetRenderSystem().newTexture();
 	if (pTex)
 	{
 		pTex->setTextureMgr(this);
@@ -138,7 +139,7 @@ unsigned long CTextureMgr::RegisterTexture(const std::string& strFilename, int n
 		return addRef(strFilename);
 	}
 	//
-	CTexture* pTex = newTexture();
+	CTexture* pTex = GetRenderSystem().newTexture();
 	pTex->SetLevels(nLevels);
 	pTex->SetFilename(strFilename);
 	return add(strFilename, pTex);
@@ -201,4 +202,9 @@ void CTextureMgr::remove(CTexture* pTexture)
 			return;
 		}
 	}
+}
+
+std::set<CTexture*>	CTextureMgr::getTextureList()
+{
+	return m_setTextureList;
 }
