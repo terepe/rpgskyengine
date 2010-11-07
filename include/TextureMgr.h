@@ -26,9 +26,9 @@ public:
 	void releaseBuffer(const std::string& strFilename);
 	void Update();
 	void remove(CTexture* pTexture);
+	std::set<CTexture*>	getTextureList();
 protected:
 	void pushLoadingTexture(CTexture* pTexture);
-	virtual CTexture* newTexture()=0;
 	CTexture*	m_pLoadingTexture;
 	std::set<CTexture*>	m_setTextureList;
 };

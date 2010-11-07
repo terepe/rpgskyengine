@@ -209,10 +209,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\MaterialMgr.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\RenderSystem.h"
 				>
 			</File>
@@ -225,6 +221,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Root.h"
 				>
 			</File>
@@ -233,15 +233,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\ShaderMgr.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Texture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TextureMgr.h"
 				>
 			</File>
 			<File
@@ -286,6 +278,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RenderSystem.rc"
+				>
+			</File>
+			<File
 				RelativePath=".\src\RenderWindow.cpp"
 				>
 			</File>
@@ -294,11 +290,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Texture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VertexDeclaration.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Manager"
+			>
+			<File
+				RelativePath=".\include\MaterialMgr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ShaderMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Texture.cpp"
+				RelativePath=".\include\ShaderMgr.h"
 				>
 			</File>
 			<File
@@ -306,7 +318,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\VertexDeclaration.cpp"
+				RelativePath=".\include\TextureMgr.h"
 				>
 			</File>
 		</Filter>

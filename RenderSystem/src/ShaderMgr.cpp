@@ -1,5 +1,6 @@
 #include "ShaderMgr.h"
 #include "IORead.h"
+#include "RenderSystem.h"
 
 CShaderMgr::CShaderMgr():
 m_uShareShaderID(0)
@@ -30,8 +31,7 @@ unsigned long CShaderMgr::registerItem(const std::string& strFilename)
 	{
 		return addRef(strFilename);
 	}
-	CShader* pShader = createItem(strFilename);
+	CShader* pShader = GetRenderSystem().newShader();
+	pShader->create(strFilename);
 	return add(strFilename, pShader);
 }
-
-
