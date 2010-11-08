@@ -1,6 +1,6 @@
 #include "RenderSystem.h"
 
-CRenderSystem* g_pRenderSystem = NULL;
+static CRenderSystem* g_pRenderSystem = NULL;
 
 void SetRenderSystem(CRenderSystem* pRenderSystem)
 {

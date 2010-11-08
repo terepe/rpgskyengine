@@ -13,9 +13,9 @@ public:
 		CHardwareBuffer::Usage usage=CHardwareBuffer::HBU_STATIC) = 0;
 	virtual CHardwareIndexBuffer* CreateIndexBuffer(size_t numIndexes, CHardwareIndexBuffer::IndexType itype = CHardwareIndexBuffer::IT_16BIT,
 		CHardwareBuffer::Usage usage=CHardwareBuffer::HBU_STATIC) = 0;
-	virtual void _notifyVertexBufferDestroyed(CHardwareVertexBuffer* pHardwareBuffer)=0;
-	virtual void _notifyIndexBufferDestroyed(CHardwareIndexBuffer* pHardwareBuffer)=0;
-protected:
+	void _notifyVertexBufferDestroyed(CHardwareVertexBuffer* pHardwareBuffer);
+	void _notifyIndexBufferDestroyed(CHardwareIndexBuffer* pHardwareBuffer);
+public:
 	std::set<CHardwareVertexBuffer*>	m_setVertexHardwareBuffer;
 	std::set<CHardwareIndexBuffer*>		m_setIndexHardwareBuffer;
 };
