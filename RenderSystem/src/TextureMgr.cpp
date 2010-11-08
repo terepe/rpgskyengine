@@ -2,7 +2,7 @@
 #include "IORead.h"
 #include "RenderSystem.h"
 
-CTextureMgr::CTextureMgr():m_pLoadingTexture(NULL)
+CTextureMgr::CTextureMgr(CRenderSystem* pRenderSystem):m_pRenderSystem(pRenderSystem),m_pLoadingTexture(NULL)
 {
 }
 
@@ -12,7 +12,7 @@ CTextureMgr::~CTextureMgr()
 
 CTexture* CTextureMgr::createTexture()
 {
-	CTexture* pTex = GetRenderSystem().newTexture();
+	CTexture* pTex = m_pRenderSystem->newTexture();
 	if (pTex)
 	{
 		pTex->setTextureMgr(this);
@@ -204,7 +204,7 @@ void CTextureMgr::remove(CTexture* pTexture)
 	}
 }
 
-std::set<CTexture*>	CTextureMgr::getTextureList()
+std::set<CTexture*>& CTextureMgr::getTextureList()
 {
 	return m_setTextureList;
 }

@@ -262,6 +262,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\HardwareBufferMgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\HardwareIndexBuffer.cpp"
 				>
 			</File>
