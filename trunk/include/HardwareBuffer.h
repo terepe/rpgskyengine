@@ -39,14 +39,12 @@ protected:
 	virtual void unlockImpl(void) = 0;
 
 public:
-	CHardwareBuffer(Usage usage, bool systemMemory):
-		mUsage(usage),
-		mIsLocked(false),
-		mSystemMemory(systemMemory),
+	CHardwareBuffer():mIsLocked(false),
 		mSuppressHardwareUpdate(false),
 		m_pHardwareBufferMgr(NULL)
 	{
 	}
+
 	virtual ~CHardwareBuffer() {}
 
 	void setHardwareBufferMgr(CHardwareBufferMgr* pHardwareBufferMgr)
