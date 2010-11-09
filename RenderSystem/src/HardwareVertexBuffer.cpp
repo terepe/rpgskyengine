@@ -1,15 +1,8 @@
 #include "HardwareVertexBuffer.h"
 #include "RenderSystem.h"
 
-CHardwareVertexBuffer::CHardwareVertexBuffer(size_t vertexSize,  
-										   size_t numVertices, CHardwareBuffer::Usage usage, 
-										   bool useSystemMemory) 
-										   : CHardwareBuffer(usage, useSystemMemory), 
-										   mNumVertices(numVertices),
-										   mVertexSize(vertexSize)
+CHardwareVertexBuffer::CHardwareVertexBuffer() 
 {
-	// Calculate the size of the vertices
-	mSizeInBytes = mVertexSize * numVertices;
 }
 
 CHardwareVertexBuffer::~CHardwareVertexBuffer()
@@ -23,4 +16,16 @@ CHardwareVertexBuffer::~CHardwareVertexBuffer()
 	//{
 	//	mgr->_notifyVertexBufferDestroyed(this);
 	//}
+}
+
+bool CHardwareVertexBuffer::create(size_t vertexSize, size_t numVertices, CHardwareBuffer::Usage usage, bool useSystemMemory) 
+{
+	mUsage = usage;
+	mSystemMemory = useSystemMemory;
+	// ----
+	mNumVertices = vertexSize;
+	mVertexSize = numVertices;
+	// Calculate the size of the vertices
+	mSizeInBytes = mVertexSize * numVertices;
+	return true;
 }

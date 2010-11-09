@@ -37,6 +37,8 @@ public:
 	// ----
 	virtual CTexture*	newTexture			() = 0;
 	virtual CShader*	newShader			() = 0;
+	virtual CHardwareVertexBuffer*	newHardwareVertexBuffer	() = 0;
+	virtual CHardwareIndexBuffer*	newHardwareIndexBuffer	() = 0;
 	// ----
 	virtual void		OnFrameMove			() = 0;
 	// ----

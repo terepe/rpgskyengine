@@ -193,10 +193,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\HardwareBufferMgr.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\HardwareIndexBuffer.h"
 				>
 			</File>
@@ -262,10 +258,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\HardwareBufferMgr.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\HardwareIndexBuffer.cpp"
 				>
 			</File>
@@ -305,6 +297,14 @@
 		<Filter
 			Name="Manager"
 			>
+			<File
+				RelativePath=".\src\HardwareBufferMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\HardwareBufferMgr.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\MaterialMgr.h"
 				>

@@ -15,10 +15,10 @@ protected:
 	size_t mIndexSize;
 
 public:
-	/// Should be called by HardwareBufferManager
-	CHardwareIndexBuffer(IndexType idxType, size_t numIndexes, CHardwareBuffer::Usage usage,
-		bool useSystemMemory);
+	CHardwareIndexBuffer();
 	~CHardwareIndexBuffer();
+	/// Should be called by HardwareBufferManager
+	virtual bool create(IndexType idxType, size_t numIndexes, CHardwareBuffer::Usage usage, bool useSystemMemory);
 	/// Get the type of indexes used in this buffer
 	IndexType getType(void) const { return mIndexType; }
 	/// Get the number of indexes in this buffer
