@@ -23,15 +23,12 @@ public:
 		HBL_NO_OVERWRITE
 	};
 protected:
-	size_t mSizeInBytes;
-	Usage mUsage;
-	bool mIsLocked;
-	size_t mLockStart;
-	size_t mLockSize;
-	bool mSystemMemory;
-
-	bool mShadowUpdated;
-	bool mSuppressHardwareUpdate;
+	size_t	m_uBufferSize;
+	Usage	m_Usage;
+	bool	m_bIsLocked;
+	size_t	m_uLockStart;
+	size_t	m_uLockSize;
+	bool	m_bSystemMemory;
 
 	CHardwareBufferMgr* m_pHardwareBufferMgr;
 
@@ -39,8 +36,7 @@ protected:
 	virtual void unlockImpl(void) = 0;
 
 public:
-	CHardwareBuffer():mIsLocked(false),
-		mSuppressHardwareUpdate(false),
+	CHardwareBuffer():m_bIsLocked(false),
 		m_pHardwareBufferMgr(NULL)
 	{
 	}
@@ -59,16 +55,16 @@ public:
 
 		// Lock the real buffer if there is no shadow buffer 
 		ret = lockImpl(offset, length, options);
-		mIsLocked = true;
+		m_bIsLocked = true;
 
-		mLockStart = offset;
-		mLockSize = length;
+		m_uLockStart = offset;
+		m_uLockSize = length;
 		return ret;
 	}
 
 	void* lock(LockOptions options)
 	{
-		return this->lock(0, mSizeInBytes, options);
+		return this->lock(0, m_uBufferSize, options);
 	}
 
 	virtual void unlock(void)
@@ -77,7 +73,7 @@ public:
 
 		// Otherwise, unlock the real one
 		unlockImpl();
-		mIsLocked = false;
+		m_bIsLocked = false;
 	}
 
 	virtual void readData(size_t offset, size_t length, void* pDest) = 0;
@@ -92,18 +88,13 @@ public:
 		srcBuffer.unlock();
 	}
 	/// Returns the size of this buffer in bytes
-	size_t getSizeInBytes(void) const { return mSizeInBytes; }
+	size_t getSizeInBytes(void) const { return m_uBufferSize; }
 	/// Returns the Usage flags with which this buffer was created
-	Usage getUsage(void) const { return mUsage; }
+	Usage getUsage(void) const { return m_Usage; }
 	/// Returns whether this buffer is held in system memory
-	bool isSystemMemory(void) const { return mSystemMemory; }
+	bool isSystemMemory(void) const { return m_bSystemMemory; }
 	/// Returns whether or not this buffer is currently locked.
 	bool isLocked(void) const { 
-		return mIsLocked; 
-	}
-	void suppressHardwareUpdate(bool suppress) {
-		mSuppressHardwareUpdate = suppress;
-		//if (!suppress)
-		//	_updateFromShadow();
+		return m_bIsLocked; 
 	}
 };

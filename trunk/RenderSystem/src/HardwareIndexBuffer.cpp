@@ -20,22 +20,22 @@ CHardwareIndexBuffer::~CHardwareIndexBuffer()
 
 bool CHardwareIndexBuffer::create(IndexType idxType, size_t numIndexes, CHardwareBuffer::Usage usage, bool useSystemMemory) 
 {
-	mUsage = usage;
-	mSystemMemory = useSystemMemory;
+	m_Usage = usage;
+	m_bSystemMemory = useSystemMemory;
 	// ----
-	mIndexType = idxType;
-	mNumIndexes = numIndexes;
+	m_IndexType = idxType;
+	m_uIndexesCount = numIndexes;
 	// ----
 	// Calculate the size of the indexes
-	switch (mIndexType)
+	switch (m_IndexType)
 	{
 	case IT_16BIT:
-		mIndexSize = sizeof(unsigned short);
+		m_uIndexSize = sizeof(unsigned short);
 		break;
 	case IT_32BIT:
-		mIndexSize = sizeof(unsigned int);
+		m_uIndexSize = sizeof(unsigned int);
 		break;
 	}
-	mSizeInBytes = mIndexSize * mNumIndexes;
+	m_uBufferSize = m_uIndexSize * m_uIndexesCount;
 	return true;
 }
