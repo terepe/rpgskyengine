@@ -273,7 +273,7 @@ void CModelObject::Animate(const std::string& strAnimName)
 // 		tmax = 1;
 
 	if (/*isWMO == true*/0) {
-		t = globalTime;
+		//t = globalTime;
 		//t %= tmax;
 		//t += a.timeStart;
 	} else
@@ -286,34 +286,6 @@ void CModelObject::Animate(const std::string& strAnimName)
 	}
 	m_nAnimTime = t;
 	m_strAnimName = strAnimName;
-
-	// 几何体动画
-	if (m_pModelData->m_Mesh.m_bSkinMesh)
-	{
-		m_pModelData->m_Mesh.skinningMesh(m_pVB, m_setBonesMatrix);
-	}
-
-	// 灯动画？
-	//for (size_t i=0; i<m_pModelData->m_LightAnims.size();; i++) {
-	//	if (m_LightAnims[i].parent>=0) {
-	//		m_LightAnims[i].tpos = m_setBonesMatrix[lights[i].parent].m_mat * lights[i].pos;
-	//		m_LightAnims[i].tdir = m_setBonesMatrix[lights[i].parent].m_mRot * lights[i].dir;
-	//	}
-	//}
-
-	// 粒子动画
-	for (size_t i=0;i<m_setParticleGroup.size();++i)
-	{
-		// random time distribution for teh win ..?
-		int pt = globalTime;//a.timeStart + (t + (int)(tmax*m_pModelData->m_setParticleEmitter[i].tofs)) % tmax;
-
-		m_setParticleGroup[i].Setup(pt);
-	}
-
-	// 条带动画
-	//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
-	//	ribbons[i].setup(t);
-	//}
 }
 
 void CModelObject::frameMove(const Matrix& mWorld, float fElapsedTime)
@@ -348,7 +320,33 @@ void CModelObject::frameMove(const Matrix& mWorld, float fElapsedTime)
 void CModelObject::animate(float fElapsedTime)
 {
 	m_AnimMgr.Tick(int(fElapsedTime*1000));
+
 	Animate(m_strAnimName);
+
+	// 几何体动画
+	if (m_pModelData->m_Mesh.m_bSkinMesh)
+	{
+		m_pModelData->m_Mesh.skinningMesh(m_pVB, m_setBonesMatrix);
+	}
+
+	// 灯动画？
+	//for (size_t i=0; i<m_pModelData->m_LightAnims.size();; i++) {
+	//	if (m_LightAnims[i].parent>=0) {
+	//		m_LightAnims[i].tpos = m_setBonesMatrix[lights[i].parent].m_mat * lights[i].pos;
+	//		m_LightAnims[i].tdir = m_setBonesMatrix[lights[i].parent].m_mRot * lights[i].dir;
+	//	}
+	//}
+
+	// 粒子动画
+	for (size_t i=0;i<m_setParticleGroup.size();++i)
+	{
+		m_setParticleGroup[i].Setup(m_AnimMgr.uFrame);
+	}
+
+	// 条带动画
+	//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
+	//	ribbons[i].setup(t);
+	//}
 }
 
 void CModelObject::SetLOD(unsigned long uLodID)
@@ -433,7 +431,6 @@ bool CModelObject::Prepare()const
 
 void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType)const
 {
-
 	if (eMeshRenderType==MATERIAL_NONE)
 	{
 		return;

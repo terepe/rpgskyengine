@@ -4,11 +4,37 @@
 #include "Vec4D.h"
 #include "Color.h"
 
+template<typename EnumType>
+struct SEnumName
+{
+	static const char* List[];
+};
+//----------------------------------------------------------------
+
+template<typename EnumType>
+EnumType ConvertStringToEnum(const char* szStr)
+{
+	EnumType fooEnum = (EnumType)(-1);
+	int count = sizeof(SEnumName<EnumType>::List)/
+		sizeof(SEnumName<EnumType>::List[0]);
+	for(int i = 0; i < count; ++i)
+	{
+		if (strcmp(szStr, SEnumName<EnumType>::List[i])==0)
+		{
+			fooEnum = (EnumType)(i);
+			break;
+		}
+	}
+	return fooEnum;
+}
+//----------------------------------------------------------------
+
 enum LayerBlendType
 {
 	LBT_COLOUR,
 	LBT_ALPHA
 };
+//----------------------------------------------------------------
 
 enum LayerBlendOperation
 {
@@ -20,8 +46,8 @@ enum LayerBlendOperation
 	LBO_MODULATE,
 	/// Blend based on texture alpha
 	LBO_ALPHA_BLEND
-
 };
+//----------------------------------------------------------------
 
 enum TextureBlendOperation
 {
@@ -42,6 +68,28 @@ enum TextureBlendOperation
 	TBOP_DOTPRODUCT,/// dot product of color1 and color2 
 	TBOP_BLEND_DIFFUSE_COLOUR/// use interpolated color values from vertices to scale source1, then add source2 scaled by (1-color)
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<TextureBlendOperation>::List[] =
+{
+	"DISABLE",
+	"SOURCE1",
+	"SOURCE2",
+	"MODULATE",
+	"MODULATE_X2",
+	"MODULATE_X4",
+	"ADD",
+	"ADD_SIGNED",
+	"ADD_SMOOTH",
+	"SUBTRACT",
+	"BLEND_DIFFUSE_ALPHA",
+	"BLEND_TEXTURE_ALPHA",
+	"BLEND_CURRENT_ALPHA",
+	"BLEND_MANUAL",
+	"DOTPRODUCT",
+	"BLEND_DIFFUSE_COLOUR"
+};
+//----------------------------------------------------------------
 
 enum TextureBlendSource
 {
@@ -53,6 +101,19 @@ enum TextureBlendSource
 	TBS_TFACTOR,
 	TBS_TEMP		// select temporary register color (read/write) (from d3d)
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<TextureBlendSource>::List[] =
+{
+	"CURRENT",
+	"TEXTURE",
+	"DIFFUSE",
+	"SPECULAR",
+	"MANUAL",
+	"TFACTOR",
+	"TEMP"
+};
+//----------------------------------------------------------------
 
 enum SceneBlendType
 {
@@ -68,6 +129,7 @@ enum SceneBlendType
 	SBT_REPLACE
 	// TODO : more
 };
+//----------------------------------------------------------------
 
 enum SceneBlendOperation
 {
@@ -77,6 +139,17 @@ enum SceneBlendOperation
 	BLENDOP_MIN,
 	BLENDOP_MAX,
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<SceneBlendOperation>::List[] =
+{
+	"ADD",
+	"SUBTRACT",
+	"REVSUBTRACT",
+	"MIN",
+	"MAX",
+};
+//----------------------------------------------------------------
 
 enum SceneBlendFactor
 {
@@ -91,6 +164,23 @@ enum SceneBlendFactor
 	SBF_ONE_MINUS_DEST_ALPHA,
 	SBF_ONE_MINUS_SOURCE_ALPHA
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<SceneBlendFactor>::List[] =
+{
+	"ONE",
+	"ZERO",
+	"DEST_COLOUR",
+	"SOURCE_COLOUR",
+	"ONE_MINUS_DEST_COLOUR",
+	"ONE_MINUS_SOURCE_COLOUR",
+	"DEST_ALPHA",
+	"SOURCE_ALPHA",
+	"ONE_MINUS_DEST_ALPHA",
+	"ONE_MINUS_SOURCE_ALPHA"
+};
+//----------------------------------------------------------------
+
 /*typedef enum _BLEND {
 BLEND_ZERO               = 1,
 BLEND_ONE                = 2,
@@ -109,6 +199,7 @@ BLEND_BLENDFACTOR        = 14, / Only supported if PBLENDCAPS_BLENDFACTOR is on 
 BLEND_INVBLENDFACTOR     = 15, / Only supported if PBLENDCAPS_BLENDFACTOR is on /
 } BLEND;
 */
+//----------------------------------------------------------------
 
 enum CompareFunction
 {
@@ -121,6 +212,20 @@ enum CompareFunction
 	CMPF_GREATER_EQUAL,
 	CMPF_GREATER
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<CompareFunction>::List[] =
+{
+	"ALWAYS_FAIL",
+	"ALWAYS_PASS",
+	"LESS",
+	"LESS_EQUAL",
+	"EQUAL",
+	"NOT_EQUAL",
+	"GREATER_EQUAL",
+	"GREATER"
+};
+//----------------------------------------------------------------
 
 enum StencilOP {
 	STENCILOP_KEEP           = 1,
@@ -133,13 +238,25 @@ enum StencilOP {
 	STENCILOP_DECR           = 8,
 	STENCILOP_FORCE_DWORD    = 0x7fffffff, /* force 32-bit size enum */
 };
+//----------------------------------------------------------------
 
 enum CullingMode
 {
-	CULL_NONE = 1,
-	CULL_CLOCK_WISE = 2,
-	CULL_ANTI_CLOCK_WISE = 3
+	CULL_NULL,
+	CULL_NONE,
+	CULL_CLOCK_WISE,
+	CULL_ANTI_CLOCK_WISE
 };
+//----------------------------------------------------------------
+
+const char* SEnumName<CullingMode>::List[] =
+{
+	"NULL",
+	"NONE",
+	"CLOCK_WISE",
+	"ANTI_CLOCK_WISE"
+};
+//----------------------------------------------------------------
 
 enum VertexRenderOperationType
 {
@@ -150,6 +267,7 @@ enum VertexRenderOperationType
 	VROT_TRIANGLE_STRIP,
 	VROT_TRIANGLE_FAN,
 };
+//----------------------------------------------------------------
 
 enum TextureFilterType
 {
@@ -160,6 +278,7 @@ enum TextureFilterType
 	TEXF_PYRAMIDALQUAD,
 	TEXF_GAUSSIANQUAD,
 };
+//----------------------------------------------------------------
 
 enum AddressUV
 {
@@ -169,6 +288,7 @@ enum AddressUV
 	ADDRESS_BORDER,
 	ADDRESS_MIRRORONCE,
 };
+//----------------------------------------------------------------
 
 enum VertexElementSemantic
 {
@@ -191,6 +311,7 @@ enum VertexElementSemantic
 	/// Tangent (X axis if normal is Z)
 	VES_TANGENT = 9
 };
+//----------------------------------------------------------------
 
 /// Vertex element type, used to identify the base types of the vertex contents
 enum VertexElementType
@@ -211,6 +332,7 @@ enum VertexElementType
 	/// GL style compact colour
 	VET_COLOUR_ABGR = 11
 };
+//----------------------------------------------------------------
 
 enum TextureTransformFlag
 {
@@ -221,6 +343,7 @@ enum TextureTransformFlag
 	TTF_COUNT4          = 4,    // rasterizer should expect 4-D texture coords
 	TTF_PROJECTED       = 256,  // texcoords to be divided by COUNTth element
 };
+//----------------------------------------------------------------
 
 enum TextureCoordIndex
 {
@@ -229,6 +352,7 @@ enum TextureCoordIndex
 	TCI_CAMERASPACE_REFLECTION_VECTOR	= 0x00030000,
 	TCI_SPHEREMAP						= 0x00040000,
 };
+//----------------------------------------------------------------
 
 enum FillMode
 {
@@ -236,6 +360,7 @@ enum FillMode
 	FILL_WIREFRAME           = 2,
 	FILL_SOLID               = 3
 };
+//----------------------------------------------------------------
 
 struct VertexElement
 {
@@ -246,6 +371,7 @@ struct VertexElement
 	VertexElementSemantic	Semantics;      // Semantics
 	unsigned char			uIndex; // Semantic index
 };
+//----------------------------------------------------------------
 
 // Flexible vertex format bits
 //
@@ -332,9 +458,9 @@ struct Fog
 	Fog(){}
 	Fog(float fFogStart, float fFogEnd, float fFogDensity, Color32 clr):
 	fStart(fFogStart),
-	fEnd(fFogEnd),
-	fDensity(fFogDensity),
-	color(clr)
+		fEnd(fFogEnd),
+		fDensity(fFogDensity),
+		color(clr)
 	{
 	}
 };
@@ -348,9 +474,9 @@ struct DirectionalLight
 	DirectionalLight(){}
 	DirectionalLight(const Vec4D& ambient,const Vec4D& diffuse,const Vec4D& specular,const Vec3D& direction):
 	vAmbient(ambient),
-	vDiffuse(diffuse),
-	vSpecular(specular),
-	vDirection(direction)
+		vDiffuse(diffuse),
+		vSpecular(specular),
+		vDirection(direction)
 	{
 	}
 };

@@ -1,7 +1,5 @@
 #pragma once
-#include "Color.h"
-#include "Vec2D.h"
-#include "Vec4D.h"
+#include "RenderSystemCommon.h"
 #include <map>
 
 enum E_MATERIAL_RENDER_TYPE
@@ -23,12 +21,6 @@ class CMaterial
 {
 public:
 	CMaterial():
-	uDiffuse(-1),
-		uEmissive(-1),
-		uSpecular(-1),
-		uNormal(-1),
-		uReflection(-1),
-		uLightMap(-1),
 		uShader(-1),
 		bLightingEnabled(false),
 		vAmbient(0.6f,0.6f,0.6f,0.6f),
@@ -43,6 +35,10 @@ public:
 		cEmissive(255,255,255,255),
 		vUVScale(0.0f,0.0f)
 	{
+		for (size_t i=0; i<8; ++i)
+		{
+			uTexture[i] = -1;
+		}
 	}
 
 	E_MATERIAL_RENDER_TYPE getRenderType()
@@ -51,10 +47,10 @@ public:
 		{
 			return MATERIAL_GEOMETRY;
 		}
-		else if (uDiffuse==0&&uNormal>0)
-		{
-			return MATERIAL_BUMP;
-		}
+		//else if (uDiffuse==0&&uNormal>0)
+		//{
+		//	return MATERIAL_BUMP;
+		//}
 		else if (bBlend)
 		{
 			return MATERIAL_GLOW;
@@ -76,14 +72,14 @@ public:
 		else if (bBlend)
 		{
 			nOrder-=2;
-		}
-		if (uDiffuse==0)
-		{
-			nOrder--;
-			if (uEmissive!=0)
+			if (nBlendSrc==SBF_ONE&&nBlendDest==SBF_ONE)
 			{
 				nOrder--;
 			}
+		}
+		if (!bDepthTest)
+		{
+			nOrder-=10;
 		}
 		return nOrder;
 	}
@@ -93,59 +89,14 @@ public:
 		cEmissive = color;
 	}
 	// Texture
-	void setDiffuse(const std::string& strFilename)
+	void setTexture(int id, const char* szFilename)
 	{
-		strDiffuse=strFilename;
-		uDiffuse=-1;
+		strTexture[id]	= szFilename;
+		uTexture[id]	= -1;
 	}
-	void setEmissive(const std::string& strFilename)
+	const std::string& getTexture(int id)
 	{
-		strEmissive=strFilename;
-		uEmissive=-1;
-	}
-	void setSpecular(const std::string& strFilename)
-	{
-		strSpecular=strFilename;
-		uSpecular=-1;
-	}
-	void setNormal(const std::string& strFilename)
-	{
-		strNormal=strFilename;
-		uNormal=-1;
-	}
-	void setReflection(const std::string& strFilename)
-	{
-		strReflection=strFilename;
-		uReflection=-1;
-	}
-	void setLightMap(const std::string& strFilename)
-	{
-		strLightMap=strFilename;
-		strLightMap=-1;
-	}
-	const std::string& getDiffuse()
-	{
-		return strDiffuse;
-	}
-	const std::string& getEmissive()
-	{
-		return strEmissive;
-	}
-	const std::string& getSpecular()
-	{
-		return strSpecular;
-	}
-	const std::string& getNormal()
-	{
-		return strNormal;
-	}
-	const std::string&  getReflection()
-	{
-		return strReflection;
-	}
-	const std::string&  getLightMap()
-	{
-		return strLightMap;
+		return strTexture[id];
 	}
 	// Shader
 	void setShader(const std::string& strFilename)
@@ -158,38 +109,53 @@ public:
 		return strShader;
 	}
 private:
-	std::string	strDiffuse;
-	std::string	strEmissive;
-	std::string	strSpecular;
-	std::string	strNormal;
-	std::string	strReflection;	// nTexEnvironment
-	std::string	strLightMap;
-	std::string	strShader;		// shader
+	std::string		strTexture[8];
+	std::string		strShader;
 public:
-	// texture
-	unsigned long	uDiffuse;
-	unsigned long	uEmissive;
-	unsigned long	uSpecular;
-	unsigned long	uNormal;
-	unsigned long	uReflection;		// nTexEnvironment
-	unsigned long	uLightMap;
-	unsigned long	uShader;			// shader
-
-	// color
-	Vec4D	vAmbient;
-	Vec4D	vDiffuse;
-
-	// other
-	bool	bLightingEnabled;
-	unsigned char uCull;
-	bool	bDepthWrite;
-	bool	bBlend;
-	bool	bAlphaTest;
-	unsigned char uAlphaTestValue;
-	Vec2D	vTexAnim;
-	float	m_fOpacity;
-	Color32 cEmissive;
-	Vec2D	vUVScale; // for terrain's tile, temp
+	// ----
+	// # texture
+	// ----
+	unsigned long	uTexture[8];
+	// ----
+	unsigned long	uShader;
+	// ----
+	bool			bLightingEnabled;
+	// ----
+	unsigned char	uCull;
+	// ----
+	bool			bBlend;
+	int				nBlendOP;
+	int				nBlendSrc;
+	int				nBlendDest;
+	// ----
+	bool			bAlphaTest;
+	int				nAlphaTestCompare;
+	unsigned char	uAlphaTestValue;
+	// ----
+	bool			bDepthTest;
+	bool			bDepthWrite;
+	// ----
+	struct TextureOP 
+	{
+		int			nColorOP;
+		int			nColorSrc1;
+		int			nColorSrc2;
+		int			nAlphaOP;
+		int			nAlphaSrc1;
+		int			nAlphaSrc2;
+	};
+	// ----
+	TextureOP		textureOP[8];
+	// ----
+	// # color
+	// ----
+	Vec4D			vAmbient;
+	Vec4D			vDiffuse;
+	// ----
+	Vec2D			vTexAnim;
+	float			m_fOpacity;
+	Color32			cEmissive;
+	Vec2D			vUVScale; // for terrain's tile, temp
 };
 
 #include "InterfaceDataPlugsBase.h"

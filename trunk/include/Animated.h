@@ -6,9 +6,6 @@
 
 #include "interpolation.h"
 
-// global time for global sequences
-extern int globalTime;
-
 enum Interpolations {
 	INTERPOLATION_NONE,
 	INTERPOLATION_LINEAR,
@@ -71,7 +68,8 @@ public:
 					return interpolate<T>(r,m_KeyData[pos],m_KeyData[pos+1]);
 				else if (type == INTERPOLATION_NONE) 
 					return m_KeyData[pos];
-				else {
+				else
+				{
 					// INTERPOLATION_HERMITE is only used in cameras afaik?
 					// for nonlinear interpolations:
 					return interpolateHermite<T>(r,m_KeyData[pos*3],m_KeyData[pos*3+3],
@@ -82,7 +80,9 @@ public:
 			{
 				return m_KeyData[0];
 			}
-		} else {
+		}
+		else
+		{
 			// default value
 			if (m_KeyData.size() == 0)
 				return T();
