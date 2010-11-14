@@ -3,8 +3,6 @@
 #include "ModelDataMgr.h"
 #include "FileSystem.h"
 
-int globalTime = 0;
-
 CModelData::CModelData():
 bLoaded(false)
 {
@@ -188,7 +186,7 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
 	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
+	/*	CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
 		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
 		ofs<<(it->second.nSubID)<<","<<
 			(TM.getItemName(material.uDiffuse).c_str())<<","<<
@@ -201,7 +199,7 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 			(material.bAlphaTest)<<","<<
 			(material.bBlend)<<","<<
 			(material.vTexAnim.x)<<","<<
-			(material.vTexAnim.y)<<std::endl;
+			(material.vTexAnim.y)<<std::endl;*/
 	}
 	ofs.close();
 	return true;
@@ -494,7 +492,7 @@ void CModelData::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLod
 			{
 				if (eModelRenderType&MATERIAL_RENDER_ALPHA_TEST)
 				{
-					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).uDiffuse);
+					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).uTexture[0]);
 					m_Mesh.drawSub(it->second.nSubID,uLodLevel);
 				}
 				else if (eModelRenderType&MATERIAL_RENDER_NO_MATERIAL)

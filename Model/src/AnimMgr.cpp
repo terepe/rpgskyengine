@@ -208,8 +208,6 @@ int AnimManager::Tick(int time)
 	if((Count < PlayIndex))
 		return -1;
 
-	globalTime += time;
-
 	for (int i=0; i<ANIM_TYPE_MAX; i++)
 	{
 		m_AnimsInfo[i].Tick(time);

@@ -60,57 +60,59 @@ bool CRenderSystem::prepareMaterial(const char* szMaterialName, float fOpacity)
 bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacity) // 由于使用了自动注册纹理的机制,很遗憾的导致不能用“const”
 {
 	CTextureMgr& TM = GetTextureMgr();
-	if (material.uDiffuse==-1)
+	for (size_t i=0;i<8;++i)
 	{
-		material.uDiffuse = TM.RegisterTexture(material.getDiffuse());
-	}
-	if (material.uEmissive==-1)
-	{
-		material.uEmissive = TM.RegisterTexture(material.getEmissive());
-	}
-	if (material.uSpecular==-1)
-	{
-		material.uSpecular = TM.RegisterTexture(material.getSpecular());
-	}
-	if (material.uNormal==-1)
-	{
-		material.uNormal = TM.RegisterTexture(material.getNormal());
-	}
-	if (material.uReflection==-1)
-	{
-		material.uReflection = TM.RegisterTexture(material.getReflection());
-	}
-	if (material.uLightMap==-1)
-	{
-		material.uLightMap = TM.RegisterTexture(material.getLightMap());
+		if (material.uTexture[i]==-1)
+		{
+			material.uTexture[i] = TM.RegisterTexture(material.getTexture(i));
+		}
+		// ----
+		SetTexture(i, material.uTexture[i]);
+		// ----
+		if (material.uTexture[i]==0)
+		{
+			break;
+		}
 	}
 	if (material.uShader==-1)
 	{
 		material.uShader = GetShaderMgr().registerItem(material.getShader());
 	}
-	//SetCullingMode(material.bCull?CULL_ANTI_CLOCK_WISE:CULL_NONE);
-	SetAlphaTestFunc(material.bAlphaTest,CMPF_GREATER_EQUAL,material.uAlphaTestValue);
-	SetBlendFunc(material.bBlend, BLENDOP_ADD, SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	SetDepthBufferFunc(true,material.bDepthWrite);
+	// ----
 	SetLightingEnabled(material.bLightingEnabled);
-	if (material.bLightingEnabled)
+	SetCullingMode((CullingMode)material.uCull);
+	// ----
+	SetAlphaTestFunc(material.bAlphaTest, (CompareFunction)material.nAlphaTestCompare, material.uAlphaTestValue);
+	SetBlendFunc(material.bBlend, (SceneBlendOperation)material.nBlendOP, (SceneBlendFactor)material.nBlendSrc, (SceneBlendFactor)material.nBlendDest);
+	SetDepthBufferFunc(material.bDepthTest,material.bDepthWrite);
+	// ----
+	if (0==material.uShader)
+	{
+		for (size_t i=0;i<8;++i)
+		{
+			CMaterial::TextureOP& texOP = material.textureOP[i];
+			SetTextureColorOP(i, (TextureBlendOperation)texOP.nColorOP, (TextureBlendSource)texOP.nColorSrc1, (TextureBlendSource)texOP.nColorSrc2);
+			SetTextureColorOP(i, (TextureBlendOperation)texOP.nAlphaOP, (TextureBlendSource)texOP.nAlphaSrc1, (TextureBlendSource)texOP.nAlphaSrc2);
+			if (TBOP_DISABLE == texOP.nColorOP)
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		CShader* pShader = GetShaderMgr().getSharedShader();
+		if (pShader)
+		{
+			// for Terrain
+			pShader->setVec2D("g_fScaleUV",material.vUVScale);
+		}
+		SetShader(material.uShader);
+	}
+	return true;
+/*	if (material.bLightingEnabled)
 	{
 		SetMaterial(material.vAmbient,material.vDiffuse);
-	}
-	switch(material.uCull)
-	{
-	case 0:
-		SetCullingMode(CULL_NONE);
-		break;
-	case 1:
-		SetCullingMode(CULL_CLOCK_WISE);
-	    break;
-	case 2:
-		SetCullingMode(CULL_ANTI_CLOCK_WISE);
-		break;
-	default:
-		// Do nothing.
-	    break;
 	}
 
 	if (0==material.uShader)
@@ -254,7 +256,7 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 				CShader* pShader = GetShaderMgr().getSharedShader();
 				if (pShader)
 				{
-					static size_t s_uShaderID = GetShaderMgr().registerItem("Data\\fx\\SpaceBump.fx");
+					static size_t s_uShaderID = GetShaderMgr().registerItem("EngineRes\\fx\\SpaceBump.fx");
 					pShader->setTexture("g_texNormal",material.uNormal);
 					SetShader(s_uShaderID);
 				}
@@ -294,7 +296,7 @@ bool CRenderSystem::prepareMaterial(/*const */CMaterial& material, float fOpacit
 		}
 		SetShader(material.uShader);
 	}
-	return true;
+	return true;*/
 }
 void CRenderSystem::finishMaterial()
 {
