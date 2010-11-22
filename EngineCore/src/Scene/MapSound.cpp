@@ -37,56 +37,6 @@ void CMapSound::render()const
 #endif
 }
 //-------------------------------------------------------------
-void CMapSound::Process(void* pInfo)
-{
-#ifdef _ARHUN_DEBUG
-	Pos2D posCell;
-	GetSceneMgr().World2Cell( m_vPos, posCell );
-	if(GetSceneMgr().IsPosVisible(posCell))
-	{
-		GetSceneMgr().ApplyObjShow(this);
-	}
-	else
-	{
-		m_bFocus = false;
-	}
-#endif
-//	if(m_dwInterval == 0)
-//		return;
-	Pos2D posHero;
-	Vec3D vHeroWorldpos;
-	//g_objHero.GetCellPos( posHero );
-	//GetSceneMgr().Cell2World( posHero, vHeroWorldpos );
-	//bool bActive;
-	if((abs(vHeroWorldpos.x - m_vPos.x) > m_nRange)// && abs(posHero.x - m_vPos.x) > 1000)
-		|| (abs(vHeroWorldpos.z - m_vPos.z) > m_nRange))// && abs(posHero.y - m_vPos.y) > 1000))
-	{
-		if(m_bActive)
-		{
-			m_bActive = false;
-	//		if(Check2DSound(m_pSound))
-	//			::DXClose2DSound(m_pSound);
-		}
-	}
-	else
-	{
-		m_bActive = true;
-	}
-	
-//	if(!Check2DSound(m_pSound) && m_bActive)
-	{
-// 		if(!m_bWait)
-// 		{
-// 			m_bWait = true;
-// 			m_dwWaitPoint = ::TimeGet();
-// 		}
-// 		if(::TimeGet() - m_dwWaitPoint > m_dwInterval)
-// 		{
-// 			this->Play();
-// 			m_bWait = false;
-// 		}
-	}
-}
 //-------------------------------------------------------------
 bool CMapSound::IsFocus()
 {

@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "matrix.h"
 #include "Material.h"
+#include "RenderNodel.h"
 
 class CParticleEmitter;
 
@@ -17,7 +18,7 @@ struct Particle
 
 typedef std::list<Particle> ParticleList;
 
-class CParticleGroup
+class CParticleGroup:public CRenderNodel
 {
 public:
 	CParticleEmitter* m_pEmitter;	// 粒子发射器指针
@@ -25,12 +26,14 @@ public:
 	int  m_nTime;			// 时间
 	float m_fRem;					// 人体伦琴单位当量 辐射量
 public:
+	virtual int	getType() {return NODEL_PARTICLE;}
+	virtual void frameMove(const Matrix& mWorld, double fTime, float fElapsedTime);
 	void Init(CParticleEmitter* pEmitter);
 	void update(float fElapsedTime);
 	void Setup(int nTime);
 	//void SetTex(float dt);
 	void draw()const;
-	virtual void render(E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
+	virtual void render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
 	CParticleGroup(): m_pEmitter(NULL)
 	{
 		m_nTime = 0;

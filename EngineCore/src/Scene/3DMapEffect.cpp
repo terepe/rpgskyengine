@@ -77,30 +77,6 @@ void C3DMapEffect::SetRotate(float fHorizontal, float fVertical)
 	m_fVertical = fVertical;
 }
 //-------------------------------------------------------------------
-void C3DMapEffect::Process(void* pInfo)
-{
-	m_dwFrameIndex ++;
-	bool* pbOver = (bool*)pInfo;
-	if(m_bDie)
-	{
-		m_nDelay ++;
-		//if(m_nDelay > 10)
-		//	*pbOver = true;
-		//else
-		//	*pbOver = false;
-		//return;
-	}
-	if(m_bSimpleObj)
-	{
-		m_bOver = false;
-		//*pbOver = false;
-	}
-	else
-	{
-	}
-	//if(!m_bDelSelf)
-	//	*pbOver = false;
-}
 //-------------------------------------------------------------------
 C3DMapEffect* C3DMapEffect::CreateNew(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf, bool bSave)
 {

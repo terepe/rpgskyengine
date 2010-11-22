@@ -76,10 +76,10 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 		//	m_ObjectTree.delObject((*it));
 		//	m_ObjectTree.addObject((*it));
 		//}
-		(*it)->OnFrameMove(fElapsedTime);
-		if (((C3DMapObj*)(*it))->m_setParticleGroup.size()>0)
+		(*it)->frameMove(Matrix::UNIT,fTime,fElapsedTime);
+		//if (((C3DMapObj*)(*it))->m_setParticleGroup.size()>0)
 		{
-			m_setLightObj.push_back(*it);
+		//	m_setLightObj.push_back(*it);
 		}
 	}
 }
@@ -189,7 +189,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 					{
 						C3DMapObj* p3DObj = (C3DMapObj*)pObj;
 						float fHeight = getTerrainData()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
-						p3DObj->renderShadow(vLightDir,fHeight);
+						p3DObj->renderShadow(Matrix::UNIT,vLightDir,fHeight);
 						for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
 							itLight != m_setLightObj.end(); ++itLight)
 						{
@@ -199,7 +199,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 								vDir.normalize();
 								vDir.y=-1;
 								vDir.normalize();
-								p3DObj->renderShadow(vDir,fHeight);
+								p3DObj->renderShadow(Matrix::UNIT,vDir,fHeight);
 							}
 						}
 					}
@@ -248,7 +248,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 							R.LightEnable(1,true);
 						}
 					}
-					(*it)->render(MATERIAL_GEOMETRY);
+					(*it)->render(Matrix::UNIT,MATERIAL_GEOMETRY);
 					R.LightEnable(1,false);
 				}
 			}catch(...)
@@ -266,7 +266,7 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
 				Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
 			R.SetDirectionalLight(0,light);
-			m_setFocusObjects[i]->render(MATERIAL_GEOMETRY);
+			m_setFocusObjects[i]->render(Matrix::UNIT,MATERIAL_GEOMETRY);
 		}
 		//
 		if (m_pTerrain)
@@ -285,13 +285,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MATERIAL_ALPHA);
+			(*it)->render(Matrix::UNIT,MATERIAL_ALPHA);
 		}
 		R.setWorldMatrix(Matrix::UNIT);
 		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
 			it != m_setRenderSceneObj.end(); ++it)
 		{
-			(*it)->render(MATERIAL_GLOW);
+			(*it)->render(Matrix::UNIT,MATERIAL_GLOW);
 		}
 	}
 }

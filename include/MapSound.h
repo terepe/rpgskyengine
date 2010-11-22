@@ -26,7 +26,6 @@ public:
 	virtual void SetCellPos( Pos2D& posCell ){m_posCell = posCell;}
 
 	virtual void render()const;
-	virtual void Process(void* pInfo);
 	virtual int  GetObjType(){return MAP_SOUND;}
 	virtual bool IsFocus();
 	virtual void setPos(const Vec3D& vPos);
