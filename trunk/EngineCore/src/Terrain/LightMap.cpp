@@ -223,8 +223,8 @@ void CLightMap::RenderDepthToTex(const Matrix& mLight)
 					pShader->setMatrix("g_mWorld",mObjWorld);
 					if(pShader->begin("RenderObjDepth"))
 					{
-						p3DMapSceneObj->OnFrameMove(0.0f);
-						p3DMapSceneObj->render(MATERIAL_GEOMETRY);
+						p3DMapSceneObj->frameMove(Matrix::UNIT,0.0f,0.0f);
+						p3DMapSceneObj->render(Matrix::UNIT,MATERIAL_GEOMETRY);
 						pShader->end();
 					}
 				}
@@ -284,7 +284,7 @@ void CLightMap::RenderObjectLightMapToTex(const Matrix& mLight, const C3DMapScen
 		if (pShader->begin("RenderObjLightMapToTex"))
 		{
 			R.SetTexture(0, m_pDepthRenderTarget);
-			object.render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+			object.render(Matrix::UNIT, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 			pShader->end();
 		}
 

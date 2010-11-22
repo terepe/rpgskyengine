@@ -200,6 +200,10 @@
 				RelativePath=".\include\Skeleton.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Include\SkinModel.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -238,6 +242,10 @@
 			</File>
 			<File
 				RelativePath=".\src\Skeleton.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\SkinModel.cpp"
 				>
 			</File>
 		</Filter>

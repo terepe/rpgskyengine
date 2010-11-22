@@ -29,7 +29,6 @@ public:
 public:
 	void SetRotate(float fHorizontal, float fVertical);
 	virtual void Show(void* pInfo);
-	virtual void Process(void* pInfo);
 	virtual int GetObjType(){return MAP_3DEFFECT;}
 	virtual void Die(){m_bDie = true;}
 public:

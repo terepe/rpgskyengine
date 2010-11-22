@@ -334,13 +334,13 @@ void ObjectTree::process()
 {
 	for (DEQUE_MAPOBJ::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
 	{
-		(*it)->Process(NULL);
+		//(*it)->Process(NULL);
 	}
 	if (pChild)
 	{
 		for (size_t i=0;i<8;++i)
 		{
-			pChild[i].process();
+			//pChild[i].process();
 		}
 	}
 }

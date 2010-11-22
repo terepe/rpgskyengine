@@ -4,31 +4,19 @@
 
 C3DMapObj::C3DMapObj()
 {
+	CMaterial& materialFocus = GetRenderSystem().getMaterialMgr().getItem("ObjectFocus");
+	materialFocus.setShader("Data\\fx\\ObjectFocus.fx");
+	materialFocus.bAlphaTest			= false;
+	materialFocus.bBlend				= false;
+	materialFocus.bDepthTest			= true;
+	materialFocus.bDepthWrite			= false;
+	materialFocus.uCull				= CULL_NONE;
+	materialFocus.bLightingEnabled	= false;
+	// ----
 	m_vScale=Vec3D(1.0f,1.0f,1.0f);
 }
 C3DMapObj::~C3DMapObj()
 {
-}
-
-void C3DMapObj::GetCellPos( Pos2D& posCell )
-{
-	posCell = m_posCell;
-}
-
-void C3DMapObj::SetCellPos( Pos2D& posCell )
-{
-	m_posCell = posCell;
-}
-
-Matrix C3DMapObj::getWorldMatrix()const
-{
-	Matrix mTrans;
-	Matrix mRotate;
-	Matrix mScale;
-	mTrans.translation(getPos());
-	mRotate.rotate(getRotate());
-	mScale.scale(getScale());
-	return mTrans*mRotate*mScale;
 }
 
 Matrix C3DMapObj::getShadowMatrix(const Vec3D& vLight,float fHeight)const
@@ -76,27 +64,10 @@ BBox C3DMapObj::getBBox()const
 	return bbox;
 }
 
-void C3DMapObj::OnFrameMove(float fElapsedTime)
+void C3DMapObj::renderShadow(const Matrix& mWorld, const Vec3D& vLight,float fHeight)const
 {
-	if (!CModelObject::isCreated())
-	{
-		CModelObject::create();
-		//m_ObjectTree.delObject((*it));
-		//m_ObjectTree.addObject((*it));
-	}
-	CModelObject::frameMove(getWorldMatrix(), fElapsedTime);
-}
-
-void C3DMapObj::render(int flag)const
-{
-	GetRenderSystem().setWorldMatrix(getWorldMatrix());
-	CModelObject::render((E_MATERIAL_RENDER_TYPE)flag);
-}
-
-void C3DMapObj::renderShadow(const Vec3D& vLight,float fHeight)const
-{
-	GetRenderSystem().setWorldMatrix(getShadowMatrix(vLight,fHeight));
-	CModelObject::render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+	Matrix mNewWorld = mWorld*getShadowMatrix(vLight,fHeight);//m_mWorld;
+	CModelObject::render(mNewWorld, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 }
 
 void C3DMapObj::renderFocus()const
@@ -114,10 +85,9 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 {
 	if (getBBox().intersect(vRayPos , vRayDir, tmin, tmax))
 	{
-		Matrix mWorld = getWorldMatrix();
 		Vec3D vNewRayPos = vRayPos;
 		Vec3D vNewRayDir = vRayDir;
-		transformRay(vNewRayPos,vNewRayDir,mWorld);
+		transformRay(vNewRayPos,vNewRayDir,m_mWorld);
 
 		if (CModelObject::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 		{
@@ -125,12 +95,12 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		}
 		else
 		{
-			for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+			for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 			{
-				const CModelData* pModelData = it->second.pChildObj->getModelData();
-				if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))
+				//const CModelData* pModelData = it->second->getModelData();
+				//if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 				{
-					return true;
+				//	return true;
 				}
 			}
 		}
@@ -147,35 +117,16 @@ int C3DMapObj::getOrder()
 	return CMapObj::getOrder();
 }
 
-bool C3DMapObj::isSkinMesh()
-{
-	if (CModelObject::getModelData())
-	{
-		return CModelObject::getModelData()->m_Mesh.m_bSkinMesh;
-	}
-	return false;
-}
-
 void C3DMapObj::renderFocus(Color32 color)const
 {
-	CRenderSystem& R = GetRenderSystem();
-	R.SetDepthBufferFunc(true,false);
-	R.SetAlphaTestFunc(false);
-	R.SetBlendFunc(false);
-	R.SetCullingMode(CULL_NONE);
-	static CShader* m_pShaderFocus=NULL;
-	if (m_pShaderFocus==NULL)
+	if (GetRenderSystem().prepareMaterial("ObjectFocus"))
 	{
-		unsigned long uShaderID = R.GetShaderMgr().registerItem("Data\\fx\\ObjectFocus.fx");
-		m_pShaderFocus = R.GetShaderMgr().getItem(uShaderID);
-	}
-	if (m_pShaderFocus)
-	{
-		m_pShaderFocus->setVec4D("g_vColorFocus",Vec4D(color));
-		Matrix mWorld = getWorldMatrix();
-		R.setWorldMatrix(mWorld);
-		R.SetShader(m_pShaderFocus);
-		CModelObject::render(E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
-		R.SetShader((CShader*)NULL);
+		//CShader* pShaderFocus = GetRenderSystem().GetShaderMgr().getItem(m_MaterialFocus.uShader);
+		//if (pShaderFocus)
+		{
+		//	pShaderFocus->setVec4D("g_vColorFocus",Vec4D(color));
+			CModelObject::render(m_mWorld, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+		}
+		GetRenderSystem().finishMaterial();
 	}
 }

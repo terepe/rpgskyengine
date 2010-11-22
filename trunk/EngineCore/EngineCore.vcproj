@@ -258,14 +258,6 @@
 				Name="Object"
 				>
 				<File
-					RelativePath=".\src\Scene\2DMapObj.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\include\2DMapobj.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\Scene\3DMapEffect.cpp"
 					>
 				</File>

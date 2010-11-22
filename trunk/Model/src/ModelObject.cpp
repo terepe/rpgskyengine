@@ -1,25 +1,23 @@
 #include "ModelObject.h"
-
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "ParticleEmitter.h"
 #include "ModelDataMgr.h"
 
-CModelObject::CModelObject() :
-m_uLightMapTex(0),
-m_bLightmap(false),
-m_pModelData(NULL),
-m_bCreated(false)
+CModelObject::CModelObject()
+:m_uLightMapTex(0)
+,m_bLightmap(false)
+,m_pModelData(NULL)
+,m_bCreated(false)
+,m_nModelID(0)
+,m_pVB(NULL)
+,m_nAnimTime(0)
+,m_fTrans(1.0f)
+,m_fAlpha(1.0f)
+,m_fRad(0.0f)
+,m_uSkinID(0)
+,m_uLodLevel(0)
 {
-	m_nModelID = 0;
-	m_pVB = NULL;
-	m_nAnimTime = 0;
-	m_fTrans = 1;
-	m_fAlpha = 1;
-
-	m_fRad = 0;
-	m_uSkinID = 0;
-	m_uLodLevel = 0;
 }
 
 CModelObject::~CModelObject()
@@ -65,10 +63,13 @@ void CModelObject::create()
 		}
 		
 		// Particles
-		m_setParticleGroup.resize(m_pModelData->m_setParticleEmitter.size());
-		for (size_t i=0;i<m_setParticleGroup.size();++i)
+		for (size_t i=0;i<m_pModelData->m_setParticleEmitter.size();++i)
 		{
-			m_setParticleGroup[i].Init(&m_pModelData->m_setParticleEmitter[i]);
+			CParticleGroup* pParticleGroup = new CParticleGroup;
+			pParticleGroup->Init(&m_pModelData->m_setParticleEmitter[i]);
+			char szParName[255];
+			sprintf(szParName,"par%d",i);
+			addChild(szParName, pParticleGroup);
 		}
 
 		// 
@@ -111,59 +112,62 @@ CModelData* CModelObject::getModelData()const
 	return m_pModelData;
 }
 
-void CModelObject::Register(const std::string& strFilename)
+void CModelObject::Register(const char* szFilename)
 {
-	m_nModelID = CModelDataMgr::getInstance().RegisterModel(strFilename);
+	m_nModelID = CModelDataMgr::getInstance().RegisterModel(szFilename);
 	m_pModelData = CModelDataMgr::getInstance().GetModel(m_nModelID);
-	m_strModelFilename = strFilename;
+	m_strModelFilename = szFilename;
 }
 
-bool CModelObject::load(const std::string& strFilename)
+bool CModelObject::load(const char* szFilename)
 {
-	Register(strFilename);
+	Register(szFilename);
 	create();
 	return true;
 }
 
-void CModelObject::loadSkinModel(const char* szName,const char* szFilename)
-{
-	loadChildModel(szName,"skin",szFilename);
-}
+//void CModelObject::loadSkinModel(const char* szName,const char* szFilename)
+//{
+//	CSkinModel* pSkinModel = new CSkinModel();
+//	pSkinModel->Register(szFilename);
+//	pSkinModel->create();
+//	addChild(szName, pSkinModel);
+//}
+//
+//void CModelObject::loadChildModel(const char* szName, const char* szBoneName, const char* szFilename)
+//{
+//	if (strlen(szFilename)==0)
+//	{
+//		delChild(szName);
+//		return;
+//	}
+//	// ----
+//	MAP_RENDER_NODEL::iterator it = m_mapChildObj.find(szName);
+//	if (it != m_mapChildObj.end())
+//	{
+//// 		if (it->second.pChildObj->getModelFilename()==szFilename)
+//// 		{
+//// 			return;
+//// 		}
+//// 		else
+//		{
+//			delete it->second;
+//			m_mapChildObj.erase(it);
+//		}
+//	}
+//
+//	CModelObject* pModelObject = new CModelObject();
+//	pModelObject->Register(szFilename);
+//	pModelObject->create();
+//	//pModelObject->m_strParentBoneName = szBoneName
+//	addChild(szName, pModelObject);
+//}
 
-void CModelObject::loadChildModel(const char* szName, const char* szBoneName, const char* szFilename)
-{
-	if (strlen(szFilename)==0)
-	{
-		delChild(szName);
-		return;
-	}
-
-	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(szName);
-	if (it != m_mapChildObj.end())
-	{
-		if (it->second.pChildObj->getModelFilename()==szFilename)
-		{
-			return;
-		}
-		else
-		{
-			delete it->second.pChildObj;
-			m_mapChildObj.erase(it);
-		}
-	}
-
-	CModelObject* pModelObject = new CModelObject();
-	pModelObject->Register(szFilename);
-	pModelObject->create();
-	m_mapChildObj[szName].pChildObj = pModelObject;
-	m_mapChildObj[szName].strBoneName = szBoneName;
-}
-
-void CModelObject::CalcBones(const std::string& strAnim, int time)
+void CModelObject::CalcBones(const char* szAnim, int time)
 {
 	if (m_pModelData)
 	{
-		m_pModelData->m_Skeleton.CalcBonesMatrix(strAnim,time,m_setBonesMatrix);
+		m_pModelData->m_Skeleton.CalcBonesMatrix(szAnim,time,m_setBonesMatrix);
 	}
 	//// Character specific bone animation calculations.
 	//if (charModelDetails.isChar)
@@ -260,7 +264,7 @@ void CModelObject::CalcBones(const std::string& strAnim, int time)
 	//}
 }
 
-void CModelObject::Animate(const std::string& strAnimName)
+void CModelObject::Animate(const char* szAnimName)
 {
 	if (NULL==m_pModelData)
 	{
@@ -277,51 +281,29 @@ void CModelObject::Animate(const std::string& strAnimName)
 		//t %= tmax;
 		//t += a.timeStart;
 	} else
-		t = m_AnimMgr.uFrame;
+		t =			m_AnimMgr.uFrame;
 
 	// 骨骼动画
-	if ((m_setBonesMatrix.size()>0)  && (m_nAnimTime != t || m_strAnimName != strAnimName))
+	if ((m_setBonesMatrix.size()>0)  && (m_nAnimTime != t || m_strAnimName != szAnimName))
 	{
-		CalcBones(strAnimName, t);
+		CalcBones(szAnimName, t);
 	}
-	m_nAnimTime = t;
-	m_strAnimName = strAnimName;
+	m_nAnimTime		= t;
+	m_strAnimName	= szAnimName;
 }
 
-void CModelObject::frameMove(const Matrix& mWorld, float fElapsedTime)
+void CModelObject::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
 	animate(fElapsedTime);
-
-	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
-	{
-		if (it->second.strBoneName == "skin")
-		{
-			const CModelData* pModelData = it->second.pChildObj->getModelData();
-			if (pModelData)
-			{
-				if (pModelData->m_Mesh.m_bSkinMesh)
-				{
-					pModelData->m_Mesh.skinningMesh(it->second.pChildObj->m_pVB, m_setBonesMatrix);
-				}
-			}
-		}
-		else
-		{
-			it->second.pChildObj->frameMove(mWorld, fElapsedTime);
-		}
-	}
-	for (size_t i=0; i<m_setParticleGroup.size(); i++)
-	{
-		const Matrix& matBone = m_setBonesMatrix[m_pModelData->m_setParticleEmitter[i].m_nBoneID];
-		m_pModelData->m_setParticleEmitter[i].update(mWorld*matBone,m_setParticleGroup[i],fElapsedTime);
-	}
+	// ----
+	CRenderNodel::frameMove(mWorld,fTime,fElapsedTime);
 }
 
 void CModelObject::animate(float fElapsedTime)
 {
 	m_AnimMgr.Tick(int(fElapsedTime*1000));
 
-	Animate(m_strAnimName);
+	Animate(m_strAnimName.c_str());
 
 	// 几何体动画
 	if (m_pModelData->m_Mesh.m_bSkinMesh)
@@ -336,12 +318,6 @@ void CModelObject::animate(float fElapsedTime)
 	//		m_LightAnims[i].tdir = m_setBonesMatrix[lights[i].parent].m_mRot * lights[i].dir;
 	//	}
 	//}
-
-	// 粒子动画
-	for (size_t i=0;i<m_setParticleGroup.size();++i)
-	{
-		m_setParticleGroup[i].Setup(m_AnimMgr.uFrame);
-	}
 
 	// 条带动画
 	//for (size_t i=0; i<m_pModelData->m_Info.nRibbonEmitterCount; i++) {
@@ -395,9 +371,9 @@ void CModelObject::setAnim(const char* szAnimName)
 	}
 }
 
-void CModelObject::SetLightMap(const std::string& strFilename)
+void CModelObject::SetLightMap(const char* szFilename)
 {
-	m_uLightMapTex = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_uLightMapTex = GetRenderSystem().GetTextureMgr().RegisterTexture(szFilename);
 	GetRenderSystem().GetTextureMgr().releaseBuffer(m_uLightMapTex);
 	m_bLightmap = true;
 }
@@ -417,9 +393,6 @@ void CModelObject::SetLightMap(const std::string& strFilename)
 ////		glDisable(l++);
 //}
 
-
-#include "Timer.h"
-
 bool CModelObject::Prepare()const
 {
 	if(NULL==m_pModelData)
@@ -429,77 +402,39 @@ bool CModelObject::Prepare()const
 	return m_pModelData->m_Mesh.SetMeshSource(m_uLodLevel,m_pVB);
 }
 
-void CModelObject::render(E_MATERIAL_RENDER_TYPE eMeshRenderType)const
+void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	if (eMeshRenderType==MATERIAL_NONE)
+	if (eRenderType==MATERIAL_NONE)
 	{
 		return;
 	}
-
-	if (m_pModelData)
+	// ----
+	Matrix mNewWorld = mWorld*m_mWorld;
+	// ----
+	if (m_pParent&&m_pParent->getType()==NODEL_MODEL)
 	{
-		m_pModelData->renderMesh(eMeshRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
-	}
-
-	Matrix mWorld;
-	GetRenderSystem().getWorldMatrix(mWorld);
-	renderChild(mWorld, eMeshRenderType);
-}
-
-void CModelObject::renderChild(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eModelRenderType)const
-{
-	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
-	{
-		const ChildRenderObj& childRenderObj = it->second;
-		int nBoneID = m_pModelData->m_Skeleton.getBoneIDByName(childRenderObj.strBoneName.c_str());
+		CModelObject* pModel = (CModelObject*)m_pParent;
+		// ----
+		int nBoneID = pModel->m_pModelData->m_Skeleton.getBoneIDByName(m_strBindingBoneName.c_str());
 		if (nBoneID!=-1)
 		{
-			Matrix mBoneLocal = m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
+			Matrix mBoneLocal = pModel->m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
 			mBoneLocal.Invert();
-			Matrix mBone=m_setBonesMatrix[nBoneID]*mBoneLocal;
-			GetRenderSystem().setWorldMatrix(mWorld*mBone);
+			Matrix mBone = pModel->m_setBonesMatrix[nBoneID]*mBoneLocal;
+			mNewWorld *= mBone;
 		}
-		else
-		{
-			GetRenderSystem().setWorldMatrix(mWorld);
-		}
-		childRenderObj.pChildObj->render(eModelRenderType);
 	}
-	GetRenderSystem().setWorldMatrix(Matrix::UNIT);
-	for (size_t i = 0;i < m_setParticleGroup.size();++i)
+	// ----
+	GetRenderSystem().setWorldMatrix(mNewWorld);
+	// ----
+	if (m_pModelData)
 	{
-		m_setParticleGroup[i].render(eModelRenderType);
+		m_pModelData->renderMesh(eRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 	}
+	// ----
+	CRenderNodel::render(mWorld, eRenderType);
 }
 
-ChildRenderObj* CModelObject::getChild(const char* sName)
-{
-	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
-	if (it != m_mapChildObj.end())
-	{
-		return &it->second;
-	}
-	return NULL;
-}
-
-void CModelObject::delChild(const char* sName)
-{
-	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
-	if (it != m_mapChildObj.end())
-	{
-		delete it->second.pChildObj;
-		m_mapChildObj.erase(it);
-	}
-}
-
-void CModelObject::setChildPosition(const char* sName, const char* szBoneName)
-{
-	std::map<std::string,ChildRenderObj>::iterator it = m_mapChildObj.find(sName);
-	if (it != m_mapChildObj.end())
-	{
-		it->second.strBoneName = szBoneName;
-	}
-}
 
 void CModelObject::drawSkeleton(CTextRender* pTextRender)const
 {
@@ -507,8 +442,9 @@ void CModelObject::drawSkeleton(CTextRender* pTextRender)const
 	{
 		m_pModelData->m_Skeleton.render(m_setBonesMatrix, pTextRender);
 	}
-	for (std::map<std::string,ChildRenderObj>::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	// ----
+	for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 	{
-		it->second.pChildObj->drawSkeleton(pTextRender);
+		//it->second.pChildObj->drawSkeleton(pTextRender);
 	}
 }
