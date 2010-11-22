@@ -154,7 +154,7 @@ bool CTexture::createFromBLP(void* pBuf, int nSize, int nLevels)
 	memcpy(sizes,pointer,4*16);
 	pointer+=16;
 
-	bool hasmipmaps = attr[4]>0;
+	bool hasmipmaps = attr[3]>0;
 	int mipmax = hasmipmaps ? 16 : 1;
 
 	createTexture(w, h, mipmax, true);
