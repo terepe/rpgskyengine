@@ -4,8 +4,7 @@
 #include <algorithm>
 
 CScene::CScene():
-m_bShowStaticObject(true),
-m_bShowAnimObject(true),
+m_bShowObject(true),
 m_bShowObjectBBox(false),
 m_Fog(32.0f,48.0f,0.01f,0xFF223344),
 m_Light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,-1.0f))
@@ -102,7 +101,7 @@ void CScene::UpdateRender(const CFrustum& frustum)
 	}
 	//
 	m_setRenderSceneObj.clear();
-	if (m_bShowStaticObject||m_bShowAnimObject)
+	if (m_bShowObject)
 	{
 		GetRenderObject(frustum, m_setRenderSceneObj);
 	}
@@ -315,21 +314,26 @@ void CScene::createObjectTree(const BBox& box, size_t size)
 	m_ObjectTree.create(box,size);
 }
 
-bool CScene::addMapObj(CMapObj* pObj)
+void CScene::addChild(const char* szName, CRenderNodel* pChild)
 {
-	if(!pObj)
-		return false;
-	if (m_ObjectTree.addObject(pObj))
+	CRenderNodel::addChild(szName, pChild);
+	// ----
+	if (m_ObjectTree.addObject(pChild))
 	{
 		m_bNeedUpdate = true;
-		return true;
 	}
 	else
 	{
 		delete pObj;
 		//MessageBoxA(NULL,strBmdFilename.c_str(),"Error!exclude!",0);
 	}
-	return false;
+}
+
+void CScene::removeChild(const char* szName)
+{
+	CRenderNodel::removeChild(szName);
+	// ----
+	DEQUE_MAPOBJ::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
 }
 
 bool CScene::removeRenderObj(CMapObj* pObj)
@@ -406,9 +410,22 @@ CMapObj* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRo
 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
 	{
 		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
-		C3DMapSceneObj* pObject = C3DMapSceneObj::CreateNew(objectInfo.strFilename.c_str(),vPos,vRotate,vScale);
+		// ----
+		C3DMapSceneObj* pObject = new C3DMapSceneObj;
+		pObject->Register(objectInfo.strFilename.c_str());
+		pObject->setPos(vPos);
+		pObject->setRotate(vRotate);
+		pObject->setScale(vScale);
+		// ----
 		pObject->setObjectID(uID);
-		addMapObj(pObject);
+		// ----
+		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
+		//vColor.w=1.0f;
+		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
+		// ----
+		char szNameID[255];
+		sprintf(szNameID,"%d",uID);
+		addChild(szNameID,pObject);
 		return pObject;
 	}
 	return NULL;
@@ -595,14 +612,6 @@ void CScene::getAllObjects(DEQUE_MAPOBJ&  setObject)
 {
 	m_ObjectTree.getObjects(setObject);
 }
-
-//void CScene::ResetAnim()
-//{
-//	for (DEQUE_MAPOBJ::iterator it = m_setSceneObj.begin(); it != m_setSceneObj.end(); ++it)
-//	{
-//		(*it)->m_bAnimCalc = false;
-//	}
-//}
 
 #include "LightMap.h"
 void CScene::CalcLightMap()

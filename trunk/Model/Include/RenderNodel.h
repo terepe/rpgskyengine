@@ -19,6 +19,7 @@ public:
 	CRenderNodel*			getParent			();
 	void					addChild			(const char* szName, CRenderNodel* pChild);
 	CRenderNodel*			getChild			(const char* szName);
+	bool					removeChild			(const char* szName);
 	void					delChild			(const char* szName);
 	void					setBindingBone		(const char* szBoneName);
 	void					setChildBindingBone	(const char* szName, const char* szBoneName);

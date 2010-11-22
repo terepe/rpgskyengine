@@ -57,6 +57,16 @@ CRenderNodel* CRenderNodel::getChild(const char* szName)
 	return NULL;
 }
 
+bool CRenderNodel::removeChild(const char* szName)
+{
+	std::map<std::string,CRenderNodel*>::iterator it = m_mapChildObj.find(szName);
+	// ----
+	if (it != m_mapChildObj.end())
+	{
+		m_mapChildObj.erase(it);
+	}
+}
+
 void CRenderNodel::delChild(const char* szName)
 {
 	std::map<std::string,CRenderNodel*>::iterator it = m_mapChildObj.find(szName);
