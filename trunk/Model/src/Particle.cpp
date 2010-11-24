@@ -7,7 +7,7 @@
 
 void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
-	Matrix mNewWorld = mWorld*m_mWorld;
+	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
 	//Setup(m_AnimMgr.uFrame);
 	Setup(fTime);
