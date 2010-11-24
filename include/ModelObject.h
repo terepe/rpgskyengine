@@ -30,18 +30,16 @@ public:
 
 	virtual void	drawSkeleton	(CTextRender* pTextRender)const;
 
-	void			SetLodLevel		(int nLodLevel);
-
 	void			Animate			(const char* szAnimName);
 	void			CalcBones		(const char* szAnim, int time);
 
 	bool			isCreated		();
 	void			create			();
 
-	void			setBBox			(const BBox& box);
-	const BBox&		getBBox			()const;
 	int				getModelDataID	()const;
 	CModelData*		getModelData	()const;
+
+	CONST_GET_SET_VARIABLE	(BBox&, m_, BBox);
 protected:
 	int								m_nModelID;			// 模型ID
 	CModelData*						m_pModelData;		// 模型源数据

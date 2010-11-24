@@ -35,9 +35,9 @@ public:
 	virtual void		clearObjectResources	();
 	virtual void		setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void		createObjectTree		(const BBox& box, size_t size);
-	virtual void		addChild				(const char* szName, CRenderNodel* pChild);
+	virtual void		addChild				(CRenderNodel* pChild);
+	virtual void		removeChild				(CRenderNodel* pChild);
 	bool				removeRenderObj			(CMapObj* pObj);
-	virtual bool		delMapObj				(CMapObj* pObj);
 
 	C3DMapEffect*		add3DMapEffect			(const Vec3D& vWorldPos, char* pszIndex, bool bDelself = true);
 	void				del3DMapEffect			(const Vec3D& vWorldPos);
@@ -66,22 +66,17 @@ public:
 	MAP_OBJECT_INFO&	GetObjectInfo			()						{return m_ObjectInfo;}
 	ObjectTree&			GetObject				()						{return m_ObjectTree;}
 
-	void				SetTerrain				(CTerrain* pTerrain)	{m_pTerrain = pTerrain;}
 	iTerrainData*		getTerrainData			()						{return m_pTerrain;}
 	const iTerrainData*	getTerrainData			()const					{return m_pTerrain;}
 	void				CalcLightMap			();
+	GET_SET_VARIABLE(CTerrain*,m_p,Terrain );
 
-	void				showObject				(bool bShowObject)		{m_bShowObject = bShowObject;}
-	void				showObjectBBox			(bool bShowObjectBBox)	{m_bShowObjectBBox = bShowObjectBBox;}
-	bool				isShowObject			()						{return m_bShowObject;}
-	bool				isShowObjectBBox		()						{return m_bShowObjectBBox;}
+	GET_SET_VARIABLE(bool,m_b,ShowObject);
+	GET_SET_VARIABLE(bool,m_b,ShowObjectBBox);
 
-	void				setFog					(const Fog& fog);
-	const Fog&			getFog					()						{return m_Fog;}
-	void				setLight				(const DirectionalLight& light);
-	const DirectionalLight& getLight			()						{return m_Light;}
-	void				setTargetPos			(const Vec3D& vPos)		{m_vTargetPos = vPos;}
-	const Vec3D&		getTargetPos			()const					{return m_vTargetPos;}
+	CONST_GET_SET_VARIABLE(DirectionalLight&,m_,Light);
+	CONST_GET_SET_VARIABLE(Fog&,m_,Fog);
+	CONST_GET_SET_VARIABLE(Vec3D&,m_v,TargetPos);
 
 	void				refreshViewport			()						{m_bNeedUpdate = true;}
 public:

@@ -87,7 +87,7 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 	{
 		Vec3D vNewRayPos = vRayPos;
 		Vec3D vNewRayDir = vRayDir;
-		transformRay(vNewRayPos,vNewRayDir,m_mWorld);
+		transformRay(vNewRayPos,vNewRayDir,m_mWorldMatrix);
 
 		if (CModelObject::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
 		{
@@ -125,7 +125,7 @@ void C3DMapObj::renderFocus(Color32 color)const
 		//if (pShaderFocus)
 		{
 		//	pShaderFocus->setVec4D("g_vColorFocus",Vec4D(color));
-			CModelObject::render(m_mWorld, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+			CModelObject::render(m_mWorldMatrix, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 		}
 		GetRenderSystem().finishMaterial();
 	}

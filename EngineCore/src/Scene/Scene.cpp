@@ -314,9 +314,9 @@ void CScene::createObjectTree(const BBox& box, size_t size)
 	m_ObjectTree.create(box,size);
 }
 
-void CScene::addChild(const char* szName, CRenderNodel* pChild)
+void CScene::addChild(CRenderNodel* pChild)
 {
-	CRenderNodel::addChild(szName, pChild);
+	CRenderNodel::addChild(pChild);
 	// ----
 	if (m_ObjectTree.addObject(pChild))
 	{
@@ -329,11 +329,15 @@ void CScene::addChild(const char* szName, CRenderNodel* pChild)
 	}
 }
 
-void CScene::removeChild(const char* szName)
+void CScene::removeChild(CMapObj* pChild)
 {
-	CRenderNodel::removeChild(szName);
+	CRenderNodel::removeChild(pChild);
 	// ----
-	DEQUE_MAPOBJ::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
+	m_ObjectTree.eraseObject(pChild);
+	// ----
+	removeRenderObj(pChild);
+	// ----
+	delFocusObject(pObj);
 }
 
 bool CScene::removeRenderObj(CMapObj* pObj)
@@ -346,23 +350,6 @@ bool CScene::removeRenderObj(CMapObj* pObj)
 		return true;
 	}
 	return false;
-}
-
-bool CScene::delMapObj(CMapObj* pObj)
-{
-	if(!pObj)
-		return false;
-	if (!m_ObjectTree.delObject(pObj))// when del a object, all the bboxs were not rebuild!
-	{
-		return false;
-	}
-	removeRenderObj(pObj);
-	{
-		m_bNeedUpdate = true;
-	}
-
-	delFocusObject(pObj);
-	return true;
 }
 
 C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, bool bDelSelf)
@@ -419,13 +406,15 @@ CMapObj* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRo
 		// ----
 		pObject->setObjectID(uID);
 		// ----
+		char szNameID[255];
+		sprintf(szNameID,"%d",uID);
+		pObject->setName(szNameID);
+		// ----
 		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
 		//vColor.w=1.0f;
 		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
 		// ----
-		char szNameID[255];
-		sprintf(szNameID,"%d",uID);
-		addChild(szNameID,pObject);
+		addChild(pObject);
 		return pObject;
 	}
 	return NULL;

@@ -69,7 +69,8 @@ void CModelObject::create()
 			pParticleGroup->Init(&m_pModelData->m_setParticleEmitter[i]);
 			char szParName[255];
 			sprintf(szParName,"par%d",i);
-			addChild(szParName, pParticleGroup);
+			pParticleGroup->setName(szParName);
+			addChild(pParticleGroup);
 		}
 
 		// 
@@ -90,16 +91,6 @@ void CModelObject::create()
 		}
 	}
 	m_bCreated=true;
-}
-
-void CModelObject::setBBox(const BBox& box)
-{
-	m_BBox=box;
-}
-
-const BBox& CModelObject::getBBox()const
-{
-	return m_BBox;
 }
 
 int CModelObject::getModelDataID()const
@@ -409,7 +400,7 @@ void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTy
 		return;
 	}
 	// ----
-	Matrix mNewWorld = mWorld*m_mWorld;
+	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
 	if (m_pParent&&m_pParent->getType()==NODEL_MODEL)
 	{
