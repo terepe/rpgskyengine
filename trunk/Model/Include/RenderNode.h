@@ -17,17 +17,20 @@
 //----
 #define GET_SET_VARIABLE_STRING(y)		CONST_SET_VARIABLE(char*,y,m_str##y) CONST_GET_VARIABLE(char*,y,m_str##y.c_str())
 //----
+#define FOR_IN(t,i,c)					for (t::iterator i = c.begin();it != c.end(); ++i)
+#define CONST_FOR_IN(t,i,c)				for (t::const_iterator i = c.begin();it != c.end(); ++i)
+//----
 
-class CRenderNodel
+class CRenderNode
 {
 public:
-	enum{NODEL_BASE,NODEL_PARTICLE,NODEL_MODEL,NODEL_SKINE};
-	typedef std::list<CRenderNodel*>		MAP_RENDER_NODEL;
+	enum{NODE_BASE,NODE_PARTICLE,NODE_MODEL,NODE_SKINE};
+	typedef std::list<CRenderNode*>		LIST_RENDER_NODE;
 public:
-	CRenderNodel();
-	~CRenderNodel();
+	CRenderNode();
+	~CRenderNode();
 public:
-	GET_SET_VARIABLE		(CRenderNodel*,	m_p,Parent);
+	GET_SET_VARIABLE		(CRenderNode*,	m_p,Parent);
 	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Pos);
 	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Rotate);
 	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Scale);
@@ -35,21 +38,25 @@ public:
 	GET_SET_VARIABLE_STRING	(Name);
 	GET_SET_VARIABLE_STRING	(BindingBoneName);
 	//----
+	GET_VARIABLE			(LIST_RENDER_NODE&,ChildObj,m_mapChildObj);
+	CONST_GET_VARIABLE		(LIST_RENDER_NODE&,ChildObj,m_mapChildObj);
 	virtual	int				getType				() = 0;
 	virtual void			frameMove			(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void			render				(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
-	void					addChild			(CRenderNodel* pChild);
-	CRenderNodel*			getChild			(const char* szName);
-	const CRenderNodel*		getChild			(const char* szName)const;
-	bool					removeChild			(CRenderNodel* pChild);
-	void					delChild			(CRenderNodel* pChild);
-	void					clearChild			();
+	CRenderNode*			getChild			(const char* szName);
+	const CRenderNode*		getChild			(const char* szName)const;
+	virtual void			addChild			(CRenderNode* pChild);
+	virtual bool			removeChild			(CRenderNode* pChild);
+	virtual bool			delChild			(CRenderNode* pChild);
+	virtual void			clearChild			();
+	virtual void			removeAllChild		();
+	//----
 	void					setChildBindingBone	(const char* szName, const char* szBoneName);
 	//----
 	void					updateWorldMatrix	();
 protected:
-	CRenderNodel*			m_pParent;
-	MAP_RENDER_NODEL		m_mapChildObj;
+	CRenderNode*			m_pParent;
+	LIST_RENDER_NODE		m_mapChildObj;
 	std::string				m_strName;
 	std::string				m_strBindingBoneName;
 	int						m_nBindingBoneID;
