@@ -2,15 +2,15 @@
 #include "ModelData.h"
 #include "AnimMgr.h"
 #include "Particle.h"
-#include "RenderNodel.h"
+#include "RenderNode.h"
 
-class CModelObject: public CRenderNodel
+class CModelObject: public CRenderNode
 {
 public:
 	CModelObject();
 	~CModelObject();
 public:
-	virtual int		getType			() {return NODEL_MODEL;}
+	virtual int		getType			() {return NODE_MODEL;}
 	void			SkinAnim		();	// ¶¯»­¸üÐÂ
 	virtual void	frameMove		(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void	animate			(float fElapsedTime);
