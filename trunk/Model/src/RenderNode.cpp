@@ -1,7 +1,7 @@
-#include "RenderNodel.h"
+#include "RenderNode.h"
 #include <algorithm>
 
-CRenderNodel::CRenderNodel()
+CRenderNode::CRenderNode()
 :m_pParent(NULL)
 ,m_nBindingBoneID(-1)
 ,m_vPos(0.0f,0.0f,0.0f)
@@ -11,36 +11,36 @@ CRenderNodel::CRenderNodel()
 	m_mWorldMatrix.unit();
 }
 
-CRenderNodel::~CRenderNodel()
+CRenderNode::~CRenderNode()
 {
 	clearChild();
 }
 
-void CRenderNodel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
+void CRenderNode::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
-	for (MAP_RENDER_NODEL::iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		(*it)->frameMove(mWorld, fTime, fElapsedTime);
 	}
 }
 
-void CRenderNodel::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
+void CRenderNode::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		(*it)->render(mWorld, eRenderType);
 	}
 }
 
-void CRenderNodel::addChild(CRenderNodel* pChild)
+void CRenderNode::addChild(CRenderNode* pChild)
 {
 	pChild->setParent(this);
 	m_mapChildObj.push_back(pChild);
 }
 
-CRenderNodel* CRenderNodel::getChild(const char* szName)
+CRenderNode* CRenderNode::getChild(const char* szName)
 {
-	for (MAP_RENDER_NODEL::iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		if (m_strName == szName)
 		{
@@ -50,9 +50,9 @@ CRenderNodel* CRenderNodel::getChild(const char* szName)
 	return NULL;
 }
 
-const CRenderNodel* CRenderNodel::getChild(const char* szName)const
+const CRenderNode* CRenderNode::getChild(const char* szName)const
 {
-	for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		if (m_strName == szName)
 		{
@@ -62,9 +62,9 @@ const CRenderNodel* CRenderNodel::getChild(const char* szName)const
 	return NULL;
 }
 
-bool CRenderNodel::removeChild(CRenderNodel* pChild)
+bool CRenderNode::removeChild(CRenderNode* pChild)
 {
-	MAP_RENDER_NODEL::iterator it = std::find(m_mapChildObj.begin(),m_mapChildObj.end(),pChild);
+	LIST_RENDER_NODE::iterator it = std::find(m_mapChildObj.begin(),m_mapChildObj.end(),pChild);
 	// ----
 	if (it != m_mapChildObj.end())
 	{
@@ -74,25 +74,32 @@ bool CRenderNodel::removeChild(CRenderNodel* pChild)
 	return false;
 }
 
-void CRenderNodel::delChild(CRenderNodel* pChild)
+bool CRenderNode::delChild(CRenderNode* pChild)
 {
 	if (removeChild(pChild))
 	{
 		delete pChild;
+		return true;
 	}
+	return false;
 }
 
-void CRenderNodel::clearChild()
+void CRenderNode::clearChild()
 {
-	for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	for (LIST_RENDER_NODE::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 		delete (*it);
 	// ----
+	removeAllChild();
+}
+
+void CRenderNode::removeAllChild()
+{
 	m_mapChildObj.clear();
 }
 
-void CRenderNodel::setChildBindingBone(const char* szName, const char* szBoneName)
+void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName)
 {
-	CRenderNodel* pRenderNodel = getChild(szName);
+	CRenderNode* pRenderNodel = getChild(szName);
 	// ----
 	if (pRenderNodel)
 	{
@@ -100,7 +107,7 @@ void CRenderNodel::setChildBindingBone(const char* szName, const char* szBoneNam
 	}
 }
 
-void CRenderNodel::updateWorldMatrix()
+void CRenderNode::updateWorldMatrix()
 {
 	Matrix mTrans;
 	Matrix mRotate;

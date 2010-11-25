@@ -12,7 +12,7 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 	//Setup(m_AnimMgr.uFrame);
 	Setup(fTime);
 	// ----
-	if (m_pParent&&m_pParent->getType()==NODEL_MODEL)
+	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
 		CModelObject* pModel = (CModelObject*)m_pParent;
 		const Matrix& matBone = pModel->m_setBonesMatrix[m_pEmitter->m_nBoneID];
@@ -22,7 +22,7 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 	// ----
 	m_pEmitter->update(mNewWorld,*this,fElapsedTime);
 	// ----
-	CRenderNodel::frameMove(mWorld,fTime,fElapsedTime);
+	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
 
 void CParticleGroup::Init(CParticleEmitter* pEmitter)

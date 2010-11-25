@@ -95,7 +95,7 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 		}
 		else
 		{
-			for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+			for (LIST_RENDER_NODE::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 			{
 				//const CModelData* pModelData = it->second->getModelData();
 				//if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))

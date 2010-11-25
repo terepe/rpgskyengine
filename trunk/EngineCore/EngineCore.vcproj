@@ -157,6 +157,14 @@
 			Name="Scene"
 			>
 			<File
+				RelativePath=".\src\Scene\FocusNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\FocusNode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\InterfaceScene.h"
 				>
 			</File>

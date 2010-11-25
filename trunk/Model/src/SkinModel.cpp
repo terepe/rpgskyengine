@@ -4,7 +4,7 @@ void CSkinModel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTim
 {
 	//animate(fElapsedTime);
 	// ----
-	if (m_pParent&&m_pParent->getType()==NODEL_MODEL)
+	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
 		CModelObject* pModel = (CModelObject*)m_pParent;
 		// ----
@@ -17,5 +17,5 @@ void CSkinModel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTim
 		}
 	}
 	// ----
-	CRenderNodel::frameMove(mWorld,fTime,fElapsedTime);
+	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
