@@ -133,7 +133,7 @@ bool CModelObject::load(const char* szFilename)
 //		return;
 //	}
 //	// ----
-//	MAP_RENDER_NODEL::iterator it = m_mapChildObj.find(szName);
+//	LIST_RENDER_NODEL::iterator it = m_mapChildObj.find(szName);
 //	if (it != m_mapChildObj.end())
 //	{
 //// 		if (it->second.pChildObj->getModelFilename()==szFilename)
@@ -287,7 +287,7 @@ void CModelObject::frameMove(const Matrix& mWorld, double fTime, float fElapsedT
 {
 	animate(fElapsedTime);
 	// ----
-	CRenderNodel::frameMove(mWorld,fTime,fElapsedTime);
+	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
 
 void CModelObject::animate(float fElapsedTime)
@@ -402,7 +402,7 @@ void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTy
 	// ----
 	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
-	if (m_pParent&&m_pParent->getType()==NODEL_MODEL)
+	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
 		CModelObject* pModel = (CModelObject*)m_pParent;
 		// ----
@@ -423,7 +423,7 @@ void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTy
 		m_pModelData->renderMesh(eRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 	}
 	// ----
-	CRenderNodel::render(mWorld, eRenderType);
+	CRenderNode::render(mWorld, eRenderType);
 }
 
 
@@ -434,7 +434,7 @@ void CModelObject::drawSkeleton(CTextRender* pTextRender)const
 		m_pModelData->m_Skeleton.render(m_setBonesMatrix, pTextRender);
 	}
 	// ----
-	for (MAP_RENDER_NODEL::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	for (LIST_RENDER_NODE::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
 	{
 		//it->second.pChildObj->drawSkeleton(pTextRender);
 	}

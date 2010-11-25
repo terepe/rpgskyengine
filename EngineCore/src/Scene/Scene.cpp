@@ -9,14 +9,15 @@ m_bShowObjectBBox(false),
 m_Fog(32.0f,48.0f,0.01f,0xFF223344),
 m_Light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec3D(-1.0f,-1.0f,-1.0f))
 {
-	m_bNeedUpdate = true;
+	m_bRefreshViewport = true;
 	m_pTerrain = NULL;
 }
 
 CScene::~CScene()
 {
-	removeAllObjects();
+	clearChild();
 }
+
 static Vec3D vEyeForObjectSort;
 bool sortObject(CMapObj* p1, CMapObj* p2)
 {
@@ -41,20 +42,6 @@ void CScene::GetRenderObject(const CFrustum& frustum, DEQUE_MAPOBJ& ObjectList)
 	{
 		vEyeForObjectSort= frustum.getEyePoint();
 		std::sort(ObjectList.begin(),ObjectList.end(), sortObject);
-
-		//f
-		//if ((*it)->GetObjType()==MAP_3DOBJ)
-		//{
-		//	C3DMapSceneObj* p3DMapSceneObj = (C3DMapSceneObj*)(*it);
-		//	if (!m_bShowAnimObject&&p3DMapSceneObj->isSkinMesh())
-		//	{
-		//		continue;
-		//	}
-		//	if (!m_bShowStaticObject&&!p3DMapSceneObj->isSkinMesh())
-		//	{
-		//		continue;
-		//	}
-		//}
 	}
 }
 
@@ -63,11 +50,11 @@ bool CScene::updateMapObj(CMapObj* pMapObj)
 	return m_ObjectTree.updateObject(pMapObj);
 }
 
-void CScene::OnFrameMove(double fTime, float fElapsedTime)
+void CScene::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
 	//m_ObjectTree.process(); µÝ¹éËÙ¶ÈÌ«ÂýÁË
 	m_setLightObj.clear();
-	for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin(); it != m_setRenderSceneObj.end(); ++it)
+	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		//if (!(*it)->isCreated())
 		//{
@@ -85,7 +72,7 @@ void CScene::OnFrameMove(double fTime, float fElapsedTime)
 
 void CScene::UpdateRender(const CFrustum& frustum)
 {
-	if (!m_bNeedUpdate)
+	if (!m_bRefreshViewport)
 	{
 		static CFrustum s_frustum;
 		if (s_frustum==frustum)
@@ -94,7 +81,7 @@ void CScene::UpdateRender(const CFrustum& frustum)
 		}
 		s_frustum=frustum;
 	}
-	m_bNeedUpdate = false;
+	m_bRefreshViewport = false;
 	if (m_pTerrain)
 	{
 		m_pTerrain->UpdateRender(frustum);
@@ -108,7 +95,7 @@ void CScene::UpdateRender(const CFrustum& frustum)
 }
 
 #include "Graphics.h"
-void CScene::OnFrameRender(double fTime, float fElapsedTime)
+void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
 	CRenderSystem& R = GetRenderSystem();
 	//R.setFogEnable(true);
@@ -117,13 +104,13 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 	if (m_bShowObjectBBox)
 	{
 		R.SetDepthBufferFunc(true,true);
-		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-			it != m_setRenderSceneObj.end(); ++it)
+		// ----
+		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->renderDebug();
 		}
 	}
-	if (m_setFocusObjects.size()>0)
+	//if (m_setFocusObjects.size()>0)
 	{
 // 		for(size_t i=0;i<m_setFocusObjects.size();++i)
 // 		{
@@ -155,8 +142,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			if(R.prepareMaterial("LightDecal"))
 			{
 				R.SetBlendFunc(true,BLENDOP_ADD,SBF_DEST_COLOUR,SBF_ONE);
-				for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
-					itLight != m_setLightObj.end(); ++itLight)
+				// ----
+				FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 				{
 					const Vec3D& vLightPos = (*itLight)->getPos();
 					m_pTerrain->drawLightDecal(vLightPos.x,vLightPos.z,3.0f,0xFFFFFFFF);
@@ -177,8 +164,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		R.SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TEXTURE);
 
 		R.SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
-		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-			it != m_setRenderSceneObj.end(); ++it)
+		// ----
+		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
 				CMapObj* pObj = (*it);
@@ -189,8 +176,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						C3DMapObj* p3DObj = (C3DMapObj*)pObj;
 						float fHeight = getTerrainData()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
 						p3DObj->renderShadow(Matrix::UNIT,vLightDir,fHeight);
-						for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
-							itLight != m_setLightObj.end(); ++itLight)
+						// ----
+						FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 						{
 							Vec3D vDir = (*it)->getPos()-(*itLight)->getPos();
 							if (vDir.length()<3.0f)
@@ -208,12 +195,10 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 				return;
 			}
 		}
+		// ----
 		R.SetStencilFunc(false);
-
-
-		//
-		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-			it != m_setRenderSceneObj.end(); ++it)
+		// ----
+		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
 				CMapObj* pObj = (*it);
@@ -236,8 +221,8 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 						DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
 						R.SetDirectionalLight(0,light);
 					}
-					for (DEQUE_MAPOBJ::iterator itLight = m_setLightObj.begin();
-						itLight != m_setLightObj.end(); ++itLight)
+					// ----
+					FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 					{
 						if (((*itLight)->getPos()-(*it)->getPos()).length()<3.0f)
 						{
@@ -256,16 +241,16 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 			}
 		}
 		//
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
 		{
-			m_setFocusObjects[i]->renderFocus();
+			((C3DMapObj*)*it)->renderFocus();
 		}
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
+		FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
 		{
 			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
 				Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
 			R.SetDirectionalLight(0,light);
-			m_setFocusObjects[i]->render(Matrix::UNIT,MATERIAL_GEOMETRY);
+			(*it)->render(Matrix::UNIT,MATERIAL_GEOMETRY);
 		}
 		//
 		if (m_pTerrain)
@@ -281,23 +266,16 @@ void CScene::OnFrameRender(double fTime, float fElapsedTime)
 		fogForGlow.fEnd = m_Fog.fEnd*2.0f;
 		R.setFog(fogForGlow);
 		//
-		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-			it != m_setRenderSceneObj.end(); ++it)
+		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->render(Matrix::UNIT,MATERIAL_ALPHA);
 		}
 		R.setWorldMatrix(Matrix::UNIT);
-		for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-			it != m_setRenderSceneObj.end(); ++it)
+		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->render(Matrix::UNIT,MATERIAL_GLOW);
 		}
 	}
-}
-
-void CScene::clearObjectResources()
-{
-	m_ObjectInfo.clear();
 }
 
 void CScene::setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)
@@ -314,36 +292,40 @@ void CScene::createObjectTree(const BBox& box, size_t size)
 	m_ObjectTree.create(box,size);
 }
 
-void CScene::addChild(CRenderNodel* pChild)
+void CScene::addChild(CRenderNode* pChild)
 {
-	CRenderNodel::addChild(pChild);
+	CRenderNode::addChild(pChild);
 	// ----
 	if (m_ObjectTree.addObject(pChild))
 	{
-		m_bNeedUpdate = true;
+		m_bRefreshViewport = true;
 	}
 	else
 	{
-		delete pObj;
+		delete pChild;
 		//MessageBoxA(NULL,strBmdFilename.c_str(),"Error!exclude!",0);
 	}
 }
 
-void CScene::removeChild(CMapObj* pChild)
+bool CScene::removeChild(CMapObj* pChild)
 {
-	CRenderNodel::removeChild(pChild);
+	if (!CRenderNode::removeChild(pChild))
+	{
+		return false;
+	}
 	// ----
 	m_ObjectTree.eraseObject(pChild);
 	// ----
 	removeRenderObj(pChild);
 	// ----
-	delFocusObject(pObj);
+	m_FocusNodel.removeChild(pChild);
+	return true;
 }
 
 bool CScene::removeRenderObj(CMapObj* pObj)
 {
 	// del from render
-	DEQUE_MAPOBJ::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
+	LIST_RENDER_NODE::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
 	if(it!=m_setRenderSceneObj.end())
 	{
 		m_setRenderSceneObj.erase(it);
@@ -356,11 +338,13 @@ C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, boo
 {
 	if (!pszIndex)
 		return NULL;
-
+	// ----
 	C3DMapEffect* pEffect = C3DMapEffect::CreateNew( vWorldPos, pszIndex, bDelSelf);
-
+	// ----
 	if(pEffect)
-		addMapObj(pEffect);
+	{
+		addChild(pEffect);
+	}
 	return pEffect;
 }
 
@@ -368,7 +352,7 @@ void CScene::del3DMapEffect(const Vec3D& vWorldPos)
 {
 	DEQUE_MAPOBJ setObject;
 	m_ObjectTree.getObjectsByPos(vWorldPos,setObject);
-	for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
+	FOR_IN(DEQUE_MAPOBJ,it,setObject)
 	{
 		if((*it) && ((*it)->GetObjType() == MAP_3DEFFECT || (*it)->GetObjType() == MAP_3DEFFECTNEW))
 		{
@@ -420,149 +404,23 @@ CMapObj* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRo
 	return NULL;
 }
 
-bool CScene::findFocusObject(CMapObj* pObject)
+bool CScene::delChildByFocus()
 {
-	DEQUE_MAPOBJ::iterator it = std::find( m_setFocusObjects.begin( ), m_setFocusObjects.end( ), pObject );
-	if(it!=m_setFocusObjects.end())
+	const LIST_RENDER_NODE& focusChild = m_FocusNodel.getChildObj();
+	// ----
+	FOR_IN(LIST_RENDER_NODE,it,focusChild)
 	{
-		return true;
-	}
-	return false;
-}
-
-void CScene::addFocusObject(CMapObj* pObject)
-{
-	if (pObject==NULL)
-	{
-		return;
-	}
-	if(findFocusObject(pObject)==false)
-	{
-		m_setFocusObjects.push_back(pObject);
-	}
-}
-
-bool CScene::delFocusObject(CMapObj* pObject)
-{
-	DEQUE_MAPOBJ::iterator it = std::find( m_setFocusObjects.begin( ), m_setFocusObjects.end( ), pObject );
-	if(it!=m_setFocusObjects.end())
-	{
-		m_setFocusObjects.erase(it);
-		return true;
-	}
-	return false;
-}
-
-void CScene::clearFocusObjects()
-{
-	m_setFocusObjects.clear();
-}
-
-bool CScene::delMapObjsByFocusObjects()
-{
-	std::deque<CMapObj*> setFocusObjects=m_setFocusObjects;
-	for(size_t i=0;i<setFocusObjects.size();++i)
-	{
-		delMapObj(setFocusObjects[i]);
+		delChild(*it);
 	}
 	return true;
 }
 
-std::deque<CMapObj*>& CScene::getFocusObjects()
+bool CScene::updateObjTreeByFocus()
 {
-	return m_setFocusObjects;
-}
-
-Vec3D CScene::getFocusObjectsPos()
-{
-	Vec3D vPos(0.0f,0.0f,0.0f);
-	for(size_t i=0;i<m_setFocusObjects.size();++i)
+	LIST_RENDER_NODE& focusChild = m_FocusNodel.getChildObj();
+	FOR_IN(LIST_RENDER_NODE,it,focusChild)
 	{
-		vPos+=m_setFocusObjects[i]->getPos();
-	}
-	vPos/=(float)m_setFocusObjects.size();
-	return vPos;
-}
-
-void CScene::setFocusObjectsPos(const Vec3D& vPos)
-{
-	Vec3D vMidPos = getFocusObjectsPos();
-	for(size_t i=0;i<m_setFocusObjects.size();++i)
-	{
-		Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
-		vObjectPos+=vPos-vMidPos;
-		m_setFocusObjects[i]->setPos(vObjectPos);
-		updateMapObj(m_setFocusObjects[i]);
-	}
-}
-
-Vec3D CScene::getFocusObjectsRotate()
-{
-	if(m_setFocusObjects.size()==1)
-	{
-		return m_setFocusObjects[0]->getRotate();
-	}
-	return Vec3D(0.0f,0.0f,0.0f);
-}
-
-void CScene::setFocusObjectsRotate(const Vec3D& vRotate)
-{
-	if(m_setFocusObjects.size()==1)
-	{
-		m_setFocusObjects[0]->setRotate(vRotate);
-		updateMapObj(m_setFocusObjects[0]);
-	}
-	else
-	{
-		Vec3D vMidPos = getFocusObjectsPos();
-		//Vec3D vMidPos = getFocusObjectsRotate();
-		Matrix mRotate;
-		mRotate.rotate(vRotate);
-		for(size_t i=0;i<m_setFocusObjects.size();++i)
-		{
-			{
-				Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
-				vObjectPos = vMidPos+mRotate*(vObjectPos-vMidPos);
-				m_setFocusObjects[i]->setPos(vObjectPos);
-			}
-			{
-				Vec3D vObjectRotate = m_setFocusObjects[i]->getRotate();
-				vObjectRotate += vRotate;
-				m_setFocusObjects[i]->setRotate(vObjectRotate);
-			}
-			updateMapObj(m_setFocusObjects[i]);
-		}
-	}
-}
-
-Vec3D CScene::getFocusObjectsScale()
-{
-	Vec3D vScale(0.0f,0.0f,0.0f);
-	for(size_t i=0;i<m_setFocusObjects.size();++i)
-	{
-		vScale+=m_setFocusObjects[i]->getScale();
-	}
-	vScale/=(float)m_setFocusObjects.size();
-	return vScale;
-}
-
-void CScene::setFocusObjectsScale(const Vec3D& vScale)
-{
-	Vec3D vMidPos = getFocusObjectsPos();
-	Vec3D vMidScale = getFocusObjectsScale();
-	for(size_t i=0;i<m_setFocusObjects.size();++i)
-	{
-		{
-			Vec3D vObjectPos = m_setFocusObjects[i]->getPos();
-			vObjectPos = vMidPos-(vMidPos-vObjectPos)*vScale/vMidScale;
-			m_setFocusObjects[i]->setPos(vObjectPos);
-		}
-		{
-			Vec3D vObjectScale = m_setFocusObjects[i]->getScale();
-			vObjectScale*=vScale/vMidScale;
-			m_setFocusObjects[i]->setScale(vObjectScale);
-		}
-		updateMapObj(m_setFocusObjects[i]);
+		updateMapObj(*it);
 	}
 }
 
@@ -573,8 +431,7 @@ CMapObj* CScene::pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir)
 {
 	CMapObj* pObject = NULL;
 	float fFocusMin = FLT_MAX;
-	for (DEQUE_MAPOBJ::iterator it = m_setRenderSceneObj.begin();
-		it != m_setRenderSceneObj.end(); ++it)
+	FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 	{
 		float fMin, fMax;
 		if ((*it)->intersect(vRayPos , vRayDir, fMin, fMax))
@@ -589,17 +446,15 @@ CMapObj* CScene::pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir)
 	return pObject;
 }
 
-void CScene::removeAllObjects()
+void CScene::clearChild()
 {
-	clearFocusObjects();
-	m_bNeedUpdate = true;
-	m_setRenderSceneObj.clear();
+	CRenderNode::clearChild();
 	m_ObjectTree.clearObjects();
-}
-
-void CScene::getAllObjects(DEQUE_MAPOBJ&  setObject)
-{
-	m_ObjectTree.getObjects(setObject);
+	m_setRenderSceneObj.clear();
+	// ----
+	m_FocusNodel.removeAllChild();
+	// ----
+	m_bRefreshViewport = true;
 }
 
 #include "LightMap.h"
@@ -608,14 +463,4 @@ void CScene::CalcLightMap()
 	CLightMap lightMap;
 	lightMap.SetScene(this);
 	lightMap.CalcLightMap();
-}
-
-void CScene::setFog(const Fog& fog)
-{
-	m_Fog = fog;
-}
-
-void CScene::setLight(const DirectionalLight& light)
-{
-	m_Light = light;
 }
