@@ -21,11 +21,10 @@ const BBox& ObjectTree::getBBox()const
 
 void ObjectTree::clearObjects()
 {
-	for (DEQUE_MAPOBJ::iterator it = m_setObjet.begin();
-		it != m_setObjet.end(); ++it)
-	{
-		(*it)->release();
-	}
+// 	FOR_IN(LIST_RENDER_NODE, it, m_setObjet)
+// 	{
+// 		(*it)->release();
+// 	}
 	m_setObjet.clear();
 	if (pChild)
 	{
@@ -62,7 +61,7 @@ void ObjectTree::clearObjects()
 //		{
 //			bboxObject=m_setObjet[0]->GetBBox();
 //		}
-//		for (std::vector<CMapObj*>::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
+//		for (std::vector<CRenderNode*>::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
 //		{
 //			BBox box = (*it)->GetBBox();
 //			bboxObject+=box;
@@ -70,9 +69,9 @@ void ObjectTree::clearObjects()
 //	}
 //}
 
-void ObjectTree::getObjectsByBBox(const BBox& box,const std::vector<CMapObj*>& setSrcObject, std::vector<CMapObj*>& setDestObject)
+void ObjectTree::getObjectsByBBox(const BBox& box,const std::vector<CRenderNode*>& setSrcObject, std::vector<CRenderNode*>& setDestObject)
 {
-	for (std::vector<CMapObj*>::const_iterator it=setSrcObject.begin();it!=setSrcObject.end();it++)
+	CONST_FOR_IN(std::vector<CRenderNode*>, it, setSrcObject)
 	{
 		if (box.crossVertex((*it)->getPos()))
 		{
@@ -108,7 +107,7 @@ void ObjectTree::getObjectsByBBox(const BBox& box,const std::vector<CMapObj*>& s
 //	}
 //}
 
-void ObjectTree::getObjects(DEQUE_MAPOBJ& setObject)
+void ObjectTree::getObjects(LIST_RENDER_NODE& setObject)
 {
 	setObject.insert(setObject.end(), m_setObjet.begin(), m_setObjet.end());
 	for (size_t i=0;i<8;++i)
@@ -117,9 +116,9 @@ void ObjectTree::getObjects(DEQUE_MAPOBJ& setObject)
 			pChild[i].getObjects(setObject);
 	}
 }
-void ObjectTree::getObjectsByPos(Vec3D vPos, DEQUE_MAPOBJ& setObject)
+void ObjectTree::getObjectsByPos(Vec3D vPos, LIST_RENDER_NODE& setObject)
 {
-	for (DEQUE_MAPOBJ::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
+	FOR_IN(LIST_RENDER_NODE, it, m_setObjet)
 	{
 		if ((*it)->getPos()==vPos)
 		{
@@ -135,12 +134,12 @@ void ObjectTree::getObjectsByPos(Vec3D vPos, DEQUE_MAPOBJ& setObject)
 	}
 }
 
-void ObjectTree::getObjectsByCell(Pos2D posCell, DEQUE_MAPOBJ& setObject)
+void ObjectTree::getObjectsByCell(Pos2D posCell, LIST_RENDER_NODE& setObject)
 {
-	for (DEQUE_MAPOBJ::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
+	FOR_IN(LIST_RENDER_NODE, it, m_setObjet)
 	{
-		Pos2D posMyCell=(*it)->getCellPos();
-		if (posMyCell==posCell)
+		if ((*it)->getPos().x ==posCell.x&&
+			(*it)->getPos().z ==posCell.y)
 		{
 			setObject.push_back(*it);
 		}
@@ -154,7 +153,7 @@ void ObjectTree::getObjectsByCell(Pos2D posCell, DEQUE_MAPOBJ& setObject)
 	}
 }
 
-void ObjectTree::getObjectsByFrustum(const CFrustum& frustum, DEQUE_MAPOBJ& setObject)
+void ObjectTree::getObjectsByFrustum(const CFrustum& frustum, LIST_RENDER_NODE& setObject)
 {
 	CrossRet crossRet = frustum.CheckAABBVisible(bbox);
 	if (cross_include == crossRet)
@@ -163,9 +162,9 @@ void ObjectTree::getObjectsByFrustum(const CFrustum& frustum, DEQUE_MAPOBJ& setO
 	}
 	else if (cross_cross == crossRet)
 	{
-		for (DEQUE_MAPOBJ::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
+		FOR_IN(LIST_RENDER_NODE, it, m_setObjet)
 		{
-			CrossRet crossRet = frustum.CheckAABBVisible((*it)->getBBox());
+			CrossRet crossRet = frustum.CheckAABBVisible((*it)->getWorldBBox());
 			if (cross_exclude != crossRet)
 			{
 				setObject.push_back((*it));
@@ -202,9 +201,9 @@ ObjectTree* ObjectTree::getNodeByAABB(const BBox& box)
 	return NULL;
 }
 
-bool ObjectTree::addObject(CMapObj* pObject)
+bool ObjectTree::addObject(CRenderNode* pObject)
 {
-	ObjectTree* pNode = getNodeByAABB(pObject->getBBox());
+	ObjectTree* pNode = getNodeByAABB(pObject->getWorldBBox());
 	if (pNode)
 	{
 		pNode->m_setObjet.push_back(pObject);
@@ -213,19 +212,19 @@ bool ObjectTree::addObject(CMapObj* pObject)
 	return false;
 }
 
-bool ObjectTree::delObject(CMapObj* pObject)
-{
-	if(eraseObject(pObject))
-	{
-		pObject->release();	// del self
-		return true;
-	}
-	return false;
-}
+// bool ObjectTree::delObject(CRenderNode* pObject)
+// {
+// 	if(eraseObject(pObject))
+// 	{
+// 		pObject->release();	// del self
+// 		return true;
+// 	}
+// 	return false;
+// }
 
-bool ObjectTree::eraseObject(CMapObj* pObject)
+bool ObjectTree::eraseObject(CRenderNode* pObject)
 {
-	DEQUE_MAPOBJ::iterator it = std::find( m_setObjet.begin( ), m_setObjet.end( ), pObject );
+	LIST_RENDER_NODE::iterator it = std::find( m_setObjet.begin( ), m_setObjet.end( ), pObject );
 	if(it!=m_setObjet.end())
 	{
 		m_setObjet.erase(it);
@@ -244,7 +243,7 @@ bool ObjectTree::eraseObject(CMapObj* pObject)
 	return false;
 }
 
-bool ObjectTree::updateObject(CMapObj* pObject)
+bool ObjectTree::updateObject(CRenderNode* pObject)
 {
 	if(eraseObject(pObject))
 	{
@@ -254,9 +253,9 @@ bool ObjectTree::updateObject(CMapObj* pObject)
 	return false;
 }
 
-ObjectTree* ObjectTree::find(CMapObj* pObject)
+ObjectTree* ObjectTree::find(CRenderNode* pObject)
 {
-	DEQUE_MAPOBJ::iterator it = std::find( m_setObjet.begin( ), m_setObjet.end( ), pObject );
+	LIST_RENDER_NODE::iterator it = std::find( m_setObjet.begin( ), m_setObjet.end( ), pObject );
 	if(it!=m_setObjet.end())
 	{
 		return this;
@@ -332,7 +331,7 @@ void ObjectTree::create(const BBox& box, size_t size)
 
 void ObjectTree::process()
 {
-	for (DEQUE_MAPOBJ::iterator it=m_setObjet.begin();it!=m_setObjet.end();it++)
+	FOR_IN(LIST_RENDER_NODE, it, m_setObjet)
 	{
 		//(*it)->Process(NULL);
 	}

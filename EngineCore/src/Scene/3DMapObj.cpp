@@ -44,25 +44,6 @@ Matrix C3DMapObj::getShadowMatrix(const Vec3D& vLight,float fHeight)const
 	return mInvertLight*mTransLight*mLight*mTrans*mRotate*mScale;
 }
 
-BBox C3DMapObj::getBBox()const
-{
-	BBox bbox=CModelObject::getBBox();
-	Matrix mRotate;
-	mRotate.rotate(getRotate());
-
-	Vec3D vHalfExtents = (bbox.vMax-bbox.vMin)*0.5f*getScale();
-	Vec3D vCenter = (bbox.vMax+bbox.vMin)*0.5f*getScale();
-	vCenter=mRotate*vCenter+getPos();
-
-	Vec3D vExtent;
-	vExtent.x = Vec3D(abs(mRotate._11),abs(mRotate._12),abs(mRotate._13)).dot(vHalfExtents);
-	vExtent.y = Vec3D(abs(mRotate._21),abs(mRotate._22),abs(mRotate._23)).dot(vHalfExtents);
-	vExtent.z = Vec3D(abs(mRotate._31),abs(mRotate._32),abs(mRotate._33)).dot(vHalfExtents);
-
-	bbox.vMin = vCenter - vExtent;
-	bbox.vMax = vCenter + vExtent;
-	return bbox;
-}
 
 void C3DMapObj::renderShadow(const Matrix& mWorld, const Vec3D& vLight,float fHeight)const
 {

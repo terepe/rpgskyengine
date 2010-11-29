@@ -34,7 +34,7 @@ bool sortObject(CMapObj* p1, CMapObj* p2)
 //	return p1->getModelFilename()>p2->getModelFilename();
 }
 
-void CScene::GetRenderObject(const CFrustum& frustum, DEQUE_MAPOBJ& ObjectList)
+void CScene::GetRenderObject(const CFrustum& frustum, LIST_RENDER_NODE& ObjectList)
 {
 	m_ObjectTree.getObjectsByFrustum(frustum,ObjectList);
 	static bool bTest = true;
@@ -105,7 +105,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 	{
 		R.SetDepthBufferFunc(true,true);
 		// ----
-		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->renderDebug();
 		}
@@ -143,7 +143,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 			{
 				R.SetBlendFunc(true,BLENDOP_ADD,SBF_DEST_COLOUR,SBF_ONE);
 				// ----
-				FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
+				CONST_FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 				{
 					const Vec3D& vLightPos = (*itLight)->getPos();
 					m_pTerrain->drawLightDecal(vLightPos.x,vLightPos.z,3.0f,0xFFFFFFFF);
@@ -165,7 +165,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 
 		R.SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
 		// ----
-		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
 				CMapObj* pObj = (*it);
@@ -198,7 +198,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		// ----
 		R.SetStencilFunc(false);
 		// ----
-		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
 				CMapObj* pObj = (*it);
@@ -266,12 +266,11 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		fogForGlow.fEnd = m_Fog.fEnd*2.0f;
 		R.setFog(fogForGlow);
 		//
-		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->render(Matrix::UNIT,MATERIAL_ALPHA);
 		}
-		R.setWorldMatrix(Matrix::UNIT);
-		FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			(*it)->render(Matrix::UNIT,MATERIAL_GLOW);
 		}
@@ -307,7 +306,7 @@ void CScene::addChild(CRenderNode* pChild)
 	}
 }
 
-bool CScene::removeChild(CMapObj* pChild)
+bool CScene::removeChild(CRenderNode* pChild)
 {
 	if (!CRenderNode::removeChild(pChild))
 	{
@@ -350,9 +349,9 @@ C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, boo
 
 void CScene::del3DMapEffect(const Vec3D& vWorldPos)
 {
-	DEQUE_MAPOBJ setObject;
+	LIST_RENDER_NODE setObject;
 	m_ObjectTree.getObjectsByPos(vWorldPos,setObject);
-	FOR_IN(DEQUE_MAPOBJ,it,setObject)
+	FOR_IN(LIST_RENDER_NODE,it,setObject)
 	{
 		if((*it) && ((*it)->GetObjType() == MAP_3DEFFECT || (*it)->GetObjType() == MAP_3DEFFECTNEW))
 		{

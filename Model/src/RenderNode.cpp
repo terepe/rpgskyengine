@@ -86,7 +86,7 @@ bool CRenderNode::delChild(CRenderNode* pChild)
 
 void CRenderNode::clearChild()
 {
-	for (LIST_RENDER_NODE::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
+	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 		delete (*it);
 	// ----
 	removeAllChild();
@@ -116,4 +116,23 @@ void CRenderNode::updateWorldMatrix()
 	mRotate.rotate(getRotate());
 	mScale.scale(getScale());
 	m_mWorldMatrix = mTrans*mRotate*mScale;
+}
+
+void CRenderNode::updateWorldBBox()
+{
+	//BBox bbox=CModelObject::getBBox();
+	Matrix mRotate;
+	mRotate.rotate(getRotate());
+
+	Vec3D vHalfExtents	= (m_WorldBBox.vMax-m_WorldBBox.vMin)*0.5f*getScale();
+	Vec3D vCenter		= (m_WorldBBox.vMax+m_WorldBBox.vMin)*0.5f*getScale();
+	vCenter				= mRotate*vCenter+getPos();
+
+	Vec3D vExtent;
+	vExtent.x			= Vec3D(abs(mRotate._11),abs(mRotate._12),abs(mRotate._13)).dot(vHalfExtents);
+	vExtent.y			= Vec3D(abs(mRotate._21),abs(mRotate._22),abs(mRotate._23)).dot(vHalfExtents);
+	vExtent.z			= Vec3D(abs(mRotate._31),abs(mRotate._32),abs(mRotate._33)).dot(vHalfExtents);
+
+	m_WorldBBox.vMin	= vCenter - vExtent;
+	m_WorldBBox.vMax	= vCenter + vExtent;
 }
