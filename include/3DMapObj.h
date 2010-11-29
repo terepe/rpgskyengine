@@ -16,7 +16,6 @@ public:
 	virtual bool	IsFocus			(){return false;}
 
 	virtual Matrix	getShadowMatrix	(const Vec3D& vLight,float fHeight)const;
-	virtual BBox	getBBox			()const;
 	virtual void	renderShadow	(const Matrix& mWorld, const Vec3D& vLight,float fHeight)const;
 	virtual void	renderFocus		()const;
 	virtual void	renderDebug		()const;
