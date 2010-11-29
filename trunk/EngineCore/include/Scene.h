@@ -25,7 +25,7 @@ public:
 public:
 	virtual void		GetRenderObject			(const CFrustum& frustum, LIST_RENDER_NODE& ObjectList);
 	void				UpdateRender			(const CFrustum& frustum);
-	bool				updateMapObj			(CMapObj* pMapObj);
+	bool				updateMapObj			(CRenderNode* pMapObj);
 	// ----
 	virtual void		frameMove				(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void		render					(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
@@ -38,18 +38,18 @@ public:
 	virtual void		clearObjectResources	(){m_ObjectInfo.clear();}
 	virtual void		setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void		createObjectTree		(const BBox& box, size_t size);
-	bool				removeRenderObj			(CMapObj* pObj);
+	bool				removeRenderObj			(CRenderNode* pObj);
 
 	C3DMapEffect*		add3DMapEffect			(const Vec3D& vWorldPos, char* pszIndex, bool bDelself = true);
 	void				del3DMapEffect			(const Vec3D& vWorldPos);
 	void				del3DMapEffect			(C3DMapEffect* pEffect);
 
-	virtual CMapObj*	add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
+	virtual CRenderNode*add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	// ----
 	// # Focus Objects
 	// ----
 	bool				delChildByFocus			();
-	bool				updateObjTreeByFocus	();
+	void				updateObjTreeByFocus	();
 	CFocusNode&			getFocusObjects			(){return m_FocusNodel;}
 	// ----
 	CMapObj*			pickObject				(const Vec3D& vRayPos , const Vec3D& vRayDir);

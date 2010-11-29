@@ -19,13 +19,15 @@ CScene::~CScene()
 }
 
 static Vec3D vEyeForObjectSort;
-bool sortObject(CMapObj* p1, CMapObj* p2)
+bool sortObject(CRenderNode* p1, CRenderNode* p2)
 {
-	if (p1->getOrder()!=p2->getOrder())
+	CMapObj* p11 = (CMapObj*)p1;
+	CMapObj* p22 = (CMapObj*)p2;
+	if (p11->getOrder()!=p22->getOrder())
 	{
-		return p1->getOrder()>p2->getOrder();
+		return p11->getOrder()>p22->getOrder();
 	}
-	return p1>p2;
+	return p11>p22;
 //	//float fLength = (vEyeForObjectSort-p1->getPos()).lengthSquared()-(vEyeForObjectSort-p2->getPos()).lengthSquared();
 //	//if (fLength!=0)
 //	//{
@@ -41,11 +43,11 @@ void CScene::GetRenderObject(const CFrustum& frustum, LIST_RENDER_NODE& ObjectLi
 	if (bTest)
 	{
 		vEyeForObjectSort= frustum.getEyePoint();
-		std::sort(ObjectList.begin(),ObjectList.end(), sortObject);
+		//std::sort(ObjectList.begin(),ObjectList.end(), sortObject);
 	}
 }
 
-bool CScene::updateMapObj(CMapObj* pMapObj)
+bool CScene::updateMapObj(CRenderNode* pMapObj)
 {
 	return m_ObjectTree.updateObject(pMapObj);
 }
@@ -107,7 +109,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		// ----
 		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
-			(*it)->renderDebug();
+		//	(*it)->renderDebug();
 		}
 	}
 	//if (m_setFocusObjects.size()>0)
@@ -168,7 +170,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
-				CMapObj* pObj = (*it);
+				CMapObj* pObj = (CMapObj*)(*it);
 				if(pObj)
 				{
 					//if(pObj->GetObjType() == MAP_3DOBJ)
@@ -177,7 +179,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 						float fHeight = getTerrainData()->GetHeight(p3DObj->getPos().x,p3DObj->getPos().z);
 						p3DObj->renderShadow(Matrix::UNIT,vLightDir,fHeight);
 						// ----
-						FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
+						CONST_FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 						{
 							Vec3D vDir = (*it)->getPos()-(*itLight)->getPos();
 							if (vDir.length()<3.0f)
@@ -201,7 +203,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 		{
 			try {
-				CMapObj* pObj = (*it);
+				CMapObj* pObj = (CMapObj*)(*it);
 				if(pObj)
 				{
 					if(pObj->GetObjType() != MAP_ROLE &&
@@ -222,7 +224,7 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 						R.SetDirectionalLight(0,light);
 					}
 					// ----
-					FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
+					CONST_FOR_IN(LIST_RENDER_NODE,itLight,m_setLightObj)
 					{
 						if (((*itLight)->getPos()-(*it)->getPos()).length()<3.0f)
 						{
@@ -241,11 +243,11 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 			}
 		}
 		//
-		FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
 		{
 			((C3DMapObj*)*it)->renderFocus();
 		}
-		FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
+		CONST_FOR_IN(LIST_RENDER_NODE,it,m_FocusNodel.getChildObj())
 		{
 			DirectionalLight light(Vec4D(0.4f,0.4f,0.4f,0.4f),Vec4D(1.0f,1.0f,1.0f,1.0f),
 				Vec4D(0.6f,0.6f,0.6f,0.6f),vLightDir);
@@ -321,7 +323,7 @@ bool CScene::removeChild(CRenderNode* pChild)
 	return true;
 }
 
-bool CScene::removeRenderObj(CMapObj* pObj)
+bool CScene::removeRenderObj(CRenderNode* pObj)
 {
 	// del from render
 	LIST_RENDER_NODE::iterator it = find( m_setRenderSceneObj.begin( ), m_setRenderSceneObj.end( ), pObj );
@@ -349,19 +351,19 @@ C3DMapEffect* CScene::add3DMapEffect(const Vec3D& vWorldPos, char* pszIndex, boo
 
 void CScene::del3DMapEffect(const Vec3D& vWorldPos)
 {
-	LIST_RENDER_NODE setObject;
-	m_ObjectTree.getObjectsByPos(vWorldPos,setObject);
-	FOR_IN(LIST_RENDER_NODE,it,setObject)
-	{
-		if((*it) && ((*it)->GetObjType() == MAP_3DEFFECT || (*it)->GetObjType() == MAP_3DEFFECTNEW))
-		{
-			if (m_ObjectTree.delObject(*it))
-			{
-				C3DMapEffect* pEffect = (C3DMapEffect*)(*it);
-				S_DEL(pEffect);
-			}
-		}
-	}
+// 	LIST_RENDER_NODE setObject;
+// 	m_ObjectTree.getObjectsByPos(vWorldPos,setObject);
+// 	FOR_IN(LIST_RENDER_NODE,it,setObject)
+// 	{
+// 		if((*it) && ((*it)->GetObjType() == MAP_3DEFFECT || (*it)->GetObjType() == MAP_3DEFFECTNEW))
+// 		{
+// 			if (m_ObjectTree.delObject(*it))
+// 			{
+// 				C3DMapEffect* pEffect = (C3DMapEffect*)(*it);
+// 				S_DEL(pEffect);
+// 			}
+// 		}
+// 	}
 }
 
 void CScene::del3DMapEffect(C3DMapEffect* pEffect)
@@ -375,31 +377,31 @@ void CScene::del3DMapEffect(C3DMapEffect* pEffect)
 	}
 }
 
-CMapObj* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
+CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
-	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
-	{
-		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
-		// ----
-		C3DMapSceneObj* pObject = new C3DMapSceneObj;
-		pObject->Register(objectInfo.strFilename.c_str());
-		pObject->setPos(vPos);
-		pObject->setRotate(vRotate);
-		pObject->setScale(vScale);
-		// ----
-		pObject->setObjectID(uID);
-		// ----
-		char szNameID[255];
-		sprintf(szNameID,"%d",uID);
-		pObject->setName(szNameID);
-		// ----
-		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
-		//vColor.w=1.0f;
-		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
-		// ----
-		addChild(pObject);
-		return pObject;
-	}
+// 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
+// 	{
+// 		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
+// 		// ----
+// 		C3DMapSceneObj* pObject = new C3DMapSceneObj;
+// 		pObject->Register(objectInfo.strFilename.c_str());
+// 		pObject->setPos(vPos);
+// 		pObject->setRotate(vRotate);
+// 		pObject->setScale(vScale);
+// 		// ----
+// 		pObject->setObjectID(uID);
+// 		// ----
+// 		char szNameID[255];
+// 		sprintf(szNameID,"%d",uID);
+// 		pObject->setName(szNameID);
+// 		// ----
+// 		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
+// 		//vColor.w=1.0f;
+// 		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
+// 		// ----
+// 		addChild(pObject);
+// 		return pObject;
+// 	}
 	return NULL;
 }
 
@@ -407,14 +409,14 @@ bool CScene::delChildByFocus()
 {
 	const LIST_RENDER_NODE& focusChild = m_FocusNodel.getChildObj();
 	// ----
-	FOR_IN(LIST_RENDER_NODE,it,focusChild)
+	CONST_FOR_IN(LIST_RENDER_NODE,it,focusChild)
 	{
 		delChild(*it);
 	}
 	return true;
 }
 
-bool CScene::updateObjTreeByFocus()
+void CScene::updateObjTreeByFocus()
 {
 	LIST_RENDER_NODE& focusChild = m_FocusNodel.getChildObj();
 	FOR_IN(LIST_RENDER_NODE,it,focusChild)
@@ -433,11 +435,11 @@ CMapObj* CScene::pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir)
 	FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
 	{
 		float fMin, fMax;
-		if ((*it)->intersect(vRayPos , vRayDir, fMin, fMax))
+		if (((CMapObj*)(*it))->intersect(vRayPos , vRayDir, fMin, fMax))
 		{
 			if (fFocusMin>fMin)
 			{
-				pObject = *it;
+				pObject = (CMapObj*)*it;
 				fFocusMin=fMax;
 			}
 		}
