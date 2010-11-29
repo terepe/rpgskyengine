@@ -23,7 +23,7 @@ public:
 	CScene();
 	~CScene();
 public:
-	virtual void		GetRenderObject			(const CFrustum& frustum, DEQUE_MAPOBJ& ObjectList);
+	virtual void		GetRenderObject			(const CFrustum& frustum, LIST_RENDER_NODE& ObjectList);
 	void				UpdateRender			(const CFrustum& frustum);
 	bool				updateMapObj			(CMapObj* pMapObj);
 	// ----
