@@ -7,6 +7,7 @@
 
 class CFocusNode: public CRenderNode
 {
+public:
 	virtual	int			getType				() {return NODE_BASE;}
 	Vec3D				getCenterPos		();
 	void				setCenterPos		(const Vec3D& vPos);
@@ -14,4 +15,7 @@ class CFocusNode: public CRenderNode
 	void				setCenterRotate		(const Vec3D& vRotate);
 	Vec3D				getCenterScale		();
 	void				setCenterScale		(const Vec3D& vScale);
+	void				transformCenter		(const Vec3D& vPos);
+	void				rotateCenter		(const Vec3D& vRotate);
+	void				scaleCenter			(const Vec3D& vScale);
 };
