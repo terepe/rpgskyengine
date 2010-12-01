@@ -232,19 +232,17 @@ public:
 class iScene
 {
 public:
-	virtual iTerrainData* getTerrainData()=0;
-	virtual const iTerrainData*	getTerrainData()const=0;
-	virtual void clearObjectResources()=0;
-	virtual void setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
-	virtual void createObjectTree(const BBox& box, size_t size)=0;
-	virtual CRenderNode* add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
-	virtual void removeAllObjects()=0;
-	virtual void getAllObjects(DEQUE_MAPOBJ&  setObject)=0;
+	virtual iTerrainData*			getTerrainData			()=0;
+	virtual const iTerrainData*		getTerrainData			()const=0;
+	virtual void					clearObjectResources	()=0;
+	virtual void					setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
+	virtual void					createObjectTree		(const BBox& box, size_t size)=0;
+	virtual CRenderNode*			add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
 
-	virtual void setFog(const Fog& fog)=0;
-	virtual const Fog& getFog()=0;
-	virtual void setLight(const DirectionalLight& light)=0;
-	virtual const DirectionalLight& getLight()=0;
+	virtual void					setFog					(const Fog& fog)=0;
+	virtual const Fog&				getFog					()const=0;
+	virtual void					setLight				(const DirectionalLight& light)=0;
+	virtual const DirectionalLight&	getLight				()const=0;
 };
 
 //////////////////////////////////////////////////////////////////////////

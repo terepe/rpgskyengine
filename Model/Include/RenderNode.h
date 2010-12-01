@@ -8,12 +8,12 @@
 //----
 // # Helper macros to build member functions that access member variables
 //----
-#define SET_VARIABLE(x,y,z)				inline void set##y(x t)	{ z = t; };
-#define GET_VARIABLE(x,y,z)				inline x get##y()		{ return z; };
+#define SET_VARIABLE(x,y,z)				void set##y(x t)	{ z = t; };
+#define GET_VARIABLE(x,y,z)				x get##y()		{ return z; };
 #define GET_SET_VARIABLE(x,y,z)			SET_VARIABLE(x,z,y##z) GET_VARIABLE(x,z,y##z)
 //----
-#define CONST_SET_VARIABLE(x,y,z)		inline void set##y(const x t)	{ z = t; };
-#define CONST_GET_VARIABLE(x,y,z)		inline const x get##y()const	{ return z; };
+#define CONST_SET_VARIABLE(x,y,z)		void set##y(const x t)	{ z = t; };
+#define CONST_GET_VARIABLE(x,y,z)		const x get##y()const	{ return z; };
 #define CONST_GET_SET_VARIABLE(x,y,z)	CONST_SET_VARIABLE(x,z,y##z) CONST_GET_VARIABLE(x,z,y##z)
 //----
 #define GET_SET_VARIABLE_STRING(y)		CONST_SET_VARIABLE(char*,y,m_str##y) CONST_GET_VARIABLE(char*,y,m_str##y.c_str())

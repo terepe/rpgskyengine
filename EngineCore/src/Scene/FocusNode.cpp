@@ -91,3 +91,22 @@ void CFocusNode::setCenterScale(const Vec3D& vScale)
 		//updateMapObj((*it));
 	}
 }
+
+void CFocusNode::transformCenter(const Vec3D& vPos)
+{
+	Vec3D vNewPos=getCenterPos();
+	vNewPos+=vNewPos;
+	setCenterPos(vNewPos);
+}
+
+void CFocusNode::rotateCenter(const Vec3D& vRotate)
+{
+	Vec3D vNewRotate=getCenterRotate();
+	vNewRotate+=vRotate;
+	setCenterRotate(vNewRotate);
+}
+
+void CFocusNode::scaleCenter(const Vec3D& vScale)
+{
+
+}
