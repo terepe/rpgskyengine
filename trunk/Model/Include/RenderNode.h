@@ -26,6 +26,12 @@ class CRenderNode;
 typedef std::list<CRenderNode*>		LIST_RENDER_NODE;
 //----
 
+template<class T>
+class CNode
+{
+
+};
+
 class CRenderNode
 {
 public:
@@ -53,6 +59,7 @@ public:
 	virtual void			addChild			(CRenderNode* pChild);
 	virtual bool			removeChild			(CRenderNode* pChild);
 	virtual bool			delChild			(CRenderNode* pChild);
+	virtual bool			contain				(const CRenderNode* pChild)const;
 	virtual void			clearChild			();
 	virtual void			removeAllChild		();
 	//----
