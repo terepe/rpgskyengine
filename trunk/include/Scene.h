@@ -33,19 +33,25 @@ public:
 	// ----
 	virtual void		addChild				(CRenderNode* pChild);
 	virtual bool		removeChild				(CRenderNode* pChild);
-	virtual void		clearChild				();
+	virtual void		clearChildren				();
 	// ----
 	// load
 	virtual void		clearObjectResources	(){m_ObjectInfo.clear();}
 	virtual void		setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void		createObjectTree		(const BBox& box, size_t size);
 	bool				removeRenderObj			(CRenderNode* pObj);
-
+	// ----
+	// # shit
+	// ----
 	C3DMapEffect*		add3DMapEffect			(const Vec3D& vWorldPos, char* pszIndex, bool bDelself = true);
 	void				del3DMapEffect			(const Vec3D& vWorldPos);
 	void				del3DMapEffect			(C3DMapEffect* pEffect);
-
+	// ----
+	// # shit
+	// ----
 	virtual CRenderNode*add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
+	virtual	void		clearAllObjects			();
+	virtual	void		getAllObjects			();
 	// ----
 	// # Focus Objects
 	// ----

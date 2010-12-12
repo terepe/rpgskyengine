@@ -33,7 +33,7 @@ public:
 	void			Animate			(const char* szAnimName);
 	void			CalcBones		(const char* szAnim, int time);
 
-	bool			isCreated		();
+	bool			isCreated		(){return m_bCreated;}
 	void			create			();
 
 	int				getModelDataID	()const;

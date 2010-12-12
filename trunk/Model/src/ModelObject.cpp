@@ -27,11 +27,6 @@ CModelObject::~CModelObject()
 	S_DEL(m_pVB);
 }
 
-bool CModelObject::isCreated()
-{
-	return m_bCreated;
-}
-
 void CModelObject::create()
 {
 	if (NULL==m_pModelData)
@@ -285,6 +280,14 @@ void CModelObject::Animate(const char* szAnimName)
 
 void CModelObject::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
+	// ----
+	// # Dynamic loading
+	// ----
+	if (!isCreated())
+	{
+		create();
+	}
+	// ----
 	animate(fElapsedTime);
 	// ----
 	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);

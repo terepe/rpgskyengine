@@ -15,7 +15,7 @@ m_Light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.
 
 CScene::~CScene()
 {
-	clearChild();
+	clearChildren();
 }
 
 static Vec3D vEyeForObjectSort;
@@ -377,32 +377,50 @@ void CScene::del3DMapEffect(C3DMapEffect* pEffect)
 	}
 }
 
+void CScene::clearAllObjects()
+{
+
+}
+
+void CScene::getAllObjects()
+{
+
+}
+
 CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
-// 	if (m_ObjectInfo.find(uID)!=m_ObjectInfo.end())
-// 	{
-// 		const ObjectInfo& objectInfo = m_ObjectInfo[uID];
-// 		// ----
-// 		C3DMapSceneObj* pObject = new C3DMapSceneObj;
-// 		pObject->Register(objectInfo.strFilename.c_str());
-// 		pObject->setPos(vPos);
-// 		pObject->setRotate(vRotate);
-// 		pObject->setScale(vScale);
-// 		// ----
-// 		pObject->setObjectID(uID);
-// 		// ----
-// 		char szNameID[255];
-// 		sprintf(szNameID,"%d",uID);
-// 		pObject->setName(szNameID);
-// 		// ----
-// 		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
-// 		//vColor.w=1.0f;
-// 		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
-// 		// ----
-// 		addChild(pObject);
-// 		return pObject;
-// 	}
-	return NULL;
+ 	if (m_ObjectInfo.find(uID)==m_ObjectInfo.end())
+ 	{
+		return NULL;
+	}
+	// ----
+	const ObjectInfo& objectInfo = m_ObjectInfo[uID];
+	// ----
+	BBox localBBox;
+	localBBox.vMin.set(-1,-1,-1);
+	localBBox.vMax.set( 1, 1, 1);
+	// ----
+	C3DMapSceneObj* pObject = new C3DMapSceneObj;
+	pObject->Register(objectInfo.strFilename.c_str());
+	pObject->setPos(vPos);
+	pObject->setRotate(vRotate);
+	pObject->setScale(vScale);
+	pObject->setLocalBBox(localBBox);
+	pObject->updateWorldMatrix();
+	pObject->updateWorldBBox();
+	// ----
+	pObject->setObjectID(uID);
+	// ----
+	char szNameID[255];
+	sprintf(szNameID,"%d",uID);
+	pObject->setName(szNameID);
+	// ----
+	// 		//Vec4D vColor = m_pTerrain->GetData().GetColor(Vec2D(vPos.x,vPos.z));
+	// 		//vColor.w=1.0f;
+	// 		//pObject->SetMaterial(vColor*0.5f,vColor+0.3f);
+	// ----
+	addChild(pObject);
+	return pObject;
 }
 
 bool CScene::delChildByFocus()
@@ -447,13 +465,13 @@ CMapObj* CScene::pickObject(const Vec3D& vRayPos , const Vec3D& vRayDir)
 	return pObject;
 }
 
-void CScene::clearChild()
+void CScene::clearChildren()
 {
-	CRenderNode::clearChild();
+	CRenderNode::clearChildren();
 	m_ObjectTree.clearObjects();
 	m_setRenderSceneObj.clear();
 	// ----
-	m_FocusNodel.removeAllChild();
+	m_FocusNodel.removeChildren();
 	// ----
 	m_bRefreshViewport = true;
 }

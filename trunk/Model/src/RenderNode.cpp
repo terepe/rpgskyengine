@@ -4,16 +4,12 @@
 CRenderNode::CRenderNode()
 :m_pParent(NULL)
 ,m_nBindingBoneID(-1)
-,m_vPos(0.0f,0.0f,0.0f)
-,m_vRotate(0.0f,0.0f,0.0f)
-,m_vScale(1.0f,1.0f,1.0f)
 {
-	m_mWorldMatrix.unit();
 }
 
 CRenderNode::~CRenderNode()
 {
-	clearChild();
+	clearChildren();
 }
 
 void CRenderNode::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
@@ -94,15 +90,15 @@ bool CRenderNode::contain(const CRenderNode* pChild)const
 	return false;
 }
 
-void CRenderNode::clearChild()
+void CRenderNode::clearChildren()
 {
 	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 		delete (*it);
 	// ----
-	removeAllChild();
+	removeChildren();
 }
 
-void CRenderNode::removeAllChild()
+void CRenderNode::removeChildren()
 {
 	m_mapChildObj.clear();
 }
@@ -117,7 +113,7 @@ void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName
 	}
 }
 
-void CRenderNode::updateWorldMatrix()
+void CObjectPosition::updateWorldMatrix()
 {
 	Matrix mTrans;
 	Matrix mRotate;
@@ -128,9 +124,9 @@ void CRenderNode::updateWorldMatrix()
 	m_mWorldMatrix = mTrans*mRotate*mScale;
 }
 
-void CRenderNode::updateWorldBBox()
+void CObjectPosition::updateWorldBBox()
 {
-	//BBox bbox=CModelObject::getBBox();
+	m_WorldBBox = m_LocalBBox;
 	Matrix mRotate;
 	mRotate.rotate(getRotate());
 
