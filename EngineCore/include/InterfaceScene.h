@@ -237,8 +237,13 @@ public:
 	virtual void					clearObjectResources	()=0;
 	virtual void					setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void					createObjectTree		(const BBox& box, size_t size)=0;
+	// ----
+	// # shit
+	// ----
 	virtual CRenderNode*			add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
-
+	virtual	void					clearAllObjects			()=0;
+	virtual	void					getAllObjects			()=0;
+	// ----
 	virtual void					setFog					(const Fog& fog)=0;
 	virtual const Fog&				getFog					()const=0;
 	virtual void					setLight				(const DirectionalLight& light)=0;
