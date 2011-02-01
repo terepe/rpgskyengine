@@ -164,7 +164,8 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 		R.SetTextureFactor(0x80808080);
 		R.SetTextureColorOP(0,TBOP_SOURCE1,TBS_TFACTOR);
 		R.SetTextureAlphaOP(0,TBOP_SOURCE1,TBS_TEXTURE);
-
+		R.SetTextureColorOP(1,TBOP_DISABLE);
+		R.SetTextureAlphaOP(1,TBOP_DISABLE);
 		R.SetStencilFunc(true,STENCILOP_INCR,CMPF_GREATER);
 		// ----
 		CONST_FOR_IN(LIST_RENDER_NODE,it,m_setRenderSceneObj)
