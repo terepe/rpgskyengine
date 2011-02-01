@@ -290,7 +290,27 @@ void CModelObject::frameMove(const Matrix& mWorld, double fTime, float fElapsedT
 	// ----
 	animate(fElapsedTime);
 	// ----
-	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
+	Matrix mNewWorld = mWorld*m_mWorldMatrix;
+	// ----
+	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
+	{
+		CModelObject* pModel = (CModelObject*)m_pParent;
+		// ----
+		if (m_nBindingBoneID==-1)
+		{
+			m_nBindingBoneID = pModel->m_pModelData->m_Skeleton.getBoneIDByName(m_strBindingBoneName.c_str());
+		}
+		// ----
+		if (m_nBindingBoneID!=-1)
+		{
+			Matrix mBoneLocal = pModel->m_pModelData->m_Skeleton.m_Bones[m_nBindingBoneID].mInvLocal;
+			mBoneLocal.Invert();
+			Matrix mBone = pModel->m_setBonesMatrix[m_nBindingBoneID]*mBoneLocal;
+			mNewWorld *= mBone;
+		}
+	}
+	// ----
+	CRenderNode::frameMove(mNewWorld,fTime,fElapsedTime);
 }
 
 void CModelObject::animate(float fElapsedTime)
@@ -407,16 +427,20 @@ void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTy
 	// ----
 	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
-		CModelObject* pModel = (CModelObject*)m_pParent;
+		/*CModelObject* pModel = (CModelObject*)m_pParent;
 		// ----
-		int nBoneID = pModel->m_pModelData->m_Skeleton.getBoneIDByName(m_strBindingBoneName.c_str());
-		if (nBoneID!=-1)
+		if (m_nBindingBoneID==-1)
 		{
-			Matrix mBoneLocal = pModel->m_pModelData->m_Skeleton.m_Bones[nBoneID].mInvLocal;
-			mBoneLocal.Invert();
-			Matrix mBone = pModel->m_setBonesMatrix[nBoneID]*mBoneLocal;
-			mNewWorld *= mBone;
+			m_nBindingBoneID = pModel->m_pModelData->m_Skeleton.getBoneIDByName(m_strBindingBoneName.c_str());
 		}
+		// ----
+		if (m_nBindingBoneID!=-1)
+		{
+			Matrix mBoneLocal = pModel->m_pModelData->m_Skeleton.m_Bones[m_nBindingBoneID].mInvLocal;
+			mBoneLocal.Invert();
+			Matrix mBone = pModel->m_setBonesMatrix[m_nBindingBoneID]*mBoneLocal;
+			mNewWorld *= mBone;
+		}*/
 	}
 	// ----
 	GetRenderSystem().setWorldMatrix(mNewWorld);
@@ -426,7 +450,7 @@ void CModelObject::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTy
 		m_pModelData->renderMesh(eRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
 	}
 	// ----
-	CRenderNode::render(mWorld, eRenderType);
+	CRenderNode::render(mNewWorld, eRenderType);
 }
 
 

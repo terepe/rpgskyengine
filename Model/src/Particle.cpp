@@ -17,7 +17,7 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 		CModelObject* pModel = (CModelObject*)m_pParent;
 		const Matrix& matBone = pModel->m_setBonesMatrix[m_pEmitter->m_nBoneID];
 		// ----
-		mNewWorld = matBone;
+		mNewWorld = matBone*mNewWorld;
 	}
 	// ----
 	m_pEmitter->update(mNewWorld,*this,fElapsedTime);
@@ -28,6 +28,7 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 void CParticleGroup::Init(CParticleEmitter* pEmitter)
 {
 	m_pEmitter = pEmitter;
+	m_nBindingBoneID = m_pEmitter->m_nBoneID;
 }
 
 void CParticleGroup::update(float fElapsedTime)
@@ -252,6 +253,8 @@ void CParticleGroup::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRender
 		return;
 	}
 	CRenderSystem& R = GetRenderSystem();
+	// ----
+	R.setWorldMatrix(Matrix::UNIT);
 	// ----
 	CMaterial& material = R.getMaterialMgr().getItem(m_pEmitter->m_strMaterialName.c_str());
 	if (!(material.getRenderType()&eRenderType))
