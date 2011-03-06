@@ -33,9 +33,10 @@ void CModelObject::create()
 	{
 		return;
 	}
-	if (!m_pModelData->isLoaded())
+	if (!m_pModelData->getLoaded())
 	{
-		if (m_pModelData->LoadFile(m_strModelFilename))
+		m_pModelData->setItemName(m_strModelFilename);
+ 		if (CModelDataMgr::getInstance().loadModel(*m_pModelData,m_strModelFilename))
 		{
 			m_pModelData->Init();
 		}
@@ -43,6 +44,7 @@ void CModelObject::create()
 		{
 			//S_DEL(m_pModelData);
 		}
+		m_pModelData->setLoaded(true);
 	}
 	{
 		CLodMesh& mesh = m_pModelData->m_Mesh;
@@ -101,7 +103,7 @@ CModelData* CModelObject::getModelData()const
 void CModelObject::Register(const char* szFilename)
 {
 	m_nModelID = CModelDataMgr::getInstance().RegisterModel(szFilename);
-	m_pModelData = CModelDataMgr::getInstance().GetModel(m_nModelID);
+	m_pModelData = CModelDataMgr::getInstance().getItem(m_nModelID);
 	m_strModelFilename = szFilename;
 }
 

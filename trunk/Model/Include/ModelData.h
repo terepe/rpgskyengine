@@ -110,7 +110,9 @@ public:
 	CModelData();
 	~CModelData();
 public:
-	virtual const std::string& getItemName(){return m_strModelFilename;}
+	virtual CONST_GET_SET_VARIABLE	(std::string&,		m_str,ItemName);
+	virtual CONST_GET_SET_VARIABLE	(bool,				m_b,Loaded);
+	virtual CONST_GET_SET_VARIABLE	(int,				m_n,Order);
 	
 	virtual size_t getRenderPassCount();
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
@@ -124,40 +126,33 @@ public:
 	virtual	iLodMesh& getMesh(){return m_Mesh;}
 	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
 
-	virtual bool LoadFile(const std::string& strFilename);
 	virtual bool saveMaterial(const std::string& strFilename);
 	virtual bool initParticleMaterial();
 	virtual	bool loadParticleEmitters(const char* szFilename);
-	void InitSkins();
 	void Init();
-	int	GetOrder();
-	bool isLoaded();
 private:
 	bool passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const;
 	void passEnd()const;
 public:
 	void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
 public:
-	CLodMesh				m_Mesh;
- 	CBoundMesh				m_BoundMesh;	// 包围盒
+	CLodMesh								m_Mesh;
+ 	CBoundMesh								m_BoundMesh;			// 包围盒
 public: // 动画源
-	CSkeleton		m_Skeleton;						// 骨架
-	ModelCamera		m_Camera;
-	int				*globalSequences;
-	
-	std::vector<TexAnim>		m_TexAnims;				// 纹理动画源
-	std::vector<ColorAnim>		m_ColorAnims;			// 颜色动画源
-	std::vector<TransAnim>		m_TransAnims;			// 透明动画源
-	std::vector<LightAnim>		m_LightAnims;			// 灯光动画源
+	CSkeleton								m_Skeleton;				// 骨架
 
-	std::vector<CParticleEmitter>	m_setParticleEmitter;	// Particle Emitters
-	//std::vector<CRibbonEmitter>	ribbons;			// 条带源
+	std::vector<TexAnim>					m_TexAnims;				// 纹理动画源
+	std::vector<ColorAnim>					m_ColorAnims;			// 颜色动画源
+	std::vector<TransAnim>					m_TransAnims;			// 透明动画源
+	std::vector<LightAnim>					m_LightAnims;			// 灯光动画源
+
+	std::vector<CParticleEmitter>			m_setParticleEmitter;	// Particle Emitters
+	//std::vector<CRibbonEmitter>			ribbons;				// 条带源
 private:
-	std::map<std::string, ModelAnimation>	m_AnimList;	// 动画配表源
-	std::map<int,ModelRenderPass>m_mapPasses;				// 渲染过程集
-public:
-	int m_nOrder;
-	bool bLoaded;
+	std::map<std::string, ModelAnimation>	m_AnimList;				// 动画配表源
+	std::map<int,ModelRenderPass>			m_mapPasses;			// 渲染过程集
 private:
-	std::string m_strModelFilename;
+	std::string m_strItemName;
+	bool	m_bLoaded;
+	int		m_nOrder;
 };

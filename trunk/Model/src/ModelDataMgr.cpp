@@ -13,11 +13,11 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 	{
 		return 0;
 	}
-	if(!IOReadBase::Exists(strFilename))// 检查文件是否存在
+	if(!IOReadBase::Exists(strFilename))// Check the filename
 	{
 		return 0;
 	}
-	if (find(strFilename))// 有一样的纹理在了 不用再创建了啦
+	if (find(strFilename))// Has the same model.
 	{
 		return addRef(strFilename);
 	}
@@ -25,11 +25,6 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 	CModelData* pModel = new CModelData();
 
 	return add(strFilename, pModel);
-}
-
-CModelData* CModelDataMgr::GetModel(unsigned long uModelID)
-{
-	return getItem(uModelID);
 }
 
 bool CModelDataMgr::loadModel(CModelData& modelData,const std::string& strFilename)
