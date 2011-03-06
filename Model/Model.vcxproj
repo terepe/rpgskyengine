@@ -89,7 +89,6 @@
     <ClInclude Include="include\LodMesh.h" />
     <ClInclude Include="Include\ModelData.h" />
     <ClInclude Include="Include\ModelDataMgr.h" />
-    <ClInclude Include="include\Modelheaders.h" />
     <ClInclude Include="include\ModelObject.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\ParticleEmitter.h" />

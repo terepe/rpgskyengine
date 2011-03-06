@@ -208,7 +208,7 @@ public:
 class iModelData
 {
 public:
-	virtual const std::string& getItemName()=0;
+	virtual const std::string& getItemName()const=0;
 
 	virtual size_t getRenderPassCount()=0;
 	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
