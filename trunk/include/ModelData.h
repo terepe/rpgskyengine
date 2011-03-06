@@ -1,6 +1,5 @@
 #pragma once
 #include "Manager.h"
-#include "Modelheaders.h"
 #include "Animated.h"
 #include "ParticleEmitter.h"
 #include "Vec4D.h"
@@ -57,19 +56,6 @@ struct LightAnim
 	Animated<Vec3D> diffColor, ambColor;
 	Animated<float> diffIntensity, ambIntensity;
 	void setup(int time, int l);
-};
-
-
-
-struct ModelAttachment
-{
-	int id;
-	Vec3D pos;
-	int bone;
-	CModelData *model;
-
-	void setup();
-	void setupParticle();
 };
 
 
@@ -169,10 +155,6 @@ public: // 动画源
 private:
 	std::map<std::string, ModelAnimation>	m_AnimList;	// 动画配表源
 	std::map<int,ModelRenderPass>m_mapPasses;				// 渲染过程集
-public:
-	std::vector<ModelAttachment> atts;
-	int attLookup[40];
-	int boneLookup[27];
 public:
 	int m_nOrder;
 	bool bLoaded;
