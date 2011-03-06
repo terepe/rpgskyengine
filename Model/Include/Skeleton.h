@@ -1,5 +1,4 @@
 #pragma once
-#include "modelheaders.h"
 #include "InterfaceModel.h"
 
 class CTextRender;

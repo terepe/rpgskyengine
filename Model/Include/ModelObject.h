@@ -59,11 +59,7 @@ protected:	// Attribute.
 	bool							m_bLightmap;
 	bool							m_bCreated;
 protected:
-	//LightAnim		*lights;
-	//RibbonEmitter	*ribbons;
-	//void lightsOn(int lbase);
-	//void lightsOff(int lbase);
-	BBox m_BBox;
+	BBox							m_BBox;
 	std::string						m_strParentBoneName;
 public:
 	const std::string& getModelFilename(){return m_strModelFilename;}

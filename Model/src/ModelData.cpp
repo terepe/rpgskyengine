@@ -6,10 +6,6 @@
 CModelData::CModelData():
 bLoaded(false)
 {
-	for (int i=0; i<40; i++) 
-		attLookup[i] = -1;
-	for (int i=0; i<27; i++) 
-		boneLookup[i] = -1;
 	globalSequences = NULL;
 	m_nOrder=0;
 }
@@ -122,10 +118,6 @@ bool CModelData::LoadFile(const std::string& strFilename)
 // 	}
 // 
 // 	//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
-// 	// ÎÆÀíÍ¨µÀ
-// 	//std::vector<TexGroup>		m_TexChannels;
-// 	// Æ¤·ô
-// 	//std::vector<ModelSkin>		m_Skins;
 // 
 // 	// ColorAnim
 // 	int nColorAnimCount = 0;
@@ -318,14 +310,6 @@ bool CModelData::loadParticleEmitters(const char* szFilename)
 // // 	lumpFile.SetVal("BoxMin", m_bbox.vMin);
 // // 	lumpFile.SetVal("BoxMax", m_bbox.vMax);
 // 
-// 	//for (int i = 0; i < m_Lods.size(); i++)
-// 	{
-// 		//lumpFile.SetVal("TexChannels", m_Lods[0].Geosets.size()*sizeof(ModelRenderPass), &m_Lods[0].Passes[0]);
-// 
-// 		//std::vector<TexGroup>		m_TexChannels;
-// 		// Æ¤·ô
-// 		//std::vector<ModelSkin>		m_Skins;
-// 	}
 // 
 // 	// ColorAnim
 // 	CNodeData* pColorAnimsNode = lumpFile.SetInt("ColorAnim", m_ColorAnims.size());
@@ -521,22 +505,6 @@ void CModelData::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLod
 	}
 }
 
-//// Sets up the models attachments
-//void CObject::setupAtt(int id)
-//{
-//	int l = attLookup[id];
-//	if (l>-1)
-//		atts[l].setup();
-//}
-//
-//// Sets up the models attachments
-//void CObject::setupAtt2(int id)
-//{
-//	int l = attLookup[id];
-//	if (l>=0)
-//		atts[l].setupParticle();
-//}
-
 void TexAnim::Calc(int nTime, Matrix& matrix)const
 {
 	Vec3D tval, rval, sval;
@@ -607,20 +575,4 @@ void LightAnim::setup(int time, int l)
 	//glLightfv(l, GL_DIFFUSE, diffcol);
 	//glLightfv(l, GL_AMBIENT, ambcol);
 	//glEnable(l);
-}
-
-void ModelAttachment::setup()
-{
-	//Matrix m = model->bones[bone].mat;
-	//m.transpose();
-	//glMultMatrixf(m);
-	//glTranslatef(pos.x, pos.y, pos.z);
-}
-
-void ModelAttachment::setupParticle()
-{
-	//Matrix m = model->bones[bone].mat;
-	//m.transpose();
-	//glMultMatrixf(m);
-	//glTranslatef(pos.x, pos.y, pos.z);
 }

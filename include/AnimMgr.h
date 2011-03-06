@@ -1,8 +1,5 @@
 #pragma once
-
 #include "animated.h"
-#include "modelheaders.h"
-
 
 // This will be our animation manager
 // instead of using a STL vector or list or table, etc.  
