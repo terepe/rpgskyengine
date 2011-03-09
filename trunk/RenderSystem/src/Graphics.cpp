@@ -238,13 +238,13 @@ void CGraphics::Line3DEnd()
 //////////////////////////////////////////////////////////////////////////
 void CGraphics::DrawLine(float x0, float y0, float x1, float y1, Color32 color)
 {
-	VERTEX_XYZW_DIF v[2]=
+	VERTEX_XYZ_DIF v[2]=
 	{
-		Vec4D(x0, y0, 0.5f, 1.0f), color,
-		Vec4D(x1, y1, 0.5f, 1.0f), color,
+		Vec3D(x0, y0, 0.0f), color,
+		Vec3D(x1, y1, 0.0f), color,
 	};
-	GetRenderSystem().SetFVF(VERTEX_XYZW_DIF::FVF);
-	GetRenderSystem().DrawPrimitiveUP(VROT_LINE_STRIP, 1, v, sizeof(VERTEX_XYZW_DIF));
+	GetRenderSystem().SetFVF(VERTEX_XYZ_DIF::FVF);
+	GetRenderSystem().DrawPrimitiveUP(VROT_LINE_STRIP, 1, v, sizeof(VERTEX_XYZ_DIF));
 }
 
 void CGraphics::DrawRect(float x0, float y0, float x1, float y1, Color32 color)
@@ -258,17 +258,17 @@ void CGraphics::DrawRect(float x0, float y0, float x1, float y1, Color32 color)
 		++y1;
 	else if(y0>y1)
 		++y0;
-	VERTEX_XYZW_DIF v[5]=
+	VERTEX_XYZ_DIF v[5]=
 	{
-		Vec4D(x0, y0, 0.5f, 1.0f), color,
-		Vec4D(x1, y0, 0.5f, 1.0f), color,
-		Vec4D(x1, y1, 0.5f, 1.0f), color,
-		Vec4D(x0, y1, 0.5f, 1.0f), color,
-		Vec4D(x0, y0, 0.5f, 1.0f), color,
+		Vec3D(x0, y0, 0.0f), color,
+		Vec3D(x1, y0, 0.0f), color,
+		Vec3D(x1, y1, 0.0f), color,
+		Vec3D(x0, y1, 0.0f), color,
+		Vec3D(x0, y0, 0.0f), color,
 	};
 	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZW_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZW_DIF));
+	R.SetFVF(VERTEX_XYZ_DIF::FVF);
+	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZ_DIF));
 }
 
 void CGraphics::DrawRect(const CRect<float>& rcDest, Color32 color)
@@ -287,16 +287,16 @@ void CGraphics::FillRect(float x0, float y0, float x1, float y1, Color32 color)
 		++y1;
 	else if(y0>y1)
 		++y0;*/
-	VERTEX_XYZW_DIF v[4]=
+	VERTEX_XYZ_DIF v[4]=
 	{
-		Vec4D(x0, y0, 0.5f, 1.0f), color,
-		Vec4D(x1, y0, 0.5f, 1.0f), color,
-		Vec4D(x1, y1, 0.5f, 1.0f), color,
-		Vec4D(x0, y1, 0.5f, 1.0f), color,
+		Vec3D(x0, y0, 0.0f), color,
+		Vec3D(x1, y0, 0.0f), color,
+		Vec3D(x1, y1, 0.0f), color,
+		Vec3D(x0, y1, 0.0f), color,
 	};
 	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZW_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZW_DIF));
+	R.SetFVF(VERTEX_XYZ_DIF::FVF);
+	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF));
 }
 
 void CGraphics::FillRect(float x0, float y0, float x1, float y1, Color32 color0, Color32 color1, Color32 color2, Color32 color3)
@@ -310,16 +310,16 @@ void CGraphics::FillRect(float x0, float y0, float x1, float y1, Color32 color0,
 		++y1;
 	else if(y0>y1)
 		++y0;*/
-	VERTEX_XYZW_DIF v[4]=
+	VERTEX_XYZ_DIF v[4]=
 	{
-		Vec4D(x0, y0, 0.5f, 1.0f), color0,
-		Vec4D(x1, y0, 0.5f, 1.0f), color1,
-		Vec4D(x1, y1, 0.5f, 1.0f), color2,
-		Vec4D(x0, y1, 0.5f, 1.0f), color3,
+		Vec3D(x0, y0, 0.0f), color0,
+		Vec3D(x1, y0, 0.0f), color1,
+		Vec3D(x1, y1, 0.0f), color2,
+		Vec3D(x0, y1, 0.0f), color3,
 	};
 	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZW_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZW_DIF));
+	R.SetFVF(VERTEX_XYZ_DIF::FVF);
+	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF));
 }
 
 void CGraphics::FillRect(const CRect<float>& rcDest, Color32 color)
@@ -341,15 +341,15 @@ void CGraphics::DrawQuad(const CRect<float>& rcSrc, const CRect<float>& rcDest, 
 	float v0 = (rcSrc.top+0.5f)	/ fHeight;
 	float u1 = (rcSrc.right)	/ fWidth;
 	float v1 = (rcSrc.bottom)	/ fHeight;
-	VERTEX_XYZW_DIF_TEX v[4]=
+	VERTEX_XYZ_DIF_TEX v[4]=
 	{
-		Vec4D( rcDest.left,		rcDest.top,		0.5f, 1.0f), color, Vec2D(u0, v0),
-		Vec4D( rcDest.right,	rcDest.top,		0.5f, 1.0f), color, Vec2D(u1, v0),
-		Vec4D( rcDest.right,	rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u1, v1),
-		Vec4D( rcDest.left,		rcDest.bottom,	0.5f, 1.0f), color, Vec2D(u0, v1),
+		Vec3D( rcDest.left,		rcDest.top,		0.0f), color, Vec2D(u0, v0),
+		Vec3D( rcDest.right,	rcDest.top,		0.0f), color, Vec2D(u1, v0),
+		Vec3D( rcDest.right,	rcDest.bottom,	0.0f), color, Vec2D(u1, v1),
+		Vec3D( rcDest.left,		rcDest.bottom,	0.0f), color, Vec2D(u0, v1),
 	};
-	R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZW_DIF_TEX));
+	R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
+	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
 }
 
 void CGraphics::DrawTex(float destX, float destY, int nTexID, Color32 color)
@@ -401,269 +401,6 @@ void CGraphics::DrawTex(const CRect<float>& rcSrc, float destX, float destY, int
 }
 
 void CGraphics::Draw3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
-{
-	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
-	if (pTex)
-	{
-		CRect<float> rcCenterDest(
-			rcDest.left + (rcCenterSrc.left - rcSrc.left),
-			rcDest.top + (rcCenterSrc.top - rcSrc.top),
-			rcDest.right + (rcCenterSrc.right - rcSrc.right),
-			rcDest.bottom + (rcCenterSrc.bottom - rcSrc.bottom));
-
-		if(rcCenterDest.left>rcCenterDest.right)
-		{
-			rcCenterDest.left=(rcDest.left+rcDest.right)*0.5f;
-			rcCenterDest.right=(rcDest.left+rcDest.right)*0.5f;
-		}
-		if(rcCenterDest.top>rcCenterDest.bottom)
-		{
-			rcCenterDest.top=(rcDest.top+rcDest.bottom)*0.5f;
-			rcCenterDest.bottom=(rcDest.top+rcDest.bottom)*0.5f;
-		}
-		VERTEX_XYZW_DIF_TEX vertex[4*4];
-		for (int i = 0; i<16; i++)
-		{
-			vertex[i].p.z = 0.5f;
-			vertex[i].p.w = 1.0f;
-			vertex[i].c = color;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		float X[4] =
-		{
-			rcDest.left,
-			rcCenterDest.left,
-			rcCenterDest.right,
-			rcDest.right,
-		};
-		float U[4] =
-		{
-			(rcSrc.left+0.5f)/pTex->GetWidth(),
-			(rcCenterSrc.left+0.5f)/pTex->GetWidth(),
-			(rcCenterSrc.right+0.5f)/pTex->GetWidth(),
-			(rcSrc.right+0.5f)/pTex->GetWidth(),
-		};
-		for (int i = 0; i<4; i++)
-		{
-			for (int n = 0; n < 4; n ++)
-			{
-				int index = i*4+n;
-				vertex[index].p.x = X[n];
-				vertex[index].t.x = U[n];
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		float Y[4] =
-		{
-			rcDest.top,
-			rcCenterDest.top,
-			rcCenterDest.bottom,
-			rcDest.bottom,
-		};
-		float V[4] =
-		{
-			(rcSrc.top+0.5f)/pTex->GetHeight(),
-			(rcCenterSrc.top+0.5f)/pTex->GetHeight(),
-			(rcCenterSrc.bottom+0.5f)/pTex->GetHeight(),
-			(rcSrc.bottom+0.5f)/pTex->GetHeight(),
-		};
-		for (int i = 0; i<4; i++)
-		{
-			for (int n = 0; n < 4; n ++)
-			{
-				int index = i+n*4;
-				vertex[index].p.y = Y[n];
-				vertex[index].t.y = V[n];
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		const static unsigned short index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
-									 1,1+1,1+5,		1,1+5,1+4,
-									 2,2+1,2+5,		2,2+5,2+4,
-									 4,4+1,4+5,		4,4+5,4+4,
-									 5,5+1,5+5,		5,5+5,5+4,
-									 6,6+1,6+5,		6,6+5,6+4,
-									 8,8+1,8+5,		8,8+5,8+4,
-									 9,9+1,9+5,		9,9+5,9+4,
-									 10,10+1,10+5,	10,10+5,10+4};
-
-		CRenderSystem& R = GetRenderSystem();
-		R.SetTexture(0, nTexID);
-		R.SetFVF(VERTEX_XYZW_DIF_TEX::FVF);
-		R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, 4*4, 3*3*2, index, vertex, sizeof(VERTEX_XYZW_DIF_TEX));
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 3D Graph
-//////////////////////////////////////////////////////////////////////////
-void CGraphics::DrawLine3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
-{
-	VERTEX_XYZ_DIF v[2];
-
-	v[0].p = v0;
-	v[1].p = v1;
-	v[0].c = color;
-	v[1].c = color;
-
-	CRenderSystem& R = GetRenderSystem();
-
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_LINE_STRIP, 1, v, sizeof(VERTEX_XYZ_DIF));
-}
-
-void CGraphics::drawCross3D(const Vec3D& vPos,float fLength, Color32 color)
-{
-	DrawLine3D(vPos+Vec3D(-fLength,0.0f,0.0f),vPos+Vec3D(fLength,0.0f,0.0f),color);
-	DrawLine3D(vPos+Vec3D(0.0f,-fLength,0.0f),vPos+Vec3D(0.0f,fLength,0.0f),color);
-	DrawLine3D(vPos+Vec3D(0.0f,0.0f,-fLength),vPos+Vec3D(0.0f,0.0f,fLength),color);
-}
-
-void CGraphics::drawQuad(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color)
-{
-	VERTEX_XYZ_DIF v[5];
-	v[0].p = v0;
-	v[1].p = v1;
-	v[2].p = v2;
-	v[3].p = v3;
-	v[4].p = v0;
-	v[0].c = color;
-	v[1].c = color;
-	v[2].c = color;
-	v[3].c = color;
-	v[4].c = color;
-
-	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZ_DIF));
-}
-
-void CGraphics::fillQuad(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color)
-{
-	VERTEX_XYZ_DIF_TEX v[4];
-	v[0].p = v0;
-	v[1].p = v1;
-	v[2].p = v2;
-	v[3].p = v3;
-	//
-	v[0].t.x = 0.0f;
-	v[0].t.y = 0.0f;
-	v[1].t.x = 1.0f;
-	v[1].t.y = 0.0f;
-	v[2].t.x = 1.0f;
-	v[2].t.y = 1.0f;
-	v[3].t.x = 0.0f;
-	v[3].t.y = 1.0f;
-
-	v[0].c = color;
-	v[1].c = color;
-	v[2].c = color;
-	v[3].c = color;
-	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
-}
-
-void CGraphics::DrawRect3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
-{
-	VERTEX_XYZ_DIF v[4];
-	v[0].p = v0;
-	v[1].p = Vec3D(v1.x, v0.y, v0.z);
-	v[2].p = v1;
-	v[3].p = Vec3D(v0.x, v1.y, v1.z);
-	v[4].p = v[0].p;
-	v[0].c = color;
-	v[1].c = color;
-	v[2].c = color;
-	v[3].c = color;
-	v[4].c = color;
-
-	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_LINE_STRIP, 4, v, sizeof(VERTEX_XYZ_DIF));
-}
-
-void CGraphics::FillRect3D(float x0, float y0, float x1, float y1, Color32 color)
-{
-	VERTEX_XYZ_DIF v[4]=
-	{
-		Vec3D(x0, y0, 0.0f), color,
-		Vec3D(x1, y0, 0.0f), color,
-		Vec3D(x1, y1, 0.0f), color,
-		Vec3D(x0, y1, 0.0f), color,
-	};
-	CRenderSystem& R = GetRenderSystem();
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF));
-}
-
-void CGraphics::drawBBox(const BBox& bbox, Color32 color)
-{
-	VERTEX_XYZ_DIF vtx[8] =
-	{
-		Vec3D(bbox.vMin.x, bbox.vMax.y, bbox.vMax.z), color,
-		Vec3D(bbox.vMax.x, bbox.vMax.y, bbox.vMax.z), color,
-		Vec3D(bbox.vMax.x, bbox.vMax.y, bbox.vMin.z), color,
-		Vec3D(bbox.vMin.x, bbox.vMax.y, bbox.vMin.z), color,
-		Vec3D(bbox.vMin.x, bbox.vMin.y, bbox.vMax.z), color,
-		Vec3D(bbox.vMax.x, bbox.vMin.y, bbox.vMax.z), color,
-		Vec3D(bbox.vMax.x, bbox.vMin.y, bbox.vMin.z), color,
-		Vec3D(bbox.vMin.x, bbox.vMin.y, bbox.vMin.z), color,
-	};
-
-	//Index3w		idx[12] = 
-	//{ 
-	//	//{ 0, 1, 2 }, { 0, 2, 3 },	/// 上方
-	//	//{ 4, 6, 5 }, { 4, 7, 6 },	/// 下方
-	//	//{ 0, 3, 7 }, { 0, 7, 4 },	/// 左方
-	//	//{ 1, 5, 6 }, { 1, 6, 2 },	/// 右方
-	//	//{ 3, 2, 6 }, { 3, 6, 7 },	/// 前方
-	//	//{ 0, 4, 5 }, { 0, 5, 1 }	/// 后方
-	//}
-	unsigned short		idx[24] = 
-	{ 
-		0, 1, 1, 2, 2, 3, 3, 0,
-		4, 5, 5, 6, 6, 7, 7, 4,
-		0, 4, 1, 5, 2, 6, 3, 7
-
-	};
-	CRenderSystem& R = GetRenderSystem();
-	R.SetTextureColorOP(0,TBOP_SOURCE2, TBS_TEXTURE, TBS_DIFFUSE);
-	R.SetTextureColorOP(1,TBOP_DISABLE);
-	R.SetFVF(VERTEX_XYZ_DIF::FVF);
-	R.DrawIndexedPrimitiveUP(VROT_LINE_LIST, 0, 8, 12, idx, vtx, sizeof(VERTEX_XYZ_DIF));
-}
-
-void CGraphics::DrawTex3D(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
-{
-	CRenderSystem& R = GetRenderSystem();
-	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
-	if (pTex)
-	{
-		R.SetTexture(0, nTexID);
-		//DrawQuad(rcSrc, rcDest, (float)pTex->GetWidth(), (float)pTex->GetHeight(), color);
-
-		float fWidth = (float)pTex->GetWidth();
-		float fHeight = (float)pTex->GetHeight();
-		CRenderSystem& R = GetRenderSystem();
-		float u0 = (rcSrc.left+0.5f)/ fWidth;
-		float v0 = (rcSrc.top+0.5f)	/ fHeight;
-		float u1 = (rcSrc.right)	/ fWidth;
-		float v1 = (rcSrc.bottom)	/ fHeight;
-
-		VERTEX_XYZ_DIF_TEX v[4]=
-		{
-			Vec3D( rcDest.left,		rcDest.top,		0.0f), color, Vec2D(u0, v0),
-			Vec3D( rcDest.right,	rcDest.top,		0.0f), color, Vec2D(u1, v0),
-			Vec3D( rcDest.right,	rcDest.bottom,	0.0f), color, Vec2D(u1, v1),
-			Vec3D( rcDest.left,		rcDest.bottom,	0.0f), color, Vec2D(u0, v1),
-		};
-		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
-		R.DrawPrimitiveUP(VROT_TRIANGLE_FAN, 2, v, sizeof(VERTEX_XYZ_DIF_TEX));
-	}
-}
-
-void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color)
 {
 	CTexture* pTex = GetRenderSystem().GetTextureMgr().getItem(nTexID);
 	if (pTex)
@@ -740,18 +477,80 @@ void CGraphics::Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcC
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const static unsigned short index[3*3*6] = { 0,0+1,0+5,		0,0+5,0+4,
-			1,1+1,1+5,		1,1+5,1+4,
-			2,2+1,2+5,		2,2+5,2+4,
-			4,4+1,4+5,		4,4+5,4+4,
-			5,5+1,5+5,		5,5+5,5+4,
-			6,6+1,6+5,		6,6+5,6+4,
-			8,8+1,8+5,		8,8+5,8+4,
-			9,9+1,9+5,		9,9+5,9+4,
-			10,10+1,10+5,	10,10+5,10+4};
+									 1,1+1,1+5,		1,1+5,1+4,
+									 2,2+1,2+5,		2,2+5,2+4,
+									 4,4+1,4+5,		4,4+5,4+4,
+									 5,5+1,5+5,		5,5+5,5+4,
+									 6,6+1,6+5,		6,6+5,6+4,
+									 8,8+1,8+5,		8,8+5,8+4,
+									 9,9+1,9+5,		9,9+5,9+4,
+									 10,10+1,10+5,	10,10+5,10+4};
 
 		CRenderSystem& R = GetRenderSystem();
 		R.SetTexture(0, nTexID);
 		R.SetFVF(VERTEX_XYZ_DIF_TEX::FVF);
 		R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, 4*4, 3*3*2, index, vertex, sizeof(VERTEX_XYZ_DIF_TEX));
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 3D Graph
+//////////////////////////////////////////////////////////////////////////
+void CGraphics::DrawLine3D(const Vec3D& v0,const Vec3D& v1, Color32 color)
+{
+	VERTEX_XYZ_DIF v[2];
+
+	v[0].p = v0;
+	v[1].p = v1;
+	v[0].c = color;
+	v[1].c = color;
+
+	CRenderSystem& R = GetRenderSystem();
+
+	R.SetFVF(VERTEX_XYZ_DIF::FVF);
+	R.DrawPrimitiveUP(VROT_LINE_STRIP, 1, v, sizeof(VERTEX_XYZ_DIF));
+}
+
+void CGraphics::drawCross3D(const Vec3D& vPos,float fLength, Color32 color)
+{
+	DrawLine3D(vPos+Vec3D(-fLength,0.0f,0.0f),vPos+Vec3D(fLength,0.0f,0.0f),color);
+	DrawLine3D(vPos+Vec3D(0.0f,-fLength,0.0f),vPos+Vec3D(0.0f,fLength,0.0f),color);
+	DrawLine3D(vPos+Vec3D(0.0f,0.0f,-fLength),vPos+Vec3D(0.0f,0.0f,fLength),color);
+}
+
+void CGraphics::drawBBox(const BBox& bbox, Color32 color)
+{
+	VERTEX_XYZ_DIF vtx[8] =
+	{
+		Vec3D(bbox.vMin.x, bbox.vMax.y, bbox.vMax.z), color,
+		Vec3D(bbox.vMax.x, bbox.vMax.y, bbox.vMax.z), color,
+		Vec3D(bbox.vMax.x, bbox.vMax.y, bbox.vMin.z), color,
+		Vec3D(bbox.vMin.x, bbox.vMax.y, bbox.vMin.z), color,
+		Vec3D(bbox.vMin.x, bbox.vMin.y, bbox.vMax.z), color,
+		Vec3D(bbox.vMax.x, bbox.vMin.y, bbox.vMax.z), color,
+		Vec3D(bbox.vMax.x, bbox.vMin.y, bbox.vMin.z), color,
+		Vec3D(bbox.vMin.x, bbox.vMin.y, bbox.vMin.z), color,
+	};
+
+	//Index3w		idx[12] = 
+	//{ 
+	//	//{ 0, 1, 2 }, { 0, 2, 3 },	/// 上方
+	//	//{ 4, 6, 5 }, { 4, 7, 6 },	/// 下方
+	//	//{ 0, 3, 7 }, { 0, 7, 4 },	/// 左方
+	//	//{ 1, 5, 6 }, { 1, 6, 2 },	/// 右方
+	//	//{ 3, 2, 6 }, { 3, 6, 7 },	/// 前方
+	//	//{ 0, 4, 5 }, { 0, 5, 1 }	/// 后方
+	//}
+	unsigned short		idx[24] = 
+	{ 
+		0, 1, 1, 2, 2, 3, 3, 0,
+		4, 5, 5, 6, 6, 7, 7, 4,
+		0, 4, 1, 5, 2, 6, 3, 7
+
+	};
+	CRenderSystem& R = GetRenderSystem();
+	R.SetTextureColorOP(0,TBOP_SOURCE2, TBS_TEXTURE, TBS_DIFFUSE);
+	R.SetTextureColorOP(1,TBOP_DISABLE);
+	R.SetFVF(VERTEX_XYZ_DIF::FVF);
+	R.DrawIndexedPrimitiveUP(VROT_LINE_LIST, 0, 8, 12, idx, vtx, sizeof(VERTEX_XYZ_DIF));
 }

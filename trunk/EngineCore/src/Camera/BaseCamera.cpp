@@ -12,8 +12,8 @@ CBaseCamera::CBaseCamera()
     // Setup the projection matrix
     SetProjParams(3.14159f/4, 800, 600, 1.0f, 1000.0f);
 
-    m_fCameraYawAngle = 0.0f;
-    m_fCameraPitchAngle = 0.0f;
+    m_fYawAngle = 0.0f;
+    m_fPitchAngle = 0.0f;
 
     m_vVelocity     = Vec3D(0.0f,0.0f,0.0f);
     m_bMovementDrag = true;
@@ -31,14 +31,14 @@ CBaseCamera::CBaseCamera()
 
 void CBaseCamera::SetViewParams(Vec3D& vEyePt, Vec3D& vLookatPt)
 {
-    m_vDefaultEye = m_vEye = vEyePt;
+    m_vDefaultEye = m_vEyePt = vEyePt;
     m_vDefaultLookAt = m_vLookAt = vLookatPt;
 
     // Calc the view matrix
     Vec3D vUp(0,1,0);
-    m_mView.MatrixLookAtLH(vEyePt, vLookatPt, vUp);
+    m_mViewMatrix.MatrixLookAtLH(vEyePt, vLookatPt, vUp);
 
-    Matrix mInvView = m_mView;
+    Matrix mInvView = m_mViewMatrix;
 	mInvView.Invert();
 
     // The axis basis vectors and camera position are stored inside the 
@@ -47,9 +47,9 @@ void CBaseCamera::SetViewParams(Vec3D& vEyePt, Vec3D& vLookatPt)
 	// [badcode]
     Vec3D* pZBasis = (Vec3D*) &mInvView.m[2][0];
 
-    m_fCameraYawAngle   = atan2f(pZBasis->x, pZBasis->z);
+    m_fYawAngle   = atan2f(pZBasis->x, pZBasis->z);
     float fLen = sqrtf(pZBasis->z*pZBasis->z + pZBasis->x*pZBasis->x);
-    m_fCameraPitchAngle = -atan2f(pZBasis->y, fLen);
+    m_fPitchAngle = -atan2f(pZBasis->y, fLen);
 }
 
 void CBaseCamera::SetProjParams(float fFOV, int nWidth, int nHeight, float fNearPlane, float fFarPlane)
@@ -62,13 +62,13 @@ void CBaseCamera::SetProjParams(float fFOV, int nWidth, int nHeight, float fNear
     m_fNearPlane	= fNearPlane;
     m_fFarPlane		= fFarPlane;
 
-	m_mProj.MatrixPerspectiveFovLH(fFOV, m_fAspect, fNearPlane, fFarPlane);
+	m_mProjMatrix.MatrixPerspectiveFovLH(fFOV, m_fAspect, fNearPlane, fFarPlane);
 }
 
 void CBaseCamera::SetFarClip(float fFarPlane)
 {
 	m_fFarPlane   = fFarPlane;
-	m_mProj.MatrixPerspectiveFovLH(m_fFOV, m_fAspect, m_fNearPlane, fFarPlane);
+	m_mProjMatrix.MatrixPerspectiveFovLH(m_fFOV, m_fAspect, m_fNearPlane, fFarPlane);
 }
 
 void CBaseCamera::UpdateVelocity(float fElapsedTime)

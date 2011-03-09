@@ -93,7 +93,7 @@ int C3DMapObj::getOrder()
 {
 	if (CModelObject::getModelData())
 	{
-		return CModelObject::getModelData()->GetOrder();
+		return CModelObject::getModelData()->getOrder();
 	}
 	return CMapObj::getOrder();
 }

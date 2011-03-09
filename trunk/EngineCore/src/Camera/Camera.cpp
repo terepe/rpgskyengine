@@ -21,45 +21,45 @@ void CCamera::MoveTarget()
 {
 	// 基于摄像机的 yaw & pitch 创建旋转矩阵
 	Matrix mCameraRot;
-	mCameraRot.rotationYawPitchRoll(m_fCameraYawAngle, m_fCameraPitchAngle, 0);
+	mCameraRot.rotationYawPitchRoll(m_fYawAngle, m_fPitchAngle, 0);
 	Vec3D vOffset = mCameraRot * Vec3D(-m_vRotVelocity.x, m_vRotVelocity.y, 0);
 	vOffset *= m_fRadius* 0.1f;
 	m_vTargetPos += vOffset;
-	m_vEye += vOffset;
+	m_vEyePt += vOffset;
 }
 
 void CCamera::MoveTargetWithPlane()
 {
 	// 基于摄像机的 yaw 创建旋转矩阵
 	Matrix mCameraRot;
-	mCameraRot.rotationYawPitchRoll(m_fCameraYawAngle, 0, 0);
+	mCameraRot.rotationYawPitchRoll(m_fYawAngle, 0, 0);
 	Vec3D vOffset = mCameraRot * Vec3D(-m_vRotVelocity.x, 0, m_vRotVelocity.y);
 	vOffset *= m_fRadius* 0.1f;
 	m_vTargetPos += vOffset;
-	m_vEye += vOffset;
+	m_vEyePt += vOffset;
 }
 
 void CCamera::MoveAroundTarget()
 {
 	// Update the pitch & yaw angle based on mouse movement
 	{
-		m_fCameraYawAngle   += m_vRotVelocity.x;
-		m_fCameraPitchAngle += m_vRotVelocity.y;
+		m_fYawAngle   += m_vRotVelocity.x;
+		m_fPitchAngle += m_vRotVelocity.y;
 		// 倾斜角度检测：直上或直下
-		m_fCameraPitchAngle = __max(m_fMinPitchAngle,  m_fCameraPitchAngle);
-		m_fCameraPitchAngle = __min(m_fMaxPitchAngle,  m_fCameraPitchAngle);
+		m_fPitchAngle = __max(m_fMinPitchAngle,  m_fPitchAngle);
+		m_fPitchAngle = __min(m_fMaxPitchAngle,  m_fPitchAngle);
 	}
 
 	// 基于摄像机的 yaw & pitch 创建旋转矩阵
 	Matrix mCameraRot;
-	mCameraRot.rotationYawPitchRoll(m_fCameraYawAngle, m_fCameraPitchAngle, 0);
-	//mCameraRot.rotationYawPitchRoll(m_fCameraYawAngle, 0, 0);
+	mCameraRot.rotationYawPitchRoll(m_fYawAngle, m_fPitchAngle, 0);
+	//mCameraRot.rotationYawPitchRoll(m_fYawAngle, 0, 0);
 
 	//m_vLookAt  += vPosDeltaWorld;
 
 	// 计算Eye坐标
 	Vec3D vViewDir = mCameraRot * Vec3D(0,0,1);
-	m_vEye = m_vTargetPos - vViewDir * m_fRadius;// + vPosDeltaWorld
+	m_vEyePt = m_vTargetPos - vViewDir * m_fRadius;// + vPosDeltaWorld
 }
 
 void CCamera::FrameMove(float fElapsedTime)
@@ -89,14 +89,14 @@ void CCamera::FrameMove(float fElapsedTime)
 	m_vLookAt = m_vTargetPos;
 	// 更新视矩阵
 	Vec3D vUp(0,1,0);
-	m_mView.MatrixLookAtLH(m_vEye, m_vLookAt, vUp);
-	m_Frustum.Build(m_mProj*m_mView);
+	m_mViewMatrix.MatrixLookAtLH(m_vEyePt, m_vLookAt, vUp);
+	m_Frustum.Build(m_mProjMatrix*m_mViewMatrix);
 }
 
 #include "Intersect.h"
 void CCamera::GetPickRay(Vec3D& vRayPos, Vec3D& vRayDir, int x, int y,const RECT& rc)
 {
-	::GetPickRay(vRayPos,vRayDir,x,y,m_mView,m_mProj,rc);
+	::GetPickRay(vRayPos,vRayDir,x,y,m_mViewMatrix,m_mProjMatrix,rc);
 }
 
 void CCamera::World2Screen(const Vec3D& vWorldPos, Pos2D& posScreen)

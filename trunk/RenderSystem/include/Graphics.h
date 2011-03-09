@@ -43,7 +43,6 @@ public:
 	void Vertex3fv	(const Vec3D& v);
 	//
 	void End();
-
 	//////////////////////////////////////////////////////////////////////////
 	// 2D几何绘制
 	// 直线
@@ -58,7 +57,7 @@ public:
 	// 椭圆形
 	void DrawCircle	(const CRect<float>& rcDest, Color32 color);
 	void FillCircle	(const CRect<float>& rcDest, Color32 color);
-	//
+	// Quadrilateral
 	void DrawQuad	(const CRect<float>& rcSrc, const CRect<float>& rcDest, float fWidth, float fHeight, Color32 color);
 	void DrawTex	(float destX, float destY, int nTexID, Color32 color);
 	void DrawTex	(const CRect<float>& rcDest, int nTexID, Color32 color);
@@ -75,44 +74,29 @@ public:
 	void Line3DBegin();
 	void Line3DTo	(const Vec3D& v);
 	void Line3DEnd	();
-
 	//////////////////////////////////////////////////////////////////////////
 	// 3D绘制
 	// 3D直线
 	void DrawLine3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	void drawCross3D(const Vec3D& vPos,float fLength, Color32 color);
-	// Quadrilateral
-	void drawQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
-	void fillQuad	(const Vec3D& v0,const Vec3D& v1,const Vec3D& v2,const Vec3D& v3, Color32 color);
-	// 3D矩形
-	void DrawRect3D	(const Vec3D& v0,const Vec3D& v1, Color32 color);
-	void FillRect3D	(float x0, float y0, float x1, float y1, Color32 color);
-	//void FillRect3D	(const CRect<float>& rcDest, Color32 color);
-	// 3D椭圆形
-	void DrawCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
-	void FillCircle3D(const Vec3D& v0,const Vec3D& v1, Color32 color);
 	// 包围盒
 	void drawBBox	(const BBox& bbox, Color32 color);
-	// 3D纹理
-	void DrawTex3D	(const CRect<float>& rcSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
-	void Draw3x3Grid3D(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, int nTexID, Color32 color);
 protected:
-	CHardwareVertexBuffer*		m_pVB;			// 顶点缓冲
-	CHardwareIndexBuffer*		m_pIB;			// 索引缓冲
+	CHardwareVertexBuffer*			m_pVB;			// 顶点缓冲
+	CHardwareIndexBuffer*			m_pIB;			// 索引缓冲
 	//std::vector(VERTEX_XYZW_DIF_TEX) m_UIVB;
-	int					m_nCount;
-	int					m_nVBOffset;
-	int					m_nVBBatchSize;
-	VERTEX_XYZ_DIF_TEX	m_TempVertex;// 顶点缓冲 lock的时候得到的值
-	VERTEX_XYZ_DIF_TEX*	m_pVertex;
+	int								m_nCount;
+	int								m_nVBOffset;
+	int								m_nVBBatchSize;
+	VERTEX_XYZ_DIF_TEX				m_TempVertex;	// 顶点缓冲 lock的时候得到的值
+	VERTEX_XYZ_DIF_TEX*				m_pVertex;
 
 	std::vector<VERTEX_XYZW_DIF>	m_set2DLine;
 	std::vector<VERTEX_XYZ_DIF>		m_set3DLine;
 
-	VERTEX_XYZW_DIF_TEX	m_vRectTex2D[4];
-	VERTEX_XYZ_DIF_TEX	m_vRectTex3D[4];
+	VERTEX_XYZ_DIF_TEX				m_vRectTex3D[4];
 
-	int					m_nPassCount;
+	int								m_nPassCount;
 };
 
 CGraphics& GetGraphics();
