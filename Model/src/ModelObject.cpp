@@ -83,7 +83,7 @@ void CModelObject::create()
 		// 如果是几何体动画 则进行重建VB
 		if (m_pModelData->m_Mesh.m_bSkinMesh)
 		{
-			m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(m_pModelData->m_Mesh.GetSkinVertexCount(), m_pModelData->m_Mesh.GetSkinVertexSize(), CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
+			m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(m_pModelData->m_Mesh.getSkinVertexCount(), m_pModelData->m_Mesh.getSkinVertexSize(), CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
 			//hr = GetRenderSystem().GetDevice()->CreateVertexBuffer(m_pModelData->GetSkinVertexBufferSize(), D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_NORMAL, D3DPOOL_DEFAULT, &m_pVB, NULL);
 		}
 	}

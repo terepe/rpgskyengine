@@ -1,4 +1,5 @@
 #pragma once
+#include "common.h"
 #include "Skeleton.h"
 #include "RenderSystemCommon.h"
 
@@ -46,8 +47,8 @@ struct ModelLod
 class CBoundMesh
 {
 public:
-	std::vector<Vec3D>			pos;		// °üÎ§ºÐ
-	std::vector<unsigned short>			indices;	// °üÎ§ºÐ
+	std::vector<Vec3D>				pos;		// °üÎ§ºÐ
+	std::vector<unsigned short>		indices;	// °üÎ§ºÐ
 	void draw()const;
 };
 
@@ -57,77 +58,36 @@ public:
 	CLodMesh();
 	~CLodMesh();
 public:
-	virtual int getSubCount();
-	virtual CSubMesh& addSubMesh();
-	virtual CSubMesh* getSubMesh(size_t n);
-	virtual const BBox& getBBox();
-	virtual void update();
+	CONST_GET_SET_VARIABLE	(unsigned short,		m_u,SkinVertexSize);
+	virtual int			getSubCount(){return m_setSubMesh.size();}
+	virtual CSubMesh&	addSubMesh();
+	virtual CSubMesh*	getSubMesh(size_t n);
+	virtual const BBox& getBBox(){return m_bbox;}
+	virtual void		update();
 
-	void Init();
-	unsigned long GetSkinVertexSize();
-	bool SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL)const;
-	void drawSub(size_t uSubID, size_t uLodLevel=0)const;
-	void draw(size_t uLodLevel=0)const;
-	void skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& setBonesMatrix)const;
-	void InitBBox();
-	void Clear();
-	size_t GetSkinVertexCount(){return m_setSkinVertex.size();}
+	void				Init();
+	bool				SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL)const;
+	void				drawSub(size_t uSubID, size_t uLodLevel=0)const;
+	void				draw(size_t uLodLevel=0)const;
+	void				skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& setBonesMatrix)const;
+	void				Clear();
+	size_t				getSkinVertexCount(){return m_setSkinVertex.size();}
 
-	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const;
-	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
-protected:
+	bool				intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut, int& nSubID)const;
+	bool				intersect(const Vec3D& vRayPos , const Vec3D& vRayDir)const;
 public:
-	std::vector<CSubMesh> m_setSubMesh;
+	std::vector<CSubMesh>			m_setSubMesh;
 
-	CHardwareVertexBuffer*	m_pShareBuffer;	// Share Vertex Buffer
-	std::vector<ModelLod>	m_Lods;			// the lods
+	CHardwareVertexBuffer*			m_pShareBuffer;			// Share Vertex Buffer
+	CVertexDeclaration*				m_pVertexDeclHardware;	// FVF
+	std::vector<ModelLod>			m_Lods;					// the lods
 
 	unsigned short					m_uSkinVertexSize;
 	unsigned short					m_uShareVertexSize;
 
-	CVertexDeclaration*		m_pVertexDeclHardware;	// FVF
-
-	bool		m_bSkinMesh;		// is skin mesh?
-	float		m_fRad;				// °ë¾¶
-	BBox		m_bbox;				//
+	bool							m_bSkinMesh;			// is skin mesh?
+	float							m_fRad;					// °ë¾¶
+	BBox							m_bbox;					//
 protected:
-	std::vector<SkinVertex>	m_setSkinVertex;
-};
-
-class CMeshCoordinate:public CLodMesh
-{
-public:
-	CMeshCoordinate();
-	~CMeshCoordinate();
-public:
-	void init();
-	void setPos(const Vec3D& vPos);
-	void setScale(float fScale);
-	void render(const Vec3D& vCoordShow);
-	bool intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,Vec3D& vCoord)const;
-protected:
-	Matrix getWorldMatrix()const;
-	enum CoordLineType
-	{
-		CLT_X,
-		CLT_X_Y,
-		CLT_X_Z,
-
-		CLT_Y,
-		CLT_Y_X,
-		CLT_Y_Z,
-
-		CLT_Z,
-		CLT_Z_X,
-		CLT_Z_Y,
-
-		CLT_MAX,
-	};
-	struct CoordLine
-	{
-		Vec3D vBegin,vEnd;
-	};
-	CoordLine m_CoordLines[CLT_MAX];
-	Vec3D m_vPos;
-	float m_fScale;
+	std::vector<SkinVertex>			m_setSkinVertex;
 };

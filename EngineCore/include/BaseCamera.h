@@ -3,6 +3,7 @@
 #include "Vec3D.h"
 #include "Vec4D.h"
 #include "Matrix.h"
+#include "Common.h"
 
 class CBaseCamera
 {
@@ -20,59 +21,52 @@ public:
 	virtual void SetScalers(float fRotationScaler = 0.01f, float fMoveScaler = 5.0f)  { m_fRotationScaler = fRotationScaler; m_fMoveScaler = fMoveScaler; }
 
 	// Functions to get state
-	virtual const Matrix&  GetViewMatrix() const { return m_mView; }
-	virtual const Matrix&  GetProjMatrix() const { return m_mProj; }
+	virtual CONST_GET_SET_VARIABLE(Matrix&, m_m,ViewMatrix);
+	virtual CONST_GET_SET_VARIABLE(Matrix&, m_m,ProjMatrix);
 
-	virtual const Vec3D& GetEyePt() const	  { return m_vEye; }
-	virtual const Vec3D& GetLookAtPt() const   { return m_vLookAt; }
-	virtual float GetNearClip() const { return m_fNearPlane; }
-	virtual float GetFarClip() const { return m_fFarPlane; }
+	virtual CONST_GET_SET_VARIABLE(Vec3D&, m_v,EyePt);
+	virtual CONST_GET_SET_VARIABLE(Vec3D&, m_v,LookAt);
+
+	virtual CONST_GET_SET_VARIABLE(float, m_f,NearPlane);
+	virtual CONST_GET_SET_VARIABLE(float, m_f,FarPlane);
+	virtual CONST_GET_SET_VARIABLE(float, m_f,YawAngle);
+	virtual CONST_GET_SET_VARIABLE(float, m_f,PitchAngle);
 
 	virtual void	addMouseDelta(Vec3D vMouseDelta){m_vMouseDelta+=vMouseDelta;}
-
-	virtual float	getYawAngle()const			{ return m_fCameraYawAngle; }
-	virtual float	getPitchAngle()const		{ return m_fCameraPitchAngle; }
-	virtual void	setYawAngle(float fAngle) 	{ m_fCameraYawAngle = fAngle; }
-	virtual void	setPitchAngle(float fAngle)	{ m_fCameraPitchAngle = fAngle; }
 protected:
 	// 更新周转率
 	virtual void UpdateVelocity(float fElapsedTime);
-	Matrix			m_mView;		   // View matrix 
-	Matrix			m_mProj;		   // Projection matrix
+	Matrix			m_mViewMatrix;			// View matrix 
+	Matrix			m_mProjMatrix;			// Projection matrix
 
-	Vec3D			m_vMouseDelta;		  // Mouse relative delta smoothed over a few frames
+	Vec3D			m_vMouseDelta;			// Mouse relative delta smoothed over a few frames
 
-	Vec3D		m_vDefaultEye;		  // Default camera eye position
-	Vec3D		m_vDefaultLookAt;	   // Default LookAt position
-	Vec3D		m_vEye;				// Camera eye position
-	Vec3D		m_vLookAt;		   // LookAt position
-	// 摄像机（左右）偏航角度
-	float			m_fCameraYawAngle;
-	// 摄像机（上下）倾斜角度
-	float			m_fCameraPitchAngle;
+	Vec3D			m_vDefaultEye;			// Default camera eye position
+	Vec3D			m_vDefaultLookAt;		// Default LookAt position
+	Vec3D			m_vEyePt;				// Camera eye position
+	Vec3D			m_vLookAt;				// LookAt position
+	
+	float			m_fYawAngle;			// 摄像机（左右）偏航角度
+	float			m_fPitchAngle;			// 摄像机（上下）倾斜角度
+	
+	Vec3D			m_vVelocity;			// 摄像机的周转率
 
-	// 摄像机的周转率
-	Vec3D		m_vVelocity;
-	// 是否运动托曳
-	bool			m_bMovementDrag;		// If true, then camera movement will slow to a stop otherwise movement is instant
-	// 托曳速率
-	Vec3D		m_vVelocityDrag;		// Velocity drag force
-	// 倒计时去运用托曳
-	float			m_fDragTimer;		// Countdown timer to apply drag
-	// 托曳总时间
-	float			m_fTotalDragTimeToZero; // Time it takes for velocity to go from full to 0
+	bool			m_bMovementDrag;		// 是否运动托曳 If true, then camera movement will slow to a stop otherwise movement is instant
+	Vec3D			m_vVelocityDrag;		// 托曳速率 Velocity drag force
+	float			m_fDragTimer;			// 倒计时去运用托曳 Countdown timer to apply drag
+	float			m_fTotalDragTimeToZero; // 托曳总时间 Time it takes for velocity to go from full to 0
 
-	Vec3D		m_vRotVelocity;		 // Velocity of camera
+	Vec3D			m_vRotVelocity;			// Velocity of camera
 
-	float			m_fFOV;				// Field of view
+	float			m_fFOV;					// Field of view
 	int				m_nSceneWidth;
 	int				m_nSceneHeight;
-	float			m_fAspect;		   // Aspect ratio
-	float			m_fNearPlane;		// Near plane
-	float			m_fFarPlane;		 // Far plane
+	float			m_fAspect;				// Aspect ratio
+	float			m_fNearPlane;			// Near plane
+	float			m_fFarPlane;			// Far plane
 
-	float			m_fRotationScaler;	  // Scaler for rotation
-	float			m_fMoveScaler;		  // Scaler for movement
+	float			m_fRotationScaler;		// Scaler for rotation
+	float			m_fMoveScaler;			// Scaler for movement
 
-	bool			m_bEnableYAxisMovement; // If true, then camera can move in the y-axis
+	bool			m_bEnableYAxisMovement;	// If true, then camera can move in the y-axis
 };

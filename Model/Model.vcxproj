@@ -87,6 +87,7 @@
     <ClInclude Include="Include\AnimMgr.h" />
     <ClInclude Include="Include\InterfaceModel.h" />
     <ClInclude Include="include\LodMesh.h" />
+    <ClInclude Include="Include\MeshCoordinate.h" />
     <ClInclude Include="Include\ModelData.h" />
     <ClInclude Include="Include\ModelDataMgr.h" />
     <ClInclude Include="include\ModelObject.h" />
@@ -100,6 +101,7 @@
   <ItemGroup>
     <ClCompile Include="src\AnimMgr.cpp" />
     <ClCompile Include="src\LodMesh.cpp" />
+    <ClCompile Include="src\MeshCoordinate.cpp" />
     <ClCompile Include="src\ModelData.cpp" />
     <ClCompile Include="src\ModelDataMgr.cpp" />
     <ClCompile Include="src\ModelObject.cpp" />

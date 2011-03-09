@@ -64,41 +64,41 @@ struct LightAnim
 #pragma pack(1) // 必须在结构体定义之前使用 
 struct ModelRenderPass
 {
-	ModelRenderPass():
-nRenderFlag(0),
-nBlendMode(0),
-nTransID(-1),
-nTexanimID(-1),
-nColorID(-1),
-nOrder(0),
-p(0)
-{
-}
-// RenderFlag;
-unsigned short nRenderFlag;	//
-unsigned short nBlendMode;	//
-int nTransID,nTexanimID,nColorID;
-int nOrder;
-float p;
+	ModelRenderPass()
+		:nRenderFlag(0)
+		,nBlendMode(0)
+		,nTransID(-1)
+		,nTexanimID(-1)
+		,nColorID(-1)
+		,nOrder(0)
+		,p(0)
+	{
+	}
+	// RenderFlag;
+	unsigned short nRenderFlag;	//
+	unsigned short nBlendMode;	//
+	int nTransID,nTexanimID,nColorID;
+	int nOrder;
+	float p;
 
-// Geoset ID
-int nSubID;
-//
-bool bUseTex2, bTrans, bUnlit, bNoZWrite;
+	// Geoset ID
+	int nSubID;
+	//
+	bool bUseTex2, bTrans, bUnlit, bNoZWrite;
 
-// colours
-Vec4D ocol, ecol;
+	// colours
+	Vec4D ocol, ecol;
 
-std::string strMaterialName;
+	std::string strMaterialName;
 
-bool operator< (const ModelRenderPass &m) const
-{
-	// sort order method
-	if (nOrder!=m.nOrder)
-		return nOrder<m.nOrder;
-	else
-		return nBlendMode == m.nBlendMode ? (p<m.p) : (nBlendMode<m.nBlendMode);
-}
+	bool operator< (const ModelRenderPass &m) const
+	{
+		// sort order method
+		if (nOrder!=m.nOrder)
+			return nOrder<m.nOrder;
+		else
+			return nBlendMode == m.nBlendMode ? (p<m.p) : (nBlendMode<m.nBlendMode);
+	}
 };
 #pragma pack(pop) // 恢复先前的pack设置 
 
@@ -152,7 +152,7 @@ private:
 	std::map<std::string, ModelAnimation>	m_AnimList;				// 动画配表源
 	std::map<int,ModelRenderPass>			m_mapPasses;			// 渲染过程集
 private:
-	std::string m_strItemName;
-	bool	m_bLoaded;
-	int		m_nOrder;
+	std::string								m_strItemName;
+	bool									m_bLoaded;
+	int										m_nOrder;
 };
