@@ -54,7 +54,7 @@ void CGraphics::Clear()
 	m_nVBOffset = 0;
 }
 
-void CGraphics::Begin(BGMODE mode, size_t uSize)
+CGraphics& CGraphics::begin(VertexRenderOperationType mode, size_t uSize)
 {
 	m_nCount = 0;
 	m_uMode = mode;
@@ -71,25 +71,29 @@ void CGraphics::Begin(BGMODE mode, size_t uSize)
 	}
 	//assert(m_pVB);
 	//assert(m_pVertex);
+	return *this;
 }
 
-void CGraphics::Color(Color32 c)
+CGraphics& CGraphics::c(Color32 c)
 {
 	m_TempVertex.c = c;
+	return *this;
 }
 
-void CGraphics::TexCoord2fv(const Vec2D& v)
+CGraphics& CGraphics::t(const Vec2D& v)
 {
 	m_TempVertex.t = v;
+	return *this;
 }
 
-void CGraphics::TexCoord2f(const float u, const float v)
+CGraphics& CGraphics::t(float u, float v)
 {
 	m_TempVertex.t.x = u;
 	m_TempVertex.t.y = v;
+	return *this;
 }
 
-void CGraphics::Vertex2fv(const Vec3D& v)
+CGraphics& CGraphics::v(const Vec3D& v)
 {
 	m_TempVertex.p = v;
 	m_pVertex[m_nCount] = m_TempVertex;
@@ -98,16 +102,20 @@ void CGraphics::Vertex2fv(const Vec3D& v)
 	{
 		m_nCount=0;
 	}
+	return *this;
 }
 
-void CGraphics::Vertex3fv(const Vec3D& v)
+CGraphics& CGraphics::v(float x, float y, float z)
 {
-	m_TempVertex.p = v;
+	m_TempVertex.p.x = x;
+	m_TempVertex.p.y = y;
+	m_TempVertex.p.z = z;
 	m_pVertex[m_nCount] = m_TempVertex;
 	m_nCount++;
+	return *this;
 }
 
-void CGraphics::End()
+void CGraphics::end()
 {
 	if (!m_pVB || m_nCount==0) return;
 	m_pVB->unlock();
@@ -117,20 +125,21 @@ void CGraphics::End()
 
 	switch(m_uMode)
 	{
-		case BGMODE_POIN:
+		case VROT_POINT_LIST:
 			R.DrawPrimitive(VROT_POINT_LIST, m_nVBOffset, m_nCount);
 			break;
-		case BGMODE_LINE:
+		case VROT_LINE_LIST:
 			R.DrawPrimitive(VROT_LINE_LIST, m_nVBOffset, m_nCount/2);
 			break;
-		case BGMODE_LINESTRIP:
-			break;
-		case BGMODE_QUADS:
+		case VROT_TRIANGLE_LIST:
 			R.SetIndices(m_pIB);
 			R.DrawIndexedPrimitive(VROT_TRIANGLE_LIST, m_nVBOffset, 0, m_nCount, 0, m_nCount/2);
 			break;
-		case BGMODE_QUADSTRIP:
+		case VROT_TRIANGLE_STRIP:
 			R.DrawPrimitive(VROT_TRIANGLE_STRIP, m_nVBOffset, m_nCount-2);
+			break;
+		case VROT_TRIANGLE_FAN:
+			R.DrawPrimitive(VROT_TRIANGLE_FAN, m_nVBOffset, m_nCount-2);
 			break;
 		default:
 			break;
