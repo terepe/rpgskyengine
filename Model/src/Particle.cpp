@@ -5,12 +5,15 @@
 #include "ParticleEmitter.h"
 #include "ModelObject.h"
 
+void CParticleGroup::init(CParticleEmitter* pEmitter)
+{
+	m_pEmitter = pEmitter;
+	m_nBindingBoneID = m_pEmitter->m_nBoneID;
+}
+
 void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
 	Matrix mNewWorld = mWorld*m_mWorldMatrix;
-	// ----
-	//Setup(m_AnimMgr.uFrame);
-	Setup(fTime);
 	// ----
 	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
@@ -25,115 +28,31 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
 
-void CParticleGroup::Init(CParticleEmitter* pEmitter)
+void CParticleGroup::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
-	m_pEmitter = pEmitter;
-	m_nBindingBoneID = m_pEmitter->m_nBoneID;
-}
-
-void CParticleGroup::update(float fElapsedTime)
-{
-	if (m_pEmitter==NULL)
+	if(!m_pEmitter)
 	{
 		return;
 	}
-	//m_pEmitter->update(this, fElapsedTime);
-
-}
-
-void CParticleGroup::Setup(int nTime)
-{
-	m_nTime = nTime;
-
-	/*
-	if (transform) {
-		// transform every particle by the parent trans matrix   - apparently this isn't needed
-		Matrix m = pBone->m_mat;
-		for (ParticleList::iterator it = m_Particles.begin(); it != m_Particles.end(); ++it) {
-			it->tpos = m * it->pos;
-		}
-	} else {
-		for (ParticleList::iterator it = m_Particles.begin(); it != m_Particles.end(); ++it) {
-			it->tpos = it->pos;
-		}
-	}
-	*/
-}
-
-void CParticleGroup::draw()const
-{
-	Vec3D bv0,bv1,bv2,bv3;
-	//if (/*supportPointSprites &&*/ m_pEmitter->m_nRows==1 && m_pEmitter->m_nCols==1&&false) {
-	/*	//// This is how will our point sprite's size will be modified by 
-		//// distance from the viewer
-		//float quadratic[] = {0.1f, 0.0f, 0.5f};
-		////float quadratic[] = {0.88f, 0.001f, 0.000004f};
-		//glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
-
-		//// Query for the max point size supported by the hardware
-		float maxSize = 1.0f;
-		////glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
-
-		//// Clamp size to 100.0f or the sprites could get a little too big on some  
-		//// of the newer graphic cards. My ATI card at home supports a max point 
-		//// size of 1024.0f!
-		////if(maxSize > 100.0f)
-		////	maxSize = 100.0f;
-
-		//glPointSize(maxSize);
-
-		//// The alpha of a point is calculated to allow the fading of points 
-		//// instead of shrinking them past a defined threshold size. The threshold 
-		//// is defined by GL_POINT_FADE_THRESHOLD_SIZE_ARB and is not clamped to 
-		//// the minimum and maximum point sizes.
-		//glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f);
-
-		//glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
-		//glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize);
-
-		//// Specify point sprite texture coordinate replacement mode for each texture unit
-		//glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-		//// Render point sprites...
-		//glEnable(GL_POINT_SPRITE_ARB);
-
-		//glBegin(GL_POINTS);
-		//{
-		//	for (ParticleList::iterator it = m_Particles.begin(); it != m_Particles.end(); ++it) {
-		//		glPointSize(it->size);
-		//		glTexCoord2fv(m_Tiles[it->tile].tc[0]);
-		//		glColor4fv(it->color);
-		//		glVertex3fv(it->pos);
-		//	}
-		//}
-		//glEnd();
-
-		//glDisable(GL_POINT_SPRITE_ARB);
-		//glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_FALSE);
-
-		R.SetRenderState(D3DRS_POINTSPRITEENABLE, true);
-		R.SetRenderState(D3DRS_POINTSCALEENABLE, true);
-
-		R.SetRenderState(D3DRS_POINTSIZE, static_cast<unsigned long>(maxSize);
-
-		CGraphics* bg = &GetGraphics();
-		bg->Begin(BGMODE_POIN, m_Particles.size());
-		for (ParticleList::iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
-		{
-			bg->Color32(it->color.c);
-			bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[0]);
-			bg->Vertex3fv(it->vPos);
-		}
-		bg->End();
-		R.SetRenderState(D3DRS_POINTSPRITEENABLE, false);
-		R.SetRenderState(D3DRS_POINTSCALEENABLE, false);
-	}
-	else*/
+	CRenderSystem& R = GetRenderSystem();
+	// ----
+	R.setWorldMatrix(Matrix::UNIT);
+	// ----
+	CMaterial& material = R.getMaterialMgr().getItem(m_pEmitter->m_strMaterialName.c_str());
+	if (!(material.getRenderType()&eRenderType))
 	{
-		Matrix mbb=Matrix::UNIT;
-		if (m_pEmitter->m_bBillboard)
+		return;
+	}
+	// ----
+	if (R.prepareMaterial(material))
+	{
+		Vec3D bv0,bv1,bv2,bv3;
 		{
-			// 获取公告板矩阵
-			Matrix mTrans;
+			Matrix mbb=Matrix::UNIT;
+			if (m_pEmitter->m_bBillboard)
+			{
+				// 获取公告板矩阵
+				Matrix mTrans;
 			GetRenderSystem().getViewMatrix(mTrans);
 			mTrans.Invert();
 
@@ -195,76 +114,55 @@ void CParticleGroup::draw()const
 			}
 			// TODO: per-particle rotation in a non-expensive way?? :|
 
-			CGraphics* bg = &GetGraphics();
-			bg->Begin(BGMODE_QUADS, m_Particles.size()*4);
+			CGraphics& bg = GetGraphics();
+			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
 			for (ParticleList::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
 			{
-				bg->Color(it->color);
+				bg.c(it->color);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[0]);
-				bg->Vertex3fv(it->vPos + bv0 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[0]);
+				bg.v(it->vPos + bv0 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[1]);
-				bg->Vertex3fv(it->vPos + bv1 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[1]);
+				bg.v(it->vPos + bv1 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[2]);
-				bg->Vertex3fv(it->vPos + bv2 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[2]);
+				bg.v(it->vPos + bv2 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[3]);
-				bg->Vertex3fv(it->vPos + bv3 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[3]);
+				bg.v(it->vPos + bv3 * it->fSize);
 			}
-			bg->End();
+			bg.end();
 		}
 		else if (m_pEmitter->type==1) // 粒子射线发射器 particles from origin to position
 		{
 			bv0 = mbb * Vec3D(-1.0f,0,0);
 			bv1 = mbb * Vec3D(+1.0f,0,0);
 
-			CGraphics* bg = &GetGraphics();
-			bg->Begin(BGMODE_QUADS, m_Particles.size()*4);
+			CGraphics& bg = GetGraphics();
+			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
 			for (ParticleList::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
 			{
 				Vec3D P,O;
 				P=it->vPos;
 				O=it->vOrigin;
-				bg->Color(it->color);
+				bg.c(it->color);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[0]);
-				bg->Vertex3fv(it->vPos + bv0 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[0]);
+				bg.v(it->vPos + bv0 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[1]);
-				bg->Vertex3fv(it->vPos + bv1 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[1]);
+				bg.v(it->vPos + bv1 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[2]);
-				bg->Vertex3fv(it->vOrigin + bv1 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[2]);
+				bg.v(it->vOrigin + bv1 * it->fSize);
 
-				bg->TexCoord2fv(m_pEmitter->m_Tiles[it->nTile].tc[3]);
-				bg->Vertex3fv(it->vOrigin + bv0 * it->fSize);
+				bg.t(m_pEmitter->m_Tiles[it->nTile].tc[3]);
+				bg.v(it->vOrigin + bv0 * it->fSize);
 			}
-			bg->End();
+			bg.end();
 		}
 	}
-}
-
-void CParticleGroup::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
-{
-	if(!m_pEmitter)
-	{
-		return;
-	}
-	CRenderSystem& R = GetRenderSystem();
-	// ----
-	R.setWorldMatrix(Matrix::UNIT);
-	// ----
-	CMaterial& material = R.getMaterialMgr().getItem(m_pEmitter->m_strMaterialName.c_str());
-	if (!(material.getRenderType()&eRenderType))
-	{
-		return;
-	}
-	// ----
-	if (R.prepareMaterial(material))
-	{
-		draw();
 	}
 	R.finishMaterial();
 }

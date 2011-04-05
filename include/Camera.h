@@ -16,9 +16,9 @@ public:
 	virtual void MoveTargetWithPlane();
 	virtual void MoveAroundTarget();
 
-	virtual Vec3D	GetViewDir() const		{ return m_vLookAt - m_vEye; }
-	virtual Vec3D   GetCrossDir() const     { return (m_vLookAt - m_vEye).cross(Vec3D(0,1,0));}
-	virtual Matrix	GetProjXView() const	{ return m_mProj*m_mView; }
+	virtual Vec3D	GetViewDir() const		{ return m_vLookAt - m_vEyePt; }
+	virtual Vec3D   GetCrossDir() const     { return (m_vLookAt - m_vEyePt).cross(Vec3D(0,1,0));}
+	virtual Matrix	GetProjXView() const	{ return m_mProjMatrix*m_mViewMatrix; }
 	virtual float	GetRadius() const		{ return m_fRadius; }
 	virtual int		BoxCrossF(BBox & bbox)	{ return m_Frustum.CheckAABBVisible(bbox); }
 	virtual CFrustum& GetFrustum()	{ return m_Frustum; }
