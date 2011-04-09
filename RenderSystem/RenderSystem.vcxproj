@@ -153,9 +153,6 @@
     <ClCompile Include="src\ShaderMgr.cpp" />
     <ClCompile Include="src\TextureMgr.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="RenderSystem.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
