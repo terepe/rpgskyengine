@@ -144,7 +144,7 @@ public: // 动画源
 	std::vector<ColorAnim>					m_ColorAnims;			// 颜色动画源
 	std::vector<TransAnim>					m_TransAnims;			// 透明动画源
 	std::vector<LightAnim>					m_LightAnims;			// 灯光动画源
-	std::vector<ParticleData>				m_setParticleData;	// 粒子动画源
+	std::vector<ParticleData>				m_setParticleData;		// 粒子动画源
 private:
 	std::map<std::string, ModelAnimation>	m_AnimList;				// 动画配表源
 	std::map<int,ModelRenderPass>			m_mapPasses;			// 渲染过程集
