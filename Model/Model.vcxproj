@@ -106,7 +106,6 @@
     <ClCompile Include="src\ModelDataMgr.cpp" />
     <ClCompile Include="src\ModelObject.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\ParticleData.cpp" />
     <ClCompile Include="src\RenderNode.cpp" />
     <ClCompile Include="src\Skeleton.cpp" />
     <ClCompile Include="src\SkinModel.cpp" />
