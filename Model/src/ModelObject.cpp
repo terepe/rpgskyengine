@@ -1,7 +1,7 @@
 #include "ModelObject.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
-#include "ParticleEmitter.h"
+#include "ParticleData.h"
 #include "ModelDataMgr.h"
 
 CModelObject::CModelObject()
@@ -60,10 +60,10 @@ void CModelObject::create()
 		}
 		
 		// Particles
-		for (size_t i=0;i<m_pModelData->m_setParticleEmitter.size();++i)
+		for (size_t i=0;i<m_pModelData->m_setParticleData.size();++i)
 		{
 			CParticleGroup* pParticleGroup = new CParticleGroup;
-			pParticleGroup->init(&m_pModelData->m_setParticleEmitter[i]);
+			pParticleGroup->init(&m_pModelData->m_setParticleData[i]);
 			char szParName[255];
 			sprintf(szParName,"par%d",i);
 			pParticleGroup->setName(szParName);

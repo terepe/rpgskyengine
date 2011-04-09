@@ -92,8 +92,8 @@
     <ClInclude Include="Include\ModelDataMgr.h" />
     <ClInclude Include="include\ModelObject.h" />
     <ClInclude Include="include\Particle.h" />
-    <ClInclude Include="include\ParticleEmitter.h" />
-    <ClInclude Include="Include\ParticleEmitterMgr.h" />
+    <ClInclude Include="include\ParticleData.h" />
+    <ClInclude Include="Include\ParticleDataMgr.h" />
     <ClInclude Include="Include\RenderNode.h" />
     <ClInclude Include="include\Skeleton.h" />
     <ClInclude Include="Include\SkinModel.h" />
@@ -106,7 +106,7 @@
     <ClCompile Include="src\ModelDataMgr.cpp" />
     <ClCompile Include="src\ModelObject.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\ParticleEmitter.cpp" />
+    <ClCompile Include="src\ParticleData.cpp" />
     <ClCompile Include="src\RenderNode.cpp" />
     <ClCompile Include="src\Skeleton.cpp" />
     <ClCompile Include="src\SkinModel.cpp" />

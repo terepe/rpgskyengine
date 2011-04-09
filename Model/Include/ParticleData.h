@@ -1,24 +1,17 @@
 #pragma once
-
-class RibbonEmitter;
-
 #include "InterfaceModel.h"
-
-#include <list>
-#include "Animated.h"
 #include "Vec2D.h"
 #include "Matrix.h"
-#include "Material.h"
 
-float frand();
-float randfloat(float lower, float upper);
-int randint(int lower, int upper);
+float	frand();
+float	randfloat(float lower, float upper);
+int		randint(int lower, int upper);
 
 struct	Particle;
 class	CParticleGroup;
 class	CBone;
 
-class CParticleEmitter: public iParticleEmitter
+class CParticleData: public iParticleData
 {
 public:
 	void InitTile(Vec2D *tc, int nID);
