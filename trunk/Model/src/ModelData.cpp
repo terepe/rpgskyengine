@@ -110,7 +110,7 @@ bool CModelData::loadParticleDatas(const char* szFilename)
 	{
 		while (csv.seekNextLine())
 		{
-			CParticleData	particleData;
+			ParticleData	particleData;
 			particleData.m_nBoneID = csv.getInt("BoneID",-1);
 
 			particleData.m_vPos.x=csv.getFloat("PosX");
