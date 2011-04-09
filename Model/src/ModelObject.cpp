@@ -1,7 +1,6 @@
 #include "ModelObject.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
-#include "ParticleData.h"
 #include "ModelDataMgr.h"
 
 CModelObject::CModelObject()

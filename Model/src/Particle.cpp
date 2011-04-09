@@ -2,7 +2,6 @@
 #include "Particle.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
-#include "ParticleData.h"
 #include "ModelObject.h"
 #include "Animated.h"
 #define MAX_PARTICLES 10000
@@ -65,7 +64,7 @@ void CalcSpreadMatrix(float Spread1,float Spread2, float w, float l)
 	SpreadMat*=Temp;
 }
 
-void CParticleEmitter::init(CParticleData* pData)
+void CParticleEmitter::init(ParticleData* pData)
 {
 	m_pData = pData;
 	m_nBindingBoneID = m_pData->m_nBoneID;
@@ -88,7 +87,7 @@ void CParticleEmitter::frameMove(const Matrix& mWorld, double fTime, float fElap
 	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
 
-void CParticleEmitter::update(const Matrix& mWorld, CParticleData& particleData, float fElapsedTime)
+void CParticleEmitter::update(const Matrix& mWorld, ParticleData& particleData, float fElapsedTime)
 {
 	// spawn new particles
 
@@ -185,7 +184,7 @@ void CParticleEmitter::update(const Matrix& mWorld, CParticleData& particleData,
 	float mspeed	= 1.0f;
 	float fGrav		= particleData.m_Gravity.getValue(m_nTime);
 	float fDeaccel	= particleData.m_Deacceleration.getValue(m_nTime);
-	for (ParticleList::iterator it = m_Particles.begin(); it != m_Particles.end();)
+	for (std::list<Particle>::iterator it = m_Particles.begin(); it != m_Particles.end();)
 	{
 		Particle &p = *it;
 		// 计算出当前速度
@@ -240,47 +239,28 @@ void CParticleEmitter::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRend
 			{
 				// 获取公告板矩阵
 				Matrix mTrans;
-			GetRenderSystem().getViewMatrix(mTrans);
-			mTrans.Invert();
+				GetRenderSystem().getViewMatrix(mTrans);
+				mTrans.Invert();
 
-			if (m_pData->flags == 569) // Faith shoulders, do cylindrical billboarding
-			{
-				mbb._11 = 1;
-				mbb._31 = 0;
-				mbb._13 = 0;
-				mbb._33 = 1;
-			}
-			else
-			{
-				// everything else, do sphererical billboarding
-				//Why after calculating the inverse would you do all this stuff?
-				/*Vec3D camera = mTrans * Vec3D(0.0f,0.0f,0.0f);
-				Vec3D look = Vec3D(0.0f,0.0f,0.0f);//(camera - pos).normalize();
-				Vec3D up = ((mTrans * Vec3D(0,1,0)) - camera).normalize();
-				Vec3D right = (up % look).normalize();
-				up = (look % right).normalize();
-
-				// calculate the billboard matrix
-				mbb._12 = right.x;
-				mbb._22 = right.y;
-				mbb._32 = right.z;
-				mbb._13 = up.x;
-				mbb._23 = up.y;
-				mbb._33 = up.z;
-				mbb._11 = look.x;
-				mbb._21 = look.y;
-				mbb._31 = look.z;*/
-
+				if (m_pData->flags == 569) // 圆柱形 Faith shoulders, do cylindrical billboarding
+				{
+					mbb._11 = 1;
+					mbb._31 = 0;
+					mbb._13 = 0;
+					mbb._33 = 1;
+				}
+				else
+				{
+					mbb=mTrans;
+					mbb._14=0;
+					mbb._24=0;
+					mbb._34=0;
+				}
 				mbb=mTrans;
 				mbb._14=0;
 				mbb._24=0;
 				mbb._34=0;
 			}
-			mbb=mTrans;
-			mbb._14=0;
-			mbb._24=0;
-			mbb._34=0;
-		}
 
 		if (m_pData->type==0 || m_pData->type==2)			// 正常的粒子
 		{
@@ -303,7 +283,7 @@ void CParticleEmitter::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRend
 
 			CGraphics& bg = GetGraphics();
 			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
-			for (ParticleList::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
+			for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
 			{
 				bg.c(it->color);
 
@@ -328,7 +308,7 @@ void CParticleEmitter::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRend
 
 			CGraphics& bg = GetGraphics();
 			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
-			for (ParticleList::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
+			for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
 			{
 				Vec3D P,O;
 				P=it->vPos;
