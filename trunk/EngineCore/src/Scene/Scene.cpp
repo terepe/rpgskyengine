@@ -54,21 +54,9 @@ bool CScene::updateMapObj(CRenderNode* pMapObj)
 
 void CScene::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
-	//m_ObjectTree.process(); µÝ¹éËÙ¶ÈÌ«ÂýÁË
-	m_setLightObj.clear();
 	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
-		//if (!(*it)->isCreated())
-		//{
-		//	(*it)->create();
-		//	m_ObjectTree.delObject((*it));
-		//	m_ObjectTree.addObject((*it));
-		//}
 		(*it)->frameMove(Matrix::UNIT,fTime,fElapsedTime);
-		//if (((C3DMapObj*)(*it))->m_setParticleGroup.size()>0)
-		{
-		//	m_setLightObj.push_back(*it);
-		}
 	}
 }
 

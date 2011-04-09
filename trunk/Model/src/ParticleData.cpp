@@ -269,10 +269,10 @@ Particle CParticleData::NewSphereParticle(const Matrix& mWorld, int time, float 
 	return p;
 }
 
-void CParticleData::update(const Matrix& mWorld, CParticleGroup& particleGroup, float fElapsedTime)
+void CParticleData::update(const Matrix& mWorld, CParticleEmitter& particleEmitter, float fElapsedTime)
 {
-	int& nTime = particleGroup.m_nTime;
-	ParticleList& Particles = particleGroup.m_Particles;
+	int& nTime = particleEmitter.m_nTime;
+	ParticleList& Particles = particleEmitter.m_Particles;
 
 	// spawn new particles
 	if (pType==1||pType==2)
@@ -282,14 +282,14 @@ void CParticleData::update(const Matrix& mWorld, CParticleGroup& particleGroup, 
 		{
 			float fLife = 1.0f;
 			//fLife = m_Lifespan.getValue(m_nTime);
-			fToSpawn = (fElapsedTime * fRate / fLife) + particleGroup.m_fRem;
+			fToSpawn = (fElapsedTime * fRate / fLife) + particleEmitter.m_fRem;
 		}
 
 		if (fToSpawn < 1.0f)// 时间不足于产生一个粒子
 		{
-			particleGroup.m_fRem = fToSpawn;
-			if (particleGroup.m_fRem<0) 
-				particleGroup.m_fRem = 0;
+			particleEmitter.m_fRem = fToSpawn;
+			if (particleEmitter.m_fRem<0) 
+				particleEmitter.m_fRem = 0;
 		}
 		else
 		{
@@ -301,7 +301,7 @@ void CParticleData::update(const Matrix& mWorld, CParticleGroup& particleGroup, 
 				nToSpawn = (int)Particles.size() - MAX_PARTICLES;
 			}
 
-			particleGroup.m_fRem = fToSpawn - (float)nToSpawn;
+			particleEmitter.m_fRem = fToSpawn - (float)nToSpawn;
 
 			bool bEnabled = m_Enabled.getValue(nTime)!=0;
 			if (bEnabled)

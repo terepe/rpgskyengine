@@ -16,10 +16,10 @@ struct Particle
 typedef std::list<Particle> ParticleList;
 
 class CParticleData;
-class CParticleGroup:public CRenderNode
+class CParticleEmitter:public CRenderNode
 {
 public:
-	CParticleGroup()
+	CParticleEmitter()
 		:m_pData(NULL)
 		,m_nTime(0)
 		,m_fRem(0)
