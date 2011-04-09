@@ -62,12 +62,12 @@ void CModelObject::create()
 		// Particles
 		for (size_t i=0;i<m_pModelData->m_setParticleData.size();++i)
 		{
-			CParticleGroup* pParticleGroup = new CParticleGroup;
-			pParticleGroup->init(&m_pModelData->m_setParticleData[i]);
+			CParticleEmitter* pParticleEmitter = new CParticleEmitter;
+			pParticleEmitter->init(&m_pModelData->m_setParticleData[i]);
 			char szParName[255];
 			sprintf(szParName,"par%d",i);
-			pParticleGroup->setName(szParName);
-			addChild(pParticleGroup);
+			pParticleEmitter->setName(szParName);
+			addChild(pParticleEmitter);
 		}
 
 		// 

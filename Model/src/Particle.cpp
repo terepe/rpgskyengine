@@ -5,13 +5,13 @@
 #include "ParticleData.h"
 #include "ModelObject.h"
 
-void CParticleGroup::init(CParticleData* pData)
+void CParticleEmitter::init(CParticleData* pData)
 {
 	m_pData = pData;
 	m_nBindingBoneID = m_pData->m_nBoneID;
 }
 
-void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
+void CParticleEmitter::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
 	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
@@ -28,7 +28,7 @@ void CParticleGroup::frameMove(const Matrix& mWorld, double fTime, float fElapse
 	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
 }
 
-void CParticleGroup::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
+void CParticleEmitter::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
 	if(!m_pData)
 	{
