@@ -3,20 +3,28 @@
 #include "Vec2D.h"
 #include "Matrix.h"
 
-float	frand();
-float	randfloat(float lower, float upper);
-int		randint(int lower, int upper);
-
-struct	Particle;
-class	CParticleEmitter;
-class	CBone;
-
 class CParticleData: public iParticleData
 {
 public:
-	void InitTile(Vec2D *tc, int nID);
-	// 更新
-	void update(const Matrix& mWorld, CParticleEmitter& particleEmitter, float dt);
-	Particle NewPlaneParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2);
-	Particle NewSphereParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2);
+	void InitTile(Vec2D *tc, int nID)
+{
+	Vec2D otc[4];
+	Vec2D a,b;
+	int x = nID % m_nCols;
+	int y = nID / m_nCols;
+	a.x = x * (1.0f / m_nCols);
+	b.x = (x+1) * (1.0f / m_nCols);
+	a.y = y * (1.0f / m_nRows);
+	b.y = (y+1) * (1.0f / m_nRows);
+
+	otc[0] = a;
+	otc[1].x = b.x;otc[1].y = a.y;
+	otc[2] = b;
+	otc[3].x = a.x;otc[3].y = b.y;
+
+	for (int i=0; i<4; i++)
+	{// 有必要这样以来吗？m_nOrder？
+		tc[(i+4-m_nOrder) & 3] = otc[i];
+	}
+}
 };

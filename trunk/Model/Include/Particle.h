@@ -29,6 +29,7 @@ public:
 	void			init		(CParticleData* pData);
 	virtual void	frameMove	(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void	render		(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
+	void			update		(const Matrix& mWorld, CParticleData& particleData, float fElapsedTime);
 public:
 	CParticleData*		m_pData;		// 粒子发射器指针
 	ParticleList		m_Particles;	// 粒子堆
