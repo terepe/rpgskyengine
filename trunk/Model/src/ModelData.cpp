@@ -93,16 +93,16 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 bool CModelData::initParticleMaterial()
 {
 	std::string strParticleMaterialName = GetFilename(ChangeExtension(getItemName(),".par"));
-	for (size_t i=0;i<m_setParticleEmitter.size();++i)
+	for (size_t i=0;i<m_setParticleData.size();++i)
 	{
 		std::string strMaterialName = Format("%s%d",strParticleMaterialName.c_str(),i);
-		m_setParticleEmitter[i].m_strMaterialName = strMaterialName;
+		m_setParticleData[i].m_strMaterialName = strMaterialName;
 	}
 	return true;
 }
 
 #include "CSVFile.h"
-bool CModelData::loadParticleEmitters(const char* szFilename)
+bool CModelData::loadParticleDatas(const char* szFilename)
 {
 	CCsvFile csv;
 	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
@@ -110,70 +110,70 @@ bool CModelData::loadParticleEmitters(const char* szFilename)
 	{
 		while (csv.seekNextLine())
 		{
-			CParticleEmitter	particleEmitter;
-			particleEmitter.m_nBoneID = csv.getInt("BoneID",-1);
+			CParticleData	particleData;
+			particleData.m_nBoneID = csv.getInt("BoneID",-1);
 
-			particleEmitter.m_vPos.x=csv.getFloat("PosX");
-			particleEmitter.m_vPos.y=csv.getFloat("PosY");
-			particleEmitter.m_vPos.z=csv.getFloat("PosZ");
+			particleData.m_vPos.x=csv.getFloat("PosX");
+			particleData.m_vPos.y=csv.getFloat("PosY");
+			particleData.m_vPos.z=csv.getFloat("PosZ");
 
 
-			particleEmitter.m_Speed.m_KeyTimes.push_back(0);
-			particleEmitter.m_Speed.m_KeyData.push_back(csv.getFloat("Speed"));
+			particleData.m_Speed.m_KeyTimes.push_back(0);
+			particleData.m_Speed.m_KeyData.push_back(csv.getFloat("Speed"));
 
-			particleEmitter.m_Variation.m_KeyTimes.push_back(0);
-			particleEmitter.m_Variation.m_KeyData.push_back(csv.getFloat("Variation"));
+			particleData.m_Variation.m_KeyTimes.push_back(0);
+			particleData.m_Variation.m_KeyData.push_back(csv.getFloat("Variation"));
 
-			particleEmitter.m_Spread.m_KeyTimes.push_back(0);
-			particleEmitter.m_Spread.m_KeyData.push_back(csv.getFloat("Spread"));
+			particleData.m_Spread.m_KeyTimes.push_back(0);
+			particleData.m_Spread.m_KeyData.push_back(csv.getFloat("Spread"));
 
-			particleEmitter.m_Lat.m_KeyTimes.push_back(0);
-			particleEmitter.m_Lat.m_KeyData.push_back(csv.getFloat("Lat"));
+			particleData.m_Lat.m_KeyTimes.push_back(0);
+			particleData.m_Lat.m_KeyData.push_back(csv.getFloat("Lat"));
 
-			particleEmitter.m_Gravity.m_KeyTimes.push_back(0);
-			particleEmitter.m_Gravity.m_KeyData.push_back(csv.getFloat("Gravity"));
+			particleData.m_Gravity.m_KeyTimes.push_back(0);
+			particleData.m_Gravity.m_KeyData.push_back(csv.getFloat("Gravity"));
 
-			particleEmitter.m_Lifespan.m_KeyTimes.push_back(0);
-			particleEmitter.m_Lifespan.m_KeyData.push_back(csv.getFloat("Lifespan"));
+			particleData.m_Lifespan.m_KeyTimes.push_back(0);
+			particleData.m_Lifespan.m_KeyData.push_back(csv.getFloat("Lifespan"));
 
-			particleEmitter.m_Rate.m_KeyTimes.push_back(0);
-			particleEmitter.m_Rate.m_KeyData.push_back(csv.getFloat("Rate"));
+			particleData.m_Rate.m_KeyTimes.push_back(0);
+			particleData.m_Rate.m_KeyData.push_back(csv.getFloat("Rate"));
 
-			particleEmitter.m_Areal.m_KeyTimes.push_back(0);
-			particleEmitter.m_Areal.m_KeyData.push_back(csv.getFloat("Areal"));
+			particleData.m_Areal.m_KeyTimes.push_back(0);
+			particleData.m_Areal.m_KeyData.push_back(csv.getFloat("Areal"));
 
-			particleEmitter.m_Areaw.m_KeyTimes.push_back(0);
-			particleEmitter.m_Areaw.m_KeyData.push_back(csv.getFloat("Areaw"));
+			particleData.m_Areaw.m_KeyTimes.push_back(0);
+			particleData.m_Areaw.m_KeyData.push_back(csv.getFloat("Areaw"));
 
-			particleEmitter.m_Deacceleration.m_KeyTimes.push_back(0);
-			particleEmitter.m_Deacceleration.m_KeyData.push_back(csv.getFloat("Deacceleration"));
+			particleData.m_Deacceleration.m_KeyTimes.push_back(0);
+			particleData.m_Deacceleration.m_KeyData.push_back(csv.getFloat("Deacceleration"));
 
-			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeBegin"));
-			particleEmitter.m_Enabled.m_KeyData.push_back(true);
-			particleEmitter.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeEnd"));
-			particleEmitter.m_Enabled.m_KeyData.push_back(false);
+			particleData.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeBegin"));
+			particleData.m_Enabled.m_KeyData.push_back(true);
+			particleData.m_Enabled.m_KeyTimes.push_back(csv.getInt("TimeEnd"));
+			particleData.m_Enabled.m_KeyData.push_back(false);
 	
-			particleEmitter.m_Colors[0]=csv.getHex("ColorBegin");
-			particleEmitter.m_Colors[1]=csv.getHex("ColorMiddle");
-			particleEmitter.m_Colors[2]=csv.getHex("ColorEnd");
+			particleData.m_Colors[0]=csv.getHex("ColorBegin");
+			particleData.m_Colors[1]=csv.getHex("ColorMiddle");
+			particleData.m_Colors[2]=csv.getHex("ColorEnd");
 
-			particleEmitter.m_Sizes[0]=csv.getFloat("SizeBegin");
-			particleEmitter.m_Sizes[1]=csv.getFloat("SizeMiddle");
-			particleEmitter.m_Sizes[2]=csv.getFloat("SizeEnd");
+			particleData.m_Sizes[0]=csv.getFloat("SizeBegin");
+			particleData.m_Sizes[1]=csv.getFloat("SizeMiddle");
+			particleData.m_Sizes[2]=csv.getFloat("SizeEnd");
 	
-			particleEmitter.m_fLifeMid=csv.getFloat("LifeMiddle");
-			particleEmitter.m_fSlowdown=csv.getFloat("Slowdown");
-			particleEmitter.m_fRotation=csv.getFloat("Rotation");
+			particleData.m_fLifeMid=csv.getFloat("LifeMiddle");
+			particleData.m_fSlowdown=csv.getFloat("Slowdown");
+			particleData.m_fRotation=csv.getFloat("Rotation");
 
-			particleEmitter.m_nOrder=csv.getInt("Order");
-			particleEmitter.type=csv.getInt("Type");
+			particleData.m_nOrder=csv.getInt("Order");
+			particleData.type=csv.getInt("Type");
 
-			particleEmitter.m_nRows=csv.getInt("Rows");
-			particleEmitter.m_nCols=csv.getInt("Cols");
+			particleData.m_nRows=csv.getInt("Rows");
+			particleData.m_nCols=csv.getInt("Cols");
 
-			particleEmitter.m_bBillboard=csv.getBool("IsBillboard");
+			particleData.m_bBillboard=csv.getBool("IsBillboard");
 
-			m_setParticleEmitter.push_back(particleEmitter);
+			m_setParticleData.push_back(particleData);
 		}
 		csv.close();
 	}

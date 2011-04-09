@@ -1,4 +1,4 @@
-#include "ParticleEmitter.h"
+#include "ParticleData.h"
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "Particle.h"
@@ -62,7 +62,7 @@ void CalcSpreadMatrix(float Spread1,float Spread2, float w, float l)
 
 }
 
-void CParticleEmitter::InitTile(Vec2D *tc, int nID)
+void CParticleData::InitTile(Vec2D *tc, int nID)
 {
 	Vec2D otc[4];
 	Vec2D a,b;
@@ -84,7 +84,7 @@ void CParticleEmitter::InitTile(Vec2D *tc, int nID)
 	}
 }
 
-Particle CParticleEmitter::NewPlaneParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2)
+Particle CParticleData::NewPlaneParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2)
 {
 	Particle p;
 
@@ -162,7 +162,7 @@ Particle CParticleEmitter::NewPlaneParticle(const Matrix& mWorld, int time, floa
 	return p;
 }
 
-Particle CParticleEmitter::NewSphereParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2)
+Particle CParticleData::NewSphereParticle(const Matrix& mWorld, int time, float w, float l, float spd, float var, float spr, float spr2)
 {
 	Particle p;
 	Vec3D vDir;
@@ -269,7 +269,7 @@ Particle CParticleEmitter::NewSphereParticle(const Matrix& mWorld, int time, flo
 	return p;
 }
 
-void CParticleEmitter::update(const Matrix& mWorld, CParticleGroup& particleGroup, float fElapsedTime)
+void CParticleData::update(const Matrix& mWorld, CParticleGroup& particleGroup, float fElapsedTime)
 {
 	int& nTime = particleGroup.m_nTime;
 	ParticleList& Particles = particleGroup.m_Particles;

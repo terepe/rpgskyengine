@@ -216,7 +216,7 @@ public:
 	virtual bool delRenderPass(int nID)=0;
 
 	virtual void loadMaterial(const char* szFilename, const char* szParentDir)=0;
-	virtual	bool loadParticleEmitters(const char* szFilename)=0;
+	virtual	bool loadParticleDatas(const char* szFilename)=0;
 
 	virtual CMaterial& getMaterial(const char* szName)=0;
 
@@ -241,7 +241,7 @@ struct TexCoordSet
 	Vec2D tc[4];
 };
 
-class iParticleEmitter
+class iParticleData
 {
 public:
 	// 速度， 变化，伸展，lat， 重力，周期，产生率，来自一个地区的，通道，减速度
@@ -275,7 +275,7 @@ public:
 
 	std::string m_strMaterialName;
 public:
-	iParticleEmitter(): m_nBoneID(0), m_nTexChannel(0), m_fLifeMid(0)
+	iParticleData(): m_nBoneID(0), m_nTexChannel(0), m_fLifeMid(0)
 	{
 		//		m_nBlend = 0;
 		m_nOrder = 0;
@@ -297,11 +297,11 @@ public:
 	}
 };
 
-class CParticleEmitterDataPlugBase:public CDataPlugBase
+class CParticleDataPlugBase:public CDataPlugBase
 {
 public:
-	CParticleEmitterDataPlugBase(){};
-	virtual ~CParticleEmitterDataPlugBase(){};
+	CParticleDataPlugBase(){};
+	virtual ~CParticleDataPlugBase(){};
 
 	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName) = 0;
 	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)=0;
