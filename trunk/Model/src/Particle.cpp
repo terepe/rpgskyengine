@@ -91,96 +91,96 @@ void CParticleEmitter::update(const Matrix& mWorld, ParticleData& particleData, 
 {
 	// spawn new particles
 
-		float fRate = particleData.m_Rate.getValue(m_nTime);
-		float fToSpawn;
-		{
-			float fLife = 1.0f;
-			//fLife = m_Lifespan.getValue(m_nTime);
-			fToSpawn = (fElapsedTime * fRate / fLife) + m_fRem;
-		}
-
-		if (fToSpawn < 1.0f)// 时间不足于产生一个粒子
-		{
-			m_fRem = fToSpawn;
-			if (m_fRem<0) 
-				m_fRem = 0;
-		}
-		else
-		{
-			int nToSpawn = (int)fToSpawn;
-
-			// 检测粒子是否超量
-			if ((nToSpawn + m_Particles.size()) > MAX_PARTICLES)
-			{
-				nToSpawn = (int)m_Particles.size() - MAX_PARTICLES;
-			}
-
-			m_fRem = fToSpawn - (float)nToSpawn;
-
-			bool bEnabled = particleData.m_Enabled.getValue(m_nTime)!=0;
-			if (bEnabled)
-			{
-				float w		= particleData.m_Areal.getValue(m_nTime) * 0.5f;
-				float l		= particleData.m_Areaw.getValue(m_nTime) * 0.5f;
-				float spd	= particleData.m_Speed.getValue(m_nTime);
-				float var	= particleData.m_Variation.getValue(m_nTime);
-				float spr	= particleData.m_Spread.getValue(m_nTime);
-				float spr2	= particleData.m_Lat.getValue(m_nTime);
-
-				for (int i=0; i<nToSpawn; i++)
-				{
-	Particle p;
-
-	//Spread Calculation
-	Matrix mWorldRot = mWorld;
-	mWorldRot._14=0;
-	mWorldRot._24=0;
-	mWorldRot._34=0;
-
-	CalcSpreadMatrix(spr,spr,1.0f,1.0f);
-	Matrix mRot = mWorldRot * SpreadMat;
-
-	p.vPos = particleData.m_vPos + Vec3D(randfloat(-l,l), 0, randfloat(-w,w));
-	p.vPos = mWorld * p.vPos;
-
-	Vec3D vDir = mRot * Vec3D(0,1,0);
-	p.vDown = Vec3D(0,-1.0f,0);
-	p.vSpeed = vDir.normalize() * spd * (1.0f+randfloat(-var,var));
-
-	if(!particleData.m_bBillboard)
+	float fRate = particleData.m_Rate.getValue(m_nTime);
+	float fToSpawn;
 	{
-		Vec3D look = p.vDir;
-		look.x=p.vDir.y;
-		look.y=p.vDir.z;
-		look.z=p.vDir.x;
-
-		Vec3D up = (look % p.vDir).normalize();
-		Vec3D right = (up % p.vDir).normalize();
-		up = (p.vDir % right).normalize();
-
-		// calculate the billboard matrix
-		p.mFace.m[0][1] = right.x;
-		p.mFace.m[1][1] = right.y;
-		p.mFace.m[2][1] = right.z;
-		p.mFace.m[0][2] = up.x;
-		p.mFace.m[1][2] = up.y;
-		p.mFace.m[2][2] = up.z;
-		p.mFace.m[0][0] = p.vDir.x;
-		p.mFace.m[1][0] = p.vDir.y;
-		p.mFace.m[2][0] = p.vDir.z;
+		float fLife = 1.0f;
+		//fLife = m_Lifespan.getValue(m_nTime);
+		fToSpawn = (fElapsedTime * fRate / fLife) + m_fRem;
 	}
 
-	p.fLife = 0;
-	p.fMaxLife = particleData.m_Lifespan.getValue(m_nTime);
+	if (fToSpawn < 1.0f)// 时间不足于产生一个粒子
+	{
+		m_fRem = fToSpawn;
+		if (m_fRem<0) 
+			m_fRem = 0;
+	}
+	else
+	{
+		int nToSpawn = (int)fToSpawn;
 
-	p.vOrigin = p.vPos;
+		// 检测粒子是否超量
+		if ((nToSpawn + m_Particles.size()) > MAX_PARTICLES)
+		{
+			nToSpawn = (int)m_Particles.size() - MAX_PARTICLES;
+		}
 
-	p.nTile = randint(0, particleData.m_nRows*particleData.m_nCols-1);
+		m_fRem = fToSpawn - (float)nToSpawn;
 
-						m_Particles.push_back(p);
+		bool bEnabled = particleData.m_Enabled.getValue(m_nTime)!=0;
+		if (bEnabled)
+		{
+			float w		= particleData.m_Areal.getValue(m_nTime) * 0.5f;
+			float l		= particleData.m_Areaw.getValue(m_nTime) * 0.5f;
+			float spd	= particleData.m_Speed.getValue(m_nTime);
+			float var	= particleData.m_Variation.getValue(m_nTime);
+			float spr	= particleData.m_Spread.getValue(m_nTime);
+			float spr2	= particleData.m_Lat.getValue(m_nTime);
+
+			for (int i=0; i<nToSpawn; i++)
+			{
+				Particle p;
+
+				//Spread Calculation
+				Matrix mWorldRot = mWorld;
+				mWorldRot._14=0;
+				mWorldRot._24=0;
+				mWorldRot._34=0;
+
+				CalcSpreadMatrix(spr,spr,1.0f,1.0f);
+				Matrix mRot = mWorldRot * SpreadMat;
+
+				p.vPos = particleData.m_vPos + Vec3D(randfloat(-l,l), 0, randfloat(-w,w));
+				p.vPos = mWorld * p.vPos;
+
+				Vec3D vDir = mRot * Vec3D(0,1,0);
+				p.vDown = Vec3D(0,-1.0f,0);
+				p.vSpeed = vDir.normalize() * spd * (1.0f+randfloat(-var,var));
+
+				if(!particleData.m_bBillboard)
+				{
+					Vec3D look = p.vDir;
+					look.x=p.vDir.y;
+					look.y=p.vDir.z;
+					look.z=p.vDir.x;
+
+					Vec3D up = (look % p.vDir).normalize();
+					Vec3D right = (up % p.vDir).normalize();
+					up = (p.vDir % right).normalize();
+
+					// calculate the billboard matrix
+					p.mFace.m[0][1] = right.x;
+					p.mFace.m[1][1] = right.y;
+					p.mFace.m[2][1] = right.z;
+					p.mFace.m[0][2] = up.x;
+					p.mFace.m[1][2] = up.y;
+					p.mFace.m[2][2] = up.z;
+					p.mFace.m[0][0] = p.vDir.x;
+					p.mFace.m[1][0] = p.vDir.y;
+					p.mFace.m[2][0] = p.vDir.z;
 				}
+
+				p.fLife = 0;
+				p.fMaxLife = particleData.m_Lifespan.getValue(m_nTime);
+
+				p.vOrigin = p.vPos;
+
+				p.nTile = randint(0, particleData.m_nRows*particleData.m_nCols-1);
+
+				m_Particles.push_back(p);
 			}
 		}
+	}
 	float mspeed	= 1.0f;
 	float fGrav		= particleData.m_Gravity.getValue(m_nTime);
 	float fDeaccel	= particleData.m_Deacceleration.getValue(m_nTime);
@@ -262,74 +262,74 @@ void CParticleEmitter::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRend
 				mbb._34=0;
 			}
 
-		if (m_pData->type==0 || m_pData->type==2)			// 正常的粒子
-		{
-			float f = 0.5;//0.707106781f; // sqrt(2)/2
-			if (m_pData->m_bBillboard)
+			if (m_pData->type==0 || m_pData->type==2)			// 正常的粒子
 			{
-				bv0 = mbb * Vec3D(+f,-f,0);
-				bv1 = mbb * Vec3D(+f,+f,0);
-				bv2 = mbb * Vec3D(-f,+f,0);
-				bv3 = mbb * Vec3D(-f,-f,0);
+				float f = 0.5;//0.707106781f; // sqrt(2)/2
+				if (m_pData->m_bBillboard)
+				{
+					bv0 = mbb * Vec3D(+f,-f,0);
+					bv1 = mbb * Vec3D(+f,+f,0);
+					bv2 = mbb * Vec3D(-f,+f,0);
+					bv3 = mbb * Vec3D(-f,-f,0);
+				}
+				else // 平板
+				{
+					bv0 = Vec3D(-f,0,+f);
+					bv1 = Vec3D(+f,0,+f);
+					bv2 = Vec3D(+f,0,-f);
+					bv3 = Vec3D(-f,0,-f);
+				}
+				// TODO: per-particle rotation in a non-expensive way?? :|
+
+				CGraphics& bg = GetGraphics();
+				bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
+				for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
+				{
+					bg.c(it->color);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[0]);
+					bg.v(it->vPos + bv0 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[1]);
+					bg.v(it->vPos + bv1 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[2]);
+					bg.v(it->vPos + bv2 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[3]);
+					bg.v(it->vPos + bv3 * it->fSize);
+				}
+				bg.end();
 			}
-			else // 平板
+			else if (m_pData->type==1) // 粒子射线发射器 particles from origin to position
 			{
-				bv0 = Vec3D(-f,0,+f);
-				bv1 = Vec3D(+f,0,+f);
-				bv2 = Vec3D(+f,0,-f);
-				bv3 = Vec3D(-f,0,-f);
+				bv0 = mbb * Vec3D(-1.0f,0,0);
+				bv1 = mbb * Vec3D(+1.0f,0,0);
+
+				CGraphics& bg = GetGraphics();
+				bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
+				for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
+				{
+					Vec3D P,O;
+					P=it->vPos;
+					O=it->vOrigin;
+					bg.c(it->color);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[0]);
+					bg.v(it->vPos + bv0 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[1]);
+					bg.v(it->vPos + bv1 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[2]);
+					bg.v(it->vOrigin + bv1 * it->fSize);
+
+					bg.t(m_pData->m_Tiles[it->nTile].tc[3]);
+					bg.v(it->vOrigin + bv0 * it->fSize);
+				}
+				bg.end();
 			}
-			// TODO: per-particle rotation in a non-expensive way?? :|
-
-			CGraphics& bg = GetGraphics();
-			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
-			for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
-			{
-				bg.c(it->color);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[0]);
-				bg.v(it->vPos + bv0 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[1]);
-				bg.v(it->vPos + bv1 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[2]);
-				bg.v(it->vPos + bv2 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[3]);
-				bg.v(it->vPos + bv3 * it->fSize);
-			}
-			bg.end();
 		}
-		else if (m_pData->type==1) // 粒子射线发射器 particles from origin to position
-		{
-			bv0 = mbb * Vec3D(-1.0f,0,0);
-			bv1 = mbb * Vec3D(+1.0f,0,0);
-
-			CGraphics& bg = GetGraphics();
-			bg.begin(VROT_TRIANGLE_LIST, m_Particles.size()*4);
-			for (std::list<Particle>::const_iterator it = m_Particles.begin(); it != m_Particles.end(); ++it)
-			{
-				Vec3D P,O;
-				P=it->vPos;
-				O=it->vOrigin;
-				bg.c(it->color);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[0]);
-				bg.v(it->vPos + bv0 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[1]);
-				bg.v(it->vPos + bv1 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[2]);
-				bg.v(it->vOrigin + bv1 * it->fSize);
-
-				bg.t(m_pData->m_Tiles[it->nTile].tc[3]);
-				bg.v(it->vOrigin + bv0 * it->fSize);
-			}
-			bg.end();
-		}
-	}
 	}
 	R.finishMaterial();
 }
