@@ -90,22 +90,13 @@ bool CModelData::saveMaterial(const std::string& strFilename)
 	return true;
 }
 
-bool CModelData::initParticleMaterial()
-{
-	std::string strParticleMaterialName = GetFilename(ChangeExtension(getItemName(),".par"));
-	for (size_t i=0;i<m_setParticleData.size();++i)
-	{
-		std::string strMaterialName = Format("%s%d",strParticleMaterialName.c_str(),i);
-		m_setParticleData[i].m_strMaterialName = strMaterialName;
-	}
-	return true;
-}
-
 #include "CSVFile.h"
+#include "ParticleDataMgr.h"
 bool CModelData::loadParticleDatas(const char* szFilename)
 {
+	std::string strParticleMaterialName = GetFilename(ChangeExtension(getItemName(),".par"));
 	CCsvFile csv;
-	CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
+	int nCount=0;
 	if (csv.open(szFilename))
 	{
 		while (csv.seekNextLine())
@@ -173,11 +164,12 @@ bool CModelData::loadParticleDatas(const char* szFilename)
 
 			particleData.m_bBillboard=csv.getBool("IsBillboard");
 
-			m_setParticleData.push_back(particleData);
+			std::string strMaterialName = Format("%s%d",strParticleMaterialName.c_str(),nCount++);
+			particleData.m_strMaterialName = strMaterialName;
+			CParticleDataMgr::getInstance().getItem(strMaterialName.c_str()) = particleData;
 		}
 		csv.close();
 	}
-	initParticleMaterial();
 	return true;
 }
 
