@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "ModelDataMgr.h"
+#include "ParticleDataMgr.h"
 
 CModelObject::CModelObject()
 :m_uLightMapTex(0)
@@ -59,10 +60,10 @@ void CModelObject::create()
 		}
 		
 		// Particles
-		for (size_t i=0;i<m_pModelData->m_setParticleData.size();++i)
+		for (size_t i=0;i<m_pModelData->m_setParticle.size();++i)
 		{
 			CParticleEmitter* pParticleEmitter = new CParticleEmitter;
-			pParticleEmitter->init(&m_pModelData->m_setParticleData[i]);
+			pParticleEmitter->init(&CParticleDataMgr::getInstance().getItem(m_pModelData->m_setParticle[i].c_str()));
 			char szParName[255];
 			sprintf(szParName,"par%d",i);
 			pParticleEmitter->setName(szParName);
@@ -72,10 +73,6 @@ void CModelObject::create()
 		// 
 		SetSkin(m_uSkinID);
 
-		//if(m_pModelData->m_AnimList.size()>0)
-		{
-			//m_AnimMgr = new AnimManager(&m_pModelData->m_AnimList[0]);
-		}
 		// ÉèÖÃÄ¬ÈÏLOD
 		SetLOD(0);
 
@@ -112,43 +109,6 @@ bool CModelObject::load(const char* szFilename)
 	create();
 	return true;
 }
-
-//void CModelObject::loadSkinModel(const char* szName,const char* szFilename)
-//{
-//	CSkinModel* pSkinModel = new CSkinModel();
-//	pSkinModel->Register(szFilename);
-//	pSkinModel->create();
-//	addChild(szName, pSkinModel);
-//}
-//
-//void CModelObject::loadChildModel(const char* szName, const char* szBoneName, const char* szFilename)
-//{
-//	if (strlen(szFilename)==0)
-//	{
-//		delChild(szName);
-//		return;
-//	}
-//	// ----
-//	LIST_RENDER_NODEL::iterator it = m_mapChildObj.find(szName);
-//	if (it != m_mapChildObj.end())
-//	{
-//// 		if (it->second.pChildObj->getModelFilename()==szFilename)
-//// 		{
-//// 			return;
-//// 		}
-//// 		else
-//		{
-//			delete it->second;
-//			m_mapChildObj.erase(it);
-//		}
-//	}
-//
-//	CModelObject* pModelObject = new CModelObject();
-//	pModelObject->Register(szFilename);
-//	pModelObject->create();
-//	//pModelObject->m_strParentBoneName = szBoneName
-//	addChild(szName, pModelObject);
-//}
 
 void CModelObject::CalcBones(const char* szAnim, int time)
 {
@@ -257,18 +217,7 @@ void CModelObject::Animate(const char* szAnimName)
 	{
 		return;
 	}
-	int t=0;
-// 	ModelAnimation &a = m_pModelData->m_AnimList[strAnimName];
-// 	int tmax = (a.timeEnd-a.timeStart);
-// 	if (tmax==0) 
-// 		tmax = 1;
-
-	if (/*isWMO == true*/0) {
-		//t = globalTime;
-		//t %= tmax;
-		//t += a.timeStart;
-	} else
-		t =			m_AnimMgr.uFrame;
+	int t =	m_AnimMgr.uFrame;
 
 	// ¹Ç÷À¶¯»­
 	if ((m_setBonesMatrix.size()>0)  && (m_nAnimTime != t || m_strAnimName != szAnimName))

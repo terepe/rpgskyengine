@@ -10,6 +10,7 @@ public:
 	CModelObject();
 	~CModelObject();
 public:
+	CONST_GET_SET_VARIABLE	(BBox&, m_, BBox);
 	virtual int		getType			() {return NODE_MODEL;}
 	void			SkinAnim		();	// 动画更新
 	virtual void	frameMove		(const Matrix& mWorld, double fTime, float fElapsedTime);
@@ -24,8 +25,6 @@ public:
 public:
 	void			Register		(const char* szFilename);
 	bool			load			(const char* szFilename);
-	//void			loadSkinModel	(const char* szName,const char* szFilename);
-	//void			loadChildModel	(const char* szName, const char* szBoneName, const char* szFilename);
 	bool			Prepare			()const;
 
 	virtual void	drawSkeleton	(CTextRender* pTextRender)const;
@@ -38,8 +37,6 @@ public:
 
 	int				getModelDataID	()const;
 	CModelData*		getModelData	()const;
-
-	CONST_GET_SET_VARIABLE	(BBox&, m_, BBox);
 protected:
 	int								m_nModelID;			// 模型ID
 	CModelData*						m_pModelData;		// 模型源数据

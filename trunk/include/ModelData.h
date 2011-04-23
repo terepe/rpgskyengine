@@ -113,27 +113,26 @@ public:
 	virtual CONST_GET_SET_VARIABLE	(bool,				m_b,Loaded);
 	virtual CONST_GET_SET_VARIABLE	(int,				m_n,Order);
 	
-	virtual size_t getRenderPassCount();
-	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
-	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
-	virtual bool delRenderPass(int nID);
+	virtual size_t		getRenderPassCount();
+	virtual void		setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
+	virtual bool		getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
+	virtual bool		delRenderPass(int nID);
 
-	virtual void loadMaterial(const char* szFilename, const char* szParentDir);
+	virtual void		loadMaterial(const char* szFilename, const char* szParentDir);
 
-	virtual CMaterial& getMaterial(const char* szName);
+	virtual CMaterial&	getMaterial(const char* szName);
 
-	virtual	iLodMesh& getMesh(){return m_Mesh;}
-	virtual iSkeleton& getSkeleton(){return m_Skeleton;}
+	virtual	iLodMesh&	getMesh(){return m_Mesh;}
+	virtual iSkeleton&	getSkeleton(){return m_Skeleton;}
 
-	virtual bool saveMaterial(const std::string& strFilename);
-	virtual bool initParticleMaterial();
-	virtual	bool loadParticleDatas(const char* szFilename);
-	void Init();
+	virtual bool		saveMaterial(const std::string& strFilename);
+	virtual	bool		loadParticleDatas(const char* szFilename);
+	void				Init();
 private:
-	bool passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const;
-	void passEnd()const;
+	bool				passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const;
+	void				passEnd()const;
 public:
-	void renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
+	void				renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
 public:
 	CLodMesh								m_Mesh;
  	CBoundMesh								m_BoundMesh;			// 包围盒
@@ -144,9 +143,8 @@ public: // 动画源
 	std::vector<ColorAnim>					m_ColorAnims;			// 颜色动画源
 	std::vector<TransAnim>					m_TransAnims;			// 透明动画源
 	std::vector<LightAnim>					m_LightAnims;			// 灯光动画源
-	std::vector<ParticleData>				m_setParticleData;	// 粒子动画源
+	std::vector<std::string>				m_setParticle;			// 粒子动画源
 private:
-	std::map<std::string, ModelAnimation>	m_AnimList;				// 动画配表源
 	std::map<int,ModelRenderPass>			m_mapPasses;			// 渲染过程集
 private:
 	std::string								m_strItemName;
