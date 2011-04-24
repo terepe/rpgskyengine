@@ -1,9 +1,7 @@
-#include "Skeleton.h"
+#include "SkeletonData.h"
 #include "RenderSystem.h"
-#include "Graphics.h"
-#include "TextRender.h"
 
-void CSkeleton::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,std::vector<bool>& setCalc)const
+void CSkeletonData::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,std::vector<bool>& setCalc)const
 {
 	if (setCalc[nBoneID])
 	{
@@ -20,7 +18,7 @@ void CSkeleton::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatrix,st
 	}
 }
 
-void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vector<Matrix>& setBonesMatrix)
+void CSkeletonData::CalcBonesMatrix(const std::string& strAnim, int time, std::vector<Matrix>& setBonesMatrix)
 {
 	// 默认的骨骼动画运算
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.find(strAnim);
@@ -106,56 +104,7 @@ void CSkeleton::CalcBonesMatrix(const std::string& strAnim, int time, std::vecto
 	}
 }
 
-void CSkeleton::calcBonesPoint(const std::vector<Matrix>& setBonesMatrix, std::vector<Vec3D>& setBonesPoint)const
-{
-	setBonesPoint.resize(setBonesMatrix.size());
-	for (size_t i=0;i<m_Bones.size();++i)
-	{
-		Matrix	mInvLocal = m_Bones[i].mInvLocal;
-		mInvLocal.Invert();
-		setBonesPoint[i]=setBonesMatrix[i]*mInvLocal*Vec3D(0,0,0);
-	}
-}
-
-void CSkeleton::render(const std::vector<Matrix>& setBonesMatrix, CTextRender* pTextRender)const
-{
-	CRenderSystem& R = GetRenderSystem();
-	CGraphics& G = GetGraphics();
-
-	std::vector<Vec3D> setBonesPoint;
-	calcBonesPoint(setBonesMatrix, setBonesPoint);
-
-	if (R.prepareMaterial("Skeleton"))
-	{
-		R.SetDepthBufferFunc(false,false);
-		for(size_t i=0;i<m_Bones.size();++i)
-		{
-			if (m_Bones[i].parent!=255)
-			{
-				G.DrawLine3D(setBonesPoint[m_Bones[i].parent],setBonesPoint[i],0xFFFFFFFF);
-			}
-		}
-		R.finishMaterial();
-	}
-
-	R.SetBlendFunc(true);
-	R.SetTextureColorOP(0,TBOP_MODULATE);
-	R.SetTextureAlphaOP(0,TBOP_MODULATE);
-	if (pTextRender)
-	{
-		for(size_t i=0;i<m_Bones.size();++i)
-		{
-			if (m_Bones[i].parent!=255)
-			{
-				Pos2D posScreen;
-				R.world2Screen(setBonesPoint[i],posScreen);
-				pTextRender->drawText(s2ws(m_Bones[i].strName).c_str(),posScreen.x,posScreen.y);
-			}
-		}
-	}
-}
-
-int CSkeleton::getBoneIDByName(const char* szName)
+int CSkeletonData::getBoneIDByName(const char* szName)
 {
 	size_t uBoneCount = m_Bones.size();
 	// ----
@@ -170,12 +119,12 @@ int CSkeleton::getBoneIDByName(const char* szName)
 	return -1;
 }
 
-size_t CSkeleton::getAnimationCount()
+size_t CSkeletonData::getAnimationCount()
 {
 	return m_Anims.size();
 }
 
-bool CSkeleton::getAnimation(const std::string& strName, long& timeCount)const
+bool CSkeletonData::getAnimation(const std::string& strName, long& timeCount)const
 {
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.find(strName);
 	if (it==m_Anims.end())
@@ -186,7 +135,7 @@ bool CSkeleton::getAnimation(const std::string& strName, long& timeCount)const
 	return true;
 }
 
-bool CSkeleton::getAnimation(size_t index, std::string& strName, long& timeCount)const
+bool CSkeletonData::getAnimation(size_t index, std::string& strName, long& timeCount)const
 {
 	if (m_Anims.size()<=index)
 	{
@@ -199,7 +148,7 @@ bool CSkeleton::getAnimation(size_t index, std::string& strName, long& timeCount
 	return true;
 }
 
-bool CSkeleton::delAnimation(const std::string& strName)
+bool CSkeletonData::delAnimation(const std::string& strName)
 {
 	std::map<std::string,SkeletonAnim>::iterator it=m_Anims.find(strName);
 	if(it!=m_Anims.end())

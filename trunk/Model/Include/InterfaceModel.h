@@ -191,7 +191,7 @@ struct SkeletonAnim
 	unsigned int uTotalFrames;
 };
 
-class iSkeleton
+class iSkeletonData
 {
 public:
 	std::vector<BoneInfo>				m_Bones;	// นว๗ภ
@@ -221,7 +221,7 @@ public:
 	virtual CMaterial& getMaterial(const char* szName)=0;
 
 	virtual	iLodMesh& getMesh()=0;
-	virtual iSkeleton& getSkeleton()=0;
+	virtual iSkeletonData& getSkeleton()=0;
 };
 
 //////////////////////////////////////////////////////////////////////////
