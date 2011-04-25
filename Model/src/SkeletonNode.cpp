@@ -43,14 +43,16 @@ void CSkeletonNode::frameMove(const Matrix& mWorld, double fTime, float fElapsed
 
 void CSkeletonNode::setSkeletonData(CSkeletonData* pSkeletonData)
 {
-	if (!pSkeletonData)
+	m_pSkeletonData = pSkeletonData;
+	// ----
+	if (!m_pSkeletonData)
 	{
 		return;
 	}
-	m_pSkeletonData = pSkeletonData;
-	if (pSkeletonData->m_Bones.size()>0)
+	// ----
+	if (m_pSkeletonData->m_Bones.size()>0)
 	{
-		m_setBonesMatrix.resize(pSkeletonData->m_Bones.size());
+		m_setBonesMatrix.resize(m_pSkeletonData->m_Bones.size());
 		pSkeletonData->CalcBonesMatrix("0",0,m_setBonesMatrix);
 		long timeCount;
 		pSkeletonData->getAnimation(0,m_strAnimName,timeCount);

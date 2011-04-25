@@ -3,7 +3,7 @@
 #include "Animated.h"
 #include "Vec4D.h"
 #include "Matrix.h"
-#include "Skeleton.h"
+#include "SkeletonData.h"
 #include "LodMesh.h"
 #include "Material.h"
 
