@@ -3,7 +3,7 @@
 #include "Animated.h"
 #include "Vec4D.h"
 #include "Matrix.h"
-#include "Skeleton.h"
+#include "SkeletonData.h"
 #include "LodMesh.h"
 #include "Material.h"
 
@@ -123,7 +123,7 @@ public:
 	virtual CMaterial&	getMaterial(const char* szName);
 
 	virtual	iLodMesh&	getMesh(){return m_Mesh;}
-	virtual iSkeleton&	getSkeleton(){return m_Skeleton;}
+	virtual iSkeletonData&	getSkeleton(){return m_Skeleton;}
 
 	virtual bool		saveMaterial(const std::string& strFilename);
 	virtual	bool		loadParticleDatas(const char* szFilename);
@@ -137,7 +137,7 @@ public:
 	CLodMesh								m_Mesh;
  	CBoundMesh								m_BoundMesh;			// 包围盒
 public: // 动画源
-	CSkeleton								m_Skeleton;				// 骨架
+	CSkeletonData							m_Skeleton;				// 骨架
 
 	std::vector<TexAnim>					m_TexAnims;				// 纹理动画源
 	std::vector<ColorAnim>					m_ColorAnims;			// 颜色动画源

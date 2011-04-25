@@ -76,8 +76,8 @@ void CParticleEmitter::frameMove(const Matrix& mWorld, double fTime, float fElap
 	// ----
 	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
 	{
-		CModelObject* pModel = (CModelObject*)m_pParent;
-		const Matrix& matBone = pModel->m_setBonesMatrix[m_pData->m_nBoneID];
+		CSkeletonNode* pSkeletonNode = (CSkeletonNode*)m_pParent;
+		const Matrix& matBone = pSkeletonNode->getBonesMatrix()[m_pData->m_nBoneID];
 		// ----
 		mNewWorld = matBone*mNewWorld;
 	}

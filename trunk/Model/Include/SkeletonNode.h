@@ -21,6 +21,7 @@ public:
 	void				Animate			(const char* szAnimName);
 	void				CalcBones		(const char* szAnim, int time);
 	virtual void		drawSkeleton	(CTextRender* pTextRender)const;
+	std::vector<Matrix>&getBonesMatrix	(){return m_setBonesMatrix;}
 protected:
 	SingleAnimNode		m_AnimMgr;			// 动作管理器
 	std::vector<Matrix>	m_setBonesMatrix;	// 骨骼矩阵

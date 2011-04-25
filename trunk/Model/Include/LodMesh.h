@@ -1,7 +1,6 @@
 #pragma once
 #include "common.h"
-#include "Skeleton.h"
-#include "RenderSystemCommon.h"
+#include "InterfaceModel.h"
 
 class CHardwareVertexBuffer;
 class CHardwareIndexBuffer;
