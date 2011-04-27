@@ -12,7 +12,6 @@ public:
 	CONST_GET_SET_VARIABLE	(std::string&, m_str, ModelFilename);
 	CONST_GET_SET_VARIABLE	(int, m_n, ModelDataID);
 	//CONST_GET_SET_VARIABLE	(CModelData*, m_p, ModelData);
-	virtual int		getType			() {return NODE_MODEL;}
 	virtual void	frameMove		(const Matrix& mWorld, double fTime, float fElapsedTime);
 public:
 	void			Register		(const char* szFilename);

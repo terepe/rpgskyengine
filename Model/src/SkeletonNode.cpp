@@ -20,7 +20,7 @@ void CSkeletonNode::frameMove(const Matrix& mWorld, double fTime, float fElapsed
 	// ----
 	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
-	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
+	if (m_pParent&&m_pParent->getType()==NODE_SKELETON)
 	{
 		CSkeletonNode* pModel = (CSkeletonNode*)m_pParent;
 		// ----

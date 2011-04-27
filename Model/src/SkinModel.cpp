@@ -18,7 +18,7 @@ CSkinModel::~CSkinModel()
 
 void CSkinModel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
-	if (m_pParent&&m_pParent->getType()==NODE_MODEL)
+	if (m_pParent&&m_pParent->getType()==NODE_SKELETON)
 	{
 		CSkeletonNode* pSkeletonNode = (CSkeletonNode*)m_pParent;
 		// ----
