@@ -21,7 +21,6 @@ public:
 	virtual void	renderDebug		()const;
 
 	virtual bool	intersect		(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax);
-	virtual int		getOrder		();
 
 	void			renderFocus		(Color32 color)const;
 protected:

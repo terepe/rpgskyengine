@@ -50,6 +50,22 @@ void CSkinModel::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType
 	CRenderNode::render(mNewWorld, eRenderType);
 }
 
+bool CSkinModel::intersectSelf(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
+{
+	if (!m_pMesh)
+	{
+		return false;
+	}
+	Vec3D vNewRayPos = vRayPos;
+	Vec3D vNewRayDir = vRayDir;
+	transformRay(vNewRayPos,vNewRayDir,m_mWorldMatrix);
+	if (m_pMesh->intersect(vNewRayPos , vNewRayDir))
+	{
+		return true;
+	}
+	return false;
+}
+
 void CSkinModel::setMesh(CLodMesh* pMesh)
 {
 	m_pMesh = pMesh;

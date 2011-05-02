@@ -48,7 +48,7 @@ protected:
 class CRenderNode:public CObjectPosition
 {
 public:
-	enum{NODE_BASE,NODE_PARTICLE,NODE_MODEL,NODE_SKINE};
+	enum{NODE_BASE,NODE_PARTICLE,NODE_SKELETON,NODE_MODEL,NODE_SKINE};
 public:
 	CRenderNode();
 	~CRenderNode();

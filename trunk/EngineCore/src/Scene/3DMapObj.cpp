@@ -66,36 +66,15 @@ bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tm
 {
 	if (getBBox().intersect(vRayPos , vRayDir, tmin, tmax))
 	{
-		Vec3D vNewRayPos = vRayPos;
-		Vec3D vNewRayDir = vRayDir;
-		transformRay(vNewRayPos,vNewRayDir,m_mWorldMatrix);
-
-		if (CModelObject::getModelData()->m_Mesh.intersect(vNewRayPos , vNewRayDir))
+		if (CModelObject::intersectSelf(vRayPos,vRayDir,tmin,tmax))
 		{
 			return true;
 		}
 		else
 		{
-			for (LIST_RENDER_NODE::const_iterator it=m_mapChildObj.begin();it!=m_mapChildObj.end();it++)
-			{
-				//const CModelData* pModelData = it->second->getModelData();
-				//if (pModelData&&pModelData->m_Mesh.intersect(vNewRayPos , vNewRayDir))
-				{
-				//	return true;
-				}
-			}
 		}
 	}
 	return false;
-}
-
-int C3DMapObj::getOrder()
-{
-	if (CModelObject::getModelData())
-	{
-		return CModelObject::getModelData()->getOrder();
-	}
-	return CMapObj::getOrder();
 }
 
 void C3DMapObj::renderFocus(Color32 color)const
