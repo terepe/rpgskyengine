@@ -72,6 +72,9 @@ public:
 	virtual bool			contain				(const CRenderNode* pChild)const;
 	virtual void			clearChildren		();
 	virtual void			removeChildren		();
+	virtual bool			intersectSelf		(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax){return false;}
+	//virtual void			intersect			(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax);
+	
 	//----
 	void					setChildBindingBone	(const char* szName, const char* szBoneName);
 protected:

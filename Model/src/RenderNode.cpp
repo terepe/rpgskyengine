@@ -103,6 +103,17 @@ void CRenderNode::removeChildren()
 	m_mapChildObj.clear();
 }
 
+// void CRenderNode::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
+// {
+// 	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
+// 	{
+// 		if (strcmp( (*it)->getName(), szName ) == 0 )
+// 		{
+// 			return (*it);
+// 		}
+// 	}
+// }
+
 void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName)
 {
 	CRenderNode* pRenderNodel = getChild(szName);
