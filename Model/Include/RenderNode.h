@@ -57,6 +57,7 @@ public:
 	//----
 	GET_VARIABLE			(LIST_RENDER_NODE&,ChildObj,m_mapChildObj);
 	CONST_GET_VARIABLE		(LIST_RENDER_NODE&,ChildObj,m_mapChildObj);
+	CONST_GET_SET_VARIABLE	(BBox&,m_,BBox);
 	//----
 	GET_SET_VARIABLE_STRING	(Name);
 	GET_SET_VARIABLE_STRING	(BindingBoneName);
@@ -72,8 +73,8 @@ public:
 	virtual bool			contain				(const CRenderNode* pChild)const;
 	virtual void			clearChildren		();
 	virtual void			removeChildren		();
-	virtual bool			intersectSelf		(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax){return false;}
-	//virtual void			intersect			(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax);
+	virtual bool			intersectSelf		(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)const{return false;}
+	virtual CRenderNode*	intersect			(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax);
 	
 	//----
 	void					setChildBindingBone	(const char* szName, const char* szBoneName);
@@ -84,4 +85,5 @@ protected:
 	std::string				m_strName;
 	std::string				m_strBindingBoneName;
 	int						m_nBindingBoneID;
+	BBox					m_BBox;
 };

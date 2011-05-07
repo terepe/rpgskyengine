@@ -103,16 +103,22 @@ void CRenderNode::removeChildren()
 	m_mapChildObj.clear();
 }
 
-// void CRenderNode::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
-// {
-// 	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
-// 	{
-// 		if (strcmp( (*it)->getName(), szName ) == 0 )
-// 		{
-// 			return (*it);
-// 		}
-// 	}
-// }
+CRenderNode* CRenderNode::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
+{
+	if(!intersectSelf(vRayPos,vRayDir,tmin,tmax))
+	{
+		return NULL;
+	}
+	CONST_FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
+ 	{
+		CRenderNode* pRenderNode = (*it)->intersect(vRayPos,vRayDir,tmin,tmax);
+		if(pRenderNode)
+		{
+			return pRenderNode;
+		}
+	}
+	return this;
+}
 
 void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName)
 {
@@ -123,6 +129,8 @@ void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName
 		pRenderNodel->setBindingBoneName(szBoneName);
 	}
 }
+
+
 
 void CObjectPosition::updateWorldMatrix()
 {
