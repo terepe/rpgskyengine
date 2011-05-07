@@ -20,8 +20,6 @@ public:
 	virtual void	renderFocus		()const;
 	virtual void	renderDebug		()const;
 
-	virtual bool	intersect		(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax);
-
 	void			renderFocus		(Color32 color)const;
 protected:
 };

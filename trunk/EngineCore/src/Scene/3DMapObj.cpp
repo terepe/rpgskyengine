@@ -48,7 +48,7 @@ Matrix C3DMapObj::getShadowMatrix(const Vec3D& vLight,float fHeight)const
 void C3DMapObj::renderShadow(const Matrix& mWorld, const Vec3D& vLight,float fHeight)const
 {
 	Matrix mNewWorld = mWorld*getShadowMatrix(vLight,fHeight);//m_mWorld;
-	CModelObject::render(mNewWorld, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+	render(mNewWorld, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 }
 
 void C3DMapObj::renderFocus()const
@@ -62,21 +62,6 @@ void C3DMapObj::renderDebug()const
 	GetGraphics().drawBBox(getBBox(),0xFFFF4400);
 }
 
-bool C3DMapObj::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
-{
-	if (getBBox().intersect(vRayPos , vRayDir, tmin, tmax))
-	{
-		if (CModelObject::intersectSelf(vRayPos,vRayDir,tmin,tmax))
-		{
-			return true;
-		}
-		else
-		{
-		}
-	}
-	return false;
-}
-
 void C3DMapObj::renderFocus(Color32 color)const
 {
 	if (GetRenderSystem().prepareMaterial("ObjectFocus"))
@@ -85,7 +70,7 @@ void C3DMapObj::renderFocus(Color32 color)const
 		//if (pShaderFocus)
 		{
 		//	pShaderFocus->setVec4D("g_vColorFocus",Vec4D(color));
-			CModelObject::render(m_mWorldMatrix, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
+			render(m_mWorldMatrix, E_MATERIAL_RENDER_TYPE(MATERIAL_GEOMETRY|MATERIAL_RENDER_ALPHA_TEST));
 		}
 		GetRenderSystem().finishMaterial();
 	}

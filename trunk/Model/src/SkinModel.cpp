@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 #include "SkeletonNode.h"
 #include "LodMesh.h"
+#include "Intersect.h"
 
 CSkinModel::CSkinModel()
 	:m_pVB(NULL)
@@ -50,8 +51,12 @@ void CSkinModel::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType
 	CRenderNode::render(mNewWorld, eRenderType);
 }
 
-bool CSkinModel::intersectSelf(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
+bool CSkinModel::intersectSelf(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)const
 {
+	if (!getBBox().intersect(vRayPos , vRayDir, tmin, tmax))
+	{
+		return false;
+	}
 	if (!m_pMesh)
 	{
 		return false;

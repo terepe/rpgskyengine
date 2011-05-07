@@ -11,7 +11,7 @@ public:
 	virtual int		getType			() {return NODE_MODEL;}
 	virtual void	frameMove		(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void	render			(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
-	virtual bool	intersectSelf	(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)
+	virtual bool	intersectSelf	(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax)const;
 	void			setMesh			(CLodMesh* pMesh);
 	bool			Prepare			()const;
 	void			SetLOD			(unsigned long uLodID);		// …Ë÷√LodID

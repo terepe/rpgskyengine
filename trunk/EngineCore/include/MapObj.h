@@ -27,36 +27,27 @@ enum
 		MAP_3DEFFECTNEW			= 19,
 };
 
-class CMapObj :public CModelObject
+class CMapObj :public CSkeletonNode
 {
 public:
 	CMapObj()													{m_nType = MAP_NONE;}
 	virtual ~CMapObj(void)										{}
 
 public:
+	CONST_GET_SET_VARIABLE	(int,m_n,Order);
+
 	virtual void			renderFocus	()const					{}
 	virtual void			renderDebug	()const					{}
 
 	virtual int				GetObjType	()						{return m_nType;}
 	virtual void			release		()						{delete this;}
 
-
-
-	virtual bool			intersect	(const Vec3D& vRayPos , const Vec3D& vRayDir, float &tmin ,float &tmax){return false;}
-	virtual BBox			getBBox		()const					{return BBox();}
-
 	virtual Pos2D			getCellPos	()						{return Pos2D();}
 	virtual void			SetCellPos	( Pos2D& posCell )		{}
 
 	virtual bool			IsFocus		()						{return false;}
-
-	virtual void			SetARGB		(unsigned long dwARGB)	{m_dwARGB = dwARGB;}
-	virtual unsigned long	GetARGB		()						{return m_dwARGB;}
-	virtual int				getOrder	()						{return m_nOrder;}
-	virtual void			setOrder	(int nOrder)			{m_nOrder=nOrder;}
 public:
 	int				m_nType;
-	unsigned long	m_dwARGB;
 	int				m_nOrder;
 };
 #include <deque>
