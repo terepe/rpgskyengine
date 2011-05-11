@@ -6,7 +6,7 @@ CModelDataMgr::CModelDataMgr()
 {
 	m_DataPlugsMgr.loadPlugs("Plugins\\*.dme");
 }
-
+/*
 unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 {
 	if (strFilename.length()==0)
@@ -26,15 +26,15 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 
 	return add(strFilename, pModel);
 }
-
-bool CModelDataMgr::loadModel(CModelData& modelData,const std::string& strFilename)
+*/
+CRenderNode* CModelDataMgr::loadModel(const char* szFilename)
 {
 	// 判断格式--根据文件后缀名
-	std::string strExt = GetExtension(strFilename);
+	std::string strExt = GetExtension(szFilename);
 	CModelPlugBase* pModelPlug = (CModelPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt.c_str());
 	if (pModelPlug)
 	{
-		return pModelPlug->importData(&modelData,strFilename);
+		return pModelPlug->importData(&CRenderNodeMgr::getSingleton(),szFilename);
 	}
 	return false;
 }

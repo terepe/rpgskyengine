@@ -7,29 +7,18 @@ class CModelDataMgr: public CManager<CModelData>,public TSingleton<CModelDataMgr
 {
 public:
 	CModelDataMgr();
-	unsigned long	RegisterModel(const std::string& strFilename);
-	bool			loadModel(CModelData& modelData,const std::string& strFilename);
+	CRenderNode*	loadModel(const char* szFilename);
 	CDataPlugsMgr&	getDataPlugsMgr();
 private:
 	CDataPlugsMgr	m_DataPlugsMgr;
 };
 
-class iRenderNodePlugBase:public CDataPlugBase
+
+class CRenderNodeMgr:public iRenderNodeMgr, public TSingleton<CRenderNodeMgr>
 {
 public:
-	iRenderNodePlugBase(){};
-	virtual ~iRenderNodePlugBase(){};
-
-	virtual int	addChild(CRenderNode * pRenderNode, bool bShowDlg, bool bSpecifyFileName) = 0;
-	virtual bool importData(CRenderNode * pRenderNode, const char* szFilename)=0;
-	virtual bool exportData(CRenderNode * pRenderNode, const char* szFilename)=0;
-};
-
-class iRenderNodePlugBase:public CDataPlugBase
-{
-public:
-	iRenderNodePlugBase(){};
-	virtual ~iRenderNodePlugBase(){};
+	CRenderNodeMgr(){};
+	virtual ~CRenderNodeMgr(){};
 
 	CRenderNode * createRenderNode(CSkeletonData& data)// Particles
 	{
@@ -41,7 +30,7 @@ public:
 	CRenderNode * createRenderNode(ParticleData& data)// Particles
 	{
 			CParticleEmitter* pParticleEmitter = new CParticleEmitter;
-			pParticleEmitter->init(&data));
+			pParticleEmitter->init(&data);
 			return pParticleEmitter;
 	}
 
