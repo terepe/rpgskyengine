@@ -22,6 +22,5 @@ protected:
 	int				m_nModelDataID;		// 模型ID
 	CModelData*		m_pModelData;		// 模型源数据
 	bool			m_bCreated;
-	BBox			m_BBox;
 	std::string		m_strModelFilename;
 };
