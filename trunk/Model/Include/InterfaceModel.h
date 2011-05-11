@@ -205,36 +205,7 @@ public:
 	virtual bool delAnimation(const std::string& strName)=0;
 };
 
-class iModelData
-{
-public:
-	virtual const std::string& getItemName()const=0;
 
-	virtual size_t getRenderPassCount()=0;
-	virtual void setRenderPass(int nID, int nSubID, const std::string& strMaterialName)=0;
-	virtual bool getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const=0;
-	virtual bool delRenderPass(int nID)=0;
-
-	virtual void loadMaterial(const char* szFilename, const char* szParentDir)=0;
-	virtual	bool loadParticleDatas(const char* szFilename)=0;
-
-	virtual CMaterial& getMaterial(const char* szName)=0;
-
-	virtual	iLodMesh& getMesh()=0;
-	virtual iSkeletonData& getSkeleton()=0;
-};
-
-//////////////////////////////////////////////////////////////////////////
-class CModelPlugBase:public CDataPlugBase
-{
-public:
-	CModelPlugBase(){};
-	virtual ~CModelPlugBase(){};
-
-	virtual int Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName) = 0;
-	virtual bool importData(iModelData * pModelData, const std::string& strFilename)=0;
-	virtual bool exportData(iModelData * pModelData, const std::string& strFilename)=0;
-};
 
 struct TexCoordSet
 {
@@ -317,4 +288,28 @@ public:
 	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName) = 0;
 	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)=0;
 	virtual bool exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)=0;
+};
+
+class CRenderNode;
+class iRenderNodeMgr
+{
+public:
+	iRenderNodeMgr(){};
+	virtual ~iRenderNodeMgr(){};
+
+	virtual CRenderNode*	createRenderNode(iSkeletonData& data)=0;
+	virtual CRenderNode*	createRenderNode(ParticleData& data)=0;
+	virtual CRenderNode*	createRenderNode(iLodMesh& data)=0;
+	std::map<std::string, iSkeletonData>	m_mapSkeletonData;
+	std::map<std::string, ParticleData>		m_mapParticleData;
+	std::map<std::string, iLodMesh>			m_mapLodMesh;
+};
+
+//////////////////////////////////////////////////////////////////////////
+class CModelPlugBase:public CDataPlugBase
+{
+public:
+	CModelPlugBase(){};
+	virtual ~CModelPlugBase(){};
+	virtual CRenderNode* importData(iRenderNodeMgr * pRenderNodeMgr, const char* szFilename)=0;
 };

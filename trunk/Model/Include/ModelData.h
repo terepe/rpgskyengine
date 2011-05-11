@@ -103,7 +103,7 @@ struct ModelRenderPass
 
 //////////////////////////////////////////////////////////////////////////
 
-class CModelData:public iModelData
+class CModelData
 {
 public:
 	CModelData();
@@ -122,7 +122,6 @@ public:
 
 	virtual CMaterial&	getMaterial(const char* szName);
 
-	virtual	iLodMesh&	getMesh(){return m_Mesh;}
 	virtual iSkeletonData&	getSkeleton(){return m_Skeleton;}
 
 	virtual bool		saveMaterial(const std::string& strFilename);
@@ -134,8 +133,6 @@ private:
 public:
 	void				renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLodLevel, CHardwareVertexBuffer* pSkinVB, float fOpacity, int nAnimTime)const;
 public:
-	CLodMesh								m_Mesh;
- 	CBoundMesh								m_BoundMesh;			// °üÎ§ºÐ
 public: // ¶¯»­Ô´
 	CSkeletonData							m_Skeleton;				// ¹Ç¼Ü
 
