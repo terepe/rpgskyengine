@@ -38,9 +38,6 @@ void CModelObject::create()
 		}
 		m_pModelData->setLoaded(true);
 	}
-		// mesh
-		m_BBox	= m_pModelData->m_Mesh.getBBox();
-
 		// Skeleton
 		if (m_pModelData->m_Skeleton.m_Bones.size()>0)
 		{
