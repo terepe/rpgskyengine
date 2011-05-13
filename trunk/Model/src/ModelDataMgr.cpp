@@ -22,7 +22,7 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 		return addRef(strFilename);
 	}
 
-	CModelData* pModel = new CModelData();
+	CSkinModel* pModel = new CSkinModel();
 
 	return add(strFilename, pModel);
 }
@@ -34,7 +34,7 @@ CRenderNode* CModelDataMgr::loadModel(const char* szFilename)
 	CModelPlugBase* pModelPlug = (CModelPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt.c_str());
 	if (pModelPlug)
 	{
-		return pModelPlug->importData(&CRenderNodeMgr::getSingleton(),szFilename);
+		return pModelPlug->importData(&CRenderNodeMgr::getInstance(),szFilename);
 	}
 	return false;
 }
