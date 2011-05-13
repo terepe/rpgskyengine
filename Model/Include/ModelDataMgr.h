@@ -1,9 +1,11 @@
 #pragma once
 #include "DataPlugsMgr.h"
-#include "ModelData.h"
 #include "TSingleton.h"
+#include "SkeletonNode.h"
+#include "Particle.h"
+#include "SkinModel.h"
 
-class CModelDataMgr: public CManager<CModelData>,public TSingleton<CModelDataMgr>
+class CModelDataMgr:public TSingleton<CModelDataMgr>
 {
 public:
 	CModelDataMgr();
@@ -20,10 +22,10 @@ public:
 	CRenderNodeMgr(){};
 	virtual ~CRenderNodeMgr(){};
 
-	CRenderNode * createRenderNode(CSkeletonData& data)// Particles
+	CRenderNode * createRenderNode(iSkeletonData& data)// Particles
 	{
 			CSkeletonNode* pSkeletonNode = new CSkeletonNode;
-			pSkeletonNode->setSkeletonData(&data);
+			pSkeletonNode->setSkeletonData((CSkeletonData*)&data);
 			return pSkeletonNode;
 	}
 	
@@ -34,10 +36,10 @@ public:
 			return pParticleEmitter;
 	}
 
-	virtual CRenderNode * createRenderNode(CLodMesh& data)// skin
+	virtual CRenderNode * createRenderNode(iLodMesh& data)// skin
 	{
 			CSkinModel* pSkinModel = new CSkinModel;
-			pSkinModel->setMesh(&data);
+			pSkinModel->setMesh((CLodMesh*)&data);
 			return pSkinModel;
 	}
 };
