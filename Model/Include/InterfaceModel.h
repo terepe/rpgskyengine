@@ -297,12 +297,12 @@ public:
 	iRenderNodeMgr(){};
 	virtual ~iRenderNodeMgr(){};
 
-	virtual CRenderNode*	createRenderNode(iSkeletonData& data)=0;
-	virtual CRenderNode*	createRenderNode(ParticleData& data)=0;
-	virtual CRenderNode*	createRenderNode(iLodMesh& data)=0;
-	std::map<std::string, iSkeletonData>	m_mapSkeletonData;
-	std::map<std::string, ParticleData>		m_mapParticleData;
-	std::map<std::string, iLodMesh>			m_mapLodMesh;
+	virtual CRenderNode*	createRenderNode(iSkeletonData* data)=0;
+	virtual CRenderNode*	createRenderNode(ParticleData* data)=0;
+	virtual CRenderNode*	createRenderNode(iLodMesh* data)=0;
+	std::map<std::string, iSkeletonData*>		m_mapSkeletonData;
+	std::map<std::string, ParticleData*>		m_mapParticleData;
+	std::map<std::string, iLodMesh*>			m_mapLodMesh;
 };
 
 //////////////////////////////////////////////////////////////////////////

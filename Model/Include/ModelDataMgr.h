@@ -22,24 +22,24 @@ public:
 	CRenderNodeMgr(){};
 	virtual ~CRenderNodeMgr(){};
 
-	CRenderNode * createRenderNode(iSkeletonData& data)// Particles
+	CRenderNode * createRenderNode(iSkeletonData* data)// Particles
 	{
 			CSkeletonNode* pSkeletonNode = new CSkeletonNode;
-			pSkeletonNode->setSkeletonData((CSkeletonData*)&data);
+			pSkeletonNode->setSkeletonData((CSkeletonData*)data);
 			return pSkeletonNode;
 	}
 	
-	CRenderNode * createRenderNode(ParticleData& data)// Particles
+	CRenderNode * createRenderNode(ParticleData* data)// Particles
 	{
 			CParticleEmitter* pParticleEmitter = new CParticleEmitter;
-			pParticleEmitter->init(&data);
+			pParticleEmitter->init(data);
 			return pParticleEmitter;
 	}
 
-	virtual CRenderNode * createRenderNode(iLodMesh& data)// skin
+	virtual CRenderNode * createRenderNode(iLodMesh* data)// skin
 	{
 			CSkinModel* pSkinModel = new CSkinModel;
-			pSkinModel->setMesh((CLodMesh*)&data);
+			pSkinModel->setMesh((CLodMesh*)data);
 			return pSkinModel;
 	}
 };

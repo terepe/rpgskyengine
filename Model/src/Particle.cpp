@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "Animated.h"
+#include "SkeletonNode.h"
 #define MAX_PARTICLES 10000
 
 float	frand();
