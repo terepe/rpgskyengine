@@ -2,7 +2,7 @@
 #include "Pos2D.h"
 #include "Vec3D.h"
 #include "Frustum.h"
-#include "ModelObject.h"
+#include "RenderNode.h"
 
 enum
 {
