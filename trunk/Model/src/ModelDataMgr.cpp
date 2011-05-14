@@ -2,7 +2,7 @@
 #include "IORead.h"
 #include "FileSystem.h"
 
-CModelDataMgr::CModelDataMgr()
+CRenderNodeMgr::CRenderNodeMgr()
 {
 	m_DataPlugsMgr.loadPlugs("Plugins\\*.dme");
 }
@@ -24,22 +24,38 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 
 	CSkinModel* pModel = new CSkinModel();
 
-	return add(strFilename, pModel);
+	return add(strFilename, pModel);&CRenderNodeMgr::getInstance()
 }
 */
-CRenderNode* CModelDataMgr::loadModel(const char* szFilename)
+CRenderNode* CRenderNodeMgr::loadRenderNode(const char* szFilename)
 {
 	// 判断格式--根据文件后缀名
 	std::string strExt = GetExtension(szFilename);
 	CModelPlugBase* pModelPlug = (CModelPlugBase*)m_DataPlugsMgr.getPlugByExtension(strExt.c_str());
 	if (pModelPlug)
 	{
-		return pModelPlug->importData(&CRenderNodeMgr::getInstance(),szFilename);
+		return pModelPlug->importData(this,szFilename);
 	}
 	return false;
 }
 
-CDataPlugsMgr& CModelDataMgr::getDataPlugsMgr()
+CRenderNode * CRenderNodeMgr::createRenderNode(iSkeletonData* data)
 {
-	return m_DataPlugsMgr;
+	CSkeletonNode* pSkeletonNode = new CSkeletonNode;
+	pSkeletonNode->setSkeletonData((CSkeletonData*)data);
+	return pSkeletonNode;
 }
+	
+	CRenderNode * CRenderNodeMgr::createRenderNode(ParticleData* data)
+	{
+			CParticleEmitter* pParticleEmitter = new CParticleEmitter;
+			pParticleEmitter->init(data);
+			return pParticleEmitter;
+	}
+
+	CRenderNode * CRenderNodeMgr::createRenderNode(iLodMesh* data)
+	{
+			CSkinModel* pSkinModel = new CSkinModel;
+			pSkinModel->setMesh((CLodMesh*)data);
+			return pSkinModel;
+	}
