@@ -88,9 +88,8 @@
     <ClInclude Include="Include\InterfaceModel.h" />
     <ClInclude Include="include\LodMesh.h" />
     <ClInclude Include="Include\MeshCoordinate.h" />
-    <ClInclude Include="Include\ModelDataMgr.h" />
+    <ClInclude Include="Include\RenderNodeMgr.h" />
     <ClInclude Include="include\Particle.h" />
-    <ClInclude Include="Include\ParticleDataMgr.h" />
     <ClInclude Include="Include\RenderNode.h" />
     <ClInclude Include="include\SkeletonData.h" />
     <ClInclude Include="Include\SkeletonNode.h" />
@@ -100,7 +99,7 @@
     <ClCompile Include="src\AnimMgr.cpp" />
     <ClCompile Include="src\LodMesh.cpp" />
     <ClCompile Include="src\MeshCoordinate.cpp" />
-    <ClCompile Include="src\ModelDataMgr.cpp" />
+    <ClCompile Include="src\RenderNodeMgr.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\RenderNode.cpp" />
     <ClCompile Include="src\SkeletonData.cpp" />

@@ -389,8 +389,9 @@ CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D&
 	localBBox.vMin.set(-1,-1,-1);
 	localBBox.vMax.set( 1, 1, 1);
 	// ----
+	//C3DMapSceneObj* pObject = new C3DMapSceneObj;
+	//pObject->Register(objectInfo.strFilename.c_str());
 	C3DMapSceneObj* pObject = new C3DMapSceneObj;
-	pObject->Register(objectInfo.strFilename.c_str());
 	pObject->setPos(vPos);
 	pObject->setRotate(vRotate);
 	pObject->setScale(vScale);

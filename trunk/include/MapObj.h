@@ -2,7 +2,7 @@
 #include "Pos2D.h"
 #include "Vec3D.h"
 #include "Frustum.h"
-#include "ModelObject.h"
+#include "SkeletonNode.h"
 
 enum
 {
@@ -27,7 +27,7 @@ enum
 		MAP_3DEFFECTNEW			= 19,
 };
 
-class CMapObj :public CModelObject
+class CMapObj :public CSkeletonNode
 {
 public:
 	CMapObj()													{m_nType = MAP_NONE;}
