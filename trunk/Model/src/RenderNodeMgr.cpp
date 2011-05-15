@@ -1,6 +1,9 @@
 #include "RenderNodeMgr.h"
 #include "IORead.h"
 #include "FileSystem.h"
+#include "SkeletonData.h"
+#include "LodMesh.h"
+#include "RenderSystem.h"
 
 CRenderNodeMgr::CRenderNodeMgr()
 {
@@ -58,4 +61,24 @@ CRenderNode * CRenderNodeMgr::createRenderNode(iLodMesh* pData)
 	CSkinModel* pSkinModel = new CSkinModel;
 	pSkinModel->setMesh((CLodMesh*)pData);
 	return pSkinModel;
+}
+
+iSkeletonData* CRenderNodeMgr::createSkeletonData(const char* szName)
+{
+	return (iSkeletonData*)&m_mapSkeletonData[szName];
+}
+
+ParticleData* CRenderNodeMgr::createParticleData(const char* szName)
+{
+	return (ParticleData*)&m_mapParticleData[szName];
+}
+
+iLodMesh* CRenderNodeMgr::createLodMesh(const char* szName)
+{
+	return (iLodMesh*)&m_mapLodMesh[szName];
+}
+
+CMaterial* CRenderNodeMgr::createMaterial(const char* szName)
+{
+	return &GetRenderSystem().getMaterialMgr().getItem(szName);
 }
