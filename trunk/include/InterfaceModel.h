@@ -121,7 +121,11 @@ public:
 	{
 		getVectorValue(texcoord,n,vUV);
 	}
-
+	void setMaterial(const char* szMaterial)
+	{
+		strMaterial = szMaterial;
+	}
+	std::string			strMaterial;
 	std::vector<Vec3D>	pos;
 	std::vector<unsigned long>	weight;
 	std::vector<unsigned long>	bone;
@@ -286,12 +290,14 @@ public:
 	iRenderNodeMgr(){};
 	virtual ~iRenderNodeMgr(){};
 
+	virtual CRenderNode*	loadRenderNode(const char* szFilename)=0;
 	virtual CRenderNode*	createRenderNode(iSkeletonData* data)=0;
 	virtual CRenderNode*	createRenderNode(ParticleData* data)=0;
 	virtual CRenderNode*	createRenderNode(iLodMesh* data)=0;
-	std::map<std::string, iSkeletonData*>		m_mapSkeletonData;
-	std::map<std::string, ParticleData*>		m_mapParticleData;
-	std::map<std::string, iLodMesh*>			m_mapLodMesh;
+	virtual iSkeletonData*	createSkeletonData(const char* szName)=0;
+	virtual ParticleData*	createParticleData(const char* szName)=0;
+	virtual iLodMesh*		createLodMesh(const char* szName)=0;
+	virtual CMaterial*		createMaterial(const char* szName)=0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -300,5 +306,5 @@ class CModelPlugBase:public CDataPlugBase
 public:
 	CModelPlugBase(){};
 	virtual ~CModelPlugBase(){};
-	virtual CRenderNode* importData(iRenderNodeMgr * pRenderNodeMgr, const char* szFilename)=0;
+	virtual CRenderNode* importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)=0;
 };
