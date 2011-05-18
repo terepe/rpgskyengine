@@ -30,7 +30,7 @@ unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
 	return add(strFilename, pModel);&CRenderNodeMgr::getInstance()
 }
 */
-CRenderNode* CRenderNodeMgr::loadRenderNode(const char* szFilename)
+iRenderNode* CRenderNodeMgr::loadRenderNode(const char* szFilename)
 {
 	// 判断格式--根据文件后缀名
 	std::string strExt = GetExtension(szFilename);
@@ -42,21 +42,21 @@ CRenderNode* CRenderNodeMgr::loadRenderNode(const char* szFilename)
 	return false;
 }
 
-CRenderNode * CRenderNodeMgr::createRenderNode(iSkeletonData* pData)
+iRenderNode * CRenderNodeMgr::createRenderNode(iSkeletonData* pData)
 {
 	CSkeletonNode* pSkeletonNode = new CSkeletonNode;
 	pSkeletonNode->setSkeletonData((CSkeletonData*)pData);
 	return pSkeletonNode;
 }
 
-CRenderNode * CRenderNodeMgr::createRenderNode(ParticleData* pData)
+iRenderNode * CRenderNodeMgr::createRenderNode(ParticleData* pData)
 {
 	CParticleEmitter* pParticleEmitter = new CParticleEmitter;
 	pParticleEmitter->init(pData);
 	return pParticleEmitter;
 }
 
-CRenderNode * CRenderNodeMgr::createRenderNode(iLodMesh* pData)
+iRenderNode * CRenderNodeMgr::createRenderNode(iLodMesh* pData)
 {
 	CSkinModel* pSkinModel = new CSkinModel;
 	pSkinModel->setMesh((CLodMesh*)pData);

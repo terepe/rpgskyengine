@@ -86,6 +86,7 @@
     <ClInclude Include="include\Animated.h" />
     <ClInclude Include="Include\AnimMgr.h" />
     <ClInclude Include="Include\InterfaceModel.h" />
+    <ClInclude Include="Include\iSkeleton.h" />
     <ClInclude Include="include\LodMesh.h" />
     <ClInclude Include="Include\MeshCoordinate.h" />
     <ClInclude Include="Include\RenderNodeMgr.h" />
