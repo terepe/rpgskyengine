@@ -54,8 +54,6 @@ void CSkeletonNode::setSkeletonData(CSkeletonData* pSkeletonData)
 	{
 		m_setBonesMatrix.resize(m_pSkeletonData->m_Bones.size());
 		pSkeletonData->CalcBonesMatrix("0",0,m_setBonesMatrix);
-		long timeCount;
-		pSkeletonData->getAnimation(0,m_strAnimName,timeCount);
 	}
 }
 
@@ -73,11 +71,11 @@ void CSkeletonNode::setAnim(const char* szAnimName)
 		return;
 	}
 	m_strAnimName = szAnimName;
-	long timeCount;
-	if (m_pSkeletonData->getAnimation(szAnimName,timeCount))
+	iSkeletonAnim* pSkeletonAnim = m_pSkeletonData->getAnimation(szAnimName);
+	if (pSkeletonAnim)
 	{
 		m_AnimMgr.uFrame=0;
-		m_AnimMgr.uTotalFrames = timeCount;
+		m_AnimMgr.uTotalFrames = pSkeletonAnim->getTotalFrames();
 		m_AnimMgr.CurLoop=0;
 	}
 }

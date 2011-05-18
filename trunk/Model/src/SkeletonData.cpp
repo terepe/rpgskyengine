@@ -124,28 +124,30 @@ size_t CSkeletonData::getAnimationCount()
 	return m_Anims.size();
 }
 
-bool CSkeletonData::getAnimation(const std::string& strName, long& timeCount)const
+iSkeletonAnim* CSkeletonData::createAnimation(const std::string& strName)
+{
+	return (iSkeletonAnim*)&m_Anims[strName];
+}
+
+iSkeletonAnim* CSkeletonData::getAnimation(const std::string& strName)
 {
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.find(strName);
 	if (it==m_Anims.end())
 	{
-		return false;
+		return (iSkeletonAnim*)&it->second;
 	}
-	timeCount = it->second.uTotalFrames;
-	return true;
+	return NULL;
 }
 
-bool CSkeletonData::getAnimation(size_t index, std::string& strName, long& timeCount)const
+iSkeletonAnim* CSkeletonData::getAnimation(size_t index)
 {
 	if (m_Anims.size()<=index)
 	{
-		return false;
+		return NULL;
 	}
 	std::map<std::string,SkeletonAnim>::const_iterator it = m_Anims.begin();
 	advance(it,index);
-	strName = it->first;
-	timeCount = it->second.uTotalFrames;
-	return true;
+	return (iSkeletonAnim*)&it->second;
 }
 
 bool CSkeletonData::delAnimation(const std::string& strName)

@@ -10,10 +10,10 @@ class CRenderNodeMgr:public iRenderNodeMgr, public TSingleton<CRenderNodeMgr>
 public:
 	CRenderNodeMgr();
 	virtual ~CRenderNodeMgr(){};
-	virtual CRenderNode*	loadRenderNode(const char* szFilename);
-	virtual CRenderNode*	createRenderNode(iSkeletonData* pData);
-	virtual CRenderNode*	createRenderNode(ParticleData* pData);
-	virtual CRenderNode*	createRenderNode(iLodMesh* pData);
+	virtual iRenderNode*	loadRenderNode(const char* szFilename);
+	virtual iRenderNode*	createRenderNode(iSkeletonData* pData);
+	virtual iRenderNode*	createRenderNode(ParticleData* pData);
+	virtual iRenderNode*	createRenderNode(iLodMesh* pData);
 	virtual iSkeletonData*	createSkeletonData(const char* szName);
 	virtual ParticleData*	createParticleData(const char* szName);
 	virtual iLodMesh*		createLodMesh(const char* szName);

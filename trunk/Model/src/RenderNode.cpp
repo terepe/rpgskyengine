@@ -28,13 +28,13 @@ void CRenderNode::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderTyp
 	}
 }
 
-void CRenderNode::addChild(CRenderNode* pChild)
+void CRenderNode::addChild(iRenderNode* pChild)
 {
-	pChild->setParent(this);
-	m_mapChildObj.push_back(pChild);
+	((CRenderNode*)pChild)->setParent(this);
+	m_mapChildObj.push_back((CRenderNode*)pChild);
 }
 
-CRenderNode* CRenderNode::getChild(const char* szName)
+iRenderNode* CRenderNode::getChild(const char* szName)
 {
 	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
@@ -122,7 +122,7 @@ CRenderNode* CRenderNode::intersect(const Vec3D& vRayPos , const Vec3D& vRayDir,
 
 void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName)
 {
-	CRenderNode* pRenderNodel = getChild(szName);
+	CRenderNode* pRenderNodel = (CRenderNode*)getChild(szName);
 	// ----
 	if (pRenderNodel)
 	{
