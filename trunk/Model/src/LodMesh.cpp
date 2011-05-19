@@ -58,7 +58,7 @@ CLodMesh::~CLodMesh()
 	S_DEL(m_pVertexDeclHardware);
 }
 
-CSubMesh& CLodMesh::addSubMesh()
+CSubMesh& CLodMesh::allotSubMesh()
 {
 	size_t size=m_setSubMesh.size();
 	m_setSubMesh.resize(size+1);

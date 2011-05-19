@@ -1,8 +1,6 @@
 #include "RenderNodeMgr.h"
 #include "IORead.h"
 #include "FileSystem.h"
-#include "SkeletonData.h"
-#include "LodMesh.h"
 #include "RenderSystem.h"
 
 CRenderNodeMgr::CRenderNodeMgr()

@@ -142,7 +142,7 @@ class iLodMesh
 {
 public:
 	virtual int getSubCount()=0;
-	virtual CSubMesh& addSubMesh()=0;
+	virtual CSubMesh& allotSubMesh()=0;
 	virtual CSubMesh* getSubMesh(size_t n)=0;
 	virtual const BBox& getBBox()=0;
 	virtual void update()=0;

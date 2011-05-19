@@ -31,7 +31,7 @@ void CSkeletonNode::frameMove(const Matrix& mWorld, double fTime, float fElapsed
 		// ----
 		if (m_nBindingBoneID!=-1)
 		{
-			Matrix mBoneLocal = pModel->getSkeletonData()->m_Bones[m_nBindingBoneID].mInvLocal;
+			Matrix mBoneLocal = pModel->getSkeletonData()->m_Bones[m_nBindingBoneID].m_mInvLocal;
 			mBoneLocal.Invert();
 			Matrix mBone = pModel->m_setBonesMatrix[m_nBindingBoneID]*mBoneLocal;
 			mNewWorld *= mBone;
@@ -94,7 +94,7 @@ void CSkeletonNode::drawSkeleton(CTextRender* pTextRender)const
 	setBonesPoint.resize(m_setBonesMatrix.size());
 	for (size_t i=0;i<m_pSkeletonData->m_Bones.size();++i)
 	{
-		Matrix	mInvLocal = m_pSkeletonData->m_Bones[i].mInvLocal;
+		Matrix	mInvLocal = m_pSkeletonData->m_Bones[i].m_mInvLocal;
 		mInvLocal.Invert();
 		setBonesPoint[i]=m_setBonesMatrix[i]*mInvLocal*Vec3D(0,0,0);
 	}
@@ -104,9 +104,9 @@ void CSkeletonNode::drawSkeleton(CTextRender* pTextRender)const
 		R.SetDepthBufferFunc(false,false);
 		for(size_t i=0;i<m_pSkeletonData->m_Bones.size();++i)
 		{
-			if (m_pSkeletonData->m_Bones[i].parent!=255)
+			if (m_pSkeletonData->m_Bones[i].m_uParent!=255)
 			{
-				G.DrawLine3D(setBonesPoint[m_pSkeletonData->m_Bones[i].parent],setBonesPoint[i],0xFFFFFFFF);
+				G.DrawLine3D(setBonesPoint[m_pSkeletonData->m_Bones[i].m_uParent],setBonesPoint[i],0xFFFFFFFF);
 			}
 		}
 		R.finishMaterial();
@@ -119,11 +119,11 @@ void CSkeletonNode::drawSkeleton(CTextRender* pTextRender)const
 	{
 		for(size_t i=0;i<m_pSkeletonData->m_Bones.size();++i)
 		{
-			if (m_pSkeletonData->m_Bones[i].parent!=255)
+			if (m_pSkeletonData->m_Bones[i].m_uParent!=255)
 			{
 				Pos2D posScreen;
 				R.world2Screen(setBonesPoint[i],posScreen);
-				pTextRender->drawText(s2ws(m_pSkeletonData->m_Bones[i].strName).c_str(),posScreen.x,posScreen.y);
+				pTextRender->drawText(s2ws(m_pSkeletonData->m_Bones[i].m_strName).c_str(),posScreen.x,posScreen.y);
 			}
 		}
 	}

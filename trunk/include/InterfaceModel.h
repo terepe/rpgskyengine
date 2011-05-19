@@ -3,6 +3,7 @@
 #include "Animated.h"
 #include "Frustum.h"
 #include "Material.h"
+#include "iSkeleton.h"
 
 //////////////////////////////////////////////////////////////////////////
 struct VertexIndex
@@ -141,84 +142,19 @@ class iLodMesh
 {
 public:
 	virtual int getSubCount()=0;
-	virtual CSubMesh& addSubMesh()=0;
+	virtual CSubMesh& allotSubMesh()=0;
 	virtual CSubMesh* getSubMesh(size_t n)=0;
 	virtual const BBox& getBBox()=0;
 	virtual void update()=0;
 };
 
-//////////////////////////////////////////////////////////////////////////
-struct BoneInfo
-{
-	BoneInfo():
-	parent(0xFF),
-	billboard(false)
-	{
-		mInvLocal.unit();
-	}
-	std::string				strName;
-	Matrix					mInvLocal;
-	Vec3D pivot;
-	unsigned char parent;
-	bool billboard;
-};
-
-struct BoneAnim
-{
-	Animated<Vec3D>			trans;
-	Animated<Quaternion>	rot;
-	Animated<Vec3D>			scale;
-	void transform(Matrix& m, unsigned int time)const
-	{
-		if (trans.isUsed())
-		{
-			Vec3D tr = trans.getValue(time);
-			m *= Matrix::newTranslation(tr);
-		}
-		if (rot.isUsed())
-		{
-			Quaternion q = rot.getValue(time);
-			m *= Matrix::newQuatRotate(q);
-		}
-		if (scale.isUsed())
-		{
-			Vec3D sc = scale.getValue(time);
-			m *= Matrix::newScale(sc);
-		}
-	}
-};
-
-struct SkeletonAnim
-{
-	std::vector<BoneAnim> setBonesAnim;
-	float fSpeed;
-	unsigned int uTotalFrames;
-};
-
-class iSkeletonData
-{
-public:
-	std::vector<BoneInfo>				m_Bones;	// 骨骼
-	std::map<std::string,SkeletonAnim>	m_Anims;	// 动画
-	
-	virtual int getBoneIDByName(const char* szName)=0;
-	virtual size_t getAnimationCount()=0;
-	//virtual void setAnimation(const std::string& strName, long timeCount)=0;
-	virtual bool getAnimation(const std::string& strName, long& timeCount)const=0;
-	virtual bool getAnimation(size_t index, std::string& strName, long& timeCount)const=0;
-	virtual bool delAnimation(const std::string& strName)=0;
-};
-
-
-
-struct TexCoordSet
-{
-	Vec2D tc[4];
-};
-
 struct ParticleData
 {
 public:
+	struct TexCoordSet
+	{
+		Vec2D tc[4];
+	};
 	//				初速度，		变化，			伸展，		lat，	重量，		周期，		产生率，	地区L，		地区W，		减速度
 	Animated<float> m_Speed,	m_Variation,	m_Spread, m_Lat,	m_Gravity,	m_Lifespan,	m_Rate,	m_Areal,	m_Areaw,	m_Deacceleration;
 	Animated<unsigned char> m_Enabled;
@@ -283,17 +219,23 @@ public:
 	}
 };
 
-class CRenderNode;
+class iRenderNode
+{
+public:
+	virtual iRenderNode*	getChild			(const char* szName)=0;
+	virtual void			addChild			(iRenderNode* pChild)=0;
+};
+
 class iRenderNodeMgr
 {
 public:
 	iRenderNodeMgr(){};
 	virtual ~iRenderNodeMgr(){};
 
-	virtual CRenderNode*	loadRenderNode(const char* szFilename)=0;
-	virtual CRenderNode*	createRenderNode(iSkeletonData* data)=0;
-	virtual CRenderNode*	createRenderNode(ParticleData* data)=0;
-	virtual CRenderNode*	createRenderNode(iLodMesh* data)=0;
+	virtual iRenderNode*	loadRenderNode(const char* szFilename)=0;
+	virtual iRenderNode*	createRenderNode(iSkeletonData* data)=0;
+	virtual iRenderNode*	createRenderNode(ParticleData* data)=0;
+	virtual iRenderNode*	createRenderNode(iLodMesh* data)=0;
 	virtual iSkeletonData*	createSkeletonData(const char* szName)=0;
 	virtual ParticleData*	createParticleData(const char* szName)=0;
 	virtual iLodMesh*		createLodMesh(const char* szName)=0;
@@ -306,5 +248,5 @@ class CModelPlugBase:public CDataPlugBase
 public:
 	CModelPlugBase(){};
 	virtual ~CModelPlugBase(){};
-	virtual CRenderNode* importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)=0;
+	virtual iRenderNode* importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)=0;
 };

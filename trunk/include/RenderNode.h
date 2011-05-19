@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include "common.h"
+#include "InterfaceModel.h"
 
 class CRenderNode;
 typedef std::list<CRenderNode*>		LIST_RENDER_NODE;
@@ -45,7 +46,7 @@ protected:
 	Matrix					m_mWorldMatrix;
 };
 
-class CRenderNode:public CObjectPosition
+class CRenderNode:public CObjectPosition,public iRenderNode
 {
 public:
 	enum{NODE_BASE,NODE_PARTICLE,NODE_SKELETON,NODE_MODEL,NODE_SKINE};
@@ -65,9 +66,9 @@ public:
 	virtual	int				getType				() = 0;
 	virtual void			frameMove			(const Matrix& mWorld, double fTime, float fElapsedTime);
 	virtual void			render				(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
-	CRenderNode*			getChild			(const char* szName);
+	iRenderNode*			getChild			(const char* szName);
 	const CRenderNode*		getChild			(const char* szName)const;
-	virtual void			addChild			(CRenderNode* pChild);
+	virtual void			addChild			(iRenderNode* pChild);
 	virtual bool			removeChild			(CRenderNode* pChild);
 	virtual bool			delChild			(CRenderNode* pChild);
 	virtual bool			contain				(const CRenderNode* pChild)const;

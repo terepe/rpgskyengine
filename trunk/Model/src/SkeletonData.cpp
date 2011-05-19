@@ -10,7 +10,7 @@ void CSkeletonData::calcBonesTree(int nBoneID,std::vector<Matrix>& setBonesMatri
 	setCalc[nBoneID] = true;
 
 	// 找到父类的转换矩阵
-	int nParent = m_Bones[nBoneID].parent;
+	int nParent = m_Bones[nBoneID].m_uParent;
 	if (nParent!=255)
 	{
 		calcBonesTree(nParent,setBonesMatrix,setCalc);
@@ -51,14 +51,14 @@ void CSkeletonData::CalcBonesMatrix(const std::string& strAnim, int time, std::v
 	}
 	for (size_t i=0;i<m_Bones.size();++i)
 	{
-		if (m_Bones[i].billboard)
+		if (m_Bones[i].m_billboard)
 		{
 			Matrix mtrans;
 			GetRenderSystem().getViewMatrix(mtrans);
 			mtrans.transpose();
 			mtrans.Invert();
 			Vec3D camera = mtrans * Vec3D(0.0f,0.0f,0.0f);
-			Vec3D look = (camera - m_Bones[i].pivot).normalize();
+			Vec3D look = (camera - m_Bones[i].m_pivot).normalize();
 
 			Vec3D up = ((mtrans * Vec3D(0.0f,1.0f,0.0f)) - camera).normalize();
 			// these should be normalized by default but fp inaccuracy kicks in when looking down :(
@@ -67,34 +67,17 @@ void CSkeletonData::CalcBonesMatrix(const std::string& strAnim, int time, std::v
 
 			// calculate a billboard matrix
 			Matrix mbb=Matrix::UNIT;
-			//mbb.m[0][2] = right.x;
-			//mbb.m[1][2] = right.y;
-			//mbb.m[2][2] = right.z;
 			mbb.m[3][2] = 0.0f;
 			mbb.m[0][1] = up.x;
 			mbb.m[1][1] = up.y;
 			mbb.m[2][1] = up.z;
 			mbb.m[3][1] = 0.0f;
-			//mbb.m[0][0] = look.x;
-			//mbb.m[1][0] = look.y;
-			//mbb.m[2][0] = look.z;
 			mbb.m[3][0] = 0.0f;
-			/*
-			mbb.m[0][2] = right.x;
-			mbb.m[1][2] = right.y;
-			mbb.m[2][2] = right.z;
-			mbb.m[0][1] = up.x;
-			mbb.m[1][1] = up.y;
-			mbb.m[2][1] = up.z;
-			mbb.m[0][0] = look.x;
-			mbb.m[1][0] = look.y;
-			mbb.m[2][0] = look.z;
-			*/
 			setBonesMatrix[i] *= mbb;
 		}
 
 		//m_mat*=Matrix::newTranslation(m_Bones[i].pivot*-1.0f);
-		setBonesMatrix[i]*=m_Bones[i].mInvLocal;
+		setBonesMatrix[i]*=m_Bones[i].m_mInvLocal;
 		//m_mRot = Matrix::newQuatRotate(q);
 
 		/*setBonesMatrix[i].m_mRot=setBonesMatrix[i];
@@ -103,6 +86,26 @@ void CSkeletonData::CalcBonesMatrix(const std::string& strAnim, int time, std::v
 		setBonesMatrix[i].m_mRot._34=0;*/
 	}
 }
+unsigned char CSkeletonData::getBoneCount()
+{
+	return m_Bones.size();
+}
+
+iBoneInfo* CSkeletonData::allotBoneInfo()
+{
+	CBoneInfo boneInfo;
+	m_Bones.push_back(boneInfo);
+	return (iBoneInfo*)&boneInfo;
+}
+
+iBoneInfo* CSkeletonData::getBoneInfo(unsigned char uBoneID)
+{
+	if(uBoneID>=m_Bones.size())
+	{
+		return NULL;
+	}
+	return (iBoneInfo*)&m_Bones[uBoneID];
+}
 
 int CSkeletonData::getBoneIDByName(const char* szName)
 {
@@ -110,7 +113,7 @@ int CSkeletonData::getBoneIDByName(const char* szName)
 	// ----
 	for(size_t i = 0 ; i < uBoneCount; i++)
 	{
-		if(strcmp(m_Bones[i].strName.c_str(),szName)==0)
+		if(strcmp(m_Bones[i].m_strName.c_str(),szName)==0)
 		{
 			return i;
 		}
@@ -124,7 +127,7 @@ size_t CSkeletonData::getAnimationCount()
 	return m_Anims.size();
 }
 
-iSkeletonAnim* CSkeletonData::createAnimation(const std::string& strName)
+iSkeletonAnim* CSkeletonData::allotAnimation(const std::string& strName)
 {
 	return (iSkeletonAnim*)&m_Anims[strName];
 }
