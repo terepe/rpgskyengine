@@ -12,10 +12,8 @@ public:
 public:
 	virtual int			getType			() {return NODE_SKELETON;}
 	virtual void		frameMove		(const Matrix& mWorld, double fTime, float fElapsedTime);
-	virtual void		render			(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType=MATERIAL_NORMAL)const;
 	CSkeletonData*		getSkeletonData	(){return m_pSkeletonData;}
 	void				setSkeletonData	(CSkeletonData* pSkeletonData);
-	virtual void		animate			(float fElapsedTime);
 	void				setAnim			(int nID);
 	void				setAnim			(const char* szAnimName);
 	void				Animate			(const char* szAnimName);
