@@ -42,9 +42,12 @@ public:
 class CSkeletonData:public iSkeletonData
 {
 public:
+	virtual unsigned char	getBoneCount();
+	virtual iBoneInfo*		allotBoneInfo();
+	virtual iBoneInfo*		getBoneInfo(unsigned char uBoneID);
 	virtual int				getBoneIDByName(const char* szName);
 	virtual size_t			getAnimationCount();
-	virtual iSkeletonAnim*	createAnimation(const std::string& strName);
+	virtual iSkeletonAnim*	allotAnimation(const std::string& strName);
 	virtual iSkeletonAnim*	getAnimation(const std::string& strName);
 	virtual iSkeletonAnim*	getAnimation(size_t index);
 	virtual bool			delAnimation(const std::string& strName);

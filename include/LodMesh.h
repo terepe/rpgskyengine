@@ -59,7 +59,7 @@ public:
 public:
 	CONST_GET_SET_VARIABLE	(unsigned short,		m_u,SkinVertexSize);
 	virtual int			getSubCount(){return m_setSubMesh.size();}
-	virtual CSubMesh&	addSubMesh();
+	virtual CSubMesh&	allotSubMesh();
 	virtual CSubMesh*	getSubMesh(size_t n);
 	virtual const BBox& getBBox(){return m_bbox;}
 	virtual void		update();

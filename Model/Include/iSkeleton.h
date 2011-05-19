@@ -56,9 +56,12 @@ public:
 class iSkeletonData
 {
 public:
+	virtual unsigned char	getBoneCount()=0;
+	virtual iBoneInfo*		allotBoneInfo()=0;
+	virtual iBoneInfo*		getBoneInfo(unsigned char uBoneID)=0;
 	virtual int				getBoneIDByName(const char* szName)=0;
 	virtual size_t			getAnimationCount()=0;
-	virtual iSkeletonAnim*	createAnimation(const std::string& strName)=0;
+	virtual iSkeletonAnim*	allotAnimation(const std::string& strName)=0;
 	virtual iSkeletonAnim*	getAnimation(const std::string& strName)=0;
 	virtual iSkeletonAnim*	getAnimation(size_t index)=0;
 	virtual bool			delAnimation(const std::string& strName)=0;
