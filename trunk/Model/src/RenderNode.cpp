@@ -14,10 +14,16 @@ CRenderNode::~CRenderNode()
 
 void CRenderNode::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
+	BBox bbox;
 	FOR_IN(LIST_RENDER_NODE,it,m_mapChildObj)
 	{
 		(*it)->frameMove(mWorld, fTime, fElapsedTime);
+		// ----
+		// # Update BBox
+		// ----
+		bbox += (*it)->getBBox();
 	}
+	m_BBox = bbox;
 }
 
 void CRenderNode::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const

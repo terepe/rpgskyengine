@@ -42,13 +42,12 @@ void  transformRedundance(const std::vector<_T>& setIn, std::vector<_T>& setOut,
 }
 
 //////////////////////////////////////////////////////////////////////////
-CLodMesh::CLodMesh():
-m_pShareBuffer(NULL),
-m_pVertexDeclHardware(NULL),
-m_uSkinVertexSize(0),
-m_uShareVertexSize(0),
-m_bSkinMesh(false),
-m_fRad(1.0f)
+CLodMesh::CLodMesh()
+:m_pShareBuffer(NULL)
+,m_pVertexDeclHardware(NULL)
+,m_uSkinVertexSize(0)
+,m_uShareVertexSize(0)
+,m_bSkinMesh(false)
 {
 }
 
@@ -433,87 +432,23 @@ void CLodMesh::Clear()
 
 void CLodMesh::update()
 {
-	if (m_setSubMesh.empty())
-	{
-		return;
-	}
-	{
-		std::vector<Vec3D>::iterator it=m_setSubMesh[0].pos.begin();
-		if (it!=m_setSubMesh[0].pos.end())
-		{
-			m_bbox.vMin = *it;
-			m_bbox.vMax = *it;
-		}
-	}
-
 	for(size_t i=0;i<m_setSubMesh.size();++i)
 	{
-		std::vector<Vec3D>& pos = m_setSubMesh[i].pos;
-		for (std::vector<Vec3D>::iterator it=pos.begin();it!=pos.end();++it)
-		{
-			m_bbox.vMin.x = min(it->x,m_bbox.vMin.x);
-			m_bbox.vMin.y = min(it->y,m_bbox.vMin.y);
-			m_bbox.vMin.z = min(it->z,m_bbox.vMin.z);
-
-			m_bbox.vMax.x = max(it->x,m_bbox.vMax.x);
-			m_bbox.vMax.y = max(it->y,m_bbox.vMax.y);
-			m_bbox.vMax.z = max(it->z,m_bbox.vMax.z);
-
-			//
-			float fLenSquared = it->lengthSquared();
-			if (fLenSquared > m_fRad)
-			{
-				m_fRad = fLenSquared;
-			}
-		}
 		if (false==m_bSkinMesh)
 		{
-			std::vector<unsigned long>& bone = m_setSubMesh[i].bone;
-			for (std::vector<unsigned long>::iterator it=bone.begin();it!=bone.end();++it)
+			if(m_setSubMesh[i].bone.size()>0)
 			{
-				if (*it>0)
-				{
-					m_bSkinMesh = true;
-					break;
-				}
+				m_bSkinMesh = true;
+				break;
 			}
 		}
 	}
-
 	if (!m_bSkinMesh)
 	{
 		//weight.clear();
 		//bone.clear();
 	}
-	m_fRad = sqrtf(m_fRad);
 }
-
-//void CLodMesh::load(CNodeData& lump)
-//{
-	//lump.getVector("pos",		pos);
-//	lump.getVector("normal",	normal);
-//	lump.getVector("color",		color);
-//	lump.getVector("uv1",		texcoord);
-//	lump.getVector("uv2",		texcoord2);
-//	lump.getVector("weight",	weight);
-//	lump.getVector("bone",		bone);
-	// error lump.getVector("face",		m_mapVertexIndex);
-//	update();
-	//m_Lods.resize(1);
-//}
-
-//void CLodMesh::save(CNodeData& lump)
-//{
-//	lump.SetVector("pos",		pos);
-//	lump.SetVector("normal",	normal);
-//	lump.SetVector("color",		color);
-//	lump.SetVector("uv1",		texcoord);
-//	lump.SetVector("uv2",		texcoord2);
-//	lump.SetVector("weight",	weight);
-//	lump.SetVector("bone",		bone);
-	// error lump.SetVector("face",		m_setVertexIndex);
-//}
-
 
 bool SubMeshIntersect(const CSubMesh& subMesh,const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)
 {

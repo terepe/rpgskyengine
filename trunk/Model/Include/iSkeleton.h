@@ -1,15 +1,13 @@
 #pragma once
-#include "InterfaceDataPlugsBase.h"
 #include "Animated.h"
-#include "Frustum.h"
-#include "Material.h"
+#include "Matrix.h"
 
 struct iBoneInfo
 {
 public:
 	virtual void			setName(const char* szName)=0;
 	virtual void			setParent(unsigned char uParent)=0;
-	virtual void			setInvLocal(Matrix mInvLocal)=0;
+	virtual void			setInvLocal(const Matrix& mInvLocal)=0;
 	virtual const char*		getName()const=0;
 	virtual unsigned char	getParent()const=0;
 	virtual const Matrix&	getInvLocal()const=0;

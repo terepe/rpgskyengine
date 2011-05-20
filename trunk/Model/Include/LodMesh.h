@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
-#include "InterfaceModel.h"
+#include "iMesh.h"
+#include "Material.h"
 
 class CHardwareVertexBuffer;
 class CHardwareIndexBuffer;
@@ -62,6 +63,7 @@ public:
 	virtual CSubMesh&	allotSubMesh();
 	virtual CSubMesh*	getSubMesh(size_t n);
 	virtual const BBox& getBBox(){return m_bbox;}
+	virtual void		setBBox(const BBox& bbox){m_bbox = bbox;}
 	virtual void		update();
 
 	void				Init();
@@ -85,7 +87,6 @@ public:
 	unsigned short					m_uShareVertexSize;
 
 	bool							m_bSkinMesh;			// is skin mesh?
-	float							m_fRad;					// °ë¾¶
 	BBox							m_bbox;					//
 protected:
 	std::vector<SkinVertex>			m_setSkinVertex;
