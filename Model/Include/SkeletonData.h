@@ -1,5 +1,6 @@
 #pragma once
-#include "InterfaceModel.h"
+#include "iSkeleton.h"
+#include <map>
 
 class CBoneInfo:public iBoneInfo
 {
@@ -12,7 +13,7 @@ public:
 	}
 	virtual void			setName(const char* szName){m_strName = szName;}
 	virtual void			setParent(unsigned char uParent){m_uParent = uParent;}
-	virtual void			setInvLocal(Matrix mInvLocal){m_mInvLocal = mInvLocal;}
+	virtual void			setInvLocal(const Matrix& mInvLocal){m_mInvLocal = mInvLocal;}
 	virtual const char*		getName()const{return m_strName.c_str();}
 	virtual unsigned char	getParent()const{return m_uParent;}
 	virtual const Matrix&	getInvLocal()const{return m_mInvLocal;}
