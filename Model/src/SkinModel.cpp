@@ -19,6 +19,11 @@ CSkinModel::~CSkinModel()
 
 void CSkinModel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
+	if(!m_pMesh)
+	{
+		return;
+	}
+	// ----
 	if (m_pParent&&m_pParent->getType()==NODE_SKELETON)
 	{
 		CSkeletonNode* pSkeletonNode = (CSkeletonNode*)m_pParent;
@@ -30,10 +35,16 @@ void CSkinModel::frameMove(const Matrix& mWorld, double fTime, float fElapsedTim
 	}
 	// ----
 	CRenderNode::frameMove(mWorld,fTime,fElapsedTime);
+	// ----
+	m_BBox += m_pMesh->getBBox();
 }
 
 void CSkinModel::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)const
 {
+	if(!m_pMesh)
+	{
+		return;
+	}
 	if (eRenderType==MATERIAL_NONE)
 	{
 		return;
@@ -90,6 +101,31 @@ void CSkinModel::setMesh(CLodMesh* pMesh)
 	{
 		m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(m_pMesh->getSkinVertexCount(), m_pMesh->getSkinVertexSize(), CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
 	}
+
+	m_pMesh->Init();
+	if (m_vecPasses.empty())
+	{
+		if (m_pMesh->m_Lods.size()>0)
+		{
+			for (size_t i=0; i<m_pMesh->m_Lods[0].setSubset.size();++i)
+			{
+				ModelRenderPass pass;
+				pass.nSubID = i;
+				CSubMesh* pSubMesh = m_pMesh->getSubMesh(i);
+				if(pSubMesh)
+				{
+					pass.strMaterial = pSubMesh->strMaterial;
+				}
+				m_vecPasses.push_back(pass);
+			}
+		}
+	}
+	m_nOrder=0;
+	for (std::vector<ModelRenderPass>::iterator it=m_vecPasses.begin();it!=m_vecPasses.end();it++)
+	{
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->strMaterial.c_str());
+		m_nOrder+=material.getOrder();
+	}
 }
 
 bool CSkinModel::Prepare()const
@@ -120,84 +156,7 @@ void CSkinModel::SetLightMap(const char* szFilename)
 	m_bLightmap = true;
 }
 
-size_t CSkinModel::getRenderPassCount()
-{
-	return m_mapPasses.size();
-}
-
-void CSkinModel::setRenderPass(int nID, int nSubID, const std::string& strMaterialName)
-{
-	ModelRenderPass& pass = m_mapPasses[nID];
-	pass.nSubID = nSubID;
-	pass.strMaterialName = strMaterialName;
-	//pass.p = modelLod.Geosets[passes[j].nGeosetID].v.z;
-}
-
-bool CSkinModel::getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const
-{
-	std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.find(nID);
-	if (it==m_mapPasses.end())
-	{
-		return false;
-	}
-	nSubID = it->second.nSubID;
-	strMaterialName = it->second.strMaterialName;
-	return true;
-}
-
-bool CSkinModel::delRenderPass(int nID)
-{
-	std::map<int,ModelRenderPass>::iterator it=m_mapPasses.find(nID);
-	if(it!=m_mapPasses.end())
-	{
-		m_mapPasses.erase(it);
-		return true;
-	}
-	return false;
-}
-
 /*
-void CSkinModel::loadMaterial(const char* szFilename, const char* szParentDir)
-{
-	GetRenderSystem().getMaterialMgr().load(szFilename,szParentDir);
-}
-
-CMaterial& CSkinModel::getMaterial(const char* szName)
-{
-	return GetRenderSystem().getMaterialMgr().getItem(szName);
-}
-
-#include<iostream>
-#include<iomanip>
-#include<fstream>
-bool CSkinModel::saveMaterial(const std::string& strFilename)
-{
-	setlocale(LC_ALL,"Chinese-simplified");
-	std::ofstream ofs(strFilename.c_str());
-	assert(ofs);
-	ofs<<"SubID"<<",Diffuse"<<",Emissive"<<",Specular"<<",Bump"<<",Reflection"<<",LightMap"<<
-		",Opacity"<<",IsAlphaTest"<<",IsBlend"<<",TexAnimX"<<",TexAnimY"<<std::endl;
-	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
-	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
-		CTextureMgr& TM = GetRenderSystem().GetTextureMgr();
-		ofs<<(it->second.nSubID)<<","<<
-			(TM.getItemName(material.uDiffuse).c_str())<<","<<
-			(TM.getItemName(material.uEmissive).c_str())<<","<<
-			(TM.getItemName(material.uSpecular).c_str())<<","<<
-			(TM.getItemName(material.uNormal).c_str())<<","<<
-			(TM.getItemName(material.uReflection).c_str())<<","<<
-			(TM.getItemName(material.uLightMap).c_str())<<","<<
-			(material.m_fOpacity)<<","<<
-			(material.bAlphaTest)<<","<<
-			(material.bBlend)<<","<<
-			(material.vTexAnim.x)<<","<<
-			(material.vTexAnim.y)<<std::endl;
-	}
-	ofs.close();
-	return true;
-}
-
 void TexAnim::Calc(int nTime, Matrix& matrix)const
 {
 	Vec3D tval, rval, sval;
@@ -232,34 +191,9 @@ void TexAnim::Calc(int nTime, Matrix& matrix)const
 }
 */
 
-void CSkinModel::Init()
-{
-	m_pMesh->Init();
-	if (m_mapPasses.empty())
-	{
-		if (m_pMesh->m_Lods.size()>0)
-		{
-			for (size_t i=0; i<m_pMesh->m_Lods[0].setSubset.size();++i)
-			{
-				ModelRenderPass& pass = m_mapPasses[i];
-				pass.nSubID = i;
-			}
-		}
-	}
-	m_nOrder=0;
-	for (std::map<int,ModelRenderPass>::iterator it=m_mapPasses.begin();it!=m_mapPasses.end();it++)
-	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str());
-		m_nOrder+=material.getOrder();
-	}
-}
-
 //////////////////////////////////////////////////////////////////////////
 bool CSkinModel::passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const
 {
-	Vec4D ocol = Vec4D(1.0f, 1.0f, 1.0f, fOpacity);
-	Vec4D ecol = Vec4D(0.0f, 0.0f, 0.0f, 0.0f);
-
 	//float fOpacity = m_fTrans;
 	// emissive colors
 	/*if (m_TransAnims.size() > 0)
@@ -278,7 +212,7 @@ bool CSkinModel::passBegin(const ModelRenderPass& pass, float fOpacity, int nAni
 	{
 		Vec4D ecol = m_ColorAnims[pass.nColorID].GetColor(nAnimTime);
 		ecol.w = 1;
-		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterialName.c_str()).SetEmissiveColor(ocol.getColor());
+		GetRenderSystem().getMaterialMgr().getItem(pass.strMaterial.c_str()).SetEmissiveColor(ocol.getColor());
 	}*/
 	//if(m_bLightmap)
 	{
@@ -317,7 +251,7 @@ bool CSkinModel::passBegin(const ModelRenderPass& pass, float fOpacity, int nAni
 	//	R.SetTextureFactor(Color32(176,176,176,176));
 	//	R.SetTextureColorOP(1,TBOP_MODULATE, TBS_CURRENT, TBS_TEXTURE);
 	//}
-	return GetRenderSystem().prepareMaterial(pass.strMaterialName.c_str(),fOpacity);
+	return GetRenderSystem().prepareMaterial(pass.strMaterial.c_str(),fOpacity);
 }
 
 void CSkinModel::passEnd()const
@@ -337,31 +271,32 @@ void CSkinModel::renderMesh(E_MATERIAL_RENDER_TYPE eModelRenderType, size_t uLod
 		{
 			m_pMesh->draw();
 		}
-		else for (std::map<int,ModelRenderPass>::const_iterator it = m_mapPasses.begin(); it != m_mapPasses.end(); ++it)
+		else for (std::vector<ModelRenderPass>::const_iterator it = m_vecPasses.begin(); it != m_vecPasses.end(); ++it)
 		{
-			E_MATERIAL_RENDER_TYPE RenderType = GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).getRenderType();
+			E_MATERIAL_RENDER_TYPE RenderType = GetRenderSystem().getMaterialMgr().getItem(it->strMaterial.c_str()).getRenderType();
 			if (RenderType&eModelRenderType)
 			{
 				if (eModelRenderType&MATERIAL_RENDER_ALPHA_TEST)
 				{
-					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->second.strMaterialName.c_str()).uTexture[0]);
-					m_pMesh->drawSub(it->second.nSubID,uLodLevel);
+					GetRenderSystem().SetTexture(0,GetRenderSystem().getMaterialMgr().getItem(it->strMaterial.c_str()).uTexture[0]);
+					m_pMesh->drawSub(it->nSubID,uLodLevel);
 				}
 				else if (eModelRenderType&MATERIAL_RENDER_NO_MATERIAL)
 				{
-					m_pMesh->drawSub(it->second.nSubID,uLodLevel);
+					m_pMesh->drawSub(it->nSubID,uLodLevel);
 				}
 				else
 				{
-					if (passBegin(it->second,fOpacity,nAnimTime))
+					if (GetRenderSystem().prepareMaterial(it->strMaterial.c_str(),fOpacity))
+					//if (passBegin(it,fOpacity,nAnimTime))
 					{
-						if (it->second.nSubID<0)
+						if (it->nSubID<0)
 						{
 							m_pMesh->draw(uLodLevel);
 						}
 						else
 						{
-							m_pMesh->drawSub(it->second.nSubID,uLodLevel);
+							m_pMesh->drawSub(it->nSubID,uLodLevel);
 						}
 					}
 					passEnd();
