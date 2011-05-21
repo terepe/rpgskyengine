@@ -54,25 +54,15 @@ struct LightAnim
 struct ModelRenderPass // 这部分的结构需要赚到材质层去 使材质更强大
 {
 	ModelRenderPass()
-		:nTransID(-1)
-		,nTexanimID(-1)
-		,nColorID(-1)
-		,nOrder(0)
+		:nOrder(0)
 		,p(0)
 	{
 	}
-	// RenderFlag;
-	int nTransID,nTexanimID,nColorID;
 	int nOrder;
 	float p;
-
 	// Geoset ID
 	int nSubID;
-	// colours
-	Vec4D ocol, ecol;
-
-	std::string strMaterialName;
-
+	std::string strMaterial;
 	bool operator< (const ModelRenderPass &m) const
 	{
 		// sort order method
@@ -108,11 +98,7 @@ protected:
 
 	public:
 	virtual CONST_GET_SET_VARIABLE	(int,				m_n,Order);
-	virtual size_t		getRenderPassCount();
-	virtual void		setRenderPass(int nID, int nSubID, const std::string& strMaterialName);
-	virtual bool		getRenderPass(int nID, int& nSubID, std::string& strMaterialName)const;
-	virtual bool		delRenderPass(int nID);
-	void				Init();
+	virtual std::vector<ModelRenderPass>&	getRenderPasses(){return m_vecPasses;}
 private:
 	bool				passBegin(const ModelRenderPass& pass, float fOpacity, int nAnimTime)const;
 	void				passEnd()const;
@@ -123,6 +109,6 @@ private:
 	std::vector<ColorAnim>					m_ColorAnims;			// 颜色动画源
 	std::vector<TransAnim>					m_TransAnims;			// 透明动画源
 	std::vector<LightAnim>					m_LightAnims;			// 灯光动画源*/
-	std::map<int,ModelRenderPass>			m_mapPasses;			// 渲染过程集
+	std::vector<ModelRenderPass>			m_vecPasses;			// 渲染过程集
 	int										m_nOrder;
 };
