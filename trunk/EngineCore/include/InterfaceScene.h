@@ -182,42 +182,42 @@ public:
 	virtual int GetCubeSize()const=0;
 	virtual int GetCellCount()const=0;
 	//
-	virtual bool isCellIn(int nCellX, int nCellY)const=0;
-	virtual bool isPointIn(int nCellX, int nCellY)const=0;
+	virtual bool			isCellIn(int nCellX, int nCellY)const=0;
+	virtual bool			isPointIn(int nCellX, int nCellY)const=0;
 	//
 	virtual unsigned char	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const=0;
-	virtual void	SetCellTileID(int nCellX, int nCellY, unsigned char uTileID, size_t layer = 0)=0;
+	virtual void			SetCellTileID(int nCellX, int nCellY, unsigned char uTileID, size_t layer = 0)=0;
 	//
-	virtual unsigned long	GetVertexIndex(int nCellX, int nCellY)const=0;
-	virtual int		GetCellXByVertexIndex(unsigned long uVertexIndex)const=0;
-	virtual int		GetCellYByVertexIndex(unsigned long uVertexIndex)const=0;
-	virtual Pos2D	GetCellPosByVertexIndex(unsigned long uVertexIndex)const=0;
+	virtual unsigned long	getVertexIndex(int nCellX, int nCellY)const=0;
+	virtual int				getCellXByVertexIndex(unsigned long uVertexIndex)const=0;
+	virtual int				getCellYByVertexIndex(unsigned long uVertexIndex)const=0;
+	virtual Pos2D			getCellPosByVertexIndex(unsigned long uVertexIndex)const=0;
 	//
-	virtual float	getVertexHeight(int nCellX, int nCellY)const=0;
-	virtual void	setVertexHeight(int nCellX, int nCellY, float fHeight)=0;
+	virtual float			getVertexHeight(int nCellX, int nCellY)const=0;
+	virtual void			setVertexHeight(int nCellX, int nCellY, float fHeight)=0;
 	//
-	virtual Vec3D	getVertexNormal(int nCellX, int nCellY)const=0;
+	virtual Vec3D			getVertexNormal(int nCellX, int nCellY)const=0;
 	//
 	virtual unsigned char	getCellAttribute(int nCellX, int nCellY)const=0;
-	virtual void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt)=0;
+	virtual void			setCellAttribute(int nCellX, int nCellY, unsigned char uAtt)=0;
 	//
-	virtual Color32	getVertexColor(int nCellX, int nCellY)const=0;
-	virtual void	setVertexColor(int nCellX, int nCellY, Color32 color)=0;
+	virtual Color32			getVertexColor(int nCellX, int nCellY)const=0;
+	virtual void			setVertexColor(int nCellX, int nCellY, Color32 color)=0;
 	//
-	virtual float	GetHeight(float fX, float fY)const=0;
-	virtual Vec4D	GetColor(float fX, float fY)const=0;
+	virtual float			GetHeight(float fX, float fY)const=0;
+	virtual Vec4D			GetColor(float fX, float fY)const=0;
 	//
-	virtual bool	PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
-	virtual bool	Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
+	virtual bool			PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
+	virtual bool			Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const=0;
 	//
-	virtual const std::string& getFilename()const=0;
+	virtual const			std::string& getFilename()const=0;
 	//
-	virtual Vec3D	GetLightDir()const=0;
+	virtual Vec3D			GetLightDir()const=0;
 
-	virtual void	getVertexByCell(int nCellX, int nCellY, TerrainVertex& vertex)const=0;
-	virtual void	getGrassVertexByCell(int nCellX, int nCellY, TerrainVertex*& vertex)const=0;
+	virtual void			getVertexByCell(int nCellX, int nCellY, TerrainVertex& vertex)const=0;
+	virtual void			getGrassVertexByCell(int nCellX, int nCellY, TerrainVertex*& vertex)const=0;
 
-	virtual bool	hasGrass(int nCellX, int nCellY)const=0;
+	virtual bool			hasGrass(int nCellX, int nCellY)const=0;
 
 	virtual std::vector<TerrainCell>& getCells()=0;
 };
