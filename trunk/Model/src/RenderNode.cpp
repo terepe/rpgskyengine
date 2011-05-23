@@ -4,8 +4,13 @@
 CRenderNode::CRenderNode()
 :m_pParent(NULL)
 ,m_nBindingBoneID(-1)
+,m_vPos(0.0f,0.0f,0.0f)
+,m_vRotate(0.0f,0.0f,0.0f)
+,m_vScale(1.0f,1.0f,1.0f)
 {
+	m_mWorldMatrix.unit();
 }
+
 
 CRenderNode::~CRenderNode()
 {

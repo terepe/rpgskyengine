@@ -11,48 +11,24 @@ class CRenderNode;
 typedef std::list<CRenderNode*>		LIST_RENDER_NODE;
 //----
 
-template<class T>
-class CNode
-{
-
-};
-
-class CObjectPosition
-{
-public:
-	CObjectPosition()
-		:m_vPos(0.0f,0.0f,0.0f)
-		,m_vRotate(0.0f,0.0f,0.0f)
-		,m_vScale(1.0f,1.0f,1.0f)
-	{
-		m_mWorldMatrix.unit();
-	}
-	//----
-	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Pos);
-	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Rotate);
-	CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Scale);
-	CONST_GET_SET_VARIABLE	(BBox&,			m_,LocalBBox);
-	CONST_GET_SET_VARIABLE	(BBox&,			m_,WorldBBox);
-	CONST_GET_SET_VARIABLE	(Matrix&,		m_m,WorldMatrix);
-	//----
-	void					updateWorldBBox		();
-	void					updateWorldMatrix	();
-protected:
-	Vec3D					m_vPos;
-	Vec3D					m_vRotate;
-	Vec3D					m_vScale;
-	BBox					m_LocalBBox;
-	BBox					m_WorldBBox;
-	Matrix					m_mWorldMatrix;
-};
-
-class CRenderNode:public CObjectPosition,public iRenderNode
+class CRenderNode:public iRenderNode
 {
 public:
 	enum{NODE_BASE,NODE_PARTICLE,NODE_SKELETON,NODE_MODEL,NODE_SKINE};
 public:
 	CRenderNode();
 	~CRenderNode();
+public:
+	//----
+	virtual CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Pos);
+	virtual CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Rotate);
+	virtual CONST_GET_SET_VARIABLE	(Vec3D&,		m_v,Scale);
+	CONST_GET_SET_VARIABLE	(BBox&,			m_,LocalBBox);
+	CONST_GET_SET_VARIABLE	(BBox&,			m_,WorldBBox);
+	CONST_GET_SET_VARIABLE	(Matrix&,		m_m,WorldMatrix);
+	//----
+	void					updateWorldBBox		();
+	void					updateWorldMatrix	();
 public:
 	GET_SET_VARIABLE		(CRenderNode*,	m_p,Parent);
 	//----
@@ -87,4 +63,11 @@ protected:
 	std::string				m_strBindingBoneName;
 	int						m_nBindingBoneID;
 	BBox					m_BBox;
+protected:
+	Vec3D					m_vPos;
+	Vec3D					m_vRotate;
+	Vec3D					m_vScale;
+	BBox					m_LocalBBox;
+	BBox					m_WorldBBox;
+	Matrix					m_mWorldMatrix;
 };
