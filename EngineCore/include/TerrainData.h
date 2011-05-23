@@ -30,7 +30,6 @@ class CTerrainData:public iTerrainData
 public:
 	CTerrainData(); 
 	~CTerrainData();
-
 	//
 	void clear();
 	void create(size_t width, size_t height, size_t cubeSize);
@@ -54,24 +53,24 @@ public:
 	unsigned char	GetCellTileID(int nCellX, int nCellY, size_t layer = 0)const;
 	void	SetCellTileID(int nCellX, int nCellY, unsigned char uTileID, size_t layer = 0);
 	//
-	unsigned long	GetVertexIndex(int nCellX, int nCellY)const;
-	int		GetCellXByVertexIndex(unsigned long uVertexIndex)const;
-	int		GetCellYByVertexIndex(unsigned long uVertexIndex)const;
-	Pos2D	GetCellPosByVertexIndex(unsigned long uVertexIndex)const;
+	unsigned long	getVertexIndex(int nCellX, int nCellY)const;
+	int				getCellXByVertexIndex(unsigned long uVertexIndex)const;
+	int				getCellYByVertexIndex(unsigned long uVertexIndex)const;
+	Pos2D			getCellPosByVertexIndex(unsigned long uVertexIndex)const;
 	//
-	float	getVertexHeight(int nCellX, int nCellY)const;
-	void	setVertexHeight(int nCellX, int nCellY, float fHeight);
+	float			getVertexHeight(int nCellX, int nCellY)const;
+	void			setVertexHeight(int nCellX, int nCellY, float fHeight);
 	//
-	Vec3D	getVertexNormal(int nCellX, int nCellY)const;
+	Vec3D			getVertexNormal(int nCellX, int nCellY)const;
 	//
 	unsigned char	getCellAttribute(int nCellX, int nCellY)const;
-	void	setCellAttribute(int nCellX, int nCellY, unsigned char uAtt);
+	void			setCellAttribute(int nCellX, int nCellY, unsigned char uAtt);
 	//
-	Color32	getVertexColor(int nCellX, int nCellY)const;
-	void	setVertexColor(int nCellX, int nCellY, Color32 color);
+	Color32			getVertexColor(int nCellX, int nCellY)const;
+	void			setVertexColor(int nCellX, int nCellY, Color32 color);
 	//
-	float	GetHeight(float fX, float fY)const;
-	Vec4D	GetColor(float fX, float fY)const;
+	float			GetHeight(float fX, float fY)const;
+	Vec4D			GetColor(float fX, float fY)const;
 	// Åö×²¾«Ñ¡
 	virtual bool PickCell(int nCellX, int nCellY, const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const;
 	virtual bool Pick(const Vec3D& vRayPos, const Vec3D& vRayDir, Vec3D* pPos = NULL)const;
