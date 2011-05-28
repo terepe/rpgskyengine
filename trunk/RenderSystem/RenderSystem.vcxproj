@@ -123,6 +123,7 @@
     <ClInclude Include="include\HardwareIndexBuffer.h" />
     <ClInclude Include="include\HardwareVertexBuffer.h" />
     <ClInclude Include="include\Material.h" />
+    <ClInclude Include="include\MaterialMgr.h" />
     <ClInclude Include="include\RenderSystem.h" />
     <ClInclude Include="include\RenderSystemCommon.h" />
     <ClInclude Include="include\RenderWindow.h" />
@@ -133,7 +134,6 @@
     <ClInclude Include="include\TMapDataMgr.h" />
     <ClInclude Include="include\VertexDeclaration.h" />
     <ClInclude Include="include\HardwareBufferMgr.h" />
-    <ClInclude Include="include\MaterialMgr.h" />
     <ClInclude Include="include\ShaderMgr.h" />
     <ClInclude Include="include\TextureMgr.h" />
   </ItemGroup>

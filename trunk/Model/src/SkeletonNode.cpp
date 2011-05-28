@@ -16,7 +16,7 @@ CSkeletonNode::~CSkeletonNode()
 void CSkeletonNode::frameMove(const Matrix& mWorld, double fTime, float fElapsedTime)
 {
 	m_AnimMgr.Tick(int(fElapsedTime*1000));
-	Animate(m_strAnimName.c_str());
+	animate(m_strAnimName.c_str());
 	// ----
 	Matrix mNewWorld = mWorld*m_mWorldMatrix;
 	// ----
@@ -143,7 +143,7 @@ void CSkeletonNode::CalcBones(const char* szAnim, int time)
 	}
 }
 
-void CSkeletonNode::Animate(const char* szAnimName)
+void CSkeletonNode::animate(const char* szAnimName)
 {
 	if (!m_pSkeletonData)
 	{

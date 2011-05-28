@@ -93,9 +93,9 @@ unsigned char CSkeletonData::getBoneCount()
 
 iBoneInfo* CSkeletonData::allotBoneInfo()
 {
-	CBoneInfo boneInfo;
-	m_Bones.push_back(boneInfo);
-	return (iBoneInfo*)&boneInfo;
+	size_t size = m_Bones.size();
+	m_Bones.resize(size+1);
+	return (iBoneInfo*)&m_Bones[size];
 }
 
 iBoneInfo* CSkeletonData::getBoneInfo(unsigned char uBoneID)

@@ -8,11 +8,11 @@ class iRenderNode
 {
 public:
 	virtual void			setPos		(const Vec3D& vPos)=0;
-	virtual const Vec3D&	getPos		()=0;
 	virtual void			setRotate	(const Vec3D& vRotate)=0;
-	virtual const Vec3D&	getRotate	()=0;
 	virtual void			setScale	(const Vec3D& vScale)=0;
-	virtual const Vec3D&	getScale	()=0;
+	virtual const Vec3D&	getPos		()const=0;
+	virtual const Vec3D&	getRotate	()const=0;
+	virtual const Vec3D&	getScale	()const=0;
 	virtual iRenderNode*	getChild	(const char* szName)=0;
 	virtual void			addChild	(iRenderNode* pChild)=0;
 };
