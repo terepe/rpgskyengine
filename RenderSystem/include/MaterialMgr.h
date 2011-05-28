@@ -2,8 +2,13 @@
 #include "TMapDataMgr.h"
 #include "Material.h"
 
-class CMaterialMgr: public TMapDataMgrMgr<CMaterial, CMaterialDataPlugBase>
+class CMaterialMgr
 {
 public:
-	CMaterialMgr():TMapDataMgrMgr("Plugins\\*.dma"){}
+	CMaterial& getItem(const char* szMaterialName)
+	{
+		return m_Items[szMaterialName];
+	}
+public:
+	std::map<std::string, CMaterial> m_Items;
 };

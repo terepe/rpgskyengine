@@ -54,10 +54,7 @@ void CSkinModel::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType
 	// ----
 	GetRenderSystem().setWorldMatrix(mNewWorld);
 	// ----
-	/*if (m_pModelData)
-	{
-		m_pModelData->renderMesh(eRenderType,m_uLodLevel,m_pVB,m_fTrans,m_nAnimTime);
-	}*/
+	renderMesh(eRenderType,m_uLodLevel,m_pVB,1.0f/*m_fTrans*/,0/*m_nAnimTime*/);
 	// ----
 	CRenderNode::render(mNewWorld, eRenderType);
 }

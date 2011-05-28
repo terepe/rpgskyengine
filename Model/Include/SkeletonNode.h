@@ -16,7 +16,7 @@ public:
 	void				setSkeletonData	(CSkeletonData* pSkeletonData);
 	void				setAnim			(int nID);
 	void				setAnim			(const char* szAnimName);
-	void				Animate			(const char* szAnimName);
+	void				animate			(const char* szAnimName);
 	void				CalcBones		(const char* szAnim, int time);
 	virtual void		drawSkeleton	(CTextRender* pTextRender)const;
 	std::vector<Matrix>&getBonesMatrix	(){return m_setBonesMatrix;}

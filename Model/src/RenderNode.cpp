@@ -143,7 +143,7 @@ void CRenderNode::setChildBindingBone(const char* szName, const char* szBoneName
 
 
 
-void CObjectPosition::updateWorldMatrix()
+void CRenderNode::updateWorldMatrix()
 {
 	Matrix mTrans;
 	Matrix mRotate;
@@ -154,7 +154,7 @@ void CObjectPosition::updateWorldMatrix()
 	m_mWorldMatrix = mTrans*mRotate*mScale;
 }
 
-void CObjectPosition::updateWorldBBox()
+void CRenderNode::updateWorldBBox()
 {
 	m_WorldBBox = m_LocalBBox;
 	Matrix mRotate;

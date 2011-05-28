@@ -5,7 +5,7 @@
 
 CRenderNodeMgr::CRenderNodeMgr()
 {
-	m_DataPlugsMgr.loadPlugs("Plugins\\*.dme");
+	m_DataPlugsMgr.loadPlugs("Plugins\\*.dll");
 }
 /*
 unsigned long CModelDataMgr::RegisterModel(const std::string& strFilename)
