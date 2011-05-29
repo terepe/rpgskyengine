@@ -64,9 +64,8 @@ public:
 	virtual CSubMesh*	getSubMesh(size_t n);
 	virtual const BBox& getBBox(){return m_bbox;}
 	virtual void		setBBox(const BBox& bbox){m_bbox = bbox;}
-	virtual void		update();
+	virtual void		init();
 
-	void				Init();
 	bool				SetMeshSource(int nLodLevel=0, CHardwareVertexBuffer* pSkinVB=NULL)const;
 	void				drawSub(size_t uSubID, size_t uLodLevel=0)const;
 	void				draw(size_t uLodLevel=0)const;

@@ -16,6 +16,10 @@ public:
 	virtual iRenderNode*	createRenderNode(iSkeletonData* pData);
 	virtual iRenderNode*	createRenderNode(ParticleData* pData);
 	virtual iRenderNode*	createRenderNode(iLodMesh* pData);
+	virtual iSkeletonData*	getSkeletonData(const char* szName);
+	virtual ParticleData*	getParticleData(const char* szName);
+	virtual iLodMesh*		getLodMesh(const char* szName);
+	virtual CMaterial*		getMaterial(const char* szName);
 	virtual iSkeletonData*	createSkeletonData(const char* szName);
 	virtual ParticleData*	createParticleData(const char* szName);
 	virtual iLodMesh*		createLodMesh(const char* szName);

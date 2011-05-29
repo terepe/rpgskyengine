@@ -100,8 +100,7 @@ void CMeshCoordinate::init()
 		}
 	}
 	//
-	Init();
-	update();
+	CLodMesh::init();
 }
 
 void CMeshCoordinate::setPos(const Vec3D& vPos)
