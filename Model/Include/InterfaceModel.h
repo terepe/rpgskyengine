@@ -28,6 +28,10 @@ public:
 	virtual iRenderNode*	createRenderNode(iSkeletonData* data)=0;
 	virtual iRenderNode*	createRenderNode(ParticleData* data)=0;
 	virtual iRenderNode*	createRenderNode(iLodMesh* data)=0;
+	virtual iSkeletonData*	getSkeletonData(const char* szName)=0;
+	virtual ParticleData*	getParticleData(const char* szName)=0;
+	virtual iLodMesh*		getLodMesh(const char* szName)=0;
+	virtual CMaterial*		getMaterial(const char* szName)=0;
 	virtual iSkeletonData*	createSkeletonData(const char* szName)=0;
 	virtual ParticleData*	createParticleData(const char* szName)=0;
 	virtual iLodMesh*		createLodMesh(const char* szName)=0;

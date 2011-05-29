@@ -55,6 +55,12 @@ void CSkeletonNode::setSkeletonData(CSkeletonData* pSkeletonData)
 		m_setBonesMatrix.resize(m_pSkeletonData->m_Bones.size());
 		pSkeletonData->CalcBonesMatrix("0",0,m_setBonesMatrix);
 	}
+	// ----
+	iSkeletonAnim* pSkeletonAnim = pSkeletonData->getAnimation(0);
+	if (pSkeletonAnim)
+	{
+		setAnim(pSkeletonAnim->getName());
+	}
 }
 
 void CSkeletonNode::setAnim(int nID)

@@ -99,7 +99,6 @@ void CSkinModel::setMesh(CLodMesh* pMesh)
 		m_pVB = GetRenderSystem().GetHardwareBufferMgr().CreateVertexBuffer(m_pMesh->getSkinVertexCount(), m_pMesh->getSkinVertexSize(), CHardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
 	}
 
-	m_pMesh->Init();
 	if (m_vecPasses.empty())
 	{
 		if (m_pMesh->m_Lods.size()>0)

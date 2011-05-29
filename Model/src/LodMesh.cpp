@@ -73,8 +73,24 @@ CSubMesh* CLodMesh::getSubMesh(size_t n)
 	return &m_setSubMesh[n];
 }
 
-void CLodMesh::Init()
+void CLodMesh::init()
 {
+	for(size_t i=0;i<m_setSubMesh.size();++i)
+	{
+		if (false==m_bSkinMesh)
+		{
+			if(m_setSubMesh[i].bone.size()>0)
+			{
+				m_bSkinMesh = true;
+				break;
+			}
+		}
+	}
+	if (!m_bSkinMesh)
+	{
+		//weight.clear();
+		//bone.clear();
+	}
 	size_t uVertexCount=0;
 	std::vector<std::vector<VertexIndex>> setVecVertexIndex;
 	if (m_setSubMesh.size()!=0)
@@ -428,26 +444,6 @@ void CLodMesh::skinningMesh(CHardwareVertexBuffer* pVB, std::vector<Matrix>& set
 void CLodMesh::Clear()
 {
 	m_setSubMesh.clear();
-}
-
-void CLodMesh::update()
-{
-	for(size_t i=0;i<m_setSubMesh.size();++i)
-	{
-		if (false==m_bSkinMesh)
-		{
-			if(m_setSubMesh[i].bone.size()>0)
-			{
-				m_bSkinMesh = true;
-				break;
-			}
-		}
-	}
-	if (!m_bSkinMesh)
-	{
-		//weight.clear();
-		//bone.clear();
-	}
 }
 
 bool SubMeshIntersect(const CSubMesh& subMesh,const Vec3D& vRayPos , const Vec3D& vRayDir, Vec3D& vOut)

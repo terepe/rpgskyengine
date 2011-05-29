@@ -61,6 +61,41 @@ iRenderNode * CRenderNodeMgr::createRenderNode(iLodMesh* pData)
 	return pSkinModel;
 }
 
+iSkeletonData* CRenderNodeMgr::getSkeletonData(const char* szName)
+{
+	std::map<std::string, CSkeletonData>::iterator it = m_mapSkeletonData.find(szName);
+	if (it!=m_mapSkeletonData.end())
+	{
+		return (iSkeletonData*)&it->second;
+	}
+	return NULL;
+}
+
+ParticleData* CRenderNodeMgr::getParticleData(const char* szName)
+{
+	std::map<std::string, ParticleData>::iterator it = m_mapParticleData.find(szName);
+	if (it!=m_mapParticleData.end())
+	{
+		return (ParticleData*)&it->second;
+	}
+	return NULL;
+}
+
+iLodMesh* CRenderNodeMgr::getLodMesh(const char* szName)
+{
+	std::map<std::string, CLodMesh>::iterator it = m_mapLodMesh.find(szName);
+	if (it!=m_mapLodMesh.end())
+	{
+		return (iLodMesh*)&it->second;
+	}
+	return NULL;
+}
+
+CMaterial* CRenderNodeMgr::getMaterial(const char* szName)
+{
+	return &GetRenderSystem().getMaterialMgr().getItem(szName);
+}
+
 iSkeletonData* CRenderNodeMgr::createSkeletonData(const char* szName)
 {
 	return (iSkeletonData*)&m_mapSkeletonData[szName];

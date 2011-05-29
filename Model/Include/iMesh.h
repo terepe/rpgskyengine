@@ -142,5 +142,5 @@ public:
 	virtual CSubMesh*	getSubMesh(size_t n)=0;
 	virtual const BBox&	getBBox()=0;
 	virtual void		setBBox(const BBox& bbox)=0;
-	virtual void		update()=0;
+	virtual void		init()=0;
 };
