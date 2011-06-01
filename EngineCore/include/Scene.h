@@ -9,20 +9,10 @@
 class CScene:public iScene, public CRenderNode
 {
 public:
-	struct ObjectInfo
-	{
-		__int64		uID;
-		std::string	strName;
-		std::string strFilename;
-		//float		fScale;
-		//bool		bIsGround;
-		//bool		bHasShadow;
-	};
-
-	typedef std::map<__int64,ObjectInfo>  MAP_OBJECT_INFO;
 	CScene();
 	~CScene();
 public:
+	virtual iRenderNodeMgr*	getRenderNodeMgr	();
 	virtual int			getType					(){return NODE_BASE;}
 	virtual void		GetRenderObject			(const CFrustum& frustum, LIST_RENDER_NODE& ObjectList);
 	void				UpdateRender			(const CFrustum& frustum);
@@ -36,8 +26,6 @@ public:
 	virtual void		clearChildren				();
 	// ----
 	// load
-	virtual void		clearObjectResources	(){m_ObjectInfo.clear();}
-	virtual void		setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename);
 	virtual void		createObjectTree		(const BBox& box, size_t size);
 	bool				removeRenderObj			(CRenderNode* pObj);
 	// ----
@@ -49,7 +37,6 @@ public:
 	// ----
 	// # shit
 	// ----
-	virtual CRenderNode*add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale);
 	virtual	void		clearAllObjects			();
 	virtual	void		getAllObjects			();
 	// ----
@@ -63,7 +50,6 @@ public:
 	// ----
 	// # data
 	// ----
-	MAP_OBJECT_INFO&	GetObjectInfo			()						{return m_ObjectInfo;}
 	ObjectTree&			GetObject				()						{return m_ObjectTree;}
 	// ----
 	iTerrainData*		getTerrainData			()						{return m_pTerrain;}
@@ -84,7 +70,6 @@ protected:
 	ObjectTree				m_ObjectTree;
 	LIST_RENDER_NODE		m_setRenderSceneObj;
 	LIST_RENDER_NODE		m_setLightObj;
-	MAP_OBJECT_INFO			m_ObjectInfo;
 	bool					m_bRefreshViewport;
 protected:
 	CFocusNode				m_FocusNodel;        // The object which has focus

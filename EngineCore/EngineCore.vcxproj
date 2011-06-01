@@ -91,10 +91,8 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="src\Terrain\Terrain.cpp" />
-    <ClCompile Include="src\Terrain\TerrainBrush.cpp" />
     <ClCompile Include="src\Terrain\TerrainData.cpp" />
     <ClCompile Include="src\Terrain\TerrainDecal.cpp" />
-    <ClCompile Include="src\Terrain\TerrainEditor.cpp" />
     <ClCompile Include="src\SkyBox.cpp" />
     <ClCompile Include="src\Terrain\LightMap.cpp" />
     <ClCompile Include="src\Scene\3DMapEffect.cpp" />
@@ -112,10 +110,8 @@
     <ClInclude Include="include\InterfaceScene.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Terrain.h" />
-    <ClInclude Include="include\TerrainBrush.h" />
     <ClInclude Include="include\TerrainData.h" />
     <ClInclude Include="include\TerrainDecal.h" />
-    <ClInclude Include="include\TerrainEditor.h" />
     <ClInclude Include="include\SkyBox.h" />
     <ClInclude Include="include\LightMap.h" />
     <ClInclude Include="include\3DMapEffect.h" />

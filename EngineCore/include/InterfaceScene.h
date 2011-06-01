@@ -228,19 +228,18 @@ public:
 #include "MapObj.h"
 #include "RenderSystemCommon.h"
 #include "RenderNode.h"
+#include "InterfaceModel.h"
 
 class iScene
 {
 public:
+	virtual iRenderNodeMgr*			getRenderNodeMgr		()=0;
 	virtual iTerrainData*			getTerrainData			()=0;
 	virtual const iTerrainData*		getTerrainData			()const=0;
-	virtual void					clearObjectResources	()=0;
-	virtual void					setObjectResources		(__int64 uID,const std::string& strName,const std::string& strFilename)=0;
 	virtual void					createObjectTree		(const BBox& box, size_t size)=0;
 	// ----
 	// # shit
 	// ----
-	virtual CRenderNode*			add3DMapSceneObj		(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)=0;
 	virtual	void					clearAllObjects			()=0;
 	virtual	void					getAllObjects			()=0;
 	// ----
