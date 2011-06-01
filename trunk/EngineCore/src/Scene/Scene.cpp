@@ -2,6 +2,7 @@
 #include "CsvFile.h"
 #include "IORead.h"
 #include <algorithm>
+#include "RenderNodeMgr.h"
 
 CScene::CScene():
 m_bShowObject(true),
@@ -16,6 +17,11 @@ m_Light(Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.0f,1.0f),Vec4D(1.0f,1.0f,1.
 CScene::~CScene()
 {
 	clearChildren();
+}
+
+iRenderNodeMgr* CScene::getRenderNodeMgr()
+{
+	return (iRenderNodeMgr*)&CRenderNodeMgr::getInstance();
 }
 
 static Vec3D vEyeForObjectSort;
@@ -268,15 +274,6 @@ void CScene::render(const Matrix& mWorld, E_MATERIAL_RENDER_TYPE eRenderType)con
 	}
 }
 
-void CScene::setObjectResources(__int64 uID,const std::string& strName,const std::string& strFilename)
-{
-	ObjectInfo Info;
-	Info.uID				= uID;
-	Info.strName			= strName;
-	Info.strFilename		= strFilename;
-	m_ObjectInfo[Info.uID] = Info;
-}
-
 void CScene::createObjectTree(const BBox& box, size_t size)
 {
 	m_ObjectTree.create(box,size);
@@ -376,7 +373,7 @@ void CScene::getAllObjects()
 
 }
 
-CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
+/*CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D& vRotate,const Vec3D& vScale)
 {
  	if (m_ObjectInfo.find(uID)==m_ObjectInfo.end())
  	{
@@ -411,7 +408,7 @@ CRenderNode* CScene::add3DMapSceneObj(__int64 uID,const Vec3D& vPos,const Vec3D&
 	// ----
 	addChild(pObject);
 	return pObject;
-}
+}*/
 
 bool CScene::delChildByFocus()
 {
